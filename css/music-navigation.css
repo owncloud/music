@@ -225,8 +225,8 @@
 #app-navigation .input-container input {
 	width: 100%;
 	margin-left: 0;
-	margin-bottom: 6px;
-	margin-top: 6px;
+	margin-bottom: 4px;
+	margin-top: 4px;
 	margin-right: 5px;
 	height: 32px;
 	cursor: text;
@@ -248,8 +248,9 @@
 
 #app-navigation .input-container #clear-search {
 	position: relative;
-	left: -44px;
-	top: -6px;
+	vertical-align: middle;
+	left: -40px;
+	top: -2px;
 	width: 24px;
 	height: 24px;
 	border: none;

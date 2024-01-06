@@ -26,7 +26,7 @@ function initEmbeddedPlayer() {
 
 	let mCurrentFile = null; // may be an audio file or a playlist file
 	let mPlayingListFile = false;
-	let mFileList = null; // FileList from Files or Sharing app
+	let mFileList = null; // FileList from Files (prior to NC28) or Sharing app
 	let mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
 	let mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
@@ -261,10 +261,28 @@ function initEmbeddedPlayer() {
 			 * false otherwise and null if the action is silent/undefined.
 			 * @throws Error if the action failed
 			 */
-			exec: (file, _view, _dir) => {
-				mFileList = null;
-				const adaptedFile = {id: file.fileid, name: file.basename, mimetype: file.mime, url: file.source};
-				onActionCallback(adaptedFile);
+			exec: (file, view, dir) => {
+				const adaptFile = (vueFile) => { return {id: vueFile.fileid, name: vueFile.basename, mimetype: vueFile.mime, url: vueFile.source} };
+				onActionCallback(adaptFile(file));
+
+				if (!mPlayingListFile) {
+					// get the directory contents and use them as the play queue
+					view.getContents(dir).then(contents => {
+						const dirFiles = _.map(contents.contents, adaptFile);
+						// By default, the files are sorted simply by the character codes, putting upper case names before lower case
+						// and not respecting any locale settings. This doesn't match the order on the UI, regardless of the column
+						// used for sorting. Sort on our own treating numbers "naturally" and using the locale of the browser since
+						// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
+						// as the locale for sorting although user-selected locale would have made even more sense).
+						// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
+						// what NC28 files does (it uses the 3rd party library natural-orderby for this).
+						dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+
+						mPlaylist = new OCA.Music.Playlist(dirFiles, mAudioMimes, mCurrentFile.id);
+						mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
+					});
+				}
+
 				return true;
 			},
 		}));

@@ -53,6 +53,18 @@ function initEmbeddedPlayer() {
 
 	register();
 
+	function urlForFile(file) {
+		let url = file.url ?? mFileList.getDownloadUrl(file.name, file.path);
+
+		// Append request token unless this is a public share. This is actually unnecessary for most files
+		// but needed when the file in question is played using our Aurora.js fallback player.
+		if (!mShareToken) {
+			let delimiter = _.includes(url, '?') ? '&' : '?';
+			url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+		}
+		return url;
+	}
+
 	function onClose() {
 		mCurrentFile = null;
 		mPlayingListFile = false;
@@ -89,7 +101,7 @@ function initEmbeddedPlayer() {
 
 		// disable/enable the "Import list to Music" item
 		let inLibraryFilesCount = _(mPlaylist.files()).filter('in_library').size();
-		let extStreamsCount = _(mPlaylist.files()).filter('url').size();
+		let extStreamsCount = _(mPlaylist.files()).filter('external').size();
 		let outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
 
 		let $importListItem = $menu.find('#playlist-menu-import');
@@ -171,7 +183,7 @@ function initEmbeddedPlayer() {
 				mPlayer.playExtUrl(file.url, file.caption, mShareToken);
 			} else {
 				mPlayer.playFile(
-					file.url ?? mFileList.getDownloadUrl(file.name, file.path),
+					urlForFile(file),
 					file.mimetype,
 					file.id,
 					file.name,
@@ -277,7 +289,7 @@ function initEmbeddedPlayer() {
 			 */
 			exec: (file, view, dir) => {
 				const adaptFile = (f) => {
-					return {id: f.fileid, name: f.basename, mimetype: f.mime, url: f.source, path: dir}
+					return {id: f.fileid, name: f.basename, mimetype: f.mime, url: f.source, path: dir};
 				};
 				onActionCallback(adaptFile(file));
 

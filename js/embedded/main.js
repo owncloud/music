@@ -231,11 +231,12 @@ function initEmbeddedPlayer() {
 						// Before NC28
 						mFileList = OCA.Files.App.fileList;
 						mCurrentFile = mFileList.findFile(playlistName);
-						openPlaylistFile(() => jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx)));
 					} else {
 						// NC28 or later
-						// TODO
+						// We don't know all of the file details but those are not actually needed for a playlist file
+						mCurrentFile = {id: playlistId, name: playlistName, mimetype: null, path: null};
 					}
+					openPlaylistFile(() => jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx)));
 				}
 			});
 			OCA.Music.playlistTabView.on('rendered', () => {

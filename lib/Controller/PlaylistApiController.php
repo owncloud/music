@@ -363,7 +363,6 @@ class PlaylistApiController extends Controller {
 						'id' => $file->getId(),
 						'name' => $file->getName(),
 						'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
-						'url' => $this->urlGenerator->linkToRoute('music.api.download', ['fileId' => $file->getId()]),
 						'mimetype' => $file->getMimeType(),
 						'caption' => $fileInfo['caption'],
 						'in_library' => isset($libFileIds[$file->getId()]),

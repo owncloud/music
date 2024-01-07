@@ -116,7 +116,6 @@ class ShareController extends Controller {
 						'id' => $file->getId(),
 						'name' => $file->getName(),
 						'path' => $sharedFolder->getRelativePath($file->getParent()->getPath()),
-						'url' => 'TODO',
 						'mimetype' => $file->getMimeType(),
 						'caption' => $fileInfo['caption'],
 						'external' => false

@@ -54,7 +54,9 @@ function initEmbeddedPlayer() {
 	register();
 
 	function urlForFile(file) {
-		let url = file.url ?? mFileList.getDownloadUrl(file.name, file.path);
+		let url = mFileList
+			? mFileList.getDownloadUrl(file.name, file.path)
+			: OC.filePath('music', '', 'index.php') + '/api/file/' + file.id + '/download';
 
 		// Append request token unless this is a public share. This is actually unnecessary for most files
 		// but needed when the file in question is played using our Aurora.js fallback player.
@@ -289,7 +291,7 @@ function initEmbeddedPlayer() {
 			 */
 			exec: (file, view, dir) => {
 				const adaptFile = (f) => {
-					return {id: f.fileid, name: f.basename, mimetype: f.mime, url: f.source, path: dir};
+					return {id: f.fileid, name: f.basename, mimetype: f.mime, path: dir};
 				};
 				onActionCallback(adaptFile(file));
 
@@ -303,7 +305,7 @@ function initEmbeddedPlayer() {
 						// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
 						// as the locale for sorting although user-selected locale would have made even more sense).
 						// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
-						// what NC28 files does (it uses the 3rd party library natural-orderby for this).
+						// what NC28 Files does (it uses the 3rd party library natural-orderby for this).
 						dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
 
 						mPlaylist = new OCA.Music.Playlist(dirFiles, mAudioMimes, mCurrentFile.id);

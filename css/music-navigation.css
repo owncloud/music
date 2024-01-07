@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 .app-music #app-navigation {
@@ -32,6 +32,7 @@
 	*/
 	border-radius: var(--border-radius-rounded);
 	margin-bottom: var(--default-grid-baseline);
+	transition: background-color .2s ease-in-out;
 }
 
 #app-navigation > ul > li:hover,

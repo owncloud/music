@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 OCA.Music = OCA.Music || {};
@@ -59,9 +59,17 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 	
 					// click handler
 					list.on('click', 'li', (event) => {
-						let id = event.target.id;
-						let idx = parseInt(id.split('-').pop());
-						this.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes?.name ?? fileInfo.name, idx);
+						// Create struct representing the playlist file in format compatible with the embedded player.
+						// The method fileInfo.get() works consistently on all cloud versions although direct access to
+						// fileInfo properties works differently before and after NC28.
+						const file = {
+							id: fileInfo.get('id'),
+							name: fileInfo.get('name'),
+							mimetype: fileInfo.get('mimetype'),
+							path: fileInfo.get('path'),
+						};
+						const idx = parseInt(event.target.id.split('-').pop());
+						this.trigger('playlistItemClick', file, idx);
 					});
 	
 					if (data.invalid_paths.length > 0) {

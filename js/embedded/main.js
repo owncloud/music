@@ -218,8 +218,8 @@ function initEmbeddedPlayer() {
 
 	function connectPlaylistTabViewEvents() {
 		if (OCA.Music.playlistTabView) {
-			OCA.Music.playlistTabView.on('playlistItemClick', (playlistId, playlistName, itemIdx) => {
-				if (mCurrentFile !== null && playlistId == mCurrentFile.id) {
+			OCA.Music.playlistTabView.on('playlistItemClick', (playlistFile, itemIdx) => {
+				if (mCurrentFile !== null && playlistFile.id == mCurrentFile.id) {
 					if (itemIdx == mPlaylist.currentIndex()) {
 						mPlayer.togglePlayback();
 					} else {
@@ -230,11 +230,10 @@ function initEmbeddedPlayer() {
 					if (OCA.Files.App) {
 						// Before NC28
 						mFileList = OCA.Files.App.fileList;
-						mCurrentFile = mFileList.findFile(playlistName);
+						mCurrentFile = mFileList.findFile(playlistFile.name);
 					} else {
 						// NC28 or later
-						// We don't know all of the file details but those are not actually needed for a playlist file
-						mCurrentFile = {id: playlistId, name: playlistName, mimetype: null, path: null};
+						mCurrentFile = playlistFile;
 					}
 					openPlaylistFile(() => jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx)));
 				}

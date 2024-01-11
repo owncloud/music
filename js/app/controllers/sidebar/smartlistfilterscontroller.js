@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
 
@@ -33,7 +33,19 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$timeout(() => {
 			$('#filter-genres').chosen();
 			$('#filter-artists').chosen();
-			$('#app-sidebar #smartlist-filters .chosen-container').css('width', ''); // purge the inline rule to let the CSS define the width
+			const $chosenInputs = $('#app-sidebar #smartlist-filters .chosen-container');
+			const $filterGenres = $('#filter-genres');
+			const $filterSize = $('#filter-size');
+
+			$chosenInputs
+				.css('width', '') // purge the inline rule to let the CSS define the width
+				.css('--border-input', $filterGenres.css('border')) // copy the border style from the input field
+				.css('--border-radius-input', $filterGenres.css('border-radius'));
+
+			$filterSize.trigger('focus');
+			$timeout(() => {
+				$chosenInputs.css('--color-input-border-hover', $filterSize.css('border-color')); // copy the border color of focused input
+			});
 		});
 
 		function allFieldsValid() {

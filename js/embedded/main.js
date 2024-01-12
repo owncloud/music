@@ -70,18 +70,20 @@ function initEmbeddedPlayer() {
 	function onClose() {
 		mCurrentFile = null;
 		mPlayingListFile = false;
-		mPlaylist.reset();
-		if (OCA.Music.playlistTabView) {
-			OCA.Music.playlistTabView.setCurrentTrack(null, null);
-		}
+		mPlaylist?.reset();
+		OCA.Music.playlistTabView?.setCurrentTrack(null, null);
 	}
 
 	function onNext() {
-		jumpToPlaylistFile(mPlaylist.next());
+		if (mPlaylist) {
+			jumpToPlaylistFile(mPlaylist.next());
+		}
 	}
 
 	function onPrev() {
-		jumpToPlaylistFile(mPlaylist.prev());
+		if (mPlaylist) {
+			jumpToPlaylistFile(mPlaylist.prev());
+		}
 	}
 
 	function viewingCurrentFileFolder() {
@@ -160,17 +162,10 @@ function initEmbeddedPlayer() {
 	}
 
 	function doImportFromFile(serviceImportFunc) {
-		// The busy animation is shown on the file item if we are still viewing the folder
-		// where the file resides. The importing itself is possible regardless.
-		let animationShown = viewingCurrentFileFolder();
-		if (animationShown) {
-			showCurrentFileAsBusy(true);
-		}
+		mPlayer.showBusy(true);
 
 		serviceImportFunc(mCurrentFile, (_result) => {
-			if (animationShown) {
-				showCurrentFileAsBusy(false);
-			}
+			mPlayer.showBusy(false);
 		});
 	}
 
@@ -350,6 +345,7 @@ function initEmbeddedPlayer() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
+		mPlayer.showBusy(false);
 		mPlaylist = new OCA.Music.Playlist(mFileList?.files ?? [mCurrentFile], mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
@@ -358,53 +354,54 @@ function initEmbeddedPlayer() {
 	function openPlaylistFile(onReadyCallback = null) {
 		mPlayingListFile = true;
 
-		showCurrentFileAsBusy(true);
-		let onPlaylistLoaded = function(data) {
-			showCurrentFileAsBusy(false);
-			if (data.files.length > 0) {
-				mPlayer.show(mCurrentFile.name);
-				mPlaylist = new OCA.Music.Playlist(data.files, mAudioMimes, data.files[0].id);
-				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
-				jumpToPlaylistFile(mPlaylist.currentFile());
-			}
-			else {
-				mCurrentFile = null;
-				OC.Notification.showTemporary(t('music', 'No files from the playlist could be found'));
-			}
-			if (data.invalid_paths.length > 0) {
-				let note = t('music', 'The playlist contained {count} invalid path(s).',
-						{count: data.invalid_paths.length});
-				if (!mShareToken) {
-					// Guide the user to look for details, unless this is a public share where the
-					// details pane is not available.
-					note += ' ' +  t('music', 'See the playlist file details.');
+		// clear the previous playback
+		mPlayer.stop();
+		mPlaylist = null;
+
+		mPlayer.show(mCurrentFile.name);
+		mPlayer.showBusy(true);
+
+		const listFileId = mCurrentFile.id;
+		const onPlaylistLoaded = function(data) {
+			// ignore the callback if the player is already closed or file changed by the time we get it
+			if (mCurrentFile?.id == listFileId) {
+				mPlayer.showBusy(false);
+				if (data.files.length > 0) {
+					mPlaylist = new OCA.Music.Playlist(data.files, mAudioMimes, data.files[0].id);
+					mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
+					jumpToPlaylistFile(mPlaylist.currentFile());
 				}
-				OC.Notification.showTemporary(note);
-			}
+				else {
+					mCurrentFile = null;
+					mPlayer.close();
+					OC.Notification.showTemporary(t('music', 'No files from the playlist could be found'));
+				}
+				if (data.invalid_paths.length > 0) {
+					let note = t('music', 'The playlist contained {count} invalid path(s).',
+							{count: data.invalid_paths.length});
+					if (!mShareToken) {
+						// Guide the user to look for details, unless this is a public share where the
+						// details pane is not available.
+						note += ' ' +  t('music', 'See the playlist file details.');
+					}
+					OC.Notification.showTemporary(note);
+				}
 
-			showCurrentFileAsBusy(false);
-
-			if (onReadyCallback) {
-				onReadyCallback();
+				if (onReadyCallback) {
+					onReadyCallback();
+				}
 			}
 		};
-		let onError = function() {
-			showCurrentFileAsBusy(false);
-			mCurrentFile = null;
-			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
-		};
-		OCA.Music.PlaylistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
-	}
-
-	function showCurrentFileAsBusy(isBusy) {
-		if (mFileList) {
-			let $file = mFileList.findFileEl(mCurrentFile.name);
-			if ($file) {
-				mFileList.showFileBusyState($file, isBusy);
+		const onError = function() {
+			// ignore the callback if the player is already closed or file changed by the time we get it
+			if (mCurrentFile?.id == listFileId) {
+				mPlayer.close();
+				mPlayer.showBusy(false);
+				mCurrentFile = null;
+				OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
 			}
-		} else {
-			// TODO: How to do this on NC28?
-		}
+		};
+		OCA.Music.PlaylistFileService.readFile(listFileId, onPlaylistLoaded, onError, mShareToken);
 	}
 
 	/**

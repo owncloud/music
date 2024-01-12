@@ -5,14 +5,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
  /* "Tablet" style */
 #music-controls.tablet {
 	padding: 0;
 }
-#music-controls.tablet #albumart {
+#music-controls.tablet #albumart-container {
 	margin-left: 10px;
 }
 #music-controls.tablet #info-and-progress {
@@ -30,7 +30,7 @@
 #music-controls.mobile .control {
 	margin-right: 0;
 }
-#music-controls.mobile #albumart {
+#music-controls.mobile #albumart-container {
 	margin-left: 0;
 	margin-right: 0;
 }

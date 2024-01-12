@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -41,7 +41,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	let pauseButton = null;
 	let prevButton = null;
 	let nextButton = null;
-	let coverImage = null;
+	let coverImageContainer = null;
 	let titleText = null;
 	let artistText = null;
 	let playlistText = null;
@@ -72,7 +72,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function close() {
 		player.stop();
-		musicControls.css('display', 'none');
+		musicControls?.css('display', 'none');
 		$('footer').css('display', ''); // undo hiding the footer in public shares
 		onClose();
 	}
@@ -212,7 +212,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createCoverImage() {
-		return $(document.createElement('div')).attr('id', 'albumart');
+		const container = $(document.createElement('div')).attr('id', 'albumart-container');
+		container.append($(document.createElement('div')).attr('id', 'albumart'));
+		return container;
 	}
 
 	function createProgressInfo() {
@@ -302,16 +304,20 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			text.hide();
 		}
 
-		player.on('loading', function() {
+		function clearProgress() {
 			playTimePreview_tf = null;
 			playTimePreview_ts = null;
 			playTimePreview_s = null;
 			playTime_s = 0;
 			songLength_s = null;
-			loadingShow();
-			updateProgress();
 			bufferBar.css('width', '0');
 			setCursorType('default');
+			updateProgress();
+		}
+
+		player.on('loading', function() {
+			clearProgress();
+			loadingShow();
 		});
 		player.on('ready', function() {
 			loadingHide();
@@ -341,6 +347,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			playButton.css('display', 'inline-block');
 			pauseButton.css('display', 'none');
 			setMediaSessionStatePlaying(false);
+		});
+		player.on('stop', function() {
+			setMediaSessionStatePlaying(false);
+			clearProgress();
 		});
 
 		// Seeking
@@ -492,14 +502,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		pauseButton = createPauseButton();
 		prevButton = createPrevButton();
 		nextButton = createNextButton();
-		coverImage = createCoverImage();
+		coverImageContainer = createCoverImage();
 
 		musicControls.append(createPlaylistArea());
 		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(nextButton);
-		musicControls.append(coverImage);
+		musicControls.append(coverImageContainer);
 		musicControls.append(createInfoProgressContainer());
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
@@ -570,7 +580,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		artistText.text(data.artist);
 
 		let cover = data.cover || OC.imagePath('core', 'filetypes/audio');
-		coverImage.css('background-image', 'url("' + cover + '")');
+		coverImageContainer.find(':first-child').css('background-image', 'url("' + cover + '")');
 
 		updateMediaSession(data);
 	}
@@ -601,6 +611,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function changePlayingUrl(playCallback) {
 		player.stop();
+
+		// enable controls which may be disabled while loading a playlist
+		musicControls.find('.control').removeClass('disabled');
+		updateNextButtonStatus();
 
 		musicAppLinkElements().css('cursor', 'default').off('click').attr('title', '');
 		player.trigger('loading');
@@ -710,6 +724,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		if (playlistName) {
 			musicControls.addClass('with-playlist');
+			musicControls.find('.control').addClass('disabled');
+			updateMetadata({
+				title: t('music', 'Loading…'),
+				artist: '',
+				cover: null
+			});
+			playlistNumberText.hide();
 			playlistText.text(OCA.Music.Utils.dropFileExtension(playlistName));
 		} else {
 			musicControls.removeClass('with-playlist');
@@ -719,6 +740,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		// On NC25, the footer shown on publicly shared folders is laid over the music controls. Get rid of it.
 		$('footer').css('display', 'none');
+	};
+
+	this.showBusy = function(isBusy) {
+		if (isBusy) {
+			coverImageContainer.addClass('icon-loading');
+			$('#menu-container').hide();
+		} else {
+			coverImageContainer.removeClass('icon-loading');
+			$('#menu-container').show();
+		}
 	};
 
 	this.playFile = function(url, mime, fileId, fileName, shareToken = null) {
@@ -763,10 +794,15 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	this.setPlaylistIndex = function(currentIndex, totalCount) {
 		playlistNumberText.text((currentIndex + 1) + ' / ' + totalCount);
+		playlistNumberText.show();
 	};
 
 	this.togglePlayback = togglePlayback;
 
+	this.stop = function() {
+		player.stop();
+	};
+	
 	this.close = close;
 
 	this.setNextAndPrevEnabled = function(enabled) {

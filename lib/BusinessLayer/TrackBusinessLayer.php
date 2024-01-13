@@ -260,14 +260,9 @@ class TrackBusinessLayer extends BusinessLayer {
 				// other user's folder with files shared with this user (mapped under root)
 				$entry = null;
 			} else {
-				$parentId = $folderNode->getParent()->getId();
-				// On NC28, the externally mounted folders have parentId=-1. Map such folders manually under the root folder.
-				if ($parentId == -1) {
-					$parentId = $libRootId;
-				}
 				$entry = [
 					'name' => $folderNode->getName(),
-					'parent' => $parentId
+					'parent' => $folderNode->getParent()->getId()
 				];
 			}
 		}

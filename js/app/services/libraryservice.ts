@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2023 Pauli Järvinen
+ * @copyright 2017 - 2024 Pauli Järvinen
  *
  */
 
@@ -393,6 +393,8 @@ export class LibraryService {
 			this.#sortByTextField(protoFolders, 'name');
 			// the tracks within each folder are sorted by the file name by the back-end
 
+			const rootFolder = _.find(protoFolders, {parent: null});
+
 			// create temporary look-up-table for the folders to speed up setting up the parent references
 			let foldersLut : {[id: number] : any} = {};
 			_.forEach(protoFolders, (folder) => {
@@ -401,7 +403,10 @@ export class LibraryService {
 
 			_.forEach(protoFolders, (folder) => {
 				// substitute parent id with a reference to the parent folder
-				folder.parent = foldersLut[folder.parent] ?? null;
+				if (folder.parent !== null) {
+					// default to the root folder as NC28 returns bad parent IDs for externally mounted and shared folders
+					folder.parent = foldersLut[folder.parent] ?? rootFolder;
+				}
 				// set parent folder references for the contained tracks
 				_.forEach(folder.tracks, (entry) => entry.track.folder = folder);
 				// init subfolder array

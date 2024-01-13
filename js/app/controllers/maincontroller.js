@@ -455,8 +455,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
-			// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
-			$timeout(() => $('#hidden-close-app-navigation-button').click());
+			$timeout(() => {
+				// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
+				$('#hidden-close-app-navigation-button').trigger('click');
+				// Remove any active input focus to ensure that the focus is not left to an input field within the collapsed pane
+				$(document.activeElement).trigger('blur');
+			});
 		}
 	};
 

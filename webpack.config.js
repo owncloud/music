@@ -36,6 +36,9 @@ module.exports = {
       'lodash': path.resolve('node_modules', 'lodash'),
       'jquery': path.resolve('node_modules', 'jquery/src/jquery'),
       'blueimp-md5': path.resolve('node_modules', 'blueimp-md5'),
+    },
+    fallback: {
+      path: require.resolve("path-browserify")
     }
   },
   plugins: [
@@ -67,6 +70,10 @@ module.exports = {
         generator: {
           filename: 'img/[hash][ext]'
         }
+      },
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
       },
       {
         include: path.resolve('node_modules', 'lodash'),

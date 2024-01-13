@@ -19,11 +19,20 @@ OCA.Music.Utils = class {
 	/**
 	 * Originally in ownCloud and in Nextcloud up to version 13, the #app-content element acted as the main scroll container.
 	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
-	 * to the Music app. Then, Nextcloud 25 changed this back to the original system.
+	 * to the Music app. Then, Nextcloud 25 changed this back to the original system. In Nextcloud 28, this changed once again
+	 * within the Files app but not globally. 
 	 */
 	static getScrollContainer() : JQuery<any> {
 		const appContent = $('#app-content');
-		return (appContent.css('overflow-y') === 'auto') ? appContent : $(window.document);
+		const filesList = $('#app-content-vue .files-list');
+
+		if (appContent.css('overflow-y') === 'auto') {
+			return appContent;
+		} else if (filesList.css('overflow-y') === 'auto') {
+			return filesList;
+		} else {
+			return $(window.document);
+		}
 	}
 
 	/**

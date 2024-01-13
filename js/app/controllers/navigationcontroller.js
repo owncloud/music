@@ -27,6 +27,8 @@ angular.module('Music').controller('NavigationController', [
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
+		// same as above, but for the search field
+		$scope.showSearch = false;
 		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
 
@@ -41,7 +43,7 @@ angular.module('Music').controller('NavigationController', [
 			// Move the focus to the input field. This has to be made asynchronously
 			// because the field is not visible yet, it is shown by ng-show binding
 			// later during this digest loop.
-			$timeout(() => $('.new-list').focus());
+			$timeout(() => $('#new-list-input').trigger('focus'));
 		};
 
 		// Commit creating playlist
@@ -57,6 +59,49 @@ angular.module('Music').controller('NavigationController', [
 			$scope.newPlaylistTrackIds = [];
 			$scope.showCreateForm = false;
 		};
+
+		$scope.startSearch = function() {
+			$scope.showSearch = true;
+			// Move the focus to the input field. This has to be made asynchronously
+			// because the field is not visible yet, it is shown by ng-show binding
+			// later during this digest loop.
+			$timeout(() => $('#search-input').trigger('focus'));
+			expandCollapsedNavigationPane();
+		};
+
+		$scope.clearSearch = function() {
+			$('#search-input').val('');
+			$('#search-input').trigger('change');
+			$scope.showSearch = false;
+		};
+
+		$('#search-input').on('blur', function() {
+			if (this.value == '') {
+				$scope.showSearch = false;
+			}
+		});
+		
+		/** 
+		 * Catch ctrl+f except when the Settings view is active or the search input is already focused.
+		 * In the latter case, let the cloud core and/or browser do its default handling.
+		 * Note: This event is bound in the *capturing* phase instead of the typical *bubbling* phase.
+		 * This is to enable us to execute before the event handler registered by the unified search.
+		 * During the bubbling phase, the handlers are executed in the order they are registered and we
+		 * can't register our handler before the cloud core.
+		 */
+		document.addEventListener('keydown', (e) => {
+			if ($rootScope.currentView !== '#/settings'
+				&& !$('#search-input').is(':focus')
+				&& !$('#unified-search__input').is(':focus')
+				&& e.ctrlKey && e.key === 'f')
+			{
+				$timeout($scope.startSearch);
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			}
+			return true;
+		}, {capture: true});
 
 		// Show/hide the more actions menu on a navigation item
 		$scope.onNaviItemMoreButton = function(naviDestination) {
@@ -308,7 +353,7 @@ angular.module('Music').controller('NavigationController', [
 		navToggle.addEventListener('dragenter', function() {
 			if (!navOpenedByDrag) {
 				navOpenedByDrag = true;
-				$timeout(() => $(navToggle).click());
+				expandCollapsedNavigationPane();
 			}
 		});
 		document.addEventListener('dragend', function() {
@@ -317,6 +362,12 @@ angular.module('Music').controller('NavigationController', [
 				$scope.collapseNavigationPaneOnMobile();
 			}
 		});
+
+		function expandCollapsedNavigationPane() {
+			if (!$('body').hasClass('snapjs-left') && $(navToggle).is(':visible')) {
+				$timeout(() => $(navToggle).trigger('click'));
+			}
+		}
 
 		function createPlaylist(name, trackIds) {
 			const args = {

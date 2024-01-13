@@ -7,13 +7,41 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
-#app-navigation {
-	padding-bottom: calc(44px + var(--body-container-margin, 0px)) !important;
+.app-music #app-navigation {
+	padding-bottom: calc(88px + 4 * var(--default-grid-baseline, 0px)) !important;
 	z-index: 999;
-	display: block;
+	overflow: unset;
+}
+
+#app-navigation > ul {
+	height: 100%;
+	padding: calc(var(--default-grid-baseline)*2);
+	padding-bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#app-navigation > ul > li {
+	/* The NC server uses --border-radius-pill for this purpose but we don't because that variable is
+	   available also at least on NC17-24 where the overall layout is not a good fit for rounded highlight.
+	   The border-radius-rounded has slightly larger value but that doesn't cause any visual difference
+	   here because the radius already maxes out for line of height 44px with border-radius-pill.
+	*/
+	border-radius: var(--border-radius-rounded);
+	margin-bottom: var(--default-grid-baseline);
+	transition: background-color .2s ease-in-out;
+}
+
+#app-navigation > ul > li:hover,
+#app-navigation > ul > li:focus {
+	background-color: var(--color-background-hover);
+}
+
+#app-navigation > ul > li.active {
+	background-color: var(--color-primary-element-light);
 }
 
 #app-navigation .app-navigation-separator {
@@ -28,11 +56,13 @@
 }
 
 #app-navigation .music-navigation-item {
+	position: relative;
 	height: 44px;
 }
 
 #app-navigation .music-navigation-item-content {
 	padding-left: 0 !important;
+	height: 44px;
 	line-height: 44px;
 	width: 100%;
 	overflow: hidden;
@@ -45,8 +75,32 @@
 	cursor: pointer;
 }
 
+#app-navigation .music-navigation-item-content > * {
+	display: inline-block;
+	height: 44px;
+}
+
 #app-navigation .music-navigation-item:not(:hover):not(.active):not(.menu-open) .music-navigation-item-content {
 	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content [class^="icon-"] {
+	width: 40px;
+	height: 44px;
+	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content:not(:hover) [class^="icon-"] {
+	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content .label {
+	padding-left: 4px;
+	box-shadow: unset;
+	position: absolute;
+	width: auto;
+	right: 0;
+	left: 40px;
 }
 
 #app-navigation-toggle {
@@ -90,21 +144,6 @@
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-navigation #new-playlist > * {
-	display: inline-block;
-	height: 100%;
-}
-
-#app-navigation #new-playlist .icon-add {
-	width: 40px;
-	height: 44px;
-	cursor: pointer;
-}
-
-#app-navigation #new-playlist:not(:hover) .icon-add {
-	opacity: 0.7;
-}
-
 #app-navigation #new-playlist .track-count-badge {
 	background-color: var(--color-primary, #1d2d44);
 	color: var(--color-primary-text, #fff);
@@ -116,15 +155,6 @@
 	text-align: center;
 	vertical-align: middle;
 	font-size: smaller;
-}
-
-#app-navigation #new-playlist #create {
-	padding-left: 4px;
-	box-shadow: unset;
-	position: absolute;
-	width: auto;
-	right: 0;
-	left: 40px;
 }
 
 #app-navigation li.drag-hover {
@@ -189,20 +219,43 @@
 #app-navigation .input-container {
 	position: absolute;
 	left: 35px;
-	right: 65px;
+	right: 12px;
 	width: auto;
 }
 
 #app-navigation .input-container input {
 	width: 100%;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
 	margin-left: 0;
-	margin-bottom: 6px;
-	margin-top: 6px;
+	margin-bottom: 4px;
+	margin-top: 4px;
 	margin-right: 5px;
 	height: 32px;
 	cursor: text;
+	box-shadow: unset;
+}
+
+#app-navigation .input-container.with-buttons {
+	right: 65px;
+}
+
+#app-navigation .input-container.with-buttons input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+#app-navigation .input-container #search-input {
+	padding-right: 32px;
+}
+
+#app-navigation .input-container #clear-search {
+	position: relative;
+	vertical-align: middle;
+	left: -40px;
+	top: -2px;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background-color: transparent;
 }
 
 #app-navigation .icon-checkmark {
@@ -211,19 +264,34 @@
 	float: none;
 }
 
-#app-navigation #music-nav-settings {
+#app-navigation > ul > li.docked-navigation-item {
 	position: fixed;
 	width: unset;
-	bottom: 0;
 	left: 0;
 	right: 0;
+	height: 44px;
 	max-width: 300px;
-	margin: var(--body-container-margin);
+	margin: calc(var(--default-grid-baseline, 0px)*2);
 	z-index: 140;
 }
 
-.legacy-layout #app-navigation #music-nav-settings {
+.legacy-layout #app-navigation > ul > li.docked-navigation-item {
 	max-width: 250px;
+}
+
+#app-navigation #music-nav-search {
+	bottom: calc(44px + var(--default-grid-baseline, 0px))
+}
+
+#app-navigation #music-nav-settings {
+	bottom: 0;
+}
+
+#app-navigation #music-nav-settings > a {
+	display: block;
+	padding-left: 14px;
+	padding-right: 12px;
+	line-height: 44px;
 }
 
 #app-navigation #music-nav-settings > a:first-child img {
@@ -232,4 +300,5 @@
 	height: 16px;
 	margin-right: 11px;
 	margin-top: 1.5px;
+	margin-left: 0;
 }

@@ -88,8 +88,6 @@ HtmlUtil::addWebpackStyle('app');
 
 		</div>
 
-		<!-- The following exists just in order to make the core unhide the #searchbox element -->
-		<div id="searchresults" data-appfilter="music"></div>
 	</div>
 
 </div>

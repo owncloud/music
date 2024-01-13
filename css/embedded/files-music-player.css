@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 .icon-music-dark {
@@ -74,6 +74,7 @@
 	border: none;
 	background-color: transparent;
 	vertical-align: top;
+	min-height: 18px;
 	margin-top: 8px;
 	opacity: .4;
 }
@@ -126,12 +127,17 @@
 	filter: var(--background-invert-if-dark);
 }
 
-#music-controls #albumart {
-	height: 50px;
+#music-controls #albumart-container {
+	position: relative;
 	width: 50px;
+	height: 50px;
 	margin: 8px 12px 8px 20px;
-	line-height: 50px;
-	font-size: 28px;
+}
+
+#music-controls #albumart {
+	position: absolute;
+	height: 100%;
+	width: 100%;
 	background-size: cover;
 	background-position: center;
 	display: inline-block;
@@ -140,6 +146,10 @@
 
 .ie #music-controls #albumart {
 	border-color: #ededed;
+}
+
+#music-controls #albumart-container.icon-loading #albumart {
+	opacity: 0.2;
 }
 
 #music-controls #info-and-progress {

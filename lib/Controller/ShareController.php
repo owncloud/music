@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2022
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -108,6 +108,7 @@ class ShareController extends Controller {
 				if (isset($fileInfo['url'])) {
 					$fileInfo['id'] = $bogusUrlId--;
 					$fileInfo['mimetype'] = null;
+					$fileInfo['external'] = true;
 					return $fileInfo;
 				} else {
 					$file = $fileInfo['file'];
@@ -116,7 +117,8 @@ class ShareController extends Controller {
 						'name' => $file->getName(),
 						'path' => $sharedFolder->getRelativePath($file->getParent()->getPath()),
 						'mimetype' => $file->getMimeType(),
-						'caption' => $fileInfo['caption']
+						'caption' => $fileInfo['caption'],
+						'external' => false
 					];
 				}
 			}, $result['files']);

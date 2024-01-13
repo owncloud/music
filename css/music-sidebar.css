@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 #app-sidebar {
@@ -355,14 +355,14 @@
 
 #app-sidebar #smartlist-filters .chosen-choices {
 	background: var(--color-main-background, #fff);
-	border: 2px solid var(--color-border-dark, #ddd);
-	border-radius: var(--border-radius-large);
+	border: var(--border-input);				/* value of the var is set in our javascript */
+	border-radius: var(--border-radius-input);	/* value of the var is set in our javascript */
 	text-overflow: ellipsis;
 	cursor: pointer;
 }
 
 #app-sidebar #smartlist-filters .chosen-choices:hover {
-	border-color: var(--color-primary-element);
+	border-color: var(--color-input-border-hover); /* value of the var is set in our javascript */
 }
 
 #app-sidebar #smartlist-filters .chosen-choices input {

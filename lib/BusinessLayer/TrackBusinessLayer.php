@@ -244,11 +244,13 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	private static function getFolderEntry(array $folderNamesAndParents, int $folderId, array $trackIds, Folder $musicFolder) : ?array {
+		$libRootId = $musicFolder->getId();
+
 		if (isset($folderNamesAndParents[$folderId])) {
 			// normal folder within the user home storage
 			$entry = $folderNamesAndParents[$folderId];
 			// special handling for the root folder
-			if ($folderId === $musicFolder->getId()) {
+			if ($folderId === $libRootId) {
 				$entry = null;
 			}
 		} else {
@@ -269,7 +271,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$entry['trackIds'] = $trackIds;
 			$entry['id'] = $folderId;
 
-			if ($entry['id'] == $musicFolder->getId()) {
+			if ($entry['id'] == $libRootId) {
 				// the library root should be reported without a parent folder as that parent does not belong to the library
 				$entry['parent'] = null;
 			}

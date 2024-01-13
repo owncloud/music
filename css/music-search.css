@@ -5,15 +5,8 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2023
  */
-
-/* Hide the default results div because we have a custom "filter like" search logic */
-.app-music #searchresults {
-	visibility: hidden;
-	position: absolute;
-	height: 0;
-}
 
 /* Only matching items should be shown when the searchmode is active */
 .searchmode .track-list li:not(.matched):not(.placeholder),

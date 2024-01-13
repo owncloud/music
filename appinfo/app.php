@@ -93,7 +93,7 @@ function loadEmbeddedMusicPlayer() {
 }
 
 function isFilesUrl($url) {
-	return \preg_match('%/apps/files/?$%', $url);
+	return \preg_match('%/apps/files/?$%', $url) || \preg_match('%/apps/files/files(/\d*)?$%', $url);
 }
 
 function isShareUrl($url) {

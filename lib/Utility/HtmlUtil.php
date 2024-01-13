@@ -89,7 +89,11 @@ class HtmlUtil {
 	public static function addWebpackScript(string $name) {
 		$manifest = self::getManifest();
 		$hashedName = \substr($manifest["$name.js"], 0, -3); // the extension is cropped from the name in $manifest
-		\OCP\Util::addScript('music', '../dist/' . $hashedName);
+		if (\method_exists(\OCP\Util::class, 'addInitScript')) {
+			\OCP\Util::/** @scrutinizer ignore-call */addInitScript('music', '../dist/' . $hashedName);
+		} else {
+			\OCP\Util::addScript('music', '../dist/' . $hashedName);
+		}
 	}
 
 	/**

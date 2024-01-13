@@ -12,8 +12,6 @@ import playIconPath from '../../img/play-big.svg';
 import playIconSvgData from '../../img/play-big.svg?raw';
 import playOverlayPath from '../../img/play-overlay.svg';
 
-import { FileAction, registerFileAction, DefaultType } from '@nextcloud/files';
-
 window.addEventListener('DOMContentLoaded', function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
@@ -264,53 +262,55 @@ function initEmbeddedPlayer() {
 	}
 
 	function registerFolderPlayerAfterNC28(mimes, onActionCallback, actionId) {
-		registerFileAction(new FileAction({
-			id: actionId,
-			displayName: () => t('music', 'Play'),
-			iconSvgInline: () => playIconSvgData,
-			default: DefaultType.DEFAULT,
-			order: -1, // prioritize over the built-in Viewer app
+		import('@nextcloud/files').then(ncFiles => {
+			ncFiles.registerFileAction(new ncFiles.FileAction({
+				id: actionId,
+				displayName: () => t('music', 'Play'),
+				iconSvgInline: () => playIconSvgData,
+				default: ncFiles.DefaultType.DEFAULT,
+				order: -1, // prioritize over the built-in Viewer app
 
-			enabled: (nodes, _view) => {
-				if (nodes.length !== 1) {
-					return false;
-				}	
-				return mimes.includes(nodes[0].mime);
-			},
-		
-			/**
-			 * Function executed on single file action
-			 * @return true if the action was executed successfully,
-			 * false otherwise and null if the action is silent/undefined.
-			 * @throws Error if the action failed
-			 */
-			exec: (file, view, dir) => {
-				const adaptFile = (f) => {
-					return {id: f.fileid, name: f.basename, mimetype: f.mime, path: dir};
-				};
-				onActionCallback(adaptFile(file));
+				enabled: (nodes, _view) => {
+					if (nodes.length !== 1) {
+						return false;
+					}	
+					return mimes.includes(nodes[0].mime);
+				},
 
-				if (!mPlayingListFile) {
-					// get the directory contents and use them as the play queue
-					view.getContents(dir).then(contents => {
-						const dirFiles = _.map(contents.contents, adaptFile);
-						// By default, the files are sorted simply by the character codes, putting upper case names before lower case
-						// and not respecting any locale settings. This doesn't match the order on the UI, regardless of the column
-						// used for sorting. Sort on our own treating numbers "naturally" and using the locale of the browser since
-						// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
-						// as the locale for sorting although user-selected locale would have made even more sense).
-						// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
-						// what NC28 Files does (it uses the 3rd party library natural-orderby for this).
-						dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+				/**
+				 * Function executed on single file action
+				 * @return true if the action was executed successfully,
+				 * false otherwise and null if the action is silent/undefined.
+				 * @throws Error if the action failed
+				 */
+				exec: (file, view, dir) => {
+					const adaptFile = (f) => {
+						return {id: f.fileid, name: f.basename, mimetype: f.mime, path: dir};
+					};
+					onActionCallback(adaptFile(file));
 
-						mPlaylist = new OCA.Music.Playlist(dirFiles, mAudioMimes, mCurrentFile.id);
-						mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
-					});
-				}
+					if (!mPlayingListFile) {
+						// get the directory contents and use them as the play queue
+						view.getContents(dir).then(contents => {
+							const dirFiles = _.map(contents.contents, adaptFile);
+							// By default, the files are sorted simply by the character codes, putting upper case names before lower case
+							// and not respecting any locale settings. This doesn't match the order on the UI, regardless of the column
+							// used for sorting. Sort on our own treating numbers "naturally" and using the locale of the browser since
+							// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
+							// as the locale for sorting although user-selected locale would have made even more sense).
+							// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
+							// what NC28 Files does (it uses the 3rd party library natural-orderby for this).
+							dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+	
+							mPlaylist = new OCA.Music.Playlist(dirFiles, mAudioMimes, mCurrentFile.id);
+							mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
+						});
+					}
 
-				return true;
-			},
-		}));
+					return true;
+				},
+			}));
+		});
 	}
 
 	function registerFolderPlayerBeforeNC28(mimes, onActionCallback, actionId) {

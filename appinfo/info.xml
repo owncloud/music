@@ -32,7 +32,7 @@
 	<dependencies>
 		<php min-version="7.1" max-version="8.2"/>
 		<owncloud min-version="10" max-version="10" />
-		<nextcloud min-version="13" max-version="27" />
+		<nextcloud min-version="13" max-version="28" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

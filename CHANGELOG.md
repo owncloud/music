@@ -33,8 +33,14 @@
 
 ## 1.9.1 - 2023-10-08
 
-Version 1.9.0 had an app update problem on some versions of Nextcloud with SQLite. 
-This version works around that issue but is otherwise identical with v1.9.0.
+### Fixed
+- Application update not working on some versions of Nextcloud with SQLite (introduced in v1.9.0)
+
+## 1.9.0 - 2023-10-08
+
+### Known issues
+- This version had an app update problem on some versions of Nextcloud with SQLite, and was quickly replaced by v1.9.1.
+  For ownCloud, this version is still fine.
 
 ### Added
 - Smart playlist feature, allowing list creation by user-supplied criteria
@@ -106,12 +112,6 @@ This version works around that issue but is otherwise identical with v1.9.0.
   [#1073](https://github.com/owncloud/music/issues/1073)
 - File and folder selection dialogs not working on NC 27.1.0 and 27.1.1 (workaround for a NC bug which should get fixed in NC 27.1.2)
   [#1091](https://github.com/owncloud/music/issues/1091)
-- Application update not working on some versions of Nextcloud with SQLite (introduced in v1.9.0)
-
-## 1.9.0 - 2023-10-08
-
-This version had an app update problem on some versions of Nextcloud with SQLite, and was quickly replaced by v1.9.1.
-For ownCloud, this version is still fine.
 
 ## 1.8.4 - 2023-06-06
 ### Added

@@ -30,6 +30,8 @@
 - Songs with scanned integer property value (like track number) larger than 2147483647 causing error on PostgreSQL
   [#1106](https://github.com/owncloud/music/issues/1106)
 - Lite player in Files attempting to play also audio files with MIME types unsupported on the current browser
+- Subsonic API: Use integer-type IDs in `getMusicFolders` to comply with the API specification
+  [#1108](https://github.com/owncloud/music/issues/1108)
 
 ## 1.9.1 - 2023-10-08
 

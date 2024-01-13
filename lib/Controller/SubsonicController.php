@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2023
+ * @copyright Pauli Järvinen 2019 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -66,6 +66,8 @@ use OCA\Music\Utility\PlaceholderImage;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.16.1';
+	const FOLDER_ID_ARTISTS = -1;
+	const FOLDER_ID_FOLDERS = -2;
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -213,8 +215,8 @@ class SubsonicController extends Controller {
 		// Only single root folder is supported
 		return $this->subsonicResponse([
 			'musicFolders' => ['musicFolder' => [
-				['id' => 'artists', 'name' => $this->l10n->t('Artists')],
-				['id' => 'folders', 'name' => $this->l10n->t('Folders')]
+				['id' => self::FOLDER_ID_ARTISTS, 'name' => $this->l10n->t('Artists')],
+				['id' => self::FOLDER_ID_FOLDERS, 'name' => $this->l10n->t('Folders')]
 			]]
 		]);
 	}
@@ -222,8 +224,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function getIndexes(?string $musicFolderId) {
-		if ($musicFolderId === 'folders') {
+	protected function getIndexes(?int $musicFolderId) {
+		if ($musicFolderId === self::FOLDER_ID_FOLDERS) {
 			return $this->getIndexesForFolders();
 		} else {
 			return $this->getIndexesForArtists();
@@ -718,7 +720,7 @@ class SubsonicController extends Controller {
 				'jukeboxRole' => false,
 				'shareRole' => false,
 				'videoConversionRole' => false,
-				'folder' => ['artists', 'folders'],
+				'folder' => [self::FOLDER_ID_ARTISTS, self::FOLDER_ID_FOLDERS],
 			]
 		]);
 	}

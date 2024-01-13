@@ -9,8 +9,8 @@
   * Support for argument `include` in all methods returning bookmarks
 - Subsonic API:
   * Property `playCount` to song responses
-  * [OpenSubsonic API extensions](https://support.symfonium.app/c/subsonic-api-extensions/11):
-    + Properties `type` and `serverVersion` to all responses
+  * [OpenSubsonic API extensions](https://opensubsonic.netlify.app/docs/):
+    + Properties `openSubsonic`, `type`, and `serverVersion` to all responses
     + Allow getting the whole library with an empty `query` argument in `search3` method
 - MusicBrainz link from Last.fm to the artist/album/track details pane, when available
 

@@ -1699,6 +1699,7 @@ class SubsonicController extends Controller {
 		$content['version'] = self::API_VERSION;
 		$content['type'] = AppInfo::getFullName();
 		$content['serverVersion'] = AppInfo::getVersion();
+		$content['openSubsonic'] = true;
 		$responseData = ['subsonic-response' => Util::arrayRejectRecursive($content, 'is_null')];
 
 		if ($this->format == 'json') {

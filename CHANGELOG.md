@@ -15,6 +15,8 @@
 - MusicBrainz link from Last.fm to the artist/album/track details pane, when available
 - Filters "Recently added" and "Not recently added" for the smart playlist
   [#1098](https://github.com/owncloud/music/issues/1098)
+- Optional "strict" mode for the history filters of the smart playlist
+  [#1099](https://github.com/owncloud/music/issues/1099)
 
 ### Changed
 - Ampache API:

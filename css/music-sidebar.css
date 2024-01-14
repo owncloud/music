@@ -375,8 +375,8 @@
 #app-sidebar #smartlist-filters .chosen-choices .search-choice {
 	margin-top: 6px;
 	background-color: var(--color-background-dark, #eee);
-    color: var(--color-main-text, #333);
-    background-image: unset;
+	color: var(--color-main-text, #333);
+	background-image: unset;
 }
 
 #app-sidebar #smartlist-filters .chosen-drop {
@@ -384,18 +384,32 @@
 }
 
 #app-sidebar #smartlist-filters .chosen-container .chosen-results {
-    color: var(--color-main-text, #444);
+	color: var(--color-main-text, #444);
 }
 
 #app-sidebar #smartlist-filters .chosen-container .chosen-results li.no-results {
-    color: var(--color-main-text, #333);
-    background: var(--color-background-dark, #eee);
+	color: var(--color-main-text, #333);
+	background: var(--color-background-dark, #eee);
 	opacity: .5;
 }
 
 #app-sidebar #smartlist-filters .chosen-container-multi .chosen-drop .result-selected {
 	color: unset;
 	opacity: .5;
+}
+
+#app-sidebar #smartlist-filters #filter-history {
+	width: calc(100% - 178px);
+}
+
+#app-sidebar #smartlist-filters #filter-history-strict-label {
+	width: 50px;
+	text-align: right;
+}
+
+#app-sidebar #smartlist-filters #filter-history-strict {
+	vertical-align: middle;
+	width: 16px;
 }
 
 #app-sidebar #smartlist-filters #update-button {

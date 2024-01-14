@@ -163,7 +163,10 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function generate(?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=100) {
+	public function generate(
+			?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists,
+			?int $fromYear, ?int $toYear, int $size=100, string $historyStrict='false') {
+
 		if ($useLatestParams) {
 			$history = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history') ?: null;
 			$genres = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_genres') ?: null;
@@ -171,6 +174,7 @@ class PlaylistApiController extends Controller {
 			$fromYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_from_year') ?: null;
 			$toYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_to_year') ?: null;
 			$size = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_size', 100);
+			$historyStrict = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history_strict', 'false');
 		} else {
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_history', $history ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_genres', $genres ?? '');
@@ -178,18 +182,21 @@ class PlaylistApiController extends Controller {
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_from_year', (string)$fromYear);
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_to_year', (string)$toYear);
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_size', (string)$size);
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_history_strict', $historyStrict);
 		}
+		$historyStrict = \filter_var($historyStrict, FILTER_VALIDATE_BOOLEAN);
 
 		// ensure the artists and genres contain only valid IDs
 		$genres = $this->genreBusinessLayer->findAllIds($this->userId, self::toIntArray($genres));
 		$artists = $this->artistBusinessLayer->findAllIds($this->userId, self::toIntArray($artists));
 
 		$playlist = $this->playlistBusinessLayer->generate(
-				$history, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
+				$history, $historyStrict, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
 		$result = $playlist->toAPI();
 
 		$result['params'] = [
 			'history' => $history ?: null,
+			'historyStrict' => $historyStrict,
 			'genres' => \implode(',', $genres) ?: null,
 			'artists' => \implode(',', $artists) ?: null,
 			'fromYear' => $fromYear ?: null,

@@ -31,7 +31,7 @@
 		</select>
 	</div>
 
-	<div title="{{ 'Note that this selection makes any difference only when the library has more than requested number of matches' | translate }}">
+	<div title="{{ 'Note that this selection makes any difference only when the library has more than the requested number of matches. In the strict mode, only the best matching songs are included with no element of randomness.' | translate }}">
 		<label for="filter-history" translate>History</label>
 		<select id="filter-history" ng-model="smartListParams.history">
 			<option value=""></option>
@@ -42,6 +42,8 @@
 			<option value="recently-added" translate>Recently added</option>
 			<option value="not-recently-added" translate>Not recently added</option>
 		</select>
+		<label for="filter-history-strict" id="filter-history-strict-label" translate>Strict</label>
+		<input id="filter-history-strict" type="checkbox" ng-model="smartListParams.historyStrict" />
 	</div>
 
 	<div><button id="update-button" ng-click="onUpdateButton()" ng-disabled="!fieldsValid" translate>Update</button></div>

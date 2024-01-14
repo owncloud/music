@@ -187,6 +187,8 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * Generate and return a playlist matching the given criteria. The playlist is not persisted.
 	 *
 	 * @param string|null $history One of: 'recently-played', 'not-recently-played', 'often-played', 'rarely-played', 'recently-added', 'not-recently-added'
+	 * @param bool $historyStrict In the "strict" mode, there's no element of randomness when applying the history filter and e.g.
+	 *             'recently-played' meas "The most recently played" instead of "Among the most recently played"
 	 * @param int[] $genres Array of genre IDs
 	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
@@ -194,7 +196,10 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @param int $size Size of the playlist to generate, provided that there are enough matching tracks
 	 * @param string $userId the name of the user
 	 */
-	public function generate(?string $history, array $genres, array $artists, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+	public function generate(
+			?string $history, bool $historyStrict, array $genres, array $artists,
+			?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+
 		$now = new \DateTime();
 		$nowStr = $now->format(PlaylistMapper::SQL_DATE_FORMAT);
 
@@ -205,13 +210,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$playlist->setUserId($userId);
 
 		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForHistory($history);
-		$limit = ($sortBy === SortBy::None) ? null : $size * 4;
+		$limit = ($sortBy === SortBy::None) ? null : ($historyStrict ? $size : $size * 4);
 
 		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
 
-		if ($sortBy !== SortBy::None) {
-			// When generating by play-rate, use a pool of tracks at maximum twice the size of final list. However, don't use
-			// more than half of the matching tracks unless that is required to satisfy the required list size.
+		if ($sortBy !== SortBy::None && !$historyStrict) {
+			// When generating by non-strict history, use a pool of tracks at maximum twice the size of final list.
+			// However, don't use more than half of the matching tracks unless that is required to satisfy the required list size.
 			$poolSize = max($size, \count($tracks) / 2);
 			$tracks = \array_slice($tracks, 0, $poolSize);
 		}

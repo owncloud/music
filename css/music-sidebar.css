@@ -344,6 +344,10 @@
 	width: 90px;
 }
 
+#app-sidebar #smartlist-filters input {
+	width: calc(50% - 65px);
+}
+
 #app-sidebar #smartlist-filters select,
 #app-sidebar #smartlist-filters .chosen-container {
 	width: calc(100% - 98px);

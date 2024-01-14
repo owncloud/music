@@ -8,12 +8,9 @@
 	</div>
 
 	<div>
-		<label for="filter-from-year" translate>From year</label>
+		<label for="filter-from-year" translate>Years</label>
 		<input id="filter-from-year" type="number" ng-model="smartListParams.fromYear"/>
-	</div>
-
-	<div>
-		<label for="filter-to-year" translate>To year</label>
+		—&nbsp;
 		<input id="filter-to-year" type="number" ng-model="smartListParams.toYear"/>
 	</div>
 

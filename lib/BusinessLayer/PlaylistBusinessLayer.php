@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -186,7 +186,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	/**
 	 * Generate and return a playlist matching the given criteria. The playlist is not persisted.
 	 *
-	 * @param string|null $playRate One of: 'recent', 'not-recent', 'often', 'rarely'
+	 * @param string|null $history One of: 'recently-played', 'not-recently-played', 'often-played', 'rarely-played', 'recently-added', 'not-recently-added'
 	 * @param int[] $genres Array of genre IDs
 	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
@@ -194,7 +194,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @param int $size Size of the playlist to generate, provided that there are enough matching tracks
 	 * @param string $userId the name of the user
 	 */
-	public function generate(?string $playRate, array $genres, array $artists, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+	public function generate(?string $history, array $genres, array $artists, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
 		$now = new \DateTime();
 		$nowStr = $now->format(PlaylistMapper::SQL_DATE_FORMAT);
 
@@ -204,7 +204,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$playlist->setName('Generated ' . $nowStr);
 		$playlist->setUserId($userId);
 
-		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForPlayRate($playRate);
+		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForHistory($history);
 		$limit = ($sortBy === SortBy::None) ? null : $size * 4;
 
 		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
@@ -224,16 +224,20 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	private static function sortRulesForPlayRate(?string $playRate) : array {
-		switch ($playRate) {
-			case 'recently':
+	private static function sortRulesForHistory(?string $history) : array {
+		switch ($history) {
+			case 'recently-played':
 				return ['sortBy' => SortBy::LastPlayed, 'invert' => true];
-			case 'not-recently':
+			case 'not-recently-played':
 				return ['sortBy' => SortBy::LastPlayed, 'invert' => false];
-			case 'often':
+			case 'often-played':
 				return ['sortBy' => SortBy::PlayCount, 'invert' => true];
-			case 'rarely':
+			case 'rarely-played':
 				return ['sortBy' => SortBy::PlayCount, 'invert' => false];
+			case 'recently-added':
+				return ['sortBy' => SortBy::Newest, 'invert' => false];
+			case 'not-recently-added':
+				return ['sortBy' => SortBy::Newest, 'invert' => true];
 			default:
 				return ['sortBy' => SortBy::None, 'invert' => false];
 		}

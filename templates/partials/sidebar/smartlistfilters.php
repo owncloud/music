@@ -32,13 +32,15 @@
 	</div>
 
 	<div title="{{ 'Note that this selection makes any difference only when the library has more than requested number of matches' | translate }}">
-		<label for="filter-play-rate" translate>Play history</label>
-		<select id="filter-play-rate" ng-model="smartListParams.playRate">
+		<label for="filter-history" translate>History</label>
+		<select id="filter-history" ng-model="smartListParams.history">
 			<option value=""></option>
-			<option value="recently" translate>Recently played</option>
-			<option value="not-recently" translate>Not recently played</option>
-			<option value="often" translate>Often played</option>
-			<option value="rarely" translate>Rarely played</option>
+			<option value="recently-played" translate>Recently played</option>
+			<option value="not-recently-played" translate>Not recently played</option>
+			<option value="often-played" translate>Often played</option>
+			<option value="rarely-played" translate>Rarely played</option>
+			<option value="recently-added" translate>Recently added</option>
+			<option value="not-recently-added" translate>Not recently added</option>
 		</select>
 	</div>
 

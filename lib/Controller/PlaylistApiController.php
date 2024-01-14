@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -163,16 +163,16 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function generate(?bool $useLatestParams, ?string $playRate, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=100) {
+	public function generate(?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=100) {
 		if ($useLatestParams) {
-			$playRate = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_play_rate') ?: null;
+			$history = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history') ?: null;
 			$genres = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_genres') ?: null;
 			$artists = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_artists') ?: null;
 			$fromYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_from_year') ?: null;
 			$toYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_to_year') ?: null;
 			$size = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_size', 100);
 		} else {
-			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_play_rate', $playRate ?? '');
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_history', $history ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_genres', $genres ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_artists', $artists ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_from_year', (string)$fromYear);
@@ -185,11 +185,11 @@ class PlaylistApiController extends Controller {
 		$artists = $this->artistBusinessLayer->findAllIds($this->userId, self::toIntArray($artists));
 
 		$playlist = $this->playlistBusinessLayer->generate(
-				$playRate, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
+				$history, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
 		$result = $playlist->toAPI();
 
 		$result['params'] = [
-			'playRate' => $playRate ?: null,
+			'history' => $history ?: null,
 			'genres' => \implode(',', $genres) ?: null,
 			'artists' => \implode(',', $artists) ?: null,
 			'fromYear' => $fromYear ?: null,

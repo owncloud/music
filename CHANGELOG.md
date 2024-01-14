@@ -13,6 +13,8 @@
     + Properties `openSubsonic`, `type`, and `serverVersion` to all responses
     + Allow getting the whole library with an empty `query` argument in `search3` method
 - MusicBrainz link from Last.fm to the artist/album/track details pane, when available
+- Filters "Recently added" and "Not recently added" for the smart playlist
+  [#1098](https://github.com/owncloud/music/issues/1098)
 
 ### Changed
 - Ampache API:

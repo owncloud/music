@@ -107,6 +107,32 @@
 		<p><em translate>Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive.</em></p>
 		<p><em translate>In addition to the web interface, this setting is respected in the Subsonic interface although not necessarily by all clients.</em></p>
 	</div>
+	<div>
+		<div class="label-container">
+			<label translate>Keyboard shortcuts</label>
+		</div>
+		<em>
+			<p>
+				<span translate>Many functionalities of the Music app web UI can be controlled with keyboard shortcuts.</span>
+				<strong class="clickable" ng-click="showKeyboardShortcuts=true" ng-hide="showKeyboardShortcuts" translate>Show all…</strong>
+			</p>
+			<div ng-show="showKeyboardShortcuts">
+				<table class="grid">
+					<tr><td translate><strong>SPACE</strong> or <strong>K</strong></td><td translate>Play / Pause</td></tr>
+					<tr><td translate><strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong></td><td translate>Stop</td></tr>
+					<tr><td translate><strong>LEFT</strong> or <strong>J</strong></td><td translate>Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>RIGHT</strong> or <strong>L</strong></td><td translate>Seek forward. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>CTRL+LEFT</strong></td><td translate>Jump to the previous track</td></tr>
+					<tr><td translate><strong>CTRL+RIGHT</strong></td><td translate>Jump to the next track</td></tr>
+					<tr><td translate><strong>M</strong></td><td translate>Mute / Unmute</td></tr>
+					<tr><td translate><strong>NUMPAD MINUS</strong></td><td translate>Decrease volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>NUMPAD PLUS</strong></td><td translate>Increase volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>SHIFT+COMMA</strong></td><td translate>Decrease playback speed</td></tr>
+					<tr><td translate><strong>SHIFT+PERIOD</strong></td><td translate>Increase playback speed</td></tr>
+				</table>
+			</div>
+		</em>
+	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>

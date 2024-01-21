@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2022
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 .invisible {
@@ -118,7 +118,7 @@
 }
 
 #music-user table.grid {
-	max-width: 600px;
+	max-width: 650px;
 	white-space: normal;
 }
 
@@ -164,7 +164,7 @@
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	max-width: 600px;
+	max-width: 650px;
 	text-align: center;
 	padding: 10px;
 	border-radius: 3px;

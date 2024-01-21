@@ -15,7 +15,7 @@
 	</div>
 	<div>
 		<div class="label-container">
-			<label for="excluded-paths" translate>Paths to exclude from your music collection</label>:
+			<label translate>Paths to exclude from your music collection</label>:
 		</div>
 		<em>
 			<p>

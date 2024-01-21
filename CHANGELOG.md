@@ -3,6 +3,7 @@
 ### Added
 - Support for Nextcloud 28
   [#1116](https://github.com/owncloud/music/pull/1116)
+- Support for PHP 8.3
 - Ampache API: 
   * Support for argument `random` in the method `playlist_songs`
   * Method `bookmark`

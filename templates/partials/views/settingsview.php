@@ -129,6 +129,7 @@
 					<tr><td translate><strong>NUMPAD PLUS</strong></td><td translate>Increase volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>.</td></tr>
 					<tr><td translate><strong>SHIFT+COMMA</strong></td><td translate>Decrease playback speed</td></tr>
 					<tr><td translate><strong>SHIFT+PERIOD</strong></td><td translate>Increase playback speed</td></tr>
+					<tr><td translate><strong>CTRL+F</strong></td><td translate>Search</td></tr>
 				</table>
 			</div>
 		</em>

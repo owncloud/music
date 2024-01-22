@@ -24,3 +24,6 @@
 <!-- localizations fr the player controls pane -->
 <span translate>Play</span>
 <span translate>Pause</span>
+<span translate>(press and hold for more)</span>
+<span translate>Mute</span>
+<span translate>Unmute</span>

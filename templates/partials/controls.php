@@ -3,18 +3,20 @@
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">
 		<img id="skip-prev-button" ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
+			title="{{ 'Previous' | translate }}&#013;[CTRL+LEFT]"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
 		<div id="play-pause-container"
-			title="{{ playPauseContextMenuVisible ? null : ('press and hold for more' | translate) }}"
 			ng-on-contextmenu="playbackBtnContextMenu($event)"
 			ng-on-long-press="playbackBtnLongPress($event)"
 			data-long-press-delay="500"
 		>
 			<div id="stop-button" ng-click="stop()" class="control icon-stop svg"
+				title="{{ 'Stop' | translate }}&#013;[SHIFT+SPACE]"
 				ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
 			</div>
 			<div id="play-pause-button" ng-click="togglePlayback()" class="control svg"
 				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'"
+				title="{{ (playing ? 'Pause' : 'Play') | translate }} [SPACE]&#013;{{ playPauseContextMenuVisible ? null : ('(press and hold for more)' | translate) }}"
 				ng-show="!shiftHeldDown" alt="{{ (playing ? 'Pause' : 'Play') | translate }}">
 			</div>
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">
@@ -49,6 +51,7 @@
 			</div>
 		</div>
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
+			title="{{ 'Next' | translate }}&#013;[CTRL+RIGHT]"
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
@@ -93,9 +96,11 @@
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ repeatTooltip() }}"
 		src="{{ repeat === 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
 		ng-class="{active: repeat != 'false' }" ng-click="toggleRepeat()" />
-	<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
+	<div class="volume-control">
 		<img id="volume-icon" class="control toggle small svg" alt="{{ 'Volume' | translate }}" ng-click="toggleVolume()"
-			ng-src="{{ volume === 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}" />
-		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
+			ng-src="{{ volume === 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}"
+			title="{{ volume === 0 ? ('Unmute' | translate) : ('Mute' | translate) }} [M]" />
+		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"
+			title="{{ 'Volume' | translate }} {{volume}} %&#013;[NUMPAD +/-]"/>
 	</div>
 </div>

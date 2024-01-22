@@ -18,7 +18,7 @@
   [#1098](https://github.com/owncloud/music/issues/1098)
 - Optional "strict" mode for the history filters of the smart playlist
   [#1099](https://github.com/owncloud/music/issues/1099)
-- Hint about the keyboard shortcuts to the Settings view
+- Hint about the keyboard shortcuts in the Settings view and in tooltips
   [#1086](https://github.com/owncloud/music/issues/1086)
 
 ### Changed

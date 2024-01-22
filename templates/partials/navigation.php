@@ -47,7 +47,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 			title="{{ trackCountText(playlist) }}"
 			icon="'playlist'">
 		</li>
-		<li id="music-nav-search" class="docked-navigation-item">
+		<li id="music-nav-search" class="docked-navigation-item" title="{{ showSearch ? null : '[CTRL+F]' }}">
 			<div class="music-navigation-item-content">
 				<div class="icon-search" ng-click="startSearch()"></div>
 				<div class="label app-navigation-noclose" ng-click="startSearch()" ng-hide="showSearch" translate>Search</div>

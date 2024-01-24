@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-14 15:53+0300\n"
+"PO-Revision-Date: 2024-01-24 22:19+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -39,6 +39,10 @@ msgstr "(kirjaston pääkansio)"
 #: templates/partials/sidebar/artistdetails.php:4
 msgid "(no artist image available)"
 msgstr "(esittäjän kuvaa ei ole saatavilla)"
+
+#: templates/fake-template.php:27
+msgid "(press and hold for more)"
+msgstr "(paina pitkään saadaksesi lisää valintoja)"
 
 #: js/app/controllers/maincontroller.js:65
 msgid "1 album"
@@ -98,23 +102,71 @@ msgid "<strong>?</strong> matches any one character within a path segment"
 msgstr ""
 "<strong>?</strong> vastaa mitä tahansa yhtä merkkiä polku-segmentin sisällä"
 
-#: templates/partials/views/settingsview.php:206
+#: templates/partials/views/settingsview.php:132
+msgid "<strong>CTRL+F</strong>"
+msgstr "<strong>CTRL+F</strong>"
+
+#: templates/partials/views/settingsview.php:125
+msgid "<strong>CTRL+LEFT</strong>"
+msgstr "<strong>CTRL+VASEN</strong>"
+
+#: templates/partials/views/settingsview.php:126
+msgid "<strong>CTRL+RIGHT</strong>"
+msgstr "<strong>CTRL+OIKEA</strong>"
+
+#: templates/partials/views/settingsview.php:123
+msgid "<strong>LEFT</strong> or <strong>J</strong>"
+msgstr "<strong>VASEN</strong> tai <strong>J</strong>"
+
+#: templates/partials/views/settingsview.php:127
+msgid "<strong>M</strong>"
+msgstr "<strong>M</strong>"
+
+#: templates/partials/views/settingsview.php:128
+msgid "<strong>NUMPAD MINUS</strong>"
+msgstr "<strong>NUMPAD MIINUS</strong>"
+
+#: templates/partials/views/settingsview.php:129
+msgid "<strong>NUMPAD PLUS</strong>"
+msgstr "<strong>NUMPAD PLUS</strong>"
+
+#: templates/partials/views/settingsview.php:124
+msgid "<strong>RIGHT</strong> or <strong>L</strong>"
+msgstr "<strong>OIKEA</strong> tai <strong>L</strong>"
+
+#: templates/partials/views/settingsview.php:130
+msgid "<strong>SHIFT+COMMA</strong>"
+msgstr "<strong>SHIFT+PILKKU</strong>"
+
+#: templates/partials/views/settingsview.php:131
+msgid "<strong>SHIFT+PERIOD</strong>"
+msgstr "<strong>SHIFT+PISTE</strong>"
+
+#: templates/partials/views/settingsview.php:122
+msgid "<strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong>"
+msgstr "<strong>SHIFT+VÄLILYÖNTI</strong> tai <strong>SHIFT+K</strong>"
+
+#: templates/partials/views/settingsview.php:121
+msgid "<strong>SPACE</strong> or <strong>K</strong>"
+msgstr "<strong>VÄLILYÖNTI</strong> tai <strong>K</strong>"
+
+#: templates/partials/views/settingsview.php:240
 msgid "About"
 msgstr "Tietoja"
 
-#: templates/partials/navigationitem.php:101
+#: templates/partials/navigationitem.php:97
 msgid "Add from RSS feed"
 msgstr "Lisää RSS-syötteestä"
 
-#: templates/partials/navigationitem.php:89
+#: templates/partials/navigationitem.php:85
 msgid "Add manually"
 msgstr "Lisää manuaalisesti"
 
-#: templates/partials/views/playlistview.php:35
+#: templates/partials/views/playlistview.php:36
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr "Lisää kappaleita raahaamalla Albumeista tai muista soittolistoista"
 
-#: templates/partials/views/settingsview.php:155
+#: templates/partials/views/settingsview.php:182
 msgid "Admin"
 msgstr "Ylläpito"
 
@@ -150,21 +202,21 @@ msgstr "Albumit"
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
-#: templates/partials/views/settingsview.php:111
+#: templates/partials/views/settingsview.php:138
 msgid "Ampache and Subsonic"
 msgstr "Ampache ja Subsonic"
 
-#: js/app/controllers/views/settingsviewcontroller.js:215
+#: js/app/controllers/views/settingsviewcontroller.js:193
 msgid ""
 "Are you sure to permanently erase all the configured internet radio stations?"
 msgstr ""
 "Oletko varma, että haluat pysyvästi poistaa kaikki internet radio -asemat?"
 
-#: js/app/controllers/views/settingsviewcontroller.js:245
+#: js/app/controllers/views/settingsviewcontroller.js:223
 msgid "Are you sure to permanently erase all the configured podcast channels?"
 msgstr "Oletko varma, että haluat pysyvästi poistaa kaikki podcast-kanavat?"
 
-#: js/app/controllers/navigationcontroller.js:130
+#: js/app/controllers/navigationcontroller.js:172
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
@@ -172,7 +224,7 @@ msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 msgid "Are you sure to remove the radio station \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa radio-aseman \"{{ name }}\"?"
 
-#: js/app/controllers/views/settingsviewcontroller.js:172
+#: js/app/controllers/views/settingsviewcontroller.js:150
 msgid ""
 "Are you sure to reset the music collection? This removes all scanned tracks "
 "and user-created playlists!"
@@ -180,7 +232,7 @@ msgstr ""
 "Oletko varma, että haluat nollata musiikkikokoelmasi? Tämä poistaa kaikki "
 "skannatut kappaleet ja käyttäjän luomat soittolistat!"
 
-#: templates/partials/views/settingsview.php:178
+#: templates/partials/views/settingsview.php:205
 msgid ""
 "Array of allowed radio and podcast streaming hosts. HLS-type streams are not "
 "affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from "
@@ -205,7 +257,7 @@ msgid "Artist"
 msgstr "Esittäjä"
 
 #: templates/fake-template.php:8
-#: templates/partials/sidebar/smartlistfilters.php:28
+#: templates/partials/sidebar/smartlistfilters.php:25
 msgid "Artists"
 msgstr "Esittäjät"
 
@@ -233,7 +285,7 @@ msgstr ""
 msgid "Channel"
 msgstr "Kanava"
 
-#: js/app/controllers/sidebar/smartlistfilterscontroller.js:60
+#: js/app/controllers/sidebar/smartlistfilterscontroller.js:72
 msgid "Check the filter values"
 msgstr "Tarkista suodattimien arvot"
 
@@ -265,7 +317,7 @@ msgstr "Sulje"
 msgid "Comment"
 msgstr "Kommentti"
 
-#: templates/partials/navigationitem.php:118
+#: templates/partials/navigationitem.php:114
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
 
@@ -274,22 +326,34 @@ msgstr "Kompakti asettelu"
 msgid "Created"
 msgstr "Luotu"
 
-#: templates/partials/navigationitem.php:68
+#: templates/partials/views/settingsview.php:130
+msgid "Decrease playback speed"
+msgstr "Vähennä toistonopeutta"
+
+#: templates/partials/views/settingsview.php:128
+msgid ""
+"Decrease volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Vähennä äänenvoimakkuutta. Säädä enemmän <strong>SHIFT</strong>-näppäimellä "
+"tai vähemmän <strong>ALT</strong>-näppäimellä."
+
+#: templates/partials/navigationitem.php:64
 #: templates/partials/views/radioview.php:22
 msgid "Delete"
 msgstr "Poista"
 
 #: templates/partials/sidebar/radiostationdetails.php:34
-#: templates/partials/views/settingsview.php:131
+#: templates/partials/views/settingsview.php:158
 msgid "Description"
 msgstr "Kuvaus"
 
-#: templates/partials/views/settingsview.php:141
+#: templates/partials/views/settingsview.php:168
 msgid "Description (e.g. App name)"
 msgstr "Kuvaus (esim. sovelluksen nimi)"
 
 #: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:36
-#: templates/partials/navigationitem.php:37
+#: templates/partials/navigationitem.php:33
 #: templates/partials/views/playlistview.php:24
 #: templates/partials/views/radioview.php:20
 msgid "Details"
@@ -299,7 +363,7 @@ msgstr "Tiedot"
 msgid "Enable metadata scanning"
 msgstr "Skannaa metatiedot"
 
-#: templates/partials/views/settingsview.php:187
+#: templates/partials/views/settingsview.php:214
 msgid ""
 "Enable streaming HLS-type radio stations, relaying them via the cloud "
 "server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</"
@@ -319,8 +383,8 @@ msgstr "Jakso"
 msgid "Error playing URL:"
 msgstr "Virhe toistettaessa:"
 
-#: templates/partials/navigationitem.php:46
-#: templates/partials/navigationitem.php:86
+#: templates/partials/navigationitem.php:42
+#: templates/partials/navigationitem.php:82
 msgid "Export to file"
 msgstr "Vie tiedostoon"
 
@@ -336,7 +400,7 @@ msgstr ""
 msgid "Failed to delete the radio station:"
 msgstr "Radio-kanavan poistaminen epäonnistui:"
 
-#: templates/partials/views/settingsview.php:143
+#: templates/partials/views/settingsview.php:170
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr "Ampache/Subsonic-salasanan luominen epäonnistui"
 
@@ -344,15 +408,15 @@ msgstr "Ampache/Subsonic-salasanan luominen epäonnistui"
 msgid "Failed to load the collection:"
 msgstr "Kokoelman lataaminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:196
+#: js/app/controllers/views/settingsviewcontroller.js:174
 msgid "Failed to reset the collection:"
 msgstr "Kokoelman pyyhkiminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:264
+#: js/app/controllers/views/settingsviewcontroller.js:242
 msgid "Failed to reset the podcast channels:"
 msgstr "Podcast-kanavien pyyhkiminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:234
+#: js/app/controllers/views/settingsviewcontroller.js:212
 msgid "Failed to reset the radio stations:"
 msgstr "Radio-kanavien pyyhkiminen epäonnistui:"
 
@@ -369,11 +433,11 @@ msgstr "Musiikkikokoelman polun tallentaminen epäonnistui"
 msgid "Failed to save the setting"
 msgstr "Asetuksen tallentaminen epäonnistui"
 
-#: templates/partials/navigationitem.php:146
+#: templates/partials/navigationitem.php:142
 msgid "Filters"
 msgstr "Suotimet"
 
-#: templates/partials/navigationitem.php:132
+#: templates/partials/navigationitem.php:128
 msgid "Flat layout"
 msgstr "Litteä asettelu"
 
@@ -390,10 +454,6 @@ msgstr "Kansiot"
 msgid "Follow playback"
 msgstr "Seuraa toistoa"
 
-#: templates/partials/sidebar/smartlistfilters.php:11
-msgid "From year"
-msgstr "Vuodesta"
-
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:110
 msgid "GUID"
 msgstr "GUID"
@@ -402,11 +462,11 @@ msgstr "GUID"
 msgid "General"
 msgstr "Yleinen"
 
-#: templates/partials/views/settingsview.php:142
+#: templates/partials/views/settingsview.php:169
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: js/app/controllers/navigationcontroller.js:213
+#: js/app/controllers/navigationcontroller.js:255
 msgid "Generated {{ datetime }}"
 msgstr "Generoitu {{ datetime }}"
 
@@ -417,15 +477,15 @@ msgstr "Genre"
 
 #: js/app/controllers/playercontroller.js:751
 #: templates/partials/navigation.php:12
-#: templates/partials/sidebar/smartlistfilters.php:21
+#: templates/partials/sidebar/smartlistfilters.php:18
 msgid "Genres"
 msgstr "Genret"
 
-#: templates/partials/navigationitem.php:80
+#: templates/partials/navigationitem.php:76
 msgid "Getting started"
 msgstr "Aloitusohje"
 
-#: templates/partials/views/settingsview.php:126
+#: templates/partials/views/settingsview.php:153
 msgid ""
 "Here you can generate passwords to use with the Ampache or Subsonic API. "
 "Separate passwords are used because they can't be stored in a really secure "
@@ -437,14 +497,18 @@ msgstr ""
 "ei voida käsitellä täysin turvallisesti. Voit luoda niin monta salasanaa "
 "kuin haluat ja peruuttaa ne koska vain."
 
-#: templates/partials/views/settingsview.php:119
+#: templates/partials/sidebar/smartlistfilters.php:32
+msgid "History"
+msgstr "Historia"
+
+#: templates/partials/views/settingsview.php:146
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 "Jos tämä URL-osoite ei toimi, yritä lisätä sen perään '/server/xml.server."
 "php'."
 
-#: templates/partials/navigationitem.php:43
-#: templates/partials/navigationitem.php:83
+#: templates/partials/navigationitem.php:39
+#: templates/partials/navigationitem.php:79
 msgid "Import from file"
 msgstr "Tuo tiedostosta"
 
@@ -468,6 +532,18 @@ msgstr ""
 "ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
 "player: PLS\" saadaksesi kaikki löydetyt asemat."
 
+#: templates/partials/views/settingsview.php:131
+msgid "Increase playback speed"
+msgstr "Lisää toistonopeutta"
+
+#: templates/partials/views/settingsview.php:129
+msgid ""
+"Increase volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Lisää äänenvoimakkuutta. Säädä enemmän <strong>SHIFT</strong>-näppäimellä "
+"tai vähemmän <strong>ALT</strong>-näppäimellä."
+
 #: js/app/controllers/maincontroller.js:179
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
@@ -482,7 +558,19 @@ msgstr "Internet radio"
 msgid "Internet radio stations"
 msgstr "Internet radio -asemat"
 
-#: templates/partials/views/settingsview.php:172
+#: templates/partials/views/settingsview.php:126
+msgid "Jump to the next track"
+msgstr "Hyppää seuraavaan kappaleeseen"
+
+#: templates/partials/views/settingsview.php:125
+msgid "Jump to the previous track"
+msgstr "Hyppää edelliseen kappaleeseen"
+
+#: templates/partials/views/settingsview.php:112
+msgid "Keyboard shortcuts"
+msgstr "Näppäimistöoikotiet"
+
+#: templates/partials/views/settingsview.php:199
 msgid ""
 "Large album cover images are down-scaled to this size on the server before "
 "providing them for the web browser or the Subsonic/Ampache client. Smaller "
@@ -523,12 +611,20 @@ msgstr ""
 "tallennustilaa. Kun asetus on poistettu käytöstä, perustuu kirjaston rakenne "
 "vain tiedosto- ja kansioiden nimiin."
 
+#: templates/partials/views/settingsview.php:116
+msgid ""
+"Many functionalities of the Music app web UI can be controlled with keyboard "
+"shortcuts."
+msgstr ""
+"Musiikkisovelluksen web-käyttöliittymän monia toimintoja voidaan hallita "
+"pikanäppäimillä."
+
 #: templates/partials/sidebar/playlistdetails.php:16
 #: templates/partials/sidebar/radiostationdetails.php:28
 msgid "Modified"
 msgstr "Muokattu"
 
-#: templates/fake-template.php:5 templates/partials/views/settingsview.php:211
+#: templates/fake-template.php:5 templates/partials/views/settingsview.php:245
 msgid "Music"
 msgstr "Musiikki"
 
@@ -536,11 +632,25 @@ msgstr "Musiikki"
 msgid "Music library"
 msgstr "Musiikkikirjasto"
 
+#: templates/partials/sidebar/albumdetails.php:28
+#: templates/partials/sidebar/artistdetails.php:44
+#: templates/partials/sidebar/trackdetails.php:59
+msgid "MusicBrainz"
+msgstr "MusicBrainz"
+
+#: templates/fake-template.php:28
+msgid "Mute"
+msgstr "Vaimenna"
+
+#: templates/partials/views/settingsview.php:127
+msgid "Mute / Unmute"
+msgstr "Vaimenna / Poista vaimennus"
+
 #: templates/partials/sidebar/radiostationdetails.php:7
 msgid "Name"
 msgstr "Nimi"
 
-#: templates/partials/navigation.php:27 templates/partials/navigation.php:30
+#: templates/partials/navigation.php:28 templates/partials/navigation.php:31
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
@@ -557,7 +667,7 @@ msgstr ""
 msgid "New radio station"
 msgstr "Uusi radioasema"
 
-#: templates/partials/controls.php:51
+#: templates/partials/controls.php:53 templates/partials/controls.php:54
 msgid "Next"
 msgstr "Seuraava"
 
@@ -579,7 +689,7 @@ msgstr ""
 msgid "No stations"
 msgstr "Ei asemia"
 
-#: templates/partials/views/playlistview.php:34
+#: templates/partials/views/playlistview.php:35
 msgid "No tracks"
 msgstr "Ei kappaleita"
 
@@ -587,15 +697,19 @@ msgstr "Ei kappaleita"
 msgid "No tracks matching the filters"
 msgstr "Suodattimia vastaavia kappaleita ei ole"
 
-#: templates/partials/navigationitem.php:115
+#: templates/partials/navigationitem.php:111
 msgid "Normal layout"
 msgstr "Normaali asettelu"
 
-#: templates/partials/sidebar/smartlistfilters.php:39
+#: templates/partials/sidebar/smartlistfilters.php:40
+msgid "Not recently added"
+msgstr "Ei lisätty lähiaikoina"
+
+#: templates/partials/sidebar/smartlistfilters.php:36
 msgid "Not recently played"
 msgstr "Ei soitettu lähiaikoina"
 
-#: templates/partials/views/settingsview.php:113
+#: templates/partials/views/settingsview.php:140
 msgid ""
 "Note that Music may not be compatible with all Ampache/Subsonic clients. "
 "Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank"
@@ -607,13 +721,15 @@ msgstr ""
 "\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache-asiakkaat</a> ja <a href="
 "\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic-asiakkaat</a>."
 
-#: templates/partials/sidebar/smartlistfilters.php:34
+#: templates/partials/sidebar/smartlistfilters.php:31
 msgid ""
 "Note that this selection makes any difference only when the library has more "
-"than requested number of matches"
+"than the requested number of matches. In the strict mode, only the best "
+"matching songs are included with no element of randomness."
 msgstr ""
 "Huomaa, että tällä valinnalla on merkitystä vain silloin, kun kirjastossa on "
-"enemmän kuin pyydetty määrä osumia"
+"enemmän kuin pyydetty määrä osumia. Tiukassa tilassa vain parhaiten sopivat "
+"kappaleet otetaan mukaan ilman minkäänlaista satunnaisuutta."
 
 #: templates/partials/views/settingsview.php:14
 msgid ""
@@ -623,7 +739,7 @@ msgstr ""
 "Huomaa: Kun polkua muutetaan, kaikki aiemmin skannatut tiedostot uuden polun "
 "ulkopuolella poistetaan kokoelmasta ja kaikista soittolistoista."
 
-#: templates/partials/views/settingsview.php:197
+#: templates/partials/views/settingsview.php:224
 msgid ""
 "Note: the update rate is limited also by the execution rate of your cloud "
 "background task."
@@ -648,7 +764,7 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: templates/partials/views/settingsview.php:202
+#: templates/partials/views/settingsview.php:236
 msgid ""
 "OBSOLETE. This key is no longer needed or used by the Music application."
 msgstr "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avainta."
@@ -658,19 +774,19 @@ msgstr "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avain
 msgid "Off"
 msgstr "Pois"
 
-#: templates/partials/sidebar/smartlistfilters.php:40
+#: templates/partials/sidebar/smartlistfilters.php:37
 msgid "Often played"
 msgstr "Usein soitettu"
 
-#: templates/partials/views/settingsview.php:149
+#: templates/partials/views/settingsview.php:176
 msgid "Password:"
 msgstr "Salasana:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:97
+#: js/app/controllers/views/settingsviewcontroller.js:75
 msgid "Path to exclude from your music collection"
 msgstr "Musiikkikokoelmasta ohitettava polku"
 
-#: js/app/controllers/views/settingsviewcontroller.js:62
+#: js/app/controllers/views/settingsviewcontroller.js:40
 #: templates/partials/views/settingsview.php:7
 msgid "Path to your music collection"
 msgstr "Musiikkikokoelman polku"
@@ -692,7 +808,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: js/app/directives/listheading.js:23 templates/fake-template.php:25
-#: templates/partials/views/albumsview.php:28
+#: templates/partials/views/albumsview.php:27
 #: templates/partials/views/alltracksview.php:5
 #: templates/partials/views/playlistview.php:5
 #: templates/partials/views/podcastsview.php:18
@@ -701,11 +817,11 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: templates/partials/sidebar/smartlistfilters.php:35
-msgid "Play history"
-msgstr "Soittohistoria"
+#: templates/partials/views/settingsview.php:121
+msgid "Play / Pause"
+msgstr "Toista / Keskeytä"
 
-#: templates/partials/controls.php:44
+#: templates/partials/controls.php:46
 msgid "Playback rate"
 msgstr "Toistonopeus"
 
@@ -717,7 +833,7 @@ msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 msgid "Playlist"
 msgstr "Soittolista"
 
-#: templates/partials/views/settingsview.php:214
+#: templates/partials/views/settingsview.php:248
 msgid ""
 "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
 "target=\"_blank\">issue tracker</a>"
@@ -743,7 +859,8 @@ msgstr ""
 "\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun se "
 "katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä saataville."
 
-#: templates/partials/controls.php:35 templates/partials/controls.php:5
+#: templates/partials/controls.php:37 templates/partials/controls.php:5
+#: templates/partials/controls.php:6
 msgid "Previous"
 msgstr "Edellinen"
 
@@ -765,11 +882,15 @@ msgstr "Radioasema"
 msgid "Radio station not found"
 msgstr "Radioasemaa ei löydy"
 
-#: templates/partials/sidebar/smartlistfilters.php:41
+#: templates/partials/sidebar/smartlistfilters.php:38
 msgid "Rarely played"
 msgstr "Harvoin soitettu"
 
-#: templates/partials/sidebar/smartlistfilters.php:38
+#: templates/partials/sidebar/smartlistfilters.php:39
+msgid "Recently added"
+msgstr "Lähiaikoina lisätty"
+
+#: templates/partials/sidebar/smartlistfilters.php:35
 msgid "Recently played"
 msgstr "Lähiaikoina soitettu"
 
@@ -777,24 +898,24 @@ msgstr "Lähiaikoina soitettu"
 msgid "Refine the filters defined for the smart playlist"
 msgstr "Tarkenna älykkäälle soittolistalle määritettyjä suotimia"
 
-#: templates/fake-template.php:18 templates/partials/navigationitem.php:143
+#: templates/fake-template.php:18 templates/partials/navigationitem.php:139
 msgid "Reload"
 msgstr "Päivitä"
 
-#: templates/partials/navigationitem.php:104
+#: templates/partials/navigationitem.php:100
 msgid "Reload channels"
 msgstr "Päivitä kanavat"
 
-#: templates/partials/views/playlistview.php:26
+#: templates/partials/views/playlistview.php:27
 #: templates/partials/views/settingsview.php:40
 msgid "Remove"
 msgstr "Poista"
 
-#: templates/partials/navigationitem.php:65
+#: templates/partials/navigationitem.php:61
 msgid "Remove duplicates"
 msgstr "Poista kaksoiskappaleet"
 
-#: js/app/controllers/navigationcontroller.js:131
+#: js/app/controllers/navigationcontroller.js:173
 msgid "Remove playlist"
 msgstr "Poista soittolista"
 
@@ -802,16 +923,16 @@ msgstr "Poista soittolista"
 msgid "Remove radio station"
 msgstr "Poista radioasema"
 
-#: templates/partials/views/playlistview.php:26
+#: templates/partials/views/playlistview.php:27
 msgid "Remove track from playlist"
 msgstr "Poista kappale soittolistalta"
 
-#: templates/partials/navigationitem.php:40
+#: templates/partials/navigationitem.php:36
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
 #: js/app/controllers/playercontroller.js:782
-#: templates/partials/controls.php:93
+#: templates/partials/controls.php:96
 msgid "Repeat"
 msgstr "Kertaa"
 
@@ -824,26 +945,26 @@ msgstr "Pyydettyä riviä ei löytynyt"
 msgid "Reset"
 msgstr "Tyhjentäminen"
 
-#: js/app/controllers/views/settingsviewcontroller.js:216
+#: js/app/controllers/views/settingsviewcontroller.js:194
 #: templates/partials/views/settingsview.php:74
 msgid "Reset internet radio stations"
 msgstr "Tyhjennä internet radio -asemat"
 
-#: js/app/controllers/views/settingsviewcontroller.js:173
+#: js/app/controllers/views/settingsviewcontroller.js:151
 #: templates/partials/views/settingsview.php:64
 msgid "Reset music collection"
 msgstr "Tyhjennä musiikkikokoelma"
 
-#: js/app/controllers/views/settingsviewcontroller.js:246
+#: js/app/controllers/views/settingsviewcontroller.js:224
 #: templates/partials/views/settingsview.php:83
 msgid "Reset podcast channels"
 msgstr "Tyhjennä podcast-kanavat"
 
-#: templates/partials/views/settingsview.php:132
+#: templates/partials/views/settingsview.php:159
 msgid "Revoke API password"
 msgstr "Kumoa API-salasana"
 
-#: templates/partials/navigationitem.php:149
+#: templates/partials/navigationitem.php:145
 msgid "Save playlist"
 msgstr "Tallenna soittolista"
 
@@ -851,17 +972,38 @@ msgstr "Tallenna soittolista"
 msgid "Scanning music …"
 msgstr "Skannataan musiikkia …"
 
-#: js/app/controllers/searchcontroller.js:134
+#: templates/partials/navigation.php:53 templates/partials/navigation.php:55
+#: templates/partials/views/settingsview.php:132
+msgid "Search"
+msgstr "Etsi"
+
+#: js/app/controllers/searchcontroller.js:98
 msgid "Search not available in this view"
 msgstr "Haku ei ole käytettävissä tässä näkymässä"
 
-#: js/app/controllers/sidebar/albumdetailscontroller.js:63
+#: js/app/controllers/sidebar/albumdetailscontroller.js:64
 msgid "See the album on Last.fm"
 msgstr "Katso albumia Last.fm-palvelussa"
 
-#: js/app/controllers/sidebar/trackdetailscontroller.js:89
+#: js/app/controllers/sidebar/trackdetailscontroller.js:90
 msgid "See the track on Last.fm"
 msgstr "Katso kappaletta Last.fm-palveussa"
+
+#: templates/partials/views/settingsview.php:123
+msgid ""
+"Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Siirry taaksepäin. Siirry nopeammin <strong>SHIFT</strong>-näppäimellä tai "
+"hitaammin <strong>ALT</strong>-näppäimellä."
+
+#: templates/partials/views/settingsview.php:124
+msgid ""
+"Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Siirry eteenpäin. Siirry nopeammin <strong>SHIFT</strong>-näppäimellä tai "
+"hitaammin <strong>ALT</strong>-näppäimellä."
 
 #: templates/partials/views/settingsview.php:39
 msgid "Select folder"
@@ -871,7 +1013,7 @@ msgstr "Valitse kansio"
 msgid "Setting up radio stations"
 msgstr "Radio-asemien asettaminen"
 
-#: templates/partials/navigation.php:50
+#: templates/partials/navigation.php:65
 #: templates/partials/views/settingsview.php:2
 msgid "Settings"
 msgstr "Asetukset"
@@ -884,7 +1026,8 @@ msgstr "Näytä kaikki {{ count }} jaksoa…"
 msgid "Show all {{ count }} songs …"
 msgstr "Näytä kaikki {{ count }} kappaletta…"
 
-#: templates/partials/sidebar/artistdetails.php:39
+#: templates/partials/sidebar/artistdetails.php:40
+#: templates/partials/views/settingsview.php:117
 msgid "Show all…"
 msgstr "Näytä kaikki…"
 
@@ -908,16 +1051,16 @@ msgstr "Näytä vähemmän…"
 msgid "Show more…"
 msgstr "Näytä enemmän…"
 
-#: templates/partials/views/settingsview.php:156
+#: templates/partials/views/settingsview.php:183
 msgid "Show..."
 msgstr "Näytä…"
 
 #: js/app/controllers/playercontroller.js:776
-#: templates/partials/controls.php:91
+#: templates/partials/controls.php:94
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: templates/partials/sidebar/artistdetails.php:32
+#: templates/partials/sidebar/artistdetails.php:33
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
@@ -949,7 +1092,7 @@ msgstr ""
 msgid "Song change notifications"
 msgstr "Ilmoitukset kappaleen vaihtuessa"
 
-#: templates/partials/navigationitem.php:49
+#: templates/partials/navigationitem.php:45
 msgid "Sort …"
 msgstr "Järjestä …"
 
@@ -970,13 +1113,19 @@ msgstr ""
 "huomiotta järjestettäessä taiteilijoita aakkosjärjestykseen. Etuliitteissä "
 "ei oteta huomioon isoja ja pieniä kirjaimia."
 
-#: templates/partials/controls.php:14 templates/partials/controls.php:25
+#: templates/partials/controls.php:14 templates/partials/controls.php:15
+#: templates/partials/controls.php:27
+#: templates/partials/views/settingsview.php:122
 msgid "Stop"
 msgstr "Pysäytä"
 
 #: templates/partials/sidebar/radiostationdetails.php:13
 msgid "Stream URL"
 msgstr "Striimin URL"
+
+#: templates/partials/sidebar/smartlistfilters.php:42
+msgid "Strict"
+msgstr "Tiukka"
 
 #: templates/partials/sidebar/albumdetails.php:25
 #: templates/partials/sidebar/artistdetails.php:30
@@ -988,9 +1137,17 @@ msgstr "Tunnisteet"
 msgid "Technical"
 msgstr "Tekniset tiedot"
 
-#: js/app/controllers/views/settingsviewcontroller.js:356
+#: js/app/controllers/views/settingsviewcontroller.js:334
 msgid "Text copied to clipboard"
 msgstr "Teksti kopioitiin leikepöydälle"
+
+#: templates/partials/views/settingsview.php:229
+msgid ""
+"The Ampache API major version to use in case the client doesn't specify any "
+"version. The default is {{defaultVer}}."
+msgstr ""
+"Ampache API:n pääversio, jota käytetään, jos asiakas ei määritä mitään "
+"versiota. Oletusarvo on {{defaultVer}}."
 
 #: templates/partials/sidebar/radiohint.php:15
 msgid ""
@@ -1002,7 +1159,7 @@ msgstr ""
 "sen. Saatat kuitenkin haluta säilyttää sen, koska on myös mahdollista "
 "toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla PLS-tiedosto."
 
-#: templates/partials/views/settingsview.php:196
+#: templates/partials/views/settingsview.php:223
 msgid ""
 "The interval for automatic podcast update checks in hours. Decimal value can "
 "be used for sub-hour resolution. Negative value will disable automatic "
@@ -1050,7 +1207,7 @@ msgstr ""
 "Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
 "tyypillinen syy:"
 
-#: templates/partials/views/settingsview.php:158
+#: templates/partials/views/settingsview.php:185
 msgid ""
 "There is no settings UI for the server-wide settings of the Music app but "
 "some settings are available by adding specific key-value pairs to the file "
@@ -1096,7 +1253,7 @@ msgstr "Tämä asetus määrittää kansion, josta musiikkia etsitään."
 msgid "Timeout"
 msgstr "Aikaraja ylittyi"
 
-#: templates/partials/views/settingsview.php:163
+#: templates/partials/views/settingsview.php:190
 msgid ""
 "To see the artist biography and other information from Last.fm in the "
 "details view, you need to create an API account with Last.fm. For this, use "
@@ -1114,10 +1271,6 @@ msgstr ""
 "arvona. Lisätietoja löydät <a href=\"{{guideUrl}}\" target=\"_blank"
 "\">oppaasta</a>."
 
-#: templates/partials/sidebar/smartlistfilters.php:16
-msgid "To year"
-msgstr "Vuoteen"
-
 #: templates/partials/sidebar/albumdetails.php:12
 #: templates/partials/sidebar/playlistdetails.php:10
 msgid "Total length"
@@ -1131,7 +1284,7 @@ msgstr "Kappale"
 msgid "Tracks"
 msgstr "Kappaleet"
 
-#: templates/partials/navigationitem.php:129
+#: templates/partials/navigationitem.php:125
 msgid "Tree layout"
 msgstr "Puumainen asettelu"
 
@@ -1159,11 +1312,15 @@ msgstr ""
 "Toisin kuin muut asetukset, tämä valitsin tallennetaan selainkohtaisesti "
 "eikä käyttäjätilikohtaisesti."
 
-#: templates/partials/sidebar/smartlistfilters.php:45
+#: templates/fake-template.php:29
+msgid "Unmute"
+msgstr "Poista vaimennus"
+
+#: templates/partials/sidebar/smartlistfilters.php:46
 msgid "Update"
 msgstr "Päivitä"
 
-#: js/app/controllers/sidebar/artistdetailscontroller.js:61
+#: js/app/controllers/sidebar/artistdetailscontroller.js:62
 msgid ""
 "Upload image named \"{{name}}\" to anywhere within your library path to see "
 "it here."
@@ -1193,14 +1350,14 @@ msgstr ""
 "\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun sijaan voit myös "
 "selata palvelussa kanavia kategorian tai suosion mukaan."
 
-#: templates/partials/views/settingsview.php:145
+#: templates/partials/views/settingsview.php:172
 msgid ""
 "Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
 "Käytä seuraavaa tunnusta ja salasanaa yhditäessäsi tähän Ampache/Subsonic-"
 "istuntoon."
 
-#: templates/partials/views/settingsview.php:124
+#: templates/partials/views/settingsview.php:151
 msgid ""
 "Use this address to browse your music collection from a Subsonic compatible "
 "player."
@@ -1208,7 +1365,7 @@ msgstr ""
 "Käytä tätä osoitetta selataksesi musiikkikokoelmaasi Subsonic-"
 "yhteensopivalta soittimelta."
 
-#: templates/partials/views/settingsview.php:119
+#: templates/partials/views/settingsview.php:146
 msgid ""
 "Use this address to browse your music collection from an Ampache compatible "
 "player."
@@ -1216,15 +1373,19 @@ msgstr ""
 "Käytä tätä osoitetta selataksesi musiikkikokoelmaasi Ampache-yhteensopivalta "
 "soittimelta."
 
+#: js/app/controllers/navigationcontroller.js:257
+msgid "Used filters: {{ params }}"
+msgstr "Käytetyt suotimet: {{ params }}"
+
 #: templates/partials/views/settingsview.php:91
 msgid "User interface"
 msgstr "Käyttöliittymä"
 
-#: templates/partials/views/settingsview.php:147
+#: templates/partials/views/settingsview.php:174
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: templates/partials/controls.php:96 templates/partials/controls.php:97
+#: templates/partials/controls.php:100 templates/partials/controls.php:104
 msgid "Volume"
 msgstr "Äänenvoimakkuus"
 
@@ -1232,7 +1393,11 @@ msgstr "Äänenvoimakkuus"
 msgid "Website"
 msgstr "Verkkosivu"
 
-#: templates/partials/views/settingsview.php:112
+#: templates/partials/sidebar/smartlistfilters.php:11
+msgid "Years"
+msgstr "Vuodet"
+
+#: templates/partials/views/settingsview.php:139
 msgid ""
 "You can browse and play your music collection from external applications "
 "which support either Ampache or Subsonic API."
@@ -1271,15 +1436,15 @@ msgstr "bittinopeus"
 msgid "build date"
 msgstr "koostettu"
 
-#: templates/partials/navigationitem.php:59
+#: templates/partials/navigationitem.php:55
 msgid "by album"
 msgstr "albumin mukaan"
 
-#: templates/partials/navigationitem.php:56
+#: templates/partials/navigationitem.php:52
 msgid "by artist"
 msgstr "esittäjän mukaan"
 
-#: templates/partials/navigationitem.php:53
+#: templates/partials/navigationitem.php:49
 msgid "by title"
 msgstr "nimen mukaan"
 
@@ -1339,7 +1504,7 @@ msgstr "otsikko"
 msgid "updates checked"
 msgstr "päivitykset tarkastettu"
 
-#: templates/partials/views/settingsview.php:212
+#: templates/partials/views/settingsview.php:246
 msgid "version history"
 msgstr "versiohistoria"
 
@@ -1347,7 +1512,7 @@ msgstr "versiohistoria"
 msgid "website"
 msgstr "verkkosivu"
 
-#: js/app/controllers/navigationcontroller.js:116
+#: js/app/controllers/navigationcontroller.js:158
 msgid "{{ count }} duplicate track was removed"
 msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] "{{ count }} kaksoiskappale poistettiin"
@@ -1356,6 +1521,12 @@ msgstr[1] "{{ count }} kaksoiskappaletta poistettiin"
 #: templates/main.php:62
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
+
+#~ msgid "From year"
+#~ msgstr "Vuodesta"
+
+#~ msgid "To year"
+#~ msgstr "Vuoteen"
 
 #~ msgid "Add a new podcast channel from an RSS feed"
 #~ msgstr "Uuden podcast-kanavan lisääminen RSS-syötteestä"
@@ -1467,9 +1638,6 @@ msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 
 #~ msgid "Writing to the file is not allowed"
 #~ msgstr "Tiedostoon kirjoittaminen ei ole sallittua"
-
-#~ msgid "press and hold for more"
-#~ msgstr "paina pitkään saadaksesi lisää valintoja"
 
 #~ msgid "{{ count }} entries were skipped."
 #~ msgstr "{{ count }}  riviä ohitettiin."

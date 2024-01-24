@@ -39,6 +39,7 @@
 - Lite player in Files attempting to play also audio files with MIME types unsupported on the current browser
 - Subsonic API: Use integer-type IDs in `getMusicFolders` to comply with the API specification
   [#1108](https://github.com/owncloud/music/issues/1108)
+- Playlist details showing length as "NaN:NaN" in case the playlist contains any invalid track references
 
 ## 1.9.1 - 2023-10-08
 

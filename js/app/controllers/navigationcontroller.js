@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 
@@ -253,7 +253,8 @@ angular.module('Music').controller('NavigationController', [
 			const smartlist = libraryService.getSmartList();
 			createPlaylist(
 				gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
-				_.map(smartlist.tracks, 'track.id')
+				_.map(smartlist.tracks, 'track.id'),
+				gettextCatalog.getString('Used filters: {{ params }}', { params: JSON.stringify(_.omitBy(smartlist.params, _.isNil), null, 2) })
 			);
 		};
 
@@ -369,10 +370,11 @@ angular.module('Music').controller('NavigationController', [
 			}
 		}
 
-		function createPlaylist(name, trackIds) {
+		function createPlaylist(name, trackIds, comment=undefined) {
 			const args = {
 				name: name,
-				trackIds: trackIds.join(',')
+				trackIds: trackIds.join(','),
+				comment: comment
 			};
 			Restangular.all('playlists').post(args).then(function(playlist) {
 				libraryService.addPlaylist(playlist);

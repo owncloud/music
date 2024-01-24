@@ -99,13 +99,16 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function create($name, $trackIds) {
+	public function create(string $name, /*mixed*/ $trackIds, ?string $comment=null) {
 		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
 
-		// add trackIds to the newly created playlist if provided
+		// add trackIds and comment to the newly created playlist if provided
 		if (!empty($trackIds)) {
 			$playlist = $this->playlistBusinessLayer->addTracks(
 					self::toIntArray($trackIds), $playlist->getId(), $this->userId);
+		}
+		if ($comment !== null) {
+			$playlist = $this->playlistBusinessLayer->setComment($comment, $playlist->getId(), $this->userId);
 		}
 
 		return $playlist->toAPI();

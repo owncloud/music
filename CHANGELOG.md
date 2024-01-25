@@ -593,7 +593,7 @@ A mistake made when creating the release package 1.3.0 broke the application pre
 
 ## 1.0.2 - 2021-02-18
 ### Fixed
-- Scan stopping if a track with unknown album encourtered within the root folder (bug introduced in v1.0.0)
+- Scan stopping if a track with unknown album encountered within the root folder (bug introduced in v1.0.0)
 - Subsonic: [Jamstash](https://github.com/tsquillario/Jamstash) not working with its default configuration
   [#787](https://github.com/owncloud/music/issues/787)
 - Subsonic: Method `createPlaylist` not supporting the editing of existing playlists, breaking the playlist reordering on [Jamstash](https://github.com/tsquillario/Jamstash)
@@ -1031,7 +1031,7 @@ A mistake made when creating the release package 1.3.0 broke the application pre
 - launch the files music player only for those audio files supported in the current browser (#591)
 - enable the localization of the app (many UI strings are still unlocalized, though) (#592)
 - fix previously created playlists disappearing each time the app is loaded (regression introduced in v0.5.3)
-- when creating collection.json, skip tracks with DB problems insted of failing the whole process (related to #588)
+- when creating collection.json, skip tracks with DB problems instead of failing the whole process (related to #588)
 
 ## 0.5.3 - 2017-10-15
 - workaround for buffer progress bug on Firefox (#587)
@@ -1100,7 +1100,7 @@ A mistake made when creating the release package 1.3.0 broke the application pre
 - refactored scanner.php
 - improved album art extraction performance
 - improved metadata extraction (use custom patched getID3, having track and album artist as fallback for each other)
-- improved behaviour of scroll links
+- improved behavior of scroll links
 - fixed bug in AlbumMapper.findAlbumCover
 - fixed album deletion
 - fixed layout (new music availability, scanning, overlapping scrollbar, autoscrolling to album, album-art resizing on window resize, mobile style fixes, viewBox to app icon)
@@ -1111,7 +1111,7 @@ A mistake made when creating the release package 1.3.0 broke the application pre
 - fixed UI glitches #522
 - improved metadata display (view track artist if different from album artist)
 - add support for HTTP Range requests allowing Ampache API clients to seek files #528
-- improved playback by preffering SoundManager2 and falling back to Aurora.js if the former is not available
+- improved playback by preferring SoundManager2 and falling back to Aurora.js if the former is not available
 - fixed seeking during playback
 - fixed file delete hook
 - fixed volume control and improved its layout
@@ -1219,7 +1219,7 @@ Thanks to Dan Mac (@danmac-uk)
 General
 - disable share hook, because it delayed the sharing action a lot
 - add index for cover_file_id in albums
-- playstate is now represented in the URL
+- play state is now represented in the URL
 - change scan count from 50 to 20 - should fix #172, fix #212
 - remove album cover search on remove of album cover (should speedup deletions)
 
@@ -1230,11 +1230,11 @@ ownCloud 7 related
 
 Internal
 - migration from separate AppFramework to core provided AppFramework
-- JavaScript 3rdparty library management is now handled by bower
+- JavaScript 3rd party library management is now handled by bower
 - getID3 is update to v1.9.8, which fixes a memory leak - see #212
 - change handling of routes in a proper way as preparation for playlist functionality - GSoC project by @wakeup
 - improved documentation of PHP classes
-- licence header cleanup (shrinked)
+- license header cleanup (shrunk)
 - respect the user ID on update (scanner)
 
 Known issues
@@ -1249,7 +1249,7 @@ Known issues
 - add notification for skipped tracks
 - the music in the database is now restricted to the user specified path
 
-- update Sounmanager to V2.97a.20131201
+- update SoundManager to V2.97a.20131201
 
 - fix mobile styles by @jbtbnl and @wakeup
 - fix left alignment issues of artist name and tracks on mobile

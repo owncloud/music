@@ -284,7 +284,7 @@ export class LibraryService {
 		let quoted = query.match(regExQuoted) || <string[]>[];
 		quoted = _.map(quoted, (str) => str.slice(1, -1));
 
-		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
+		// remove the quoted substrings and stray quotation marks, and extract the rest of the parts
 		query = query.replace(regExQuoted, ' ');
 		query = query.replace('"', ' ');
 		let unquoted = query.match(/\S+/g) || [];
@@ -307,7 +307,7 @@ export class LibraryService {
 		// has to be found but the whitespace is disregarded.
 		let queryParts = this.#splitSearchQuery(query);
 
-		// @a fields may be an array or an idividual string
+		// @a fields may be an array or an individual string
 		if (!Array.isArray(fields)) {
 			fields = [fields];
 		}

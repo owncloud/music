@@ -820,7 +820,7 @@
 			<field>
 				<name>ampache_user_id</name>
 				<type>integer</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<unsigned>true</unsigned>
 			</field>
 

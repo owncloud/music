@@ -80,10 +80,14 @@
 	width: 100%;
 }
 
+#app-sidebar .sidebar-container {
+	padding: 15px;
+}
+
 #app-sidebar dl {
 	width: 100%;
 	overflow: hidden;
-	padding: 0 16px 16px 16px;
+	padding: 0 0 16px 0;
 }
 
 #app-sidebar #radio-station-details dl {
@@ -250,6 +254,7 @@
 
 #app-sidebar #lastfm-info p {
 	white-space: pre-wrap;
+	text-align: center;
 	margin-left: 16px;
 	margin-right: 16px;
 	margin-bottom: 16px;

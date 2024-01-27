@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.10.0 - 2024-01-27
 
 ### Added
 - Support for Nextcloud 28

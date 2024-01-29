@@ -33,7 +33,8 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$timeout(() => {
 			$('#filter-genres').chosen();
 			$('#filter-artists').chosen();
-			const $chosenInputs = $('#app-sidebar #smartlist-filters .chosen-container');
+			$('#filter-history').chosen({allow_single_deselect: true, disable_search: true, placeholder_text_single: ' '});
+			const $chosenInputs = $('#smartlist-filters .chosen-container');
 			const $filterGenres = $('#filter-genres');
 			const $filterSize = $('#filter-size');
 

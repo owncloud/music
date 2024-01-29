@@ -362,15 +362,18 @@
 	background: var(--color-main-background, #fff);
 }
 
-#app-sidebar #smartlist-filters .chosen-choices {
+#app-sidebar #smartlist-filters .chosen-choices,
+#app-sidebar #smartlist-filters .chosen-single {
 	background: var(--color-main-background, #fff);
 	border: var(--border-input);				/* value of the var is set in our javascript */
 	border-radius: var(--border-radius-input);	/* value of the var is set in our javascript */
+	box-shadow: unset;
 	text-overflow: ellipsis;
 	cursor: pointer;
 }
 
-#app-sidebar #smartlist-filters .chosen-choices:hover {
+#app-sidebar #smartlist-filters .chosen-choices:hover,
+#app-sidebar #smartlist-filters .chosen-single:hover {
 	border-color: var(--color-input-border-hover); /* value of the var is set in our javascript */
 }
 
@@ -407,7 +410,17 @@
 	opacity: .5;
 }
 
-#app-sidebar #smartlist-filters #filter-history {
+#app-sidebar #smartlist-filters .chosen-single  {
+	height: 36px;
+	background-image: unset;
+}
+
+#app-sidebar #smartlist-filters .chosen-single > * {
+	margin-top: 5px;
+	color: var(--color-main-text, #222);
+}
+
+#app-sidebar #smartlist-filters #filter_history_chosen {
 	width: calc(100% - 178px);
 }
 

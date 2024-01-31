@@ -273,7 +273,7 @@ class SubsonicController extends Controller {
 		 * clients do not support getAlbumList2.
 		 */
 		$albums = $this->albumsForGetAlbumList($type, $genre, $fromYear, $toYear, $size, $offset);
-		return $this->subsonicResponse(['albumList2' =>
+		return $this->subsonicResponse(['albumList' =>
 				['album' => \array_map([$this, 'albumToNewApi'], $albums)]
 		]);
 	}

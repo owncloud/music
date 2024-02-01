@@ -325,7 +325,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getAlbumInfo2(string $id) {
-		return $this->doGetAlbumInfo('albumInfo2', $id);
+		return $this->doGetAlbumInfo('albumInfo', $id);
 	}
 
 	/**

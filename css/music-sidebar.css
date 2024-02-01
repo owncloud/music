@@ -393,10 +393,25 @@
 
 #app-sidebar #smartlist-filters .chosen-drop {
 	background-color: var(--color-main-background, #fff);
+	border-radius: var(--border-radius-large);
+	padding: var(--default-grid-baseline);
+}
+
+#app-sidebar #smartlist-filters .chosen-drop li {
+	padding: 10px 5px;
+}
+
+#app-sidebar #smartlist-filters .chosen-drop li.highlighted {
+	background-color: var(--color-background-hover, #f5f5f5);
+	background-image: unset;
+	color: var(--color-main-text, #222);
+	border-radius: var(--border-radius-large);
 }
 
 #app-sidebar #smartlist-filters .chosen-container .chosen-results {
 	color: var(--color-main-text, #444);
+	padding: 0;
+	margin: 0;
 }
 
 #app-sidebar #smartlist-filters .chosen-container .chosen-results li.no-results {

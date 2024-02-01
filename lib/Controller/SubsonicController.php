@@ -318,14 +318,14 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getAlbumInfo(string $id) {
-		return $this->doGetAlbumInfo('albumInfo', $id);
+		return $this->doGetAlbumInfo($id);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
 	protected function getAlbumInfo2(string $id) {
-		return $this->doGetAlbumInfo('albumInfo2', $id);
+		return $this->doGetAlbumInfo($id);
 	}
 
 	/**
@@ -1521,7 +1521,7 @@ class SubsonicController extends Controller {
 	/**
 	 * Common logic for getAlbumInfo and getAlbumInfo2
 	 */
-	private function doGetAlbumInfo(string $rootName, string $id) {
+	private function doGetAlbumInfo(string $id) {
 		$content = [];
 
 		$albumId = $this->getAlbumIdFromEntityId($id);
@@ -1544,7 +1544,7 @@ class SubsonicController extends Controller {
 		}
 
 		// This method is unusual in how it uses non-attribute elements in the response.
-		return $this->subsonicResponse([$rootName => $content], []);
+		return $this->subsonicResponse(['albumInfo' => $content], []);
 	}
 
 	/**

@@ -49,6 +49,7 @@
 * [Nuno Jesus](https://github.com/nunojesus)
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Paul](https://github.com/prsnbrg)
+* [perillamint](https://github.com/perillamint)
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
 * [Rello](https://github.com/rello)

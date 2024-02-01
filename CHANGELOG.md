@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+- Subsonic: Method `getAlbumInfo2` response having incorrect root element name
+  [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
+
 ## 1.10.0 - 2024-01-27
 
 ### Added

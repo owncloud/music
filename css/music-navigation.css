@@ -36,7 +36,8 @@
 }
 
 #app-navigation > ul > li:hover,
-#app-navigation > ul > li:focus {
+#app-navigation > ul > li:focus,
+#app-navigation > ul > li:focus-within {
 	background-color: var(--color-background-hover);
 }
 
@@ -190,7 +191,8 @@
 
 #app-navigation .item-with-actions.active .actions .icon-more,
 #app-navigation .item-with-actions.menu-open .actions .icon-more,
-#app-navigation .item-with-actions:hover .actions .icon-more {
+#app-navigation .item-with-actions:hover .actions .icon-more,
+#app-navigation .item-with-actions:focus-within .actions .icon-more {
 	display: inline-block;
 }
 
@@ -243,6 +245,10 @@
 	border-bottom-right-radius: 0;
 }
 
+#app-navigation .item-with-actions .input-container:not(.with-buttons) {
+	right: 40px;
+}
+
 #app-navigation .input-container #search-input {
 	padding-right: 32px;
 }
@@ -272,7 +278,7 @@
 	height: 44px;
 	max-width: 300px;
 	margin: calc(var(--default-grid-baseline, 0px)*2);
-	z-index: 140;
+	z-index: 0;
 }
 
 .legacy-layout #app-navigation > ul > li.docked-navigation-item {
@@ -280,7 +286,8 @@
 }
 
 #app-navigation #music-nav-search {
-	bottom: calc(44px + var(--default-grid-baseline, 0px))
+	bottom: calc(44px + var(--default-grid-baseline, 0px));
+	z-index: 1;
 }
 
 #app-navigation #music-nav-settings {

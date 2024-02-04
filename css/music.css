@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 /**
@@ -78,6 +78,11 @@ body#body-user.dark {
 	visibility: hidden;
 	opacity: .7;
 	height: 10px;
+}
+
+h1 {
+	font-size: 34px;
+	line-height: 36px;
 }
 
 h1 .play {

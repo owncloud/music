@@ -358,6 +358,17 @@ class ApiController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function advancedSearch(string $rules, string $conjunction='and', ?int $limit=null, ?int $offset=null) {
+		// TODO: other entity types than tracks
+		$rules = \json_decode($rules, true);
+		$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
+		return new JSONResponse(Util::extractIds($tracks));
+	}
+
+	/**
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */

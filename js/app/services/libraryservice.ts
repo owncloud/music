@@ -668,6 +668,9 @@ export class LibraryService {
 	podcastsLoaded() : boolean {
 		return this.#podcastChannels !== null;
 	}
+	entriesForTrackIds(ids : number[]) : PlaylistEntry<Track>[] {
+		return _.map(ids, (id) => this.#playlistEntryFromId(id));
+	}
 	searchTracks(query : string, maxResults = Infinity) : SearchResult<Track> {
 		return this.#search(this.#tracksIndex, ['title', 'artist.name'], query, maxResults);
 	}

@@ -7,6 +7,7 @@
 ### Fixed
 - Subsonic: Method `getAlbumInfo2` response having incorrect root element name
   [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
+- Playlist file not playing within Files in case the first track of the list is in unsupported format
 
 ## 1.10.0 - 2024-01-27
 

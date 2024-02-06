@@ -364,8 +364,19 @@ class ApiController extends Controller {
 	public function advancedSearch(string $rules, string $conjunction='and', ?int $limit=null, ?int $offset=null) {
 		// TODO: other entity types than tracks
 		$rules = \json_decode($rules, true);
-		$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
-		return new JSONResponse(Util::extractIds($tracks));
+
+		foreach ($rules as $rule) {
+			if (empty($rule['rule'] || empty($rule['operator'] || !isset($rule['input'])))) {
+				return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Invalid search rule');
+			}
+		}
+
+		try {
+			$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
+			return new JSONResponse(Util::extractIds($tracks));
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $e->getMessage());
+		}
 	}
 
 	/**

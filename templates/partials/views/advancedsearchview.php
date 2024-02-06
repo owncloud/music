@@ -15,7 +15,7 @@
 			<td></td>
 		</tr>
 	</table>
-	<button ng-click="search()" translate>Search</button>
+	<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription" translate>{{ errorDescription }}</span>
 
 	<div class="playlist-area" ng-if="resultTracks">
         <h2 class="clickable" ng-click="onHeaderClick()"

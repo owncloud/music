@@ -84,6 +84,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		];
 
 		$scope.resultTracks = null;
+		$scope.errorDescription = null;
 		let resultSetId = 0;
 
 		$scope.searchRules = [
@@ -100,16 +101,22 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.search = function() {
 			$scope.resultTracks = null;
+			$scope.errorDescription = null;
 
 			const searchArgs = {
 				conjunction: 'and', // TODO: support 'or'
 				rules: JSON.stringify($scope.searchRules)
 			};
 
-			Restangular.one('advanced_search').customPOST(searchArgs).then((result) => {
-				resultSetId++;
-				$scope.resultTracks = libraryService.entriesForTrackIds(result);
-			});
+			Restangular.one('advanced_search').customPOST(searchArgs).then(
+				(result) => {
+					resultSetId++;
+					$scope.resultTracks = libraryService.entriesForTrackIds(result);
+				},
+				(error) => {
+					$scope.errorDescription = error.data.message;
+				}
+			);
 		};
 
 		function play(startIndex = null) {

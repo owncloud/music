@@ -15,6 +15,7 @@
 - Some Finnish translations being replaced with English (since v1.9.0)
 - Error "Cannot set response code - headers already sent" logged on each played song on PHP 8.3
   [#1133](https://github.com/owncloud/music/issues/1133)
+- Ampache: Advanced search rule `playlist_name` not being case insensitive like the other string rules
 
 ## 1.10.0 - 2024-01-27
 

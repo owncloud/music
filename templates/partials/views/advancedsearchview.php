@@ -17,13 +17,13 @@
 	</table>
 	<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription" translate>{{ errorDescription }}</span>
 
-	<div class="playlist-area" ng-if="resultTracks">
+	<div class="playlist-area" ng-if="resultList.tracks">
         <h2 class="clickable" ng-click="onHeaderClick()"
-            translate translate-n="resultTracks.length" translate-plural="{{ resultTracks.length }} results">
+            translate translate-n="resultList.tracks.length" translate-plural="{{ resultList.tracks.length }} results">
             1 result
         </h2>
 		<track-list
-			tracks="resultTracks"
+			tracks="resultList.tracks"
 			get-track-data="getTrackData"
 			play-track="onTrackClick"
 			show-track-details="showTrackDetails"

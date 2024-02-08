@@ -83,9 +83,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 //			{ key: '<',				name: 'Is less than' },
 		];
 
-		$scope.resultTracks = null;
+		$scope.resultList = libraryService.getAdvancedSearchResult();
 		$scope.errorDescription = null;
-		let resultSetId = 0;
 
 		$scope.searchRules = [
 			{ rule: null, operator: null, input: null }
@@ -100,7 +99,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.search = function() {
-			$scope.resultTracks = null;
+			$scope.resultList = libraryService.setAdvancedSearchResult(null);
 			$scope.errorDescription = null;
 
 			const searchArgs = {
@@ -110,8 +109,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 			Restangular.one('advanced_search').customPOST(searchArgs).then(
 				(result) => {
-					resultSetId++;
-					$scope.resultTracks = libraryService.entriesForTrackIds(result);
+					$scope.resultList = libraryService.setAdvancedSearchResult(result);
 				},
 				(error) => {
 					$scope.errorDescription = error.data.message;
@@ -120,7 +118,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('adv_search_results' + resultSetId, $scope.resultTracks, startIndex);
+			playlistService.setPlaylist('adv_search_results' + $scope.resultList.id, $scope.resultList.tracks, startIndex);
 			playlistService.publish('play');
 		}
 
@@ -135,7 +133,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				let index = _.findIndex($scope.resultTracks, (i) => i.track.id == trackId);
+				let index = _.findIndex($scope.resultList.tracks, (i) => i.track.id == trackId);
 				play(index);
 			}
 		};

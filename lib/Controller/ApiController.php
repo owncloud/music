@@ -373,7 +373,11 @@ class ApiController extends Controller {
 
 		try {
 			$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
-			return new JSONResponse(Util::extractIds($tracks));
+			$trackIds = Util::extractIds($tracks);
+			return new JSONResponse([
+				'id' => \md5(\serialize($trackIds)), // use hash => identical results will have identical ID
+				'trackIds' => $trackIds
+			]);
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $e->getMessage());
 		}

@@ -100,6 +100,7 @@ export class LibraryService {
 	#albumsCount : number = 0;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
+	#advSearchResult : Playlist = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
 	#radioStations : PlaylistEntry<RadioStation>[] = null;
@@ -385,6 +386,14 @@ export class LibraryService {
 			this.#smartList = this.#wrapPlaylist(list);
 		}
 	}
+	setAdvancedSearchResult(list : any) : Playlist|null {
+		if (!list) {
+			this.#advSearchResult = null;
+		} else {
+			this.#advSearchResult = this.#wrapPlaylist(list);
+		}
+		return this.#advSearchResult;
+	}
 	setFolders(folderData : any[]|null) : void {
 		if (!folderData) {
 			this.#folders = null;
@@ -599,10 +608,13 @@ export class LibraryService {
 	getSmartListTrackCount() : number {
 		return this.#smartList?.tracks?.length ?? 0;
 	}
-	getSmartList() : Playlist {
+	getSmartList() : Playlist|null {
 		return this.#smartList;
 	}
-	getPlaylist(id : number) : Playlist {
+	getAdvancedSearchResult() : Playlist|null {
+		return this.#advSearchResult;
+	}
+	getPlaylist(id : number) : Playlist|undefined {
 		return _.find(this.#playlists, { id: Number(id) });
 	}
 	getAllPlaylists() : Playlist[] {
@@ -667,9 +679,6 @@ export class LibraryService {
 	}
 	podcastsLoaded() : boolean {
 		return this.#podcastChannels !== null;
-	}
-	entriesForTrackIds(ids : number[]) : PlaylistEntry<Track>[] {
-		return _.map(ids, (id) => this.#playlistEntryFromId(id));
 	}
 	searchTracks(query : string, maxResults = Infinity) : SearchResult<Track> {
 		return this.#search(this.#tracksIndex, ['title', 'artist.name'], query, maxResults);

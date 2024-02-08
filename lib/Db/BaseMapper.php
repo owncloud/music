@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -34,7 +34,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	protected $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
-	protected $dbIsPgsql; // the database type is PostgreSQL
+	protected $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass
@@ -45,7 +45,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$this->parentIdColumn = $parentIdColumn;
 		// eclipse the base class property to help phpstan
 		$this->entityClass = $entityClass;
-		$this->dbIsPgsql = ($config->getSystemValue('dbtype') == 'pgsql');
+		$this->dbType = $config->getSystemValue('dbtype');
 	}
 
 	/**
@@ -596,7 +596,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return array like ['op' => string, 'param' => string]
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
-		$pqsql = $this->dbIsPgsql;
+		$pqsql = ($this->dbType == 'pgsql');
 		switch ($ruleOperator) {
 			case 'contain':		return ['op' => 'LIKE',							'param' => "%$ruleInput%"];
 			case 'notcontain':	return ['op' => 'NOT LIKE',						'param' => "%$ruleInput%"];
@@ -637,6 +637,14 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'recent_added':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `created` DESC LIMIT $sqlOp) mysqlhack)";
 			case 'recent_updated':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `updated` DESC LIMIT $sqlOp) mysqlhack)";
 			default:				throw new \DomainException("Rule '$rule' not supported on this entity type");
+		}
+	}
+
+	protected function sqlConcat(string ...$parts) : string {
+		if ($this->dbType == 'sqlite3') {
+			return '(' . \implode(' || ', $parts) . ')';
+		} else {
+			return 'CONCAT(' . \implode(', ', $parts) . ')';
 		}
 	}
 

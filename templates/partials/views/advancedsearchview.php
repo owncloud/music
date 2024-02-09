@@ -4,7 +4,7 @@
 	<table id="adv-search-rules" class="grid">
 		<tr class="adv-search-rule-row" ng-repeat="rule in searchRules">
 			<td><select ng-model="rule.rule"><option ng-repeat="ruleType in searchRuleTypes" value="{{ ruleType.key }}">{{ ruleType.name }}</option></select></td>
-			<td><select ng-model="rule.operator"><option ng-repeat="ruleOp in searchRuleOperators" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option></select></td>
+			<td><select ng-model="rule.operator"><option ng-repeat="ruleOp in operatorsForRule(rule.rule)" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option></select></td>
 			<td><input type="text" ng-model="rule.input"/></td>
 			<td><a class="icon icon-close" ng-click="removeSearchRule($index)"></a></td>
 		</tr>

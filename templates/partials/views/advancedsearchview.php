@@ -4,9 +4,23 @@
 	<div id="adv-search-controls">
 		<table id="adv-search-rules">
 			<tr class="adv-search-rule-row" ng-repeat="rule in searchRules">
-				<td><select ng-model="rule.rule"><option ng-repeat="ruleType in searchRuleTypes" value="{{ ruleType.key }}">{{ ruleType.name }}</option></select></td>
-				<td><select ng-model="rule.operator"><option ng-repeat="ruleOp in operatorsForRule(rule.rule)" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option></select></td>
-				<td><input type="text" ng-model="rule.input"/></td>
+				<td><select ng-model="rule.rule">
+					<option ng-repeat="ruleType in searchRuleTypes" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+				</select></td>
+				<td><select ng-model="rule.operator">
+					<option ng-repeat="ruleOp in operatorsForRule(rule.rule)" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option>
+				</select></td>
+				<td>
+					<input ng-if="ruleType(rule.rule) == 'text'" type="text" ng-model="rule.input"/>
+					<input ng-if="['numeric', 'numeric_limit'].includes(ruleType(rule.rule))" type="number" ng-model="rule.input"/>
+					<input ng-if="ruleType(rule.rule) == 'date'" type="date" ng-model="rule.input"/>
+					<select ng-if="ruleType(rule.rule) == 'numeric_rating'" ng-model="rule.input">
+						<option ng-repeat="val in [0,1,2,3,4,5]" value="{{ val }}">{{ val }} Stars</option>
+					</select>
+					<select ng-if="ruleType(rule.rule) == 'playlist'" ng-model="rule.input">
+						<option ng-repeat="pl in playlists" value="{{ pl.id }}">{{ pl.name }}</option>
+					</select>
+				</td>
 				<td><a class="icon icon-close" ng-click="removeSearchRule($index)"></a></td>
 			</tr>
 			<tr class="add-row clickable" ng-click="addSearchRule()">

@@ -185,7 +185,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$sqlParams = [$userId];
 
 		foreach ($rules as $rule) {
-			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input'], $userId);
+			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], (string)$rule['input'], $userId);
 			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
 			$sqlConditions[] = $cond;
 			// On some conditions, the parameter may need to be repeated several times

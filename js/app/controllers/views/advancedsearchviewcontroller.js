@@ -26,41 +26,41 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		});
 
 		$scope.searchRuleTypes = [
-			{ key: 'anywhere',			name: 'Any searchable text',	type: 'string' },
-			{ key: 'title',				name: 'Title',					type: 'string' },
-			{ key: 'favorite',			name: 'Favorite',				type: 'string' },
-			{ key: 'favorite_album',	name: 'Favorite album',			type: 'string' },
-			{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'string' },
-//			{ key: 'rating',			name: 'Rating' },
-//			{ key: 'albumrating',		name: 'Album rating' },
-//			{ key: 'artistrating',		name: 'Artist rating' },
-//			{ key: 'added',				name: 'Add date' },
-//			{ key: 'updated',			name: 'Update date' },
-//			{ key: 'recent_added',		name: 'Recently added' },
-//			{ key: 'recent_updated',	name: 'Recently updated' },
-			{ key: 'album',				name: 'Album name',				type: 'string' },
-			{ key: 'artist',			name: 'Artist name',			type: 'string' },
-			{ key: 'album_artist',		name: 'Album artist name',		type: 'string' },
-			{ key: 'track',				name: 'Track number',			type: 'numeric' },			
+			{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
+			{ key: 'title',				name: 'Title',					type: 'text' },
+			{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+			{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
+			{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
+			{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+			{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
+			{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+			{ key: 'added',				name: 'Add date',				type: 'date' },
+			{ key: 'updated',			name: 'Update date',			type: 'date' },
+			{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+			{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+			{ key: 'album',				name: 'Album name',				type: 'text' },
+			{ key: 'artist',			name: 'Artist name',			type: 'text' },
+			{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
+			{ key: 'track',				name: 'Track number',			type: 'numeric' },
 			{ key: 'year',				name: 'Year',					type: 'numeric' },
 			{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-//			{ key: 'last_play',			name: 'Last played' },
-//			{ key: 'recent_played',		name: 'Recently played' },
-//			{ key: 'myplayed',			name: 'Is played' },
-//			{ key: 'myplayedalbum',		name: 'Is played album' },
-//			{ key: 'myplayedartist',	name: 'Is played artist' },
+			{ key: 'last_play',			name: 'Last played',			type: 'date' },
+			{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
+			{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
+			{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
+			{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
 			{ key: 'time',				name: 'Duration',				type: 'numeric' },
-			{ key: 'song_genre',		name: 'Song genre',				type: 'string' },
-			{ key: 'album_genre',		name: 'Album genre',			type: 'string' },
-			{ key: 'artist_genre',		name: 'Artist genre',			type: 'string' },
-//			{ key: 'no_genre',			name: 'Has no genre' },
-//			{ key: 'playlist',			name: 'Playlist is' },
-			{ key: 'playlist_name',		name: 'Playlist name',			type: 'string' },
-			{ key: 'file',				name: 'File name',				type: 'string' },
+			{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
+			{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
+			{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
+			{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
+			{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
+			{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+			{ key: 'file',				name: 'File name',				type: 'text' },
 		];
 
-		$scope.searchRuleOperators =  {
-			string: [
+		$scope.searchRuleOperators = {
+			text: [
 				{ key: 'contain',		name: 'Contains' },
 				{ key: 'notcontain',	name: 'Does not contain' },
 				{ key: 'start',			name: 'Starts with' },
@@ -79,13 +79,24 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ key: '!=',			name: 'Does not equal' },
 				{ key: '>',				name: 'Is greater than' },
 				{ key: '<',				name: 'Is less than' }
+			],
+			numeric_limit: [
+				{ key: 'limit',			name: 'Limit' }
+			],
+			boolean: [
+				{ key: 'true',			name: 'Is true' },
+				{ key: 'false',			name: 'Is false' }
+			],
+			date: [
+				{ key: '<',				name: 'Before' },
+				{ key: '>',				name: 'After' }
+			],
+			playlist: [
+				{ key: 'equal',			name: 'Is equal to' },
+				{ key: 'ne',			name: 'Is not equal to' },
 			]
-//				{ key: 'true',			name: 'Is true' },
-//				{ key: 'false',			name: 'Is false' },
-//				{ key: 'equal',			name: 'Is equal to' },
-//				{ key: 'ne',			name: 'Is not equal to' },
-//				{ key: 'limit',			name: 'Limit' },
 		};
+		$scope.searchRuleOperators.numeric_rating = $scope.searchRuleOperators.numeric; // use the same operators
 
 		$scope.resultList = libraryService.getAdvancedSearchResult();
 		$scope.errorDescription = null;
@@ -103,9 +114,13 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			$scope.searchRules.splice(index, 1);
 		};
 
-		$scope.operatorsForRule = function(ruleKey) {
+		$scope.ruleType = function(ruleKey) {
 			const rule = _.find($scope.searchRuleTypes, { key: ruleKey });
-			return rule ? $scope.searchRuleOperators[rule.type] : [];
+			return rule?.type;
+		};
+
+		$scope.operatorsForRule = function(ruleKey) {
+			return $scope.searchRuleOperators[$scope.ruleType(ruleKey)] ?? [];
 		};
 
 		$scope.search = function() {

@@ -42,6 +42,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					{ key: 'track',				name: 'Track number',			type: 'numeric' },
 					{ key: 'year',				name: 'Year',					type: 'numeric' },
 					{ key: 'time',				name: 'Duration',				type: 'numeric' },
+					{ key: 'bitrate',			name: 'Bit rate',				type: 'numeric' },
 					{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
 					{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
 					{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },

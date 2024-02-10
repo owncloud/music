@@ -5,6 +5,7 @@
   [#1132](https://github.com/owncloud/music/issues/1132)
 - Option to change the Ampache session timeout with the `config.php` key `music.ampache_session_expiry_time`
   [#1134](https://github.com/owncloud/music/issues/1134)
+- Ampache: Advanced search rule `bitrate` for songs
 
 ### Changed
 

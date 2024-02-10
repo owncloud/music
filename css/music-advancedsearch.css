@@ -13,3 +13,26 @@
 	margin: 8px;
 	vertical-align: middle;
 }
+
+#adv-search-controls {
+	margin-left: 14px;
+}
+
+#adv-search-rules {
+	width: 100%;
+	max-width: 650px;
+	white-space: normal;
+}
+
+#adv-search-rules a {
+	opacity: .5;
+}
+
+#adv-search-rules a:hover {
+	opacity: 1;
+}
+
+#adv-search-rules input {
+	width: unset;
+	max-width: unset;
+}

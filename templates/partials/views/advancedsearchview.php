@@ -3,7 +3,7 @@
 
 	<div id="adv-search-controls">
 		<table id="adv-search-rules">
-			<tr class="adv-search-rule-row" ng-repeat="rule in searchRules">
+			<tr class="adv-search-rule-row" ng-repeat="rule in searchRules" on-enter="search()">
 				<td><select ng-model="rule.rule" ng-change="onRuleChanged(rule)">
 					<option ng-if="!searchRuleTypes[0].label" ng-repeat="ruleType in searchRuleTypes[0].options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
 					<optgroup ng-repeat="category in searchRuleTypes" label="{{ category.label }}" ng-if="category.label">

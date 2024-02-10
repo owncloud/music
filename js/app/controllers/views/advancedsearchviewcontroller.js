@@ -26,37 +26,67 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		});
 
 		$scope.searchRuleTypes = [
-			{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
-			{ key: 'title',				name: 'Title',					type: 'text' },
-			{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-			{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
-			{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
-			{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
-			{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
-			{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
-			{ key: 'added',				name: 'Add date',				type: 'date' },
-			{ key: 'updated',			name: 'Update date',			type: 'date' },
-			{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-			{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
-			{ key: 'album',				name: 'Album name',				type: 'text' },
-			{ key: 'artist',			name: 'Artist name',			type: 'text' },
-			{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
-			{ key: 'track',				name: 'Track number',			type: 'numeric' },
-			{ key: 'year',				name: 'Year',					type: 'numeric' },
-			{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-			{ key: 'last_play',			name: 'Last played',			type: 'date' },
-			{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
-			{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
-			{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
-			{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
-			{ key: 'time',				name: 'Duration',				type: 'numeric' },
-			{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
-			{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
-			{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
-			{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
-			{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
-			{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
-			{ key: 'file',				name: 'File name',				type: 'text' },
+			{
+				label: null,
+				options: [
+					{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
+				]
+			},
+			{
+				label: 'Song metadata',
+				options: [
+					{ key: 'title',				name: 'Title',					type: 'text' },
+					{ key: 'album',				name: 'Album name',				type: 'text' },
+					{ key: 'artist',			name: 'Artist name',			type: 'text' },
+					{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
+					{ key: 'track',				name: 'Track number',			type: 'numeric' },
+					{ key: 'year',				name: 'Year',					type: 'numeric' },
+					{ key: 'time',				name: 'Duration',				type: 'numeric' },
+					{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
+					{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
+					{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
+					{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
+				]
+			},
+			{
+				label: 'File data',
+				options: [
+					{ key: 'file',				name: 'File name',				type: 'text' },
+					{ key: 'added',				name: 'Add date',				type: 'date' },
+					{ key: 'updated',			name: 'Update date',			type: 'date' },
+					{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+					{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+				]
+			},
+			{
+				label: 'Rating',
+				options: [
+					{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+					{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
+					{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
+					{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+					{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
+					{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+				]
+			},
+			{
+				label: 'Play history',
+				options: [
+					{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
+					{ key: 'last_play',			name: 'Last played',			type: 'date' },
+					{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
+					{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
+					{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
+					{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
+				]
+			},
+			{
+				label: 'Playlist',
+				options: [
+					{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
+					{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+				]
+			}
 		];
 
 		$scope.searchRuleOperators = {
@@ -104,7 +134,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.searchRules = [];
 
 		$scope.addSearchRule = function() {
-			const rule = $scope.searchRuleTypes[0];
+			const rule = $scope.searchRuleTypes[0].options[0];
 			const operator = $scope.searchRuleOperators[rule.type][0];
 			$scope.searchRules.push({ rule: rule.key, operator: operator.key, input: '' });
 		};
@@ -115,7 +145,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.ruleType = function(ruleKey) {
-			const rule = _.find($scope.searchRuleTypes, { key: ruleKey });
+			const rule = _($scope.searchRuleTypes).map('options').flatten().find({ key: ruleKey });
 			return rule?.type;
 		};
 

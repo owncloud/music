@@ -5,7 +5,10 @@
 		<table id="adv-search-rules">
 			<tr class="adv-search-rule-row" ng-repeat="rule in searchRules">
 				<td><select ng-model="rule.rule">
-					<option ng-repeat="ruleType in searchRuleTypes" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+					<option ng-if="!searchRuleTypes[0].label" ng-repeat="ruleType in searchRuleTypes[0].options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+					<optgroup ng-repeat="category in searchRuleTypes" label="{{ category.label }}" ng-if="category.label">
+						<option ng-repeat="ruleType in category.options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+					</optgroup>
 				</select></td>
 				<td><select ng-model="rule.operator">
 					<option ng-repeat="ruleOp in operatorsForRule(rule.rule)" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option>

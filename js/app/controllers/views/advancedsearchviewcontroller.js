@@ -144,6 +144,14 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			$scope.searchRules.splice(index, 1);
 		};
 
+		$scope.onRuleChanged = function(rule) {
+			// ensure the selected operator is valid for the current rule
+			const validOperators = $scope.operatorsForRule(rule.rule);
+			if (!_.find(validOperators, { key: rule.operator })) {
+				rule.operator = validOperators[0].key;
+			}
+		};
+
 		$scope.ruleType = function(ruleKey) {
 			const rule = _($scope.searchRuleTypes).map('options').flatten().find({ key: ruleKey });
 			return rule?.type;

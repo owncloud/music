@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -39,6 +39,7 @@ use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\LibrarySettings;
+use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
 
@@ -72,6 +73,8 @@ class ApiController extends Controller {
 	private $urlGenerator;
 	/** @var ?Folder */
 	private $userFolder;
+	/** @var Random */
+	private $random;
 	/** @var Logger */
 	private $logger;
 
@@ -91,6 +94,7 @@ class ApiController extends Controller {
 								LibrarySettings $librarySettings,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
 								?Folder $userFolder, // null if this gets called after the user has logged out or on a public page
+								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->trackBusinessLayer = $trackbusinesslayer;
@@ -107,6 +111,7 @@ class ApiController extends Controller {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
+		$this->random = $random;
 		$this->logger = $logger;
 	}
 
@@ -361,7 +366,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function advancedSearch(string $rules, string $conjunction='and', ?int $limit=null, ?int $offset=null) {
+	public function advancedSearch(string $rules, string $conjunction='and', bool $randomize=false, ?int $limit=null, ?int $offset=null) {
 		// TODO: other entity types than tracks
 		$rules = \json_decode($rules, true);
 
@@ -372,7 +377,16 @@ class ApiController extends Controller {
 		}
 
 		try {
-			$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
+			// TODO: move randomization logic to the business layer
+			if ($randomize) {
+				// in case the random order is requested, the limit/offset handling happens after the DB query
+				$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId);
+				$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $this->userId, 'adv_search_track');
+				$tracks = Util::arrayMultiGet($tracks, $indices);
+			} else {
+				$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
+			}
+
 			$trackIds = Util::extractIds($tracks);
 			return new JSONResponse([
 				'id' => \md5(\serialize($trackIds)), // use hash => identical results will have identical ID

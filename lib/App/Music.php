@@ -167,6 +167,7 @@ class Music extends App {
 				$c->query('LibrarySettings'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
+				$c->query('Random'),
 				$c->query('Logger')
 			);
 		});

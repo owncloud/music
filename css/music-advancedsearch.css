@@ -36,3 +36,20 @@
 	width: unset;
 	max-width: unset;
 }
+
+#adv-search-common-parameters {
+	margin-bottom: 16px;
+}
+
+#adv-search-limit {
+	margin-right: 16px;
+}
+
+#adv-search-randomize {
+	display: inline-block;
+	margin-right: 16px;
+}
+
+#adv-search-randomize-checkbox {
+	vertical-align: middle;
+}

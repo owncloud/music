@@ -25,6 +25,10 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			_.each(_unsubFuncs, (func) => func());
 		});
 
+		$scope.maxResults = null;
+		$scope.randomize = false;
+		$scope.conjunction = 'and';
+
 		$scope.searchRuleTypes = [
 			{
 				label: null,
@@ -167,7 +171,9 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			$scope.errorDescription = null;
 
 			const searchArgs = {
-				conjunction: 'and', // TODO: support 'or'
+				conjunction: $scope.conjunction,
+				randomize: $scope.randomize,
+				limit: $scope.maxResults || null,
 				rules: JSON.stringify($scope.searchRules)
 			};
 

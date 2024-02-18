@@ -2,6 +2,24 @@
 	<h1 translate>Advanced search</h1>
 
 	<div id="adv-search-controls">
+		<div id="adv-search-common-parameters">
+			<span translate>Max results</span>
+			<select id="adv-search-limit" ng-model="maxResults">
+				<option value="" translate>Unlimited</option>
+				<option value="10">10</option>
+				<option value="30">30</option>
+				<option value="100">100</option>
+				<option value="500">500</option>
+			</select>
+			<div id="adv-search-randomize">
+				<input id="adv-search-randomize-checkbox" type="checkbox" ng-model="randomize"/>
+				<label for="adv-search-randomize-checkbox" translate>Randomize</label>
+			</div>
+			<select id="adv-search-conjunction" ng-model="conjunction">
+				<option value="and" translate>Matching all rules</option>
+				<option value="or" translate>Matching any rule</option>
+			</select>
+		</div>
 		<table id="adv-search-rules">
 			<tr class="adv-search-rule-row" ng-repeat="rule in searchRules" on-enter="search()">
 				<td><select ng-model="rule.rule" ng-change="onRuleChanged(rule)">

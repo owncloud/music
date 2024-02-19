@@ -598,22 +598,30 @@ abstract class BaseMapper extends CompatibleMapper {
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		$pqsql = ($this->dbType == 'pgsql');
 		switch ($ruleOperator) {
-			case 'contain':		return ['op' => 'LIKE',							'param' => "%$ruleInput%"];
-			case 'notcontain':	return ['op' => 'NOT LIKE',						'param' => "%$ruleInput%"];
-			case 'start':		return ['op' => 'LIKE',							'param' => "$ruleInput%"];
-			case 'end':			return ['op' => 'LIKE',							'param' => "%$ruleInput"];
-			case 'is':			return ['op' => '=',							'param' => "$ruleInput"];
-			case 'isnot':		return ['op' => '!=',							'param' => "$ruleInput"];
-			case 'sounds':		return ['op' => 'SOUNDS LIKE',					'param' => $ruleInput]; // MySQL-specific syntax
-			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',				'param' => $ruleInput]; // MySQL-specific syntax
-			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',		'param' => $ruleInput];
-			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',	'param' => $ruleInput];
-			case 'true':		return ['op' => 'IS NOT NULL',					'param' => null];
-			case 'false':		return ['op' => 'IS NULL',						'param' => null];
-			case 'equal':		return ['op' => '',								'param' => $ruleInput];
-			case 'ne':			return ['op' => 'NOT',							'param' => $ruleInput];
-			case 'limit':		return ['op' => (string)(int)$ruleInput,		'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
-			default:			return ['op' => $ruleOperator,					'param' => $ruleInput]; // all numerical operators fall here
+			case 'contain':		return ['op' => 'LIKE',									'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',								'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',									'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',									'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',									'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',									'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => 'SOUNDS LIKE',							'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',						'param' => $ruleInput]; // MySQL-specific syntax
+			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',				'param' => $ruleInput];
+			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',			'param' => $ruleInput];
+			case 'true':		return ['op' => 'IS NOT NULL',							'param' => null];
+			case 'false':		return ['op' => 'IS NULL',								'param' => null];
+			case 'equal':		return ['op' => '',										'param' => $ruleInput];
+			case 'ne':			return ['op' => 'NOT',									'param' => $ruleInput];
+			case 'limit':		return ['op' => (string)(int)$ruleInput,				'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'param' => $ruleInput]; // all numerical operators fall here
+		}
+	}
+
+	protected static function sanitizeNumericOp($comparisonOperator) {
+		if (\in_array($comparisonOperator, ['>=', '<=', '=', '!=', '>', '<'])) {
+			return $comparisonOperator;
+		} else {
+			throw new \DomainException("Bad advanced search operator: $comparisonOperator");
 		}
 	}
 

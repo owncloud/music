@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Http;
@@ -77,16 +77,14 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 			$fp = $this->file->fopen('r') ?? null;
 
 			if (!is_resource($fp)) {
-				$status = Http::STATUS_NOT_FOUND;
+				$output->setHttpResponseCode(Http::STATUS_NOT_FOUND);
 			} else {
 				if ($this->streamDataToOutput($fp) === false) {
-					$status = Http::STATUS_BAD_REQUEST;
+					$output->setHttpResponseCode(Http::STATUS_BAD_REQUEST);
 				}
 				\fclose($fp);
 			}
 		}
-
-		$output->setHttpResponseCode($status);
 	}
 
 	private function streamDataToOutput($fp) {

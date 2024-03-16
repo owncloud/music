@@ -9,6 +9,8 @@
   [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
 - Playlist file not playing within Files in case the first track of the list is in unsupported format
 - Some Finnish translations being replaced with English (since v1.9.0)
+- Error "Cannot set response code - headers already sent" logged on each played song on PHP 8.3
+  [#1133](https://github.com/owncloud/music/issues/1133)
 
 ## 1.10.0 - 2024-01-27
 

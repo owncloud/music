@@ -185,8 +185,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 				reason = response.status;
 				break;
 			}
-			OC.Notification.showTemporary(
-					gettextCatalog.getString('Failed to load the collection: ') + reason);
+			const errMsg = gettextCatalog.getString('Failed to load the collection:');
+			OC.Notification.showTemporary(errMsg + ' ' + reason);
 		});
 
 	};

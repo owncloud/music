@@ -69,8 +69,8 @@ angular.module('Music').controller('RadioViewController', [
 				},
 				function (error) {
 					station.busy = false;
-					OC.Notification.showTemporary(
-							gettextCatalog.getString('Failed to delete the radio station: ') + error.status);
+					const errMsg = gettextCatalog.getString('Failed to delete the radio station:');
+					OC.Notification.showTemporary(errMsg + ' ' + error.status);
 				}
 			);
 		}

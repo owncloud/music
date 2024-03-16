@@ -170,8 +170,8 @@ angular.module('Music').controller('SettingsViewController', [
 									},
 									function(error) { // error handling
 										$scope.collectionResetOngoing = false;
-										OC.Notification.showTemporary(
-												gettextCatalog.getString('Failed to reset the collection: ') + error.status);
+										const errMsg = gettextCatalog.getString('Failed to reset the collection:');
+										OC.Notification.showTemporary(errMsg + ' ' + error.status);
 									}
 								);
 						};
@@ -208,8 +208,8 @@ angular.module('Music').controller('SettingsViewController', [
 								},
 								function(error) { // error handling
 									$scope.radioResetOngoing = false;
-									OC.Notification.showTemporary(
-											gettextCatalog.getString('Failed to reset the radio stations: ') + error.status);
+									const errMsg = gettextCatalog.getString('Failed to reset the radio stations:');
+									OC.Notification.showTemporary(errMsg + ' ' + error.status);
 								}
 							);
 					}
@@ -238,8 +238,8 @@ angular.module('Music').controller('SettingsViewController', [
 								},
 								function(error) { // error handling
 									$scope.podcastsResetOngoing = false;
-									OC.Notification.showTemporary(
-											gettextCatalog.getString('Failed to reset the podcast channels: ') + error.status);
+									const errMsg = gettextCatalog.getString('Failed to reset the podcast channels:');
+									OC.Notification.showTemporary(errMsg + ' ' + error.status);
 								}
 							);
 					}

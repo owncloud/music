@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\App;
@@ -83,11 +83,23 @@ class Music extends App {
 
 		\mb_internal_encoding('UTF-8');
 
+		// NC26+ no longer ships OCP\AppFramework\Db\Mapper. Create a class alias which refers to this OCP class if available
+		// or to our own ponyfill if not (created by copying the said class from NC25).
 		if (!\class_exists('OCA\Music\AppFramework\Db\CompatibleMapper')) {
-			if (\class_exists(\OCP\AppFramework\Db\Mapper::class)) {
+			if (\class_exists('OCP\AppFramework\Db\Mapper')) {
 				\class_alias(\OCP\AppFramework\Db\Mapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
 			} else {
 				\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+			}
+		}
+
+		// Create a class alias which refers to the TimedJob either from OC or OCP namespace. The OC version is available
+		// on ownCloud and on Nextcloud versions <29. The OCP version is available on NC15+.
+		if (!\class_exists('OCA\Music\BackgroundJob\TimedJob')) {
+			if (\class_exists('OCP\BackgroundJob\TimedJob')) {
+				\class_alias(\OCP\BackgroundJob\TimedJob::class, 'OCA\Music\BackgroundJob\TimedJob');
+			} else {
+				\class_alias(\OC\BackgroundJob\TimedJob::class, 'OCA\Music\BackgroundJob\TimedJob');
 			}
 		}
 

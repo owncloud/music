@@ -9,18 +9,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\App\Music;
 
-use OC\BackgroundJob\TimedJob;
-// NC15+ would have TimedJob also as a public class and has deprecated the private class used above.
-// However, we can't use this new alternative as it's not available on ownCloud.
-// use OCP\BackgroundJob\TimedJob;
-
+// The base class extended is a class alias created in OCA\Music\App\Music
 class Cleanup extends TimedJob {
 
 	/**

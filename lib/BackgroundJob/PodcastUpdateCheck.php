@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\BackgroundJob;
@@ -15,11 +15,7 @@ namespace OCA\Music\BackgroundJob;
 use OCA\Music\App\Music;
 use OCA\Music\Utility\PodcastService;
 
-use OC\BackgroundJob\TimedJob;
-// NC15+ would have TimedJob also as a public class and has deprecated the private class used above.
-// However, we can't use this new alternative as it's not available on ownCloud.
-// use OCP\BackgroundJob\TimedJob;
-
+// The base class extended is a class alias created in OCA\Music\App\Music
 class PodcastUpdateCheck extends TimedJob {
 
 	/**

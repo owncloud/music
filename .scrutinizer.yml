@@ -5,7 +5,7 @@ imports:
 filter:
     excluded_paths: [js/vendor/*, tests/]
     dependency_paths:
-        - "vendor/christophwurst/nextcloud/"
+        - "vendor/nextcloud/ocp"
         - "vendor/doctrine/dbal/"
         - "3rdparty/getID3/getid3/"
         - "stubs/"

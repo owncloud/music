@@ -12,6 +12,10 @@
 	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
+#adv-search-area select {
+	scrollbar-width: thin;
+}
+
 #adv-search-rules .icon {
 	display: inline-block;
 	margin: 8px;
@@ -56,13 +60,4 @@
 
 #adv-search-common-parameters select {
 	margin-right: 16px;
-}
-
-#adv-search-randomize {
-	display: inline-block;
-	margin-right: 16px;
-}
-
-#adv-search-randomize-checkbox {
-	vertical-align: middle;
 }

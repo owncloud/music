@@ -82,15 +82,16 @@ angular.module('Music').controller('NavigationController', [
 		});
 		
 		/** 
-		 * Catch ctrl+f except when the Settings view is active or the search input is already focused.
-		 * In the latter case, let the cloud core and/or browser do its default handling.
+		 * Catch ctrl+f except when a view not supporting search is active or the search input is already
+		 * focused. In the latter case, let the cloud core and/or browser do its default handling.
 		 * Note: This event is bound in the *capturing* phase instead of the typical *bubbling* phase.
 		 * This is to enable us to execute before the event handler registered by the unified search.
 		 * During the bubbling phase, the handlers are executed in the order they are registered and we
 		 * can't register our handler before the cloud core.
 		 */
 		document.addEventListener('keydown', (e) => {
-			if ($rootScope.currentView !== '#/settings'
+			const noSearchViews = ['#/settings', '#/search'];
+			if (!noSearchViews.includes($rootScope.currentView)
 				&& !$('#search-input').is(':focus')
 				&& !$('#unified-search__input').is(':focus')
 				&& e.ctrlKey && e.key === 'f')

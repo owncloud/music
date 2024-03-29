@@ -9,11 +9,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Middleware;
 
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Middleware;
@@ -35,19 +36,21 @@ use OCA\Music\Utility\Util;
  */
 class AmpacheMiddleware extends Middleware {
 
-	const SESSION_EXPIRY_TIME = 6000;
-
 	private $request;
 	private $ampacheSessionMapper;
 	private $ampacheUserMapper;
 	private $logger;
+	private $sessionExpiryTime;
 
 	public function __construct(
-			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, AmpacheUserMapper $ampacheUserMapper, Logger $logger) {
+			IRequest $request, IConfig $config, AmpacheSessionMapper $ampacheSessionMapper, AmpacheUserMapper $ampacheUserMapper, Logger $logger) {
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->logger = $logger;
+
+		$this->sessionExpiryTime = $config->getSystemValue('music.ampache_session_expiry_time', 6000);
+		$this->sessionExpiryTime = \min($this->sessionExpiryTime, 365*24*60*60); // limit to one year
 	}
 
 	/**
@@ -85,7 +88,10 @@ class AmpacheMiddleware extends Middleware {
 		$version = $this->request->getParam('version');
 
 		$currentTime = \time();
-		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
+		$expiryDate = $currentTime + $this->sessionExpiryTime;
+		// TODO: The expiry timestamp is currently saved in the database as an unsigned integer.
+		// For PostgreSQL, this has the maximum value of 2^31 which will become a problem in the
+		// year 2038 (or already in 2037 if the admin has configured close to the maximum expiry time).
 
 		$this->checkHandshakeTimestamp($timestamp, $currentTime);
 		$apiKeyId = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
@@ -97,7 +103,7 @@ class AmpacheMiddleware extends Middleware {
 		if ($timestamp === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
-		if ($timestamp < ($currentTime - self::SESSION_EXPIRY_TIME)) {
+		if ($timestamp < ($currentTime - $this->sessionExpiryTime)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
 		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
@@ -166,7 +172,7 @@ class AmpacheMiddleware extends Middleware {
 		} else {
 			try {
 				// extend the session deadline on any authorized API call
-				$this->ampacheSessionMapper->extend($token, \time() + self::SESSION_EXPIRY_TIME);
+				$this->ampacheSessionMapper->extend($token, \time() + $this->sessionExpiryTime);
 				return $this->ampacheSessionMapper->findByToken($token);
 			} catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
 				throw new AmpacheException('Invalid Login - invalid session token', 401);
@@ -175,7 +181,7 @@ class AmpacheMiddleware extends Middleware {
 	}
 
 	/**
-	 * If an AmpacheException is being caught, the appropiate ampache
+	 * If an AmpacheException is being caught, the appropriate ampache
 	 * exception response is rendered
 	 *
 	 * NOTE: Type declarations cannot be used on this function signature because that would be

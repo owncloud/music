@@ -226,9 +226,17 @@
 		</div>
 		<div>
 			<p>music.ampache_api_default_ver</p>
-			<p><em translate
-					translate-params-default-ver="6">
+			<p><em translate translate-params-default-ver="6">
 				The Ampache API major version to use in case the client doesn't specify any version. The default is {{defaultVer}}.
+			</em></p>
+		</div>
+		<div>
+			<p>music.ampache_session_expiry_time</p>
+			<p><em translate
+					translate-params-default-expiry="6000"
+					translate-params-max-expiry="31536000"
+			>
+				The Ampache session expiry time in seconds. The default is {{defaultExpiry}} and the maximum is {{maxExpiry}}.
 			</em></p>
 		</div>
 		<div class="dimmed">

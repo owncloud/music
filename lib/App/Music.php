@@ -657,6 +657,7 @@ class Music extends App {
 		$container->registerService('AmpacheMiddleware', function (IAppContainer $c) {
 			return new AmpacheMiddleware(
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('AmpacheSessionMapper'),
 				$c->query('AmpacheUserMapper'),
 				$c->query('Logger')

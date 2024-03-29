@@ -8,6 +8,10 @@
  * @copyright Pauli Järvinen 2024
  */
 
+#adv-search-area {
+	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
+}
+
 #adv-search-rules .icon {
 	display: inline-block;
 	margin: 8px;
@@ -19,9 +23,13 @@
 }
 
 #adv-search-rules {
-	width: 100%;
-	max-width: 650px;
+	width: fit-content;
+	max-width: 100%;
 	white-space: normal;
+}
+
+.adv-search-rule-row {
+	margin-top: 10px;
 }
 
 #adv-search-rules a {
@@ -35,6 +43,11 @@
 #adv-search-rules input {
 	width: unset;
 	max-width: unset;
+}
+
+#adv-search-rules .add-row:hover,
+#adv-search-rules .add-row *:hover {
+	background-color: var(--color-background-dark, #ededed);
 }
 
 #adv-search-common-parameters {

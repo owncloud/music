@@ -56,6 +56,10 @@ abstract class BaseMapper extends CompatibleMapper {
 		return new $this->entityClass();
 	}
 
+	public function unprefixedTableName() : string {
+		return \str_replace('*PREFIX*', '', $this->getTableName());
+	}
+
 	/**
 	 * Find a single entity by id and user_id
 	 * @throws DoesNotExistException if the entity does not exist
@@ -180,7 +184,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
 		$sqlConditions = [];
 		$sqlParams = [$userId];
 
@@ -196,7 +200,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 		$sqlConditions = \implode(" $conjunction ", $sqlConditions);
 
-		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause(SortBy::Name));
+		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause($sortBy));
 		return $this->findEntities($sql, $sqlParams, $limit, $offset);
 	}
 

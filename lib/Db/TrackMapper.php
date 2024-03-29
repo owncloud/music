@@ -53,14 +53,16 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::formatSortingClause()
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
-		$dir = $invertSort ? 'DESC' : 'ASC';
 		switch ($sortBy) {
 			case SortBy::Parent:
+				$dir = $invertSort ? 'DESC' : 'ASC';
 				// Note: the alternative form "LOWER(`artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046 for a similar case
 				return "ORDER BY LOWER(`artist`.`name`) $dir, LOWER(`title`) $dir";
 			case SortBy::PlayCount:
+				$dir = $invertSort ? 'ASC' : 'DESC';
 				return "ORDER BY `play_count` $dir";
 			case SortBy::LastPlayed:
+				$dir = $invertSort ? 'ASC' : 'DESC';
 				return "ORDER BY `last_played` $dir";
 			default:
 				return parent::formatSortingClause($sortBy, $invertSort);

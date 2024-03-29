@@ -3,21 +3,28 @@
 
 	<div id="adv-search-controls">
 		<div id="adv-search-common-parameters">
-			<span translate>Max results</span>
-			<select id="adv-search-limit" ng-model="maxResults">
-				<option value="" translate>Unlimited</option>
-				<option value="10">10</option>
-				<option value="30">30</option>
-				<option value="100">100</option>
-				<option value="500">500</option>
-			</select>
-			<div id="adv-search-randomize">
-				<input id="adv-search-randomize-checkbox" type="checkbox" ng-model="randomize"/>
-				<label for="adv-search-randomize-checkbox" translate>Randomize</label>
-			</div>
+			<span translate>Search for tracks</span>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>Matching all rules</option>
 				<option value="or" translate>Matching any rule</option>
+			</select>
+			<span translate>limiting results to</span>
+			<select id="adv-search-limit" ng-model="maxResults">
+				<option value="" translate>Unlimited</option>
+				<option value="10" translate>10 matches</option>
+				<option value="30" translate>30 matches</option>
+				<option value="100" translate>100 matches</option>
+				<option value="500" translate>500 matches</option>
+			</select>
+			<span translate>ordering by</span>
+			<select id="adv-search-order" ng-model="order">
+				<option value="name" translate>Title</option>
+				<option value="parent" translate>Artist</option>
+				<option value="newest" translate>Add time</option>
+				<option value="play_count" translate>Play count</option>
+				<option value="last_played" translate>Last play time</option>
+				<option value="rating" translate>Rating</option>
+				<option value="random" translate>Random</option>
 			</select>
 		</div>
 		<div id="adv-search-rules">

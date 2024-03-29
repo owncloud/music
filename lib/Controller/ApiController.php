@@ -31,6 +31,7 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Maintenance;
+use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\FileStreamResponse;
@@ -366,7 +367,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function advancedSearch(string $rules, string $conjunction='and', bool $randomize=false, ?int $limit=null, ?int $offset=null) {
+	public function advancedSearch(string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) {
 		// TODO: other entity types than tracks
 		$rules = \json_decode($rules, true);
 
@@ -377,16 +378,8 @@ class ApiController extends Controller {
 		}
 
 		try {
-			// TODO: move randomization logic to the business layer
-			if ($randomize) {
-				// in case the random order is requested, the limit/offset handling happens after the DB query
-				$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId);
-				$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $this->userId, 'adv_search_track');
-				$tracks = Util::arrayMultiGet($tracks, $indices);
-			} else {
-				$tracks = $this->trackBusinessLayer->findAllAdvanced($conjunction, $rules, $this->userId, $limit, $offset);
-			}
-
+			$tracks = $this->trackBusinessLayer->findAllAdvanced(
+				$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
 			$trackIds = Util::extractIds($tracks);
 			return new JSONResponse([
 				'id' => \md5(\serialize($trackIds)), // use hash => identical results will have identical ID
@@ -395,6 +388,18 @@ class ApiController extends Controller {
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $e->getMessage());
 		}
+	}
+
+	private static function mapSortBy(string $order) {
+		$map = [
+			'name'			=> SortBy::Name,
+			'parent'		=> SortBy::Parent,
+			'newest'		=> SortBy::Newest,
+			'play_count'	=> SortBy::PlayCount,
+			'last_played'	=> SortBy::LastPlayed,
+			'rating'		=> SortBy::Rating,
+		];
+		return $map[$order] ?? SortBy::Name;
 	}
 
 	/**

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -25,6 +25,7 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 
+use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
 /**
@@ -202,8 +203,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAllByName()
 	 * @return Album[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+	public function findAllAdvanced(
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None,
+			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $sortBy, $random, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -20,6 +20,7 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\Random;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
@@ -209,15 +210,28 @@ abstract class BusinessLayer {
 	 * 				'operator' is one of 
 	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @param Random $random When the randomization utility is passed, the result set will be in random order (still supporting proper paging).
+	 * 						 In this case, the argument $sortBy is ignored.
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None,
+			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
+
 		if ($conjunction !== 'and' && $conjunction !== 'or') {
 			throw new BusinessLayerException("Bad conjunction '$conjunction'");
 		}
 		try {
-			return $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+			if ($random !== null) {
+				// in case the random order is requested, the limit/offset handling happens after the DB query
+				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, SortBy::Name);
+				$indices = $random->getIndices(\count($entities), $offset, $limit, $userId, 'adv_search_'.$this->mapper->unprefixedTableName());
+				$entities = Util::arrayMultiGet($entities, $indices);
+			} else {
+				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $sortBy, $limit, $offset);
+			}
+			return $entities;
 		} catch (\Exception $e) {
 			// catch everything as many kinds of DB exceptions are possible on various cloud versions
 			throw new BusinessLayerException($e->getMessage());

@@ -26,7 +26,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		});
 
 		$scope.maxResults = null;
-		$scope.randomize = false;
+		$scope.order = 'name';
 		$scope.conjunction = 'and';
 
 		$scope.searchRuleTypes = [
@@ -172,7 +172,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 			const searchArgs = {
 				conjunction: $scope.conjunction,
-				randomize: $scope.randomize,
+				order: $scope.order,
 				limit: $scope.maxResults || null,
 				rules: JSON.stringify($scope.searchRules)
 			};

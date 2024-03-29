@@ -322,6 +322,8 @@ angular.module('Music').controller('NavigationController', [
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
 				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('tracks' in droppedItem) {
+				addTracks(playlist, droppedItem.tracks);
 			} else if ('album' in droppedItem) {
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {

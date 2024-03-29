@@ -222,6 +222,10 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			return { track: trackId };
 		};
 
+		$scope.getHeaderDraggable = function() {
+			return { tracks: _.map($scope.resultList.tracks, 'track.id') };
+		};
+
 		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
 				$scope.$parent.scrollToItem('track-' + trackId);

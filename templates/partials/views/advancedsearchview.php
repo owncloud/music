@@ -60,7 +60,7 @@
 	</div>
 
 	<div ng-if="resultList.tracks" class="flat-list-view">
-		<h2>
+		<h2 ui-draggable="true" drag="getHeaderDraggable()">
 			<span ng-class="{ clickable: resultList.tracks.length }" ng-click="onHeaderClick()">
 				<span translate translate-n="resultList.tracks.length" translate-plural="{{ resultList.tracks.length }} results">1 result</span>
 				<img ng-if="resultList.tracks.length" class="play svg" alt="{{ 'Play' | translate }}"

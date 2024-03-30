@@ -59,6 +59,7 @@ export interface AdvSearchResult {
 	id : number;
 	tracks? : Track[];
 	albums? : Album[];
+	artists? : Artist[];
 }
 
 export interface Folder {
@@ -400,6 +401,7 @@ export class LibraryService {
 				id: list.id,
 				tracks: _(list.trackIds).map((id) => this.#tracksIndex[id]).value(),
 				albums: _(list.albumIds).map((id) => this.#albumsIndex[id]).value(),
+				artists: _(list.artistIds).map((id) => this.#artistsIndex[id]).value(),
 			};
 		}
 		return this.#advSearchResult;

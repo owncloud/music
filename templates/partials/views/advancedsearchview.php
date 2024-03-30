@@ -7,6 +7,7 @@
 			<select id="adv-search-type" ng-model="entityType" ng-change="onEntityTypeChanged()">
 				<option value="track" translate>tracks</option>
 				<option value="album" translate>albums</option>
+				<option value="artist" translate>artists</option>
 			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>matching all rules</option>
@@ -79,6 +80,14 @@
 			play-track="onAlbumClick"
 			show-track-details="showAlbumDetails"
 			get-draggable="getAlbumDraggable"
+		>
+		</track-list>
+		<track-list
+			tracks="resultList.artists"
+			get-track-data="getArtistData"
+			play-track="onArtistClick"
+			show-track-details="showArtistDetails"
+			get-draggable="getArtistDraggable"
 		>
 		</track-list>
 	</div>

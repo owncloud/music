@@ -20,38 +20,32 @@
 				<option value="100" translate>100 matches</option>
 				<option value="500" translate>500 matches</option>
 			</select>
-			<span translate>ordering</span>
+			<span translate>ordering results</span>
 			<select id="adv-search-order" ng-model="order">
-				<option value="name" translate>by name</option>
-				<option value="parent" translate>by artist</option>
-				<option value="newest" translate>by add time</option>
-				<option value="play_count" ng-if="entityType == 'track'" translate>by play count</option>
-				<option value="last_played" ng-if="entityType == 'track'" translate>by recent play</option>
-				<option value="rating" translate>by rating</option>
-				<option value="random" translate>randomly</option>
+				<option ng-repeat="order in availableOrders[entityType]" ng-value="order.value">{{ order.text }}</option>
 			</select>
 		</div>
 		<div id="adv-search-rules">
 			<div class="adv-search-rule-row" ng-repeat="rule in searchRules" on-enter="search()">
 				<select ng-model="rule.rule" ng-change="onRuleChanged(rule)">
-					<option ng-if="!searchRuleTypes[entityType][0].label" ng-repeat="ruleType in searchRuleTypes[entityType][0].options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+					<option ng-if="!searchRuleTypes[entityType][0].label" ng-repeat="ruleType in searchRuleTypes[entityType][0].options" ng-value="ruleType.key">{{ ruleType.name }}</option>
 					<optgroup ng-repeat="category in searchRuleTypes[entityType]" label="{{ category.label }}" ng-if="category.label">
-						<option ng-repeat="ruleType in category.options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+						<option ng-repeat="ruleType in category.options" ng-value="ruleType.key">{{ ruleType.name }}</option>
 					</optgroup>
 				</select>
 
 				<select ng-model="rule.operator">
-					<option ng-repeat="ruleOp in operatorsForRule(rule.rule)" value="{{ ruleOp.key }}">{{ ruleOp.name }}</option>
+					<option ng-repeat="ruleOp in operatorsForRule(rule.rule)" ng-value="ruleOp.key">{{ ruleOp.name }}</option>
 				</select>
 
 				<input ng-if="ruleType(rule.rule) == 'text'" type="text" ng-model="rule.input"/>
 				<input ng-if="['numeric', 'numeric_limit'].includes(ruleType(rule.rule))" type="number" ng-model="rule.input"/>
 				<input ng-if="ruleType(rule.rule) == 'date'" type="date" ng-model="rule.input"/>
 				<select ng-if="ruleType(rule.rule) == 'numeric_rating'" ng-model="rule.input">
-					<option ng-repeat="val in [0,1,2,3,4,5]" value="{{ val }}">{{ val }} Stars</option>
+					<option ng-repeat="val in [0,1,2,3,4,5]" ng-value="val">{{ val }} Stars</option>
 				</select>
 				<select ng-if="ruleType(rule.rule) == 'playlist'" ng-model="rule.input">
-					<option ng-repeat="pl in playlists" value="{{ pl.id }}">{{ pl.name }}</option>
+					<option ng-repeat="pl in playlists" ng-value="pl.id">{{ pl.name }}</option>
 				</select>
 
 				<a class="icon icon-close" ng-click="removeSearchRule($index)"></a>

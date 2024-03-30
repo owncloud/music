@@ -30,6 +30,25 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.conjunction = 'and';
 		$scope.entityType = 'track';
 
+		$scope.availableOrders = {
+			track: [
+				{ value: 'name',		text: 'by name' },
+				{ value: 'parent',		text: 'by artist' },
+				{ value: 'newest',		text: 'by time added' },
+				{ value: 'play_count',	text: 'by play count' },
+				{ value: 'last_played',	text: 'by recent play' },
+				{ value: 'rating',		text: 'by rating' },
+				{ value: 'random',		text: 'randomly' },
+			],
+			album: [
+				{ value: 'name',	text: 'by name' },
+				{ value: 'parent',	text: 'by artist' },
+				{ value: 'newest',	text: 'by time added' },
+				{ value: 'rating',	text: 'by rating' },
+				{ value: 'random',	text: 'randomly' },
+			],
+		};
+
 		$scope.searchRuleTypes = {
 			track: [
 				{
@@ -213,6 +232,11 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					rule.rule = validRules[0];
 					$scope.onRuleChanged(rule);
 				}
+			}
+			// ensure the selected ordering is valid for the current entity type
+			const validOrders = $scope.availableOrders[$scope.entityType];
+			if (!_.find(validOrders, { value: $scope.order })) {
+				$scope.order = validOrders[0].value;
 			}
 		};
 

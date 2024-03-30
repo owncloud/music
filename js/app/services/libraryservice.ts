@@ -55,6 +55,12 @@ export interface Playlist {
 	tracks : PlaylistEntry<Track>[];
 }
 
+export interface AdvSearchResult {
+	id : number;
+	tracks? : Track[];
+	albums? : Album[];
+}
+
 export interface Folder {
 	id : number;
 	name : string;
@@ -100,7 +106,7 @@ export class LibraryService {
 	#albumsCount : number = 0;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
-	#advSearchResult : Playlist = null;
+	#advSearchResult : AdvSearchResult = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
 	#radioStations : PlaylistEntry<RadioStation>[] = null;
@@ -386,11 +392,15 @@ export class LibraryService {
 			this.#smartList = this.#wrapPlaylist(list);
 		}
 	}
-	setAdvancedSearchResult(list : any) : Playlist|null {
+	setAdvancedSearchResult(list : any) : AdvSearchResult|null {
 		if (!list) {
 			this.#advSearchResult = null;
 		} else {
-			this.#advSearchResult = this.#wrapPlaylist(list);
+			this.#advSearchResult = {
+				id: list.id,
+				tracks: _(list.trackIds).map((id) => this.#tracksIndex[id]).value(),
+				albums: _(list.albumIds).map((id) => this.#albumsIndex[id]).value(),
+			};
 		}
 		return this.#advSearchResult;
 	}
@@ -611,7 +621,7 @@ export class LibraryService {
 	getSmartList() : Playlist|null {
 		return this.#smartList;
 	}
-	getAdvancedSearchResult() : Playlist|null {
+	getAdvancedSearchResult() : AdvSearchResult|null {
 		return this.#advSearchResult;
 	}
 	getPlaylist(id : number) : Playlist|undefined {

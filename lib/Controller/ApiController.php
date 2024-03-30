@@ -367,8 +367,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function advancedSearch(string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) {
-		// TODO: other entity types than tracks
+	public function advancedSearch(string $entity, string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) {
 		$rules = \json_decode($rules, true);
 
 		foreach ($rules as $rule) {
@@ -378,16 +377,31 @@ class ApiController extends Controller {
 		}
 
 		try {
-			$tracks = $this->trackBusinessLayer->findAllAdvanced(
-				$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
-			$trackIds = Util::extractIds($tracks);
-			return new JSONResponse([
-				'id' => \md5(\serialize($trackIds)), // use hash => identical results will have identical ID
-				'trackIds' => $trackIds
-			]);
+			$businessLayer = $this->businessLayerForType($entity);
+
+			if ($businessLayer !== null) {
+				$entities = $businessLayer->findAllAdvanced(
+					$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
+				$entityIds = Util::extractIds($entities);
+				return new JSONResponse([
+					'id' => \md5($entity.\serialize($entityIds)), // use hash => identical results will have identical ID
+					$entity.'Ids' => $entityIds
+				]);
+			} else {
+				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Entity type '$entity' is not supported");
+			}
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $e->getMessage());
 		}
+	}
+
+	private function businessLayerForType($type) {
+		$map = [
+			'track' => $this->trackBusinessLayer,
+			'album' => $this->albumBusinessLayer,
+			'artist' => $this->artistBusinessLayer,
+		];
+		return $map[$type] ?? null;
 	}
 
 	private static function mapSortBy(string $order) {

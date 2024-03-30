@@ -3,35 +3,39 @@
 
 	<div id="adv-search-controls">
 		<div id="adv-search-common-parameters">
-			<span translate>Search for tracks</span>
+			<span translate>Search for</span>
+			<select id="adv-search-type" ng-model="entityType" ng-change="onEntityTypeChanged()">
+				<option value="track" translate>tracks</option>
+				<option value="album" translate>albums</option>
+			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
-				<option value="and" translate>Matching all rules</option>
-				<option value="or" translate>Matching any rule</option>
+				<option value="and" translate>matching all rules</option>
+				<option value="or" translate>matching any rule</option>
 			</select>
 			<span translate>limiting results to</span>
 			<select id="adv-search-limit" ng-model="maxResults">
-				<option value="" translate>Unlimited</option>
+				<option value="" translate>unlimited</option>
 				<option value="10" translate>10 matches</option>
 				<option value="30" translate>30 matches</option>
 				<option value="100" translate>100 matches</option>
 				<option value="500" translate>500 matches</option>
 			</select>
-			<span translate>ordering by</span>
+			<span translate>ordering</span>
 			<select id="adv-search-order" ng-model="order">
-				<option value="name" translate>Title</option>
-				<option value="parent" translate>Artist</option>
-				<option value="newest" translate>Add time</option>
-				<option value="play_count" translate>Play count</option>
-				<option value="last_played" translate>Last play time</option>
-				<option value="rating" translate>Rating</option>
-				<option value="random" translate>Random</option>
+				<option value="name" translate>by name</option>
+				<option value="parent" translate>by artist</option>
+				<option value="newest" translate>by add time</option>
+				<option value="play_count" ng-if="entityType == 'track'" translate>by play count</option>
+				<option value="last_played" ng-if="entityType == 'track'" translate>by recent play</option>
+				<option value="rating" translate>by rating</option>
+				<option value="random" translate>randomly</option>
 			</select>
 		</div>
 		<div id="adv-search-rules">
 			<div class="adv-search-rule-row" ng-repeat="rule in searchRules" on-enter="search()">
 				<select ng-model="rule.rule" ng-change="onRuleChanged(rule)">
-					<option ng-if="!searchRuleTypes[0].label" ng-repeat="ruleType in searchRuleTypes[0].options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
-					<optgroup ng-repeat="category in searchRuleTypes" label="{{ category.label }}" ng-if="category.label">
+					<option ng-if="!searchRuleTypes[entityType][0].label" ng-repeat="ruleType in searchRuleTypes[entityType][0].options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
+					<optgroup ng-repeat="category in searchRuleTypes[entityType]" label="{{ category.label }}" ng-if="category.label">
 						<option ng-repeat="ruleType in category.options" value="{{ ruleType.key }}">{{ ruleType.name }}</option>
 					</optgroup>
 				</select>
@@ -61,9 +65,9 @@
 
 	<div ng-if="resultList.tracks" class="flat-list-view">
 		<h2 ui-draggable="true" drag="getHeaderDraggable()">
-			<span ng-class="{ clickable: resultList.tracks.length }" ng-click="onHeaderClick()">
-				<span translate translate-n="resultList.tracks.length" translate-plural="{{ resultList.tracks.length }} results">1 result</span>
-				<img ng-if="resultList.tracks.length" class="play svg" alt="{{ 'Play' | translate }}"
+			<span ng-class="{ clickable: resultCount() }" ng-click="onHeaderClick()">
+				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">1 result</span>
+				<img ng-if="resultCount()" class="play svg" alt="{{ 'Play' | translate }}"
 					src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
 			</span>
 		</h2>
@@ -72,7 +76,15 @@
 			get-track-data="getTrackData"
 			play-track="onTrackClick"
 			show-track-details="showTrackDetails"
-			get-draggable="getDraggable"
+			get-draggable="getTrackDraggable"
+		>
+		</track-list>
+		<track-list
+			tracks="resultList.albums"
+			get-track-data="getAlbumData"
+			play-track="onAlbumClick"
+			show-track-details="showAlbumDetails"
+			get-draggable="getAlbumDraggable"
 		>
 		</track-list>
 	</div>

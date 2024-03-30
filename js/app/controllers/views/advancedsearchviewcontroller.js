@@ -25,74 +25,130 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			_.each(_unsubFuncs, (func) => func());
 		});
 
-		$scope.maxResults = null;
+		$scope.maxResults = '100';
 		$scope.order = 'name';
 		$scope.conjunction = 'and';
+		$scope.entityType = 'track';
 
-		$scope.searchRuleTypes = [
-			{
-				label: null,
-				options: [
-					{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
-				]
-			},
-			{
-				label: 'Song metadata',
-				options: [
-					{ key: 'title',				name: 'Title',					type: 'text' },
-					{ key: 'album',				name: 'Album name',				type: 'text' },
-					{ key: 'artist',			name: 'Artist name',			type: 'text' },
-					{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
-					{ key: 'track',				name: 'Track number',			type: 'numeric' },
-					{ key: 'year',				name: 'Year',					type: 'numeric' },
-					{ key: 'time',				name: 'Duration',				type: 'numeric' },
-					{ key: 'bitrate',			name: 'Bit rate',				type: 'numeric' },
-					{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
-					{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
-					{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
-					{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
-				]
-			},
-			{
-				label: 'File data',
-				options: [
-					{ key: 'file',				name: 'File name',				type: 'text' },
-					{ key: 'added',				name: 'Add date',				type: 'date' },
-					{ key: 'updated',			name: 'Update date',			type: 'date' },
-					{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-					{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
-				]
-			},
-			{
-				label: 'Rating',
-				options: [
-					{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-					{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
-					{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
-					{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
-					{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
-					{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
-				]
-			},
-			{
-				label: 'Play history',
-				options: [
-					{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-					{ key: 'last_play',			name: 'Last played',			type: 'date' },
-					{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
-					{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
-					{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
-					{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
-				]
-			},
-			{
-				label: 'Playlist',
-				options: [
-					{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
-					{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
-				]
-			}
-		];
+		$scope.searchRuleTypes = {
+			track: [
+				{
+					label: null,
+					options: [
+						{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
+					]
+				},
+				{
+					label: 'Song metadata',
+					options: [
+						{ key: 'title',				name: 'Name',					type: 'text' },
+						{ key: 'album',				name: 'Album name',				type: 'text' },
+						{ key: 'artist',			name: 'Artist name',			type: 'text' },
+						{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
+						{ key: 'track',				name: 'Track number',			type: 'numeric' },
+						{ key: 'year',				name: 'Year',					type: 'numeric' },
+						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+						{ key: 'bitrate',			name: 'Bit rate',				type: 'numeric' },
+						{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
+						{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
+						{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
+						{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
+					]
+				},
+				{
+					label: 'File data',
+					options: [
+						{ key: 'file',				name: 'File name',				type: 'text' },
+						{ key: 'added',				name: 'Add date',				type: 'date' },
+						{ key: 'updated',			name: 'Update date',			type: 'date' },
+						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+					]
+				},
+				{
+					label: 'Rating',
+					options: [
+						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+						{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
+						{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
+						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+						{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
+						{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+					]
+				},
+				{
+					label: 'Play history',
+					options: [
+						{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
+						{ key: 'last_play',			name: 'Last played',			type: 'date' },
+						{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
+						{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
+						{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
+						{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
+					]
+				},
+				{
+					label: 'Playlist',
+					options: [
+						{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
+						{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+					]
+				}
+			],
+			album: [
+				{
+					label: 'Album metadata',
+					options: [
+						{ key: 'title',				name: 'Name',					type: 'text' },
+						{ key: 'artist',			name: 'Album artist name',		type: 'text' },
+						{ key: 'song_artist',		name: 'Track artist name',		type: 'text' },
+						{ key: 'year',				name: 'Year',					type: 'numeric' },
+						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+						{ key: 'song_count',		name: 'Song count',				type: 'numeric' },
+						{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
+						{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
+						{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
+						{ key: 'has_image',			name: 'Has image',				type: 'boolean' },
+					]
+				},
+				{
+					label: 'File data',
+					options: [
+						{ key: 'file',				name: 'File name',				type: 'text' },
+						{ key: 'added',				name: 'Add date',				type: 'date' },
+						{ key: 'updated',			name: 'Update date',			type: 'date' },
+						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+					]
+				},
+				{
+					label: 'Rating',
+					options: [
+						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+						{ key: 'songrating',		name: 'Track rating',			type: 'numeric_rating' },
+						{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+					]
+				},
+				{
+					label: 'Play history',
+					options: [
+						{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
+						{ key: 'last_play',			name: 'Last played',			type: 'date' },
+						{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
+						{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
+						{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
+					]
+				},
+				{
+					label: 'Playlist',
+					options: [
+						{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
+						{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+					]
+				}
+			]
+		};
 
 		$scope.searchRuleOperators = {
 			text: [
@@ -139,7 +195,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.searchRules = [];
 
 		$scope.addSearchRule = function() {
-			const rule = $scope.searchRuleTypes[0].options[0];
+			const rule = $scope.searchRuleTypes[$scope.entityType][0].options[0];
 			const operator = $scope.searchRuleOperators[rule.type][0];
 			$scope.searchRules.push({ rule: rule.key, operator: operator.key, input: '' });
 		};
@@ -147,6 +203,17 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.removeSearchRule = function(index) {
 			$scope.searchRules.splice(index, 1);
+		};
+
+		$scope.onEntityTypeChanged = function() {
+			// ensure the selected rules are valid for the current entity type
+			const validRules = _($scope.searchRuleTypes[$scope.entityType]).map('options').flatten().map('key').value();
+			for (let rule of $scope.searchRules) {
+				if (!validRules.includes(rule.rule)) {
+					rule.rule = validRules[0];
+					$scope.onRuleChanged(rule);
+				}
+			}
 		};
 
 		$scope.onRuleChanged = function(rule) {
@@ -158,7 +225,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.ruleType = function(ruleKey) {
-			const rule = _($scope.searchRuleTypes).map('options').flatten().find({ key: ruleKey });
+			const rule = _($scope.searchRuleTypes[$scope.entityType]).map('options').flatten().find({ key: ruleKey });
 			return rule?.type;
 		};
 
@@ -171,6 +238,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			$scope.errorDescription = null;
 
 			const searchArgs = {
+				entity: $scope.entityType,
 				conjunction: $scope.conjunction,
 				order: $scope.order,
 				limit: $scope.maxResults || null,
@@ -187,15 +255,27 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			);
 		};
 
-		function play(startIndex = null) {
-			playlistService.setPlaylist('adv_search_results' + $scope.resultList.id, $scope.resultList.tracks, startIndex);
+		function play(tracks, startIndex = null) {
+			const playlist = _.map(tracks, (track) => {
+				return { track: track };
+			});
+
+			playlistService.setPlaylist('adv_search_results' + $scope.resultList.id, playlist, startIndex);
 			playlistService.publish('play');
 		}
 
 		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.onHeaderClick = play;
+		$scope.onHeaderClick = play; // TODO
 
-		// Play the list, starting from a specific track
+		$scope.getHeaderDraggable = function() {
+			return { tracks: _.map($scope.resultList.tracks, 'id') };
+		};
+
+		$scope.resultCount = function() {
+			const list = $scope.resultList;
+			return list.tracks.length + list.albums.length;
+		};
+
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
@@ -203,32 +283,55 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				let index = _.findIndex($scope.resultList.tracks, (i) => i.track.id == trackId);
-				play(index);
+				const index = _.findIndex($scope.resultList.tracks, { id: trackId });
+				play($scope.resultList.tracks, index);
 			}
 		};
 
 		$scope.getTrackData = function(listItem, index, _scope) {
-			var track = listItem.track;
 			return {
-				title: track.artist.name + ' - ' + track.title,
+				title: listItem.artist.name + ' - ' + listItem.title,
 				tooltip: '',
 				number: index + 1,
-				id: track.id
+				id: listItem.id
 			};
 		};
 
-		$scope.getDraggable = function(trackId) {
+		$scope.getTrackDraggable = function(trackId) {
 			return { track: trackId };
 		};
 
-		$scope.getHeaderDraggable = function() {
-			return { tracks: _.map($scope.resultList.tracks, 'track.id') };
+		$scope.onAlbumClick = function(albumId) {
+			// TODO: play/pause if currently playing album clicked?
+			const tracks = _($scope.resultList.albums).map('tracks').flatten().value();
+			const album = _.find($scope.resultList.albums, { id: albumId });
+			const index = _.findIndex(tracks, { id: album.tracks[0].id });
+			play(tracks, index);
+		};
+
+		$scope.getAlbumData = function(listItem, index, _scope) {
+			return {
+				title: listItem.artist.name + ' - ' + listItem.name,
+				tooltip: '',
+				number: index + 1,
+				id: listItem.id
+			};
+		};
+
+		$scope.getAlbumDraggable = function(albumId) {
+			return { album: albumId };
 		};
 
 		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
-				$scope.$parent.scrollToItem('track-' + trackId);
+				if ($scope.resultList?.tracks.length) {
+					$scope.$parent.scrollToItem('track-' + trackId);
+				} else if ($scope.resultList?.albums.length) {
+					const track = libraryService.getTrack(trackId);
+					if (track) {
+						$scope.$parent.scrollToItem('track-' + track.album.id); // the prefix is 'track-' regardless of the actual entity type!
+					}
+				}
 			}
 		});
 

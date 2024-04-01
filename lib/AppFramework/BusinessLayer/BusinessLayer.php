@@ -208,7 +208,8 @@ abstract class BusinessLayer {
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question,
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of 
-	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
+	 * 				 '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
 	 * @param Random $random When the randomization utility is passed, the result set will be in random order (still supporting proper paging).
 	 * 						 In this case, the argument $sortBy is ignored.

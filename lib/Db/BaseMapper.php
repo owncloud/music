@@ -179,7 +179,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of 
-	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
+	 * 				 '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
@@ -189,8 +190,8 @@ abstract class BaseMapper extends CompatibleMapper {
 		$sqlParams = [$userId];
 
 		foreach ($rules as $rule) {
-			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], (string)$rule['input'], $userId);
-			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
+			list('op' => $sqlOp, 'conv' => $sqlConv, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], (string)$rule['input'], $userId);
+			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp, $sqlConv);
 			$sqlConditions[] = $cond;
 			// On some conditions, the parameter may need to be repeated several times
 			$paramCount = \substr_count($cond, '?');
@@ -596,28 +597,28 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Format SQL operator and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'param' => string]
+	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
+	 * @return array like ['op' => string, 'conv' => string, 'param' => string]
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		$pqsql = ($this->dbType == 'pgsql');
 		switch ($ruleOperator) {
-			case 'contain':		return ['op' => 'LIKE',									'param' => "%$ruleInput%"];
-			case 'notcontain':	return ['op' => 'NOT LIKE',								'param' => "%$ruleInput%"];
-			case 'start':		return ['op' => 'LIKE',									'param' => "$ruleInput%"];
-			case 'end':			return ['op' => 'LIKE',									'param' => "%$ruleInput"];
-			case 'is':			return ['op' => '=',									'param' => "$ruleInput"];
-			case 'isnot':		return ['op' => '!=',									'param' => "$ruleInput"];
-			case 'sounds':		return ['op' => 'SOUNDS LIKE',							'param' => $ruleInput]; // MySQL-specific syntax
-			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',						'param' => $ruleInput]; // MySQL-specific syntax
-			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',				'param' => $ruleInput];
-			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',			'param' => $ruleInput];
-			case 'true':		return ['op' => 'IS NOT NULL',							'param' => null];
-			case 'false':		return ['op' => 'IS NULL',								'param' => null];
-			case 'equal':		return ['op' => '',										'param' => $ruleInput];
-			case 'ne':			return ['op' => 'NOT',									'param' => $ruleInput];
-			case 'limit':		return ['op' => (string)(int)$ruleInput,				'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
-			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'param' => $ruleInput]; // all numerical operators fall here
+			case 'contain':		return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',								'conv' => 'LOWER',		'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',									'conv' => 'LOWER',		'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',									'conv' => 'LOWER',		'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => '=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
+			case 'notsounds':	return ['op' => '!=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
+			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',				'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',			'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'true':		return ['op' => 'IS NOT NULL',							'conv' => '',			'param' => null];
+			case 'false':		return ['op' => 'IS NULL',								'conv' => '',			'param' => null];
+			case 'equal':		return ['op' => '',										'conv' => '',			'param' => $ruleInput];
+			case 'ne':			return ['op' => 'NOT',									'conv' => '',			'param' => $ruleInput];
+			case 'limit':		return ['op' => (string)(int)$ruleInput,				'conv' => '',			'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'conv' => '',			'param' => $ruleInput]; // all numerical operators fall here
 		}
 	}
 
@@ -632,15 +633,19 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Format SQL condition matching the given advanced search rule and SQL operator.
 	 * Derived classes should override this to provide support for table-specific rules.
+	 * @param string $rule	Identifier of the property which is the target of the SQL condition. The identifiers match the Ampache API specification.
+	 * @param string $sqlOp	SQL (comparison) operator to be used
+	 * @param string $conv	SQL conversion function to be applied on the target column and the parameter (e.g. "LOWER")
+	 * @return string SQL condition statement to be used in the "WHERE" clause
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		$table = $this->getTableName();
 		$nameCol = $this->nameColumn;
 
 		switch ($rule) {
-			case 'title':			return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
+			case 'title':			return "$conv(`$table`.`$nameCol`) $sqlOp $conv(?)";
 			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
-			case 'favorite':		return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'favorite':		return "($conv(`$table`.`$nameCol`) $sqlOp $conv(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
 			case 'myrating':		// fall throuhg, we provide no access to other people's data
 			case 'rating':			return "`$table`.`rating` $sqlOp ?";
 			case 'added':			return "`$table`.`created` $sqlOp ?";

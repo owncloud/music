@@ -8,6 +8,8 @@
 - Ampache: Advanced search rule `bitrate` for songs
 
 ### Changed
+- Ampache:
+  * Advanced search operators `sounds like` and `does not sound like` now work also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
 
 ### Fixed
 - Subsonic: Method `getAlbumInfo2` response having incorrect root element name
@@ -19,6 +21,7 @@
 - Ampache:
   * Advanced search rule `playlist_name` not being case insensitive like the other string rules
   * Advanced search rules `playlist` and `playlist_name` not working with SQLite
+  * Advanced search operator `does not sound like` not working 
 
 ## 1.10.0 - 2024-01-27
 

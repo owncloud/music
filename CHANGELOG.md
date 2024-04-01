@@ -21,7 +21,8 @@
 - Ampache:
   * Advanced search rule `playlist_name` not being case insensitive like the other string rules
   * Advanced search rules `playlist` and `playlist_name` not working with SQLite
-  * Advanced search operator `does not sound like` not working 
+  * Advanced search operator `does not sound like` not working
+  * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
 
 ## 1.10.0 - 2024-01-27
 

@@ -257,8 +257,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ key: 'false',			name: 'Is false' }
 			],
 			date: [
-				{ key: '<',				name: 'Before' },
-				{ key: '>',				name: 'After' }
+				{ key: 'before',		name: 'Before' },
+				{ key: 'after',			name: 'After' }
 			],
 			playlist: [
 				{ key: 'equal',			name: 'Is equal to' },

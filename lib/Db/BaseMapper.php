@@ -180,7 +180,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of 
 	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
-	 * 				 '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				 '>=', '<=', '=', '!=', '>', '<', 'before', 'after', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
@@ -598,7 +598,7 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'conv' => string, 'param' => string]
+	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		$pqsql = ($this->dbType == 'pgsql');
@@ -617,8 +617,10 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'false':		return ['op' => 'IS NULL',								'conv' => '',			'param' => null];
 			case 'equal':		return ['op' => '',										'conv' => '',			'param' => $ruleInput];
 			case 'ne':			return ['op' => 'NOT',									'conv' => '',			'param' => $ruleInput];
-			case 'limit':		return ['op' => (string)(int)$ruleInput,				'conv' => '',			'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
-			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'conv' => '',			'param' => $ruleInput]; // all numerical operators fall here
+			case 'limit':		return ['op' => (string)(int)$ruleInput,				'conv' => '',			'param' => $userId]; // this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			case 'before':		return ['op' => '<',									'conv' => '',			'param' => $ruleInput];
+			case 'after':		return ['op' => '>',									'conv' => '',			'param' => $ruleInput];
+			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'conv' => '',			'param' => (int)$ruleInput]; // all numerical operators fall here
 		}
 	}
 

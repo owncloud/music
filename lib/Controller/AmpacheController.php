@@ -1541,8 +1541,8 @@ class AmpacheController extends Controller {
 			return 'limit';
 		} elseif (\in_array($rule, $dateOrDayRules)) {
 			switch ($rule_operator) {
-				case 0: return '<';
-				case 1: return '>';
+				case 0: return 'before';
+				case 1: return 'after';
 				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'date' or 'day' type rules", 400);
 			}
 		} elseif (\in_array($rule, $booleanRules)) {

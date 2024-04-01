@@ -23,6 +23,7 @@
   * Advanced search rules `playlist` and `playlist_name` not working with SQLite
   * Advanced search operator `does not sound like` not working
   * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
+  * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
 
 ## 1.10.0 - 2024-01-27
 

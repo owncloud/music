@@ -5,11 +5,12 @@
   [#1132](https://github.com/owncloud/music/issues/1132)
 - Option to change the Ampache session timeout with the `config.php` key `music.ampache_session_expiry_time`
   [#1134](https://github.com/owncloud/music/issues/1134)
-- Ampache: Advanced search rule `bitrate` for songs
 
 ### Changed
 - Ampache:
-  * Advanced search operators `sounds like` and `does not sound like` now work also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
+  * Advanced search rule `bitrate` supported for songs
+  * Advanced search operators `matches regex` and `does not match regex` supported also on SQLite (this is important to properly support [Ample](https://github.com/mitchray/ample))
+  * Advanced search operators `sounds like` and `does not sound like` supported also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
 
 ### Fixed
 - Subsonic: Method `getAlbumInfo2` response having incorrect root element name

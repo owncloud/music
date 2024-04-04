@@ -601,7 +601,12 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
-		$pqsql = ($this->dbType == 'pgsql');
+		if ($this->dbType == 'sqlite3' && ($ruleOperator == 'regexp' || $ruleOperator == 'notregexp')) {
+			$this->registerRegexpFuncForSqlite();
+		}
+
+		$pgsql = ($this->dbType == 'pgsql');
+
 		switch ($ruleOperator) {
 			case 'contain':		return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "%$ruleInput%"];
 			case 'notcontain':	return ['op' => 'NOT LIKE',								'conv' => 'LOWER',		'param' => "%$ruleInput%"];
@@ -611,8 +616,8 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'isnot':		return ['op' => '!=',									'conv' => 'LOWER',		'param' => "$ruleInput"];
 			case 'sounds':		return ['op' => '=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
 			case 'notsounds':	return ['op' => '!=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
-			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',				'conv' => 'LOWER',		'param' => $ruleInput];
-			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',			'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'regexp':		return ['op' => $pgsql ? '~' : 'REGEXP',				'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'notregexp':	return ['op' => $pgsql ? '!~' : 'NOT REGEXP',			'conv' => 'LOWER',		'param' => $ruleInput];
 			case 'true':		return ['op' => 'IS NOT NULL',							'conv' => '',			'param' => null];
 			case 'false':		return ['op' => 'IS NULL',								'conv' => '',			'param' => null];
 			case 'equal':		return ['op' => '',										'conv' => '',			'param' => $ruleInput];
@@ -664,6 +669,50 @@ abstract class BaseMapper extends CompatibleMapper {
 			return '(' . \implode(' || ', $parts) . ')';
 		} else {
 			return 'CONCAT(' . \implode(', ', $parts) . ')';
+		}
+	}
+
+	/**
+	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
+	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
+	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.
+	 */
+	private function registerRegexpFuncForSqlite() {
+		// skip if the function already exists
+		if (!$this->funcExistsInSqlite('regexp')) {
+			// We need to use a private interface here to drill down to the native DB connection. The interface is
+			// slightly different on NC compared to OC.
+			if (\method_exists($this->db, 'getInner')) {
+				$connection = $this->db->getInner()->getWrappedConnection();
+				$pdo = $connection->getWrappedConnection();
+			} else if (\method_exists($this->db, 'getWrappedConnection')) {
+				$pdo = $this->db->getWrappedConnection();
+			}
+
+			if (isset($pdo)) {
+				$pdo->sqliteCreateFunction(
+					'regexp',
+					function ($pattern, $data, $delimiter = '~', $modifiers = 'isuS') {
+						if (isset($pattern, $data) === true) {
+							return (\preg_match(\sprintf('%1$s%2$s%1$s%3$s', $delimiter, $pattern, $modifiers), $data) > 0);
+						}
+						return null;
+					}
+				);
+			}
+		}
+	}
+
+	private function funcExistsInSqlite(string $funcName) : bool {
+		// If the SQLite version is very old, it may not have the `pragma_function_list` table available. In such cases,
+		// assume that the queried function doesn't exist. It doesn't really make any harm if that leads to registering
+		// the same function again.
+		try {
+			$result = $this->execute('SELECT EXISTS(SELECT 1 FROM `pragma_function_list` WHERE `NAME` = ?)', [$funcName]);
+			$row = $result->fetch();
+			return (bool)\current($row);
+		} catch (\Exception $e) {
+			return false;
 		}
 	}
 

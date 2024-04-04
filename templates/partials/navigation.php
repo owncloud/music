@@ -64,7 +64,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 					<div class="popovermenu bubble" ng-show="popupShownForNaviItem == 'search'">
 						<ul>
 							<li ng-click="navigateTo('#/search')">
-								<a><span class="icon-search"></span><span translate>Advanced search</span></a>
+								<a><span class="icon-search icon"></span><span translate>Advanced search</span></a>
 							</li>
 						</ul>
 					</div>

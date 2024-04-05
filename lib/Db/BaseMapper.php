@@ -672,6 +672,14 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 	}
 
+	protected function sqlGroupConcat(string $column) : string {
+		if ($this->dbType == 'pgsql') {
+			return "string_agg($column, ',')";
+		} else {
+			return "GROUP_CONCAT($column)";
+		}
+	}
+
 	/**
 	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP

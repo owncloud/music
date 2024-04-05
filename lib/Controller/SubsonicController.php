@@ -137,7 +137,7 @@ class SubsonicController extends Controller {
 	}
 
 	/**
-	 * Called by the middleware to set the reponse format to be used
+	 * Called by the middleware to set the response format to be used
 	 * @param string $format Response format: xml/json/jsonp
 	 * @param string|null $callback Function name to use if the @a $format is 'jsonp'
 	 */
@@ -482,7 +482,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function stream(string $id) {
-		// We don't support transcaoding, so 'stream' and 'download' act identically
+		// We don't support transcoding, so 'stream' and 'download' act identically
 		return $this->download($id);
 	}
 
@@ -979,7 +979,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function createBookmark(string $id, int $position, ?string $comment) {
-		list($type, $entityId) = self::parseBookamrkIdParam($id);
+		list($type, $entityId) = self::parseBookmarkIdParam($id);
 		$this->bookmarkBusinessLayer->addOrUpdate($this->userId, $type, $entityId, $position, $comment);
 		return $this->subsonicResponse([]);
 	}
@@ -988,7 +988,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function deleteBookmark(string $id) {
-		list($type, $entityId) = self::parseBookamrkIdParam($id);
+		list($type, $entityId) = self::parseBookmarkIdParam($id);
 
 		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $entityId, $this->userId);
 		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
@@ -1040,7 +1040,7 @@ class SubsonicController extends Controller {
 		}
 	}
 
-	private static function parseBookamrkIdParam(string $id) : array {
+	private static function parseBookmarkIdParam(string $id) : array {
 		list($typeName, $entityId) = self::parseEntityId($id);
 
 		if ($typeName === 'track') {

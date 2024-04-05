@@ -376,8 +376,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
-	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
-	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
+	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
@@ -396,8 +396,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Update an entity whose unique constraint fields match the given entity. If such entity is not found,
 	 * a new entity is inserted.
-	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
-	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
+	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
@@ -549,7 +549,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Convert given sorting condition to an SQL clause. Derived class may overide this if necessary.
+	 * Convert given sorting condition to an SQL clause. Derived class may override this if necessary.
 	 * @param int $sortBy One of the constants defined in the class SortBy
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
@@ -653,7 +653,7 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'title':			return "$conv(`$table`.`$nameCol`) $sqlOp $conv(?)";
 			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
 			case 'favorite':		return "($conv(`$table`.`$nameCol`) $sqlOp $conv(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
-			case 'myrating':		// fall throuhg, we provide no access to other people's data
+			case 'myrating':		// fall through, we provide no access to other people's data
 			case 'rating':			return "`$table`.`rating` $sqlOp ?";
 			case 'added':			return "`$table`.`created` $sqlOp ?";
 			case 'updated':			return "`$table`.`updated` $sqlOp ?";

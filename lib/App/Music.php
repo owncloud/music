@@ -114,10 +114,15 @@ class Music extends App {
 			return new AdvSearchController(
 				$c->query('AppName'),
 				$c->query('Request'),
-				$c->query('TrackBusinessLayer'),
-				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('RadioStationBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('UserId'),
 				$c->query('Random'),
 				$c->query('Logger')

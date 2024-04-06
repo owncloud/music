@@ -21,7 +21,12 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
@@ -30,35 +35,43 @@ use OCA\Music\Utility\Util;
 
 class AdvSearchController extends Controller {
 
-	/** @var TrackBusinessLayer */
-	private $trackBusinessLayer;
-	/** @var ArtistBusinessLayer */
-	private $artistBusinessLayer;
-	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
-	/** @var GenreBusinessLayer */
+	private $artistBusinessLayer;
+	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
-	/** @var ?string */
+	private $playlistBusinessLayer;
+	private $podcastChannelBusinessLayer;
+	private $podcastEpisodeBusinessLayer;
+	private $radioStationBusinessLayer;
+	private $trackBusinessLayer;
 	private $userId;
-	/** @var Random */
 	private $random;
-	/** @var Logger */
 	private $logger;
 
 	public function __construct(string $appName,
 								IRequest $request,
-								TrackBusinessLayer $trackBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
+								ArtistBusinessLayer $artistBusinessLayer,
+								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
+								PlaylistBusinessLayer $playlistBusinessLayer,
+								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
+								RadioStationBusinessLayer $radioStationBusinessLayer,
+								TrackBusinessLayer $trackBusinessLayer,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appName, $request);
-		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
+		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
+		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
+		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
+		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->userId = $userId;
 		$this->random = $random;
 		$this->logger = $logger;
@@ -98,9 +111,15 @@ class AdvSearchController extends Controller {
 
 	private function businessLayerForType($type) {
 		$map = [
-			'track' => $this->trackBusinessLayer,
 			'album' => $this->albumBusinessLayer,
 			'artist' => $this->artistBusinessLayer,
+			'bookmark' => $this->bookmarkBusinessLayer,
+			'genre' => $this->genreBusinessLayer,
+			'playlist' => $this->playlistBusinessLayer,
+			'podcast_channel' => $this->podcastChannelBusinessLayer,
+			'podcast_episode' => $this->podcastEpisodeBusinessLayer,
+			'radio' => $this->radioStationBusinessLayer,
+			'track' => $this->trackBusinessLayer,
 		];
 		return $map[$type] ?? null;
 	}

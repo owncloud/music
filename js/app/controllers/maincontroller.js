@@ -351,6 +351,10 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		showDetails('album', albumOrId.id ?? albumOrId);
 	};
 
+	$scope.showPlaylistDetails = function(playlistOrId) {
+		showDetails('playlist', playlistOrId.id ?? playlistOrId);
+	};
+
 	$scope.showSmartListFilters = function() {
 		$rootScope.$emit('showSmartListFilters');
 		$scope.collapseNavigationPaneOnMobile();

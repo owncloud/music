@@ -319,6 +319,11 @@ angular.module('Music').controller('NavigationController', [
 			addTracks(playlist, trackIdsFromGenre(genreId));
 		};
 
+		// Add all tracks of another playlist to the playlist
+		$scope.addPlaylist = function(playlist, anotherListId) {
+			addTracks(playlist, trackIdsFromPlaylist(anotherListId));
+		};
+
 		// An item dragged and dropped on a navigation bar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
@@ -333,8 +338,10 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addFolder(playlist, droppedItem.folder);
 			} else if ('genre' in droppedItem) {
 				$scope.addGenre(playlist, droppedItem.genre);
+			} else if ('playlist' in droppedItem) {
+				$scope.addPlaylist(playlist, droppedItem.playlist);
 			} else {
-				console.error('Unknwon entity dropped on playlist');
+				console.error('Unknown entity dropped on playlist');
 			}
 
 			// 50 ms haptic feedback for touch devices
@@ -404,6 +411,11 @@ angular.module('Music').controller('NavigationController', [
 		function trackIdsFromGenre(genreId) {
 			let genre = libraryService.getGenre(genreId);
 			return _.map(genre.tracks, 'track.id');
+		}
+
+		function trackIdsFromPlaylist(playlistId) {
+			let playlist = libraryService.getPlaylist(playlistId);
+			return _.map(playlist.tracks, 'track.id');
 		}
 
 		function addTracks(playlist, trackIds) {

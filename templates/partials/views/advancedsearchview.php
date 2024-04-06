@@ -8,6 +8,7 @@
 				<option value="track" translate>tracks</option>
 				<option value="album" translate>albums</option>
 				<option value="artist" translate>artists</option>
+				<option value="playlist" translate>playlists</option>
 			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>matching all rules</option>
@@ -72,23 +73,27 @@
 			play-track="onTrackClick"
 			show-track-details="showTrackDetails"
 			get-draggable="getTrackDraggable"
-		>
-		</track-list>
+		></track-list>
 		<track-list
 			tracks="resultList.albums"
 			get-track-data="getAlbumData"
 			play-track="onAlbumClick"
 			show-track-details="showAlbumDetails"
 			get-draggable="getAlbumDraggable"
-		>
-		</track-list>
+		></track-list>
 		<track-list
 			tracks="resultList.artists"
 			get-track-data="getArtistData"
 			play-track="onArtistClick"
 			show-track-details="showArtistDetails"
 			get-draggable="getArtistDraggable"
-		>
-		</track-list>
+		></track-list>
+		<track-list
+			tracks="resultList.playlists"
+			get-track-data="getPlaylistData"
+			play-track="onPlaylistClick"
+			show-track-details="showPlaylistDetails"
+			get-draggable="getPlaylistDraggable"
+		></track-list>
 	</div>
 </div>

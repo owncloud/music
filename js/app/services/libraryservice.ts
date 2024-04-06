@@ -60,6 +60,7 @@ export interface AdvSearchResult {
 	tracks? : Track[];
 	albums? : Album[];
 	artists? : Artist[];
+	playlists? : Playlist[];
 }
 
 export interface Folder {
@@ -402,6 +403,7 @@ export class LibraryService {
 				tracks: _(list.trackIds).map((id) => this.#tracksIndex[id]).value(),
 				albums: _(list.albumIds).map((id) => this.#albumsIndex[id]).value(),
 				artists: _(list.artistIds).map((id) => this.#artistsIndex[id]).value(),
+				playlists: _(list.playlistIds).map((id) => _.find(this.#playlists, {id: id})).value(),
 			};
 		}
 		return this.#advSearchResult;

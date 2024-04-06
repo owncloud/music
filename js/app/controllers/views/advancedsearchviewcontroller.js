@@ -53,6 +53,11 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ value: 'rating',	text: 'by rating' },
 				{ value: 'random',	text: 'randomly' },
 			],
+			playlist: [
+				{ value: 'name',	text: 'by name' },
+				{ value: 'newest',	text: 'by time added' },
+				{ value: 'random',	text: 'randomly' },
+			],
 		};
 
 		$scope.searchRuleTypes = {
@@ -226,6 +231,18 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					]
 				},
 			],
+			playlist: [
+				{
+					label: null,
+					options: [
+						{ key: 'title',				name: 'Name',					type: 'text' },
+						{ key: 'added',				name: 'Add date',				type: 'date' },
+						{ key: 'updated',			name: 'Update date',			type: 'date' },
+						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+					]
+				},
+			],
 		};
 
 		$scope.searchRuleOperators = {
@@ -351,7 +368,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			const trackResults = $scope.resultList.tracks;
 			const tracksFromAlbums = _($scope.resultList.albums).map('tracks').flatten().value();
 			const tracksFromArtists = _($scope.resultList.artists).map(a => libraryService.findTracksByArtist(a.id)).flatten().value();
-			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists);
+			const tracksFromPlaylists = _($scope.resultList.playlists).map('tracks').flatten().map('track').value();
+			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists);
 		}
 
 		// Call playlistService to play all songs in the current playlist from the beginning
@@ -365,7 +383,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.resultCount = function() {
 			const list = $scope.resultList;
-			return list.tracks.length + list.albums.length + list.artists.length;
+			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length;
 		};
 
 		$scope.onTrackClick = function(trackId) {
@@ -415,7 +433,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.onArtistClick = function(artistId) {
-			// TODO: play/pause if currently playing album clicked?
+			// TODO: play/pause if currently playing artist clicked?
 			const tracks = getTracksFromResult();
 			const artistTracks = libraryService.findTracksByArtist(artistId);
 			const index = _.findIndex(tracks, { id: artistTracks[0].id });
@@ -433,6 +451,25 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.getArtistDraggable = function(artistId) {
 			return { artist: artistId };
+		};
+
+		$scope.onPlaylistClick = function(playlistId) {
+			// TODO: play/pause if currently playing playlist clicked?
+			playlistService.setPlaylist('playlist-' + playlistId, libraryService.getPlaylist(playlistId).tracks);
+			playlistService.publish('play', '#/playlist/' + playlistId);
+		};
+
+		$scope.getPlaylistData = function(listItem, index, _scope) {
+			return {
+				title: listItem.name,
+				tooltip: '',
+				number: index + 1,
+				id: listItem.id
+			};
+		};
+
+		$scope.getPlaylistDraggable = function(playlistId) {
+			return { playlist: playlistId };
 		};
 
 		subscribe('scrollToTrack', function(_event, trackId) {

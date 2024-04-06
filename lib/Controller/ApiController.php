@@ -31,7 +31,6 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Maintenance;
-use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\FileStreamResponse;
@@ -40,7 +39,6 @@ use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\LibrarySettings;
-use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
 
@@ -74,8 +72,6 @@ class ApiController extends Controller {
 	private $urlGenerator;
 	/** @var ?Folder */
 	private $userFolder;
-	/** @var Random */
-	private $random;
 	/** @var Logger */
 	private $logger;
 
@@ -95,7 +91,6 @@ class ApiController extends Controller {
 								LibrarySettings $librarySettings,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
 								?Folder $userFolder, // null if this gets called after the user has logged out or on a public page
-								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->trackBusinessLayer = $trackbusinesslayer;
@@ -112,7 +107,6 @@ class ApiController extends Controller {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
-		$this->random = $random;
 		$this->logger = $logger;
 	}
 
@@ -361,59 +355,6 @@ class ApiController extends Controller {
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function advancedSearch(string $entity, string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) {
-		$rules = \json_decode($rules, true);
-
-		foreach ($rules as $rule) {
-			if (empty($rule['rule'] || empty($rule['operator'] || !isset($rule['input'])))) {
-				return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Invalid search rule');
-			}
-		}
-
-		try {
-			$businessLayer = $this->businessLayerForType($entity);
-
-			if ($businessLayer !== null) {
-				$entities = $businessLayer->findAllAdvanced(
-					$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
-				$entityIds = Util::extractIds($entities);
-				return new JSONResponse([
-					'id' => \md5($entity.\serialize($entityIds)), // use hash => identical results will have identical ID
-					$entity.'Ids' => $entityIds
-				]);
-			} else {
-				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Entity type '$entity' is not supported");
-			}
-		} catch (BusinessLayerException $e) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $e->getMessage());
-		}
-	}
-
-	private function businessLayerForType($type) {
-		$map = [
-			'track' => $this->trackBusinessLayer,
-			'album' => $this->albumBusinessLayer,
-			'artist' => $this->artistBusinessLayer,
-		];
-		return $map[$type] ?? null;
-	}
-
-	private static function mapSortBy(string $order) {
-		$map = [
-			'name'			=> SortBy::Name,
-			'parent'		=> SortBy::Parent,
-			'newest'		=> SortBy::Newest,
-			'play_count'	=> SortBy::PlayCount,
-			'last_played'	=> SortBy::LastPlayed,
-			'rating'		=> SortBy::Rating,
-		];
-		return $map[$order] ?? SortBy::Name;
 	}
 
 	/**

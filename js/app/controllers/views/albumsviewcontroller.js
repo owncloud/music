@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -74,7 +74,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			let currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
-			if (currentTrack && track.id === currentTrack.id) {
+			if (currentTrack && track.id === currentTrack.id && currentTrack.type == 'song') {
 				playlistService.publish('togglePlayback');
 			}
 			else {
@@ -147,7 +147,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		};
 
 		/**
-		 * Gets track data to be dislayed in the tracklist directive
+		 * Gets track data to be displayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(track, index, scope) {
 			return {
@@ -187,7 +187,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		// emited on end of playlist by playerController
+		// emitted on end of playlist by playerController
 		subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
 			updateHighlight(null);

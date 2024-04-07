@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 
@@ -22,7 +22,7 @@ angular.module('Music').controller('GenresViewController', [
 		const INCREMENTAL_LOAD_STEP = 100;
 		$scope.incrementalLoadLimit = 0;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -49,7 +49,8 @@ angular.module('Music').controller('GenresViewController', [
 
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing item clicked
-			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
 				playlistService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the genre or whole library from this item

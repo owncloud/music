@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 
@@ -48,7 +48,8 @@ angular.module('Music').controller('AllTracksViewController', [
 		// Play the list, starting from a specific track
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
-			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
 				playlistService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item

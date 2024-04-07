@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('AdvancedSearchViewController', [
-	'$rootScope', '$scope', 'libraryService', 'playlistService', '$timeout', 'Restangular',
-	function ($rootScope, $scope, libraryService, playlistService, $timeout, Restangular) {
+	'$rootScope', '$scope', 'libraryService', 'playlistService', '$timeout', 'Restangular', 'gettextCatalog',
+	function ($rootScope, $scope, libraryService, playlistService, $timeout, Restangular, gettextCatalog) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
@@ -32,44 +32,44 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.availableOrders = {
 			track: [
-				{ value: 'name',		text: 'by name' },
-				{ value: 'parent',		text: 'by artist' },
-				{ value: 'newest',		text: 'by time added' },
-				{ value: 'play_count',	text: 'by play count' },
-				{ value: 'last_played',	text: 'by recent play' },
-				{ value: 'rating',		text: 'by rating' },
-				{ value: 'random',		text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'parent',		text: gettextCatalog.getString('by artist') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'play_count',	text: gettextCatalog.getString('by play count') },
+				{ value: 'last_played',	text: gettextCatalog.getString('by recent play') },
+				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 			album: [
-				{ value: 'name',	text: 'by name' },
-				{ value: 'parent',	text: 'by artist' },
-				{ value: 'newest',	text: 'by time added' },
-				{ value: 'rating',	text: 'by rating' },
-				{ value: 'random',	text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'parent',		text: gettextCatalog.getString('by artist') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 			artist: [
-				{ value: 'name',	text: 'by name' },
-				{ value: 'newest',	text: 'by time added' },
-				{ value: 'rating',	text: 'by rating' },
-				{ value: 'random',	text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 			playlist: [
-				{ value: 'name',	text: 'by name' },
-				{ value: 'newest',	text: 'by time added' },
-				{ value: 'random',	text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 			podcast_episode: [
-				{ value: 'name',		text: 'by name' },
-				{ value: 'parent',		text: 'by channel' },
-				{ value: 'newest',		text: 'by time added' },
-				{ value: 'rating',		text: 'by rating' },
-				{ value: 'random',		text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'parent',		text: gettextCatalog.getString('by channel') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 			podcast_channel: [
-				{ value: 'name',		text: 'by name' },
-				{ value: 'newest',		text: 'by time added' },
-				{ value: 'rating',		text: 'by rating' },
-				{ value: 'random',		text: 'randomly' },
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
+				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 		};
 
@@ -78,169 +78,169 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{
 					label: null,
 					options: [
-						{ key: 'anywhere',			name: 'Any searchable text',	type: 'text' },
+						{ key: 'anywhere',			name: gettextCatalog.getString('Any searchable text'),	type: 'text' },
 					]
 				},
 				{
-					label: 'Song metadata',
+					label: gettextCatalog.getString('Track metadata'),
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'album',				name: 'Album name',				type: 'text' },
-						{ key: 'artist',			name: 'Artist name',			type: 'text' },
-						{ key: 'album_artist',		name: 'Album artist name',		type: 'text' },
-						{ key: 'track',				name: 'Track number',			type: 'numeric' },
-						{ key: 'year',				name: 'Year',					type: 'numeric' },
-						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
-						{ key: 'bitrate',			name: 'Bit rate',				type: 'numeric' },
-						{ key: 'song_genre',		name: 'Song genre',				type: 'text' },
-						{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
-						{ key: 'artist_genre',		name: 'Artist genre',			type: 'text' },
-						{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'album',				name: gettextCatalog.getString('Album name'),			type: 'text' },
+						{ key: 'artist',			name: gettextCatalog.getString('Artist name'),			type: 'text' },
+						{ key: 'album_artist',		name: gettextCatalog.getString('Album artist name'),	type: 'text' },
+						{ key: 'track',				name: gettextCatalog.getString('Track number'),			type: 'numeric' },
+						{ key: 'year',				name: gettextCatalog.getString('Year'),					type: 'numeric' },
+						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
+						{ key: 'bitrate',			name: gettextCatalog.getString('Bit rate'),				type: 'numeric' },
+						{ key: 'song_genre',		name: gettextCatalog.getString('Track genre'),			type: 'text' },
+						{ key: 'album_genre',		name: gettextCatalog.getString('Album genre'),			type: 'text' },
+						{ key: 'artist_genre',		name: gettextCatalog.getString('Artist genre'),			type: 'text' },
+						{ key: 'no_genre',			name: gettextCatalog.getString('Has no genre'),			type: 'boolean' },
 					]
 				},
 				{
-					label: 'File data',
+					label: gettextCatalog.getString('File data'),
 					options: [
-						{ key: 'file',				name: 'File name',				type: 'text' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'file',				name: gettextCatalog.getString('File name'),			type: 'text' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 				{
-					label: 'Rating',
+					label: gettextCatalog.getString('Rating'),
 					options: [
-						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-						{ key: 'favorite_album',	name: 'Favorite album',			type: 'text' },
-						{ key: 'favorite_artist',	name: 'Favorite artist',		type: 'text' },
-						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
-						{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
-						{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
+						{ key: 'favorite_album',	name: gettextCatalog.getString('Favorite album'),		type: 'text' },
+						{ key: 'favorite_artist',	name: gettextCatalog.getString('Favorite artist'),		type: 'text' },
+						{ key: 'rating',			name: gettextCatalog.getString('Rating'),				type: 'numeric_rating' },
+						{ key: 'albumrating',		name: gettextCatalog.getString('Album rating'),			type: 'numeric_rating' },
+						{ key: 'artistrating',		name: gettextCatalog.getString('Artist rating'),		type: 'numeric_rating' },
 					]
 				},
 				{
-					label: 'Play history',
+					label: gettextCatalog.getString('Play history'),
 					options: [
-						{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-						{ key: 'last_play',			name: 'Last played',			type: 'date' },
-						{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
-						{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
-						{ key: 'myplayedalbum',		name: 'Is played album',		type: 'boolean' },
-						{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
+						{ key: 'played_times',		name: gettextCatalog.getString('Played times'),			type: 'numeric' },
+						{ key: 'last_play',			name: gettextCatalog.getString('Last played'),			type: 'date' },
+						{ key: 'recent_played',		name: gettextCatalog.getString('Recently played'),		type: 'numeric_limit' },
+						{ key: 'myplayed',			name: gettextCatalog.getString('Is played'),			type: 'boolean' },
+						{ key: 'myplayedalbum',		name: gettextCatalog.getString('Is played album'),		type: 'boolean' },
+						{ key: 'myplayedartist',	name: gettextCatalog.getString('Is played artist'),		type: 'boolean' },
 					]
 				},
 				{
-					label: 'Playlist',
+					label: gettextCatalog.getString('Playlist'),
 					options: [
-						{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
-						{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+						{ key: 'playlist',			name: gettextCatalog.getString('Playlist'),				type: 'playlist' },
+						{ key: 'playlist_name',		name: gettextCatalog.getString('Playlist name'),		type: 'text' },
 					]
 				}
 			],
 			album: [
 				{
-					label: 'Album metadata',
+					label: gettextCatalog.getString('Album metadata'),
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'artist',			name: 'Album artist name',		type: 'text' },
-						{ key: 'song_artist',		name: 'Track artist name',		type: 'text' },
-						{ key: 'song',				name: 'Track name',				type: 'text' },
-						{ key: 'year',				name: 'Year',					type: 'numeric' },
-						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
-						{ key: 'song_count',		name: 'Track count',			type: 'numeric' },
-						{ key: 'album_genre',		name: 'Album genre',			type: 'text' },
-						{ key: 'song_genre',		name: 'Track genre',			type: 'text' },
-						{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
-						{ key: 'has_image',			name: 'Has image',				type: 'boolean' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'artist',			name: gettextCatalog.getString('Album artist name'),	type: 'text' },
+						{ key: 'song_artist',		name: gettextCatalog.getString('Track artist name'),	type: 'text' },
+						{ key: 'song',				name: gettextCatalog.getString('Track name'),			type: 'text' },
+						{ key: 'year',				name: gettextCatalog.getString('Year'),					type: 'numeric' },
+						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
+						{ key: 'song_count',		name: gettextCatalog.getString('Track count'),			type: 'numeric' },
+						{ key: 'album_genre',		name: gettextCatalog.getString('Album genre'),			type: 'text' },
+						{ key: 'song_genre',		name: gettextCatalog.getString('Track genre'),			type: 'text' },
+						{ key: 'no_genre',			name: gettextCatalog.getString('Has no genre'),			type: 'boolean' },
+						{ key: 'has_image',			name: gettextCatalog.getString('Has image'),			type: 'boolean' },
 					]
 				},
 				{
-					label: 'File data',
+					label: gettextCatalog.getString('File data'),
 					options: [
-						{ key: 'file',				name: 'File name',				type: 'text' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'file',				name: gettextCatalog.getString('File name'),			type: 'text' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 				{
-					label: 'Rating',
+					label: gettextCatalog.getString('Rating'),
 					options: [
-						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
-						{ key: 'songrating',		name: 'Track rating',			type: 'numeric_rating' },
-						{ key: 'artistrating',		name: 'Artist rating',			type: 'numeric_rating' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
+						{ key: 'rating',			name: gettextCatalog.getString('Rating'),				type: 'numeric_rating' },
+						{ key: 'songrating',		name: gettextCatalog.getString('Track rating'),			type: 'numeric_rating' },
+						{ key: 'artistrating',		name: gettextCatalog.getString('Artist rating'),		type: 'numeric_rating' },
 					]
 				},
 				{
-					label: 'Play history',
+					label: gettextCatalog.getString('Play history'),
 					options: [
-						{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-						{ key: 'last_play',			name: 'Last played',			type: 'date' },
-						{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
-						{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
-						{ key: 'myplayedartist',	name: 'Is played artist',		type: 'boolean' },
+						{ key: 'played_times',		name: gettextCatalog.getString('Played times'),			type: 'numeric' },
+						{ key: 'last_play',			name: gettextCatalog.getString('Last played'),			type: 'date' },
+						{ key: 'recent_played',		name: gettextCatalog.getString('Recently played'),		type: 'numeric_limit' },
+						{ key: 'myplayed',			name: gettextCatalog.getString('Is played'),			type: 'boolean' },
+						{ key: 'myplayedartist',	name: gettextCatalog.getString('Is played artist'),		type: 'boolean' },
 					]
 				},
 				{
-					label: 'Playlist',
+					label: gettextCatalog.getString('Playlist'),
 					options: [
-						{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
-						{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+						{ key: 'playlist',			name: gettextCatalog.getString('Playlist'),				type: 'playlist' },
+						{ key: 'playlist_name',		name: gettextCatalog.getString('Playlist name'),		type: 'text' },
 					]
 				},
 			],
 			artist: [
 				{
-					label: 'Artist metadata',
+					label: gettextCatalog.getString('Artist metadata'),
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'album',				name: 'Album name',				type: 'text' },
-						{ key: 'song',				name: 'Track name',				type: 'text' },
-						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
-						{ key: 'album_count',		name: 'Album count',			type: 'numeric' },
-						{ key: 'song_count',		name: 'Track count',			type: 'numeric' },
-						{ key: 'genre',				name: 'Artist genre',			type: 'text' },
-						{ key: 'song_genre',		name: 'Track genre',			type: 'text' },
-						{ key: 'no_genre',			name: 'Has no genre',			type: 'boolean' },
-						{ key: 'has_image',			name: 'Has image',				type: 'boolean' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'album',				name: gettextCatalog.getString('Album name'),			type: 'text' },
+						{ key: 'song',				name: gettextCatalog.getString('Track name'),			type: 'text' },
+						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
+						{ key: 'album_count',		name: gettextCatalog.getString('Album count'),			type: 'numeric' },
+						{ key: 'song_count',		name: gettextCatalog.getString('Track count'),			type: 'numeric' },
+						{ key: 'genre',				name: gettextCatalog.getString('Artist genre'),			type: 'text' },
+						{ key: 'song_genre',		name: gettextCatalog.getString('Track genre'),			type: 'text' },
+						{ key: 'no_genre',			name: gettextCatalog.getString('Has no genre'),			type: 'boolean' },
+						{ key: 'has_image',			name: gettextCatalog.getString('Has image'),			type: 'boolean' },
 					]
 				},
 				{
-					label: 'File data',
+					label: gettextCatalog.getString('File data'),
 					options: [
-						{ key: 'file',				name: 'File name',				type: 'text' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'file',				name: gettextCatalog.getString('File name'),			type: 'text' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 				{
-					label: 'Rating',
+					label: gettextCatalog.getString('Rating'),
 					options: [
-						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
-						{ key: 'songrating',		name: 'Track rating',			type: 'numeric_rating' },
-						{ key: 'albumrating',		name: 'Album rating',			type: 'numeric_rating' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
+						{ key: 'rating',			name: gettextCatalog.getString('Rating'),				type: 'numeric_rating' },
+						{ key: 'songrating',		name: gettextCatalog.getString('Track rating'),			type: 'numeric_rating' },
+						{ key: 'albumrating',		name: gettextCatalog.getString('Album rating'),			type: 'numeric_rating' },
 					]
 				},
 				{
-					label: 'Play history',
+					label: gettextCatalog.getString('Play history'),
 					options: [
-						{ key: 'played_times',		name: 'Played times',			type: 'numeric' },
-						{ key: 'last_play',			name: 'Last played',			type: 'date' },
-						{ key: 'recent_played',		name: 'Recently played',		type: 'numeric_limit' },
-						{ key: 'myplayed',			name: 'Is played',				type: 'boolean' },
+						{ key: 'played_times',		name: gettextCatalog.getString('Played times'),			type: 'numeric' },
+						{ key: 'last_play',			name: gettextCatalog.getString('Last played'),			type: 'date' },
+						{ key: 'recent_played',		name: gettextCatalog.getString('Recently played'),		type: 'numeric_limit' },
+						{ key: 'myplayed',			name: gettextCatalog.getString('Is played'),			type: 'boolean' },
 					]
 				},
 				{
-					label: 'Playlist',
+					label: gettextCatalog.getString('Playlist'),
 					options: [
-						{ key: 'playlist',			name: 'Playlist',				type: 'playlist' },
-						{ key: 'playlist_name',		name: 'Playlist name',			type: 'text' },
+						{ key: 'playlist',			name: gettextCatalog.getString('Playlist'),				type: 'playlist' },
+						{ key: 'playlist_name',		name: gettextCatalog.getString('Playlist name'),		type: 'text' },
 					]
 				},
 			],
@@ -248,65 +248,65 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{
 					label: null,
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 			],
 			podcast_episode: [
 				{
-					label: 'Podcast metadata',
+					label: gettextCatalog.getString('Podcast metadata'),
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'podcast',			name: 'Podcast channel',		type: 'text' },
-						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'podcast',			name: gettextCatalog.getString('Podcast channel'),		type: 'text' },
+						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
 					]
 				},
 				{
-					label: 'History',
+					label: gettextCatalog.getString('History'),
 					options: [
-						{ key: 'pubdate',			name: 'Date published',			type: 'date' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'pubdate',			name: gettextCatalog.getString('Date published'),		type: 'date' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 				{
-					label: 'Rating',
+					label: gettextCatalog.getString('Rating'),
 					options: [
-						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
+						{ key: 'rating',			name: gettextCatalog.getString('Rating'),				type: 'numeric_rating' },
 					]
 				},
 			],
 			podcast_channel: [
 				{
-					label: 'Podcast metadata',
+					label: gettextCatalog.getString('Podcast metadata'),
 					options: [
-						{ key: 'title',				name: 'Name',					type: 'text' },
-						{ key: 'podcast_episode',	name: 'Podcast episode',		type: 'text' },
-						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'podcast_episode',	name: gettextCatalog.getString('Podcast episode'),		type: 'text' },
+						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
 					]
 				},
 				{
-					label: 'History',
+					label: gettextCatalog.getString('History'),
 					options: [
-						{ key: 'pubdate',			name: 'Date published',			type: 'date' },
-						{ key: 'added',				name: 'Add date',				type: 'date' },
-						{ key: 'updated',			name: 'Update date',			type: 'date' },
-						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
-						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+						{ key: 'pubdate',			name: gettextCatalog.getString('Date published'),		type: 'date' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
 					]
 				},
 				{
-					label: 'Rating',
+					label: gettextCatalog.getString('Rating'),
 					options: [
-						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
-						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
+						{ key: 'rating',			name: gettextCatalog.getString('Rating'),				type: 'numeric_rating' },
 					]
 				},
 			],
@@ -314,39 +314,39 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.searchRuleOperators = {
 			text: [
-				{ key: 'contain',		name: 'Contains' },
-				{ key: 'notcontain',	name: 'Does not contain' },
-				{ key: 'start',			name: 'Starts with' },
-				{ key: 'end',			name: 'Ends with' },
-				{ key: 'is',			name: 'Is' },
-				{ key: 'isnot',			name: 'Is not' },
-				{ key: 'sounds',		name: 'Sounds like' },
-				{ key: 'notsounds',		name: 'Does not sound like' },
-				{ key: 'regexp',		name: 'Matches regular expression' },
-				{ key: 'notregexp',		name: 'Does not match regular expression' }
+				{ key: 'contain',		name: gettextCatalog.getString('Contains') },
+				{ key: 'notcontain',	name: gettextCatalog.getString('Does not contain') },
+				{ key: 'start',			name: gettextCatalog.getString('Starts with') },
+				{ key: 'end',			name: gettextCatalog.getString('Ends with') },
+				{ key: 'is',			name: gettextCatalog.getString('Is') },
+				{ key: 'isnot',			name: gettextCatalog.getString('Is not') },
+				{ key: 'sounds',		name: gettextCatalog.getString('Sounds like') },
+				{ key: 'notsounds',		name: gettextCatalog.getString('Does not sound like') },
+				{ key: 'regexp',		name: gettextCatalog.getString('Matches regular expression') },
+				{ key: 'notregexp',		name: gettextCatalog.getString('Does not match regular expression') },
 			],
 			numeric: [
-				{ key: '>=',			name: 'Is greater than or equal to' },
-				{ key: '<=',			name: 'Is less than or equal to' },
-				{ key: '=',				name: 'Equals' },
-				{ key: '!=',			name: 'Does not equal' },
-				{ key: '>',				name: 'Is greater than' },
-				{ key: '<',				name: 'Is less than' }
+				{ key: '>=',			name: gettextCatalog.getString('Is greater than or equal to') },
+				{ key: '<=',			name: gettextCatalog.getString('Is less than or equal to') },
+				{ key: '=',				name: gettextCatalog.getString('Equals') },
+				{ key: '!=',			name: gettextCatalog.getString('Does not equal') },
+				{ key: '>',				name: gettextCatalog.getString('Is greater than') },
+				{ key: '<',				name: gettextCatalog.getString('Is less than') },
 			],
 			numeric_limit: [
-				{ key: 'limit',			name: 'Limit' }
+				{ key: 'limit',			name: gettextCatalog.getString('Limit') },
 			],
 			boolean: [
-				{ key: 'true',			name: 'Is true' },
-				{ key: 'false',			name: 'Is false' }
+				{ key: 'true',			name: gettextCatalog.getString('Is true') },
+				{ key: 'false',			name: gettextCatalog.getString('Is false') },
 			],
 			date: [
-				{ key: 'before',		name: 'Before' },
-				{ key: 'after',			name: 'After' }
+				{ key: 'before',		name: gettextCatalog.getString('Before') },
+				{ key: 'after',			name: gettextCatalog.getString('After') },
 			],
 			playlist: [
-				{ key: 'equal',			name: 'Is equal to' },
-				{ key: 'ne',			name: 'Is not equal to' },
+				{ key: 'equal',			name: gettextCatalog.getString('Is equal to') },
+				{ key: 'ne',			name: gettextCatalog.getString('Is not equal to') },
 			]
 		};
 		$scope.searchRuleOperators.numeric_rating = $scope.searchRuleOperators.numeric; // use the same operators

@@ -59,7 +59,7 @@
 				<a class="icon icon-add"></a>
 			</div>
 		</div>
-		<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription" translate>{{ errorDescription }}</span>
+		<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription">{{ errorDescription }}</span>
 	</div>
 
 	<div ng-if="results" class="flat-list-view playlist-area">

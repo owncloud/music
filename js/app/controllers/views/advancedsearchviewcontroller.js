@@ -351,7 +351,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 		$scope.searchRuleOperators.numeric_rating = $scope.searchRuleOperators.numeric; // use the same operators
 
-		$scope.resultList = libraryService.getAdvancedSearchResult();
+		$scope.results = libraryService.getAdvancedSearchResult();
 		$scope.errorDescription = null;
 
 		$scope.searchRules = [];
@@ -401,7 +401,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.search = function() {
-			$scope.resultList = libraryService.setAdvancedSearchResult(null);
+			$scope.results = libraryService.setAdvancedSearchResult(null);
 			$scope.errorDescription = null;
 
 			const searchArgs = {
@@ -414,7 +414,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 			Restangular.one('advanced_search').customPOST(searchArgs).then(
 				(result) => {
-					$scope.resultList = libraryService.setAdvancedSearchResult(result);
+					$scope.results = libraryService.setAdvancedSearchResult(result);
 				},
 				(error) => {
 					$scope.errorDescription = error.data.message;
@@ -427,17 +427,17 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				return { track: track };
 			});
 
-			playlistService.setPlaylist('adv_search_results' + $scope.resultList.id, playlist, startIndex);
+			playlistService.setPlaylist('adv_search_results' + $scope.results.id, playlist, startIndex);
 			playlistService.publish('play');
 		}
 
 		function getTracksFromResult() {
-			const trackResults = $scope.resultList.tracks;
-			const tracksFromAlbums = _($scope.resultList.albums).map('tracks').flatten().value();
-			const tracksFromArtists = _($scope.resultList.artists).map(a => libraryService.findTracksByArtist(a.id)).flatten().value();
-			const tracksFromPlaylists = _($scope.resultList.playlists).map('tracks').flatten().map('track').value();
-			const episodeResults = $scope.resultList.podcastEpisodes;
-			const episodesFromChannels = _($scope.resultList.podcastChannels).map('episodes').flatten().value();
+			const trackResults = $scope.results.tracks;
+			const tracksFromAlbums = _($scope.results.albums).map('tracks').flatten().value();
+			const tracksFromArtists = _($scope.results.artists).map(a => libraryService.findTracksByArtist(a.id)).flatten().value();
+			const tracksFromPlaylists = _($scope.results.playlists).map('tracks').flatten().map('track').value();
+			const episodeResults = $scope.results.podcastEpisodes;
+			const episodesFromChannels = _($scope.results.podcastChannels).map('episodes').flatten().value();
 			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults, episodesFromChannels);
 		}
 
@@ -452,9 +452,9 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.resultCount = function() {
-			const list = $scope.resultList;
-			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length
-					+ list.podcastEpisodes.length + list.podcastChannels.length;
+			const res = $scope.results;
+			return res.tracks.length + res.albums.length + res.artists.length + res.playlists.length
+					+ res.podcastEpisodes.length + res.podcastChannels.length;
 		};
 
 		$scope.onTrackClick = function(trackId) {
@@ -465,8 +465,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				const index = _.findIndex($scope.resultList.tracks, { id: trackId });
-				play($scope.resultList.tracks, index);
+				const index = _.findIndex($scope.results.tracks, { id: trackId });
+				play($scope.results.tracks, index);
 			}
 		};
 
@@ -486,7 +486,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.onAlbumClick = function(albumId) {
 			// TODO: play/pause if currently playing album clicked?
 			const tracks = getTracksFromResult();
-			const album = _.find($scope.resultList.albums, { id: albumId });
+			const album = _.find($scope.results.albums, { id: albumId });
 			const index = _.findIndex(tracks, { id: album.tracks[0].id });
 			play(tracks, index);
 		};
@@ -551,8 +551,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				const index = _.findIndex($scope.resultList.podcastEpisodes, { id: episodeId });
-				play($scope.resultList.podcastEpisodes, index);
+				const index = _.findIndex($scope.results.podcastEpisodes, { id: episodeId });
+				play($scope.results.podcastEpisodes, index);
 			}
 		};
 
@@ -568,7 +568,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.onPodcastChannelClick = function(channelId) {
 			// TODO: play/pause if currently playing channel clicked?
 			const episodes = getTracksFromResult();
-			const channel = _.find($scope.resultList.podcastChannels, { id: channelId });
+			const channel = _.find($scope.results.podcastChannels, { id: channelId });
 			const index = _.findIndex(episodes, { id: channel.episodes[0].id });
 			play(episodes, index);
 		};
@@ -584,15 +584,15 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
-				if ($scope.resultList?.tracks.length) {
+				if ($scope.results?.tracks.length) {
 					$scope.$parent.scrollToItem('track-' + trackId);
-				} else if ($scope.resultList?.albums.length) {
+				} else if ($scope.results?.albums.length) {
 					const track = libraryService.getTrack(trackId);
 					if (track) {
 						$scope.$parent.scrollToItem('track-' + track.album.id); // the prefix is 'track-' regardless of the actual entity type!
 					}
 				}
-			} else if ($scope.resultList?.artists.length) {
+			} else if ($scope.results?.artists.length) {
 				const track = libraryService.getTrack(trackId);
 				if (track) {
 					$scope.$parent.scrollToItem('track-' + track.artist.id); // the prefix is 'track-' regardless of the actual entity type!

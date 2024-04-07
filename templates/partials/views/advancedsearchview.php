@@ -61,7 +61,7 @@
 		<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription" translate>{{ errorDescription }}</span>
 	</div>
 
-	<div ng-if="resultList.tracks" class="flat-list-view">
+	<div ng-if="results" class="flat-list-view">
 		<h2 ui-draggable="true" drag="getHeaderDraggable()">
 			<span ng-class="{ clickable: resultCount() }" ng-click="onHeaderClick()">
 				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">1 result</span>
@@ -70,14 +70,14 @@
 			</span>
 		</h2>
 		<track-list
-			tracks="resultList.tracks"
+			tracks="results.tracks"
 			get-track-data="getTrackData"
 			play-track="onTrackClick"
 			show-track-details="showTrackDetails"
 			get-draggable="getTrackDraggable"
 		></track-list>
 		<track-list
-			tracks="resultList.albums"
+			tracks="results.albums"
 			get-track-data="getAlbumData"
 			play-track="onAlbumClick"
 			show-track-details="showAlbumDetails"
@@ -86,7 +86,7 @@
 			content-type="'album'"
 		></track-list>
 		<track-list
-			tracks="resultList.artists"
+			tracks="results.artists"
 			get-track-data="getArtistData"
 			play-track="onArtistClick"
 			show-track-details="showArtistDetails"
@@ -95,7 +95,7 @@
 			content-type="'artist'"
 		></track-list>
 		<track-list
-			tracks="resultList.playlists"
+			tracks="results.playlists"
 			get-track-data="getPlaylistData"
 			play-track="onPlaylistClick"
 			show-track-details="showPlaylistDetails"
@@ -104,7 +104,7 @@
 			content-type="'playlist'"
 		></track-list>
 		<track-list
-			tracks="resultList.podcastEpisodes"
+			tracks="results.podcastEpisodes"
 			get-track-data="getPodcastEpisodeData"
 			play-track="onPodcastEpisodeClick"
 			show-track-details="showPodcastEpisodeDetails"
@@ -112,7 +112,7 @@
 			content-type="'podcast'"
 		></track-list>
 		<track-list
-			tracks="resultList.podcastChannels"
+			tracks="results.podcastChannels"
 			get-track-data="getPodcastChannelData"
 			play-track="onPodcastChannelClick"
 			show-track-details="showPodcastChannelDetails"

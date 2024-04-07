@@ -691,10 +691,10 @@ abstract class BaseMapper extends CompatibleMapper {
 			// We need to use a private interface here to drill down to the native DB connection. The interface is
 			// slightly different on NC compared to OC.
 			if (\method_exists($this->db, 'getInner')) {
-				$connection = $this->db->getInner()->getWrappedConnection();
+				$connection = $this->db->/** @scrutinizer ignore-call */getInner()->getWrappedConnection();
 				$pdo = $connection->getWrappedConnection();
 			} else if (\method_exists($this->db, 'getWrappedConnection')) {
-				$pdo = $this->db->getWrappedConnection();
+				$pdo = $this->db->/** @scrutinizer ignore-call */getWrappedConnection();
 			}
 
 			if (isset($pdo)) {

@@ -94,6 +94,7 @@ class AdvSearchController extends Controller {
 			$businessLayer = $this->businessLayerForType($entity);
 
 			if ($businessLayer !== null) {
+				\assert($this->userId !== null, 'Unexpected error: AdvSearch run with userId === null');
 				$entities = $businessLayer->findAllAdvanced(
 					$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
 				$entityIds = Util::extractIds($entities);

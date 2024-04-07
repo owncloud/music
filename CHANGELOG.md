@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 ### Added
+- Advanced search view
+  [#1141](https://github.com/owncloud/music/pull/1141)
 - Support for Nextcloud 29
   [#1132](https://github.com/owncloud/music/issues/1132)
 - Option to change the Ampache session timeout with the `config.php` key `music.ampache_session_expiry_time`

@@ -12,6 +12,10 @@
 	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
+#adv-search-area h1 {
+	margin: 14px;
+}
+
 #adv-search-area select {
 	scrollbar-width: thin;
 }

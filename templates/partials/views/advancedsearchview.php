@@ -1,4 +1,4 @@
-<div class="view-container playlist-area" id="adv-search-area">
+<div class="view-container" id="adv-search-area">
 	<h1 translate>Advanced search</h1>
 
 	<div id="adv-search-controls">
@@ -16,7 +16,11 @@
 				<option value="and" translate>matching all rules</option>
 				<option value="or" translate>matching any rule</option>
 			</select>
-			<span translate>limiting results to</span>
+			<span translate>ordering results</span>
+			<select id="adv-search-order" ng-model="order">
+				<option ng-repeat="order in availableOrders[entityType]" ng-value="order.value">{{ order.text }}</option>
+			</select>
+			<span translate>limiting to</span>
 			<select id="adv-search-limit" ng-model="maxResults">
 				<option value="" translate>unlimited</option>
 				<option value="10" translate>10 matches</option>
@@ -24,11 +28,8 @@
 				<option value="100" translate>100 matches</option>
 				<option value="500" translate>500 matches</option>
 			</select>
-			<span translate>ordering results</span>
-			<select id="adv-search-order" ng-model="order">
-				<option ng-repeat="order in availableOrders[entityType]" ng-value="order.value">{{ order.text }}</option>
-			</select>
 		</div>
+		<h2 translate>Rules</h2>
 		<div id="adv-search-rules">
 			<div class="adv-search-rule-row" ng-repeat="rule in searchRules" on-enter="search()">
 				<select ng-model="rule.rule" ng-change="onRuleChanged(rule)">
@@ -61,7 +62,7 @@
 		<button ng-click="search()" translate>Search</button><span style="color:red" ng-show="errorDescription" translate>{{ errorDescription }}</span>
 	</div>
 
-	<div ng-if="results" class="flat-list-view">
+	<div ng-if="results" class="flat-list-view playlist-area">
 		<h2 ui-draggable="true" drag="getHeaderDraggable()">
 			<span ng-class="{ clickable: resultCount() }" ng-click="onHeaderClick()">
 				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">1 result</span>

@@ -9,6 +9,7 @@
 				<option value="album" translate>albums</option>
 				<option value="artist" translate>artists</option>
 				<option value="playlist" translate>playlists</option>
+				<option value="podcast_episode" translate>podcast episodes</option>
 			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>matching all rules</option>
@@ -94,6 +95,14 @@
 			play-track="onPlaylistClick"
 			show-track-details="showPlaylistDetails"
 			get-draggable="getPlaylistDraggable"
+		></track-list>
+		<track-list
+			tracks="resultList.podcastEpisodes"
+			get-track-data="getPodcastEpisodeData"
+			play-track="onPodcastEpisodeClick"
+			show-track-details="showPodcastEpisodeDetails"
+			track-id-prefix="'podcast-episode'"
+			content-type="'podcast'"
 		></track-list>
 	</div>
 </div>

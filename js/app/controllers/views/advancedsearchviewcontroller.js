@@ -58,6 +58,13 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ value: 'newest',	text: 'by time added' },
 				{ value: 'random',	text: 'randomly' },
 			],
+			podcast_episode: [
+				{ value: 'name',		text: 'by name' },
+				{ value: 'parent',		text: 'by channel' },
+				{ value: 'newest',		text: 'by time added' },
+				{ value: 'rating',		text: 'by rating' },
+				{ value: 'random',		text: 'randomly' },
+			],
 		};
 
 		$scope.searchRuleTypes = {
@@ -243,6 +250,33 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					]
 				},
 			],
+			podcast_episode: [
+				{
+					label: 'Podcast metadata',
+					options: [
+						{ key: 'title',				name: 'Name',					type: 'text' },
+						{ key: 'podcast',			name: 'Podcast channel',		type: 'text' },
+						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+					]
+				},
+				{
+					label: 'History',
+					options: [
+						{ key: 'pubdate',			name: 'Date published',			type: 'date' },
+						{ key: 'added',				name: 'Add date',				type: 'date' },
+						{ key: 'updated',			name: 'Update date',			type: 'date' },
+						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+					]
+				},
+				{
+					label: 'Rating',
+					options: [
+						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+					]
+				},
+			],
 		};
 
 		$scope.searchRuleOperators = {
@@ -369,7 +403,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			const tracksFromAlbums = _($scope.resultList.albums).map('tracks').flatten().value();
 			const tracksFromArtists = _($scope.resultList.artists).map(a => libraryService.findTracksByArtist(a.id)).flatten().value();
 			const tracksFromPlaylists = _($scope.resultList.playlists).map('tracks').flatten().map('track').value();
-			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists);
+			const episodeResults = $scope.resultList.podcastEpisodes;
+			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults);
 		}
 
 		// Call playlistService to play all songs in the current playlist from the beginning
@@ -383,12 +418,13 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.resultCount = function() {
 			const list = $scope.resultList;
-			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length;
+			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length + list.podcastEpisodes.length;
 		};
 
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
-			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
 				playlistService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
@@ -471,6 +507,27 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.getPlaylistDraggable = function(playlistId) {
 			return { playlist: playlistId };
 		};
+		
+		$scope.onPodcastEpisodeClick = function(episodeId) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === episodeId && currentTrack.type == 'podcast') {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other list item, start playing the list from this item
+			else {
+				const index = _.findIndex($scope.resultList.podcastEpisodes, { id: episodeId });
+				play($scope.resultList.podcastEpisodes, index);
+			}
+		};
+
+		$scope.getPodcastEpisodeData = function(listItem, index, _scope) {
+			return {
+				title: listItem.title + ' (' + listItem.channel.title + ')',
+				tooltip: '',
+				number: index + 1,
+				id: listItem.id
+			};
+		};
 
 		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
@@ -488,7 +545,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					$scope.$parent.scrollToItem('track-' + track.artist.id); // the prefix is 'track-' regardless of the actual entity type!
 				}
 			}
-	});
+		});
 
 		$timeout(() => {
 			$rootScope.loading = false;

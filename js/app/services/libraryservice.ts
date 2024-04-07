@@ -61,6 +61,7 @@ export interface AdvSearchResult {
 	albums? : Album[];
 	artists? : Artist[];
 	playlists? : Playlist[];
+	podcastEpisodes? : PodcastEpisode[];
 }
 
 export interface Folder {
@@ -400,10 +401,11 @@ export class LibraryService {
 		} else {
 			this.#advSearchResult = {
 				id: list.id,
-				tracks: _(list.trackIds).map((id) => this.#tracksIndex[id]).value(),
-				albums: _(list.albumIds).map((id) => this.#albumsIndex[id]).value(),
-				artists: _(list.artistIds).map((id) => this.#artistsIndex[id]).value(),
-				playlists: _(list.playlistIds).map((id) => _.find(this.#playlists, {id: id})).value(),
+				tracks: _(list.trackIds).map((id) => this.getTrack(id)).value(),
+				albums: _(list.albumIds).map((id) => this.getAlbum(id)).value(),
+				artists: _(list.artistIds).map((id) => this.getArtist(id)).value(),
+				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
+				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
 			};
 		}
 		return this.#advSearchResult;

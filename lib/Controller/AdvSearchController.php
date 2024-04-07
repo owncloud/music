@@ -99,7 +99,7 @@ class AdvSearchController extends Controller {
 				$entityIds = Util::extractIds($entities);
 				return new JSONResponse([
 					'id' => \md5($entity.\serialize($entityIds)), // use hash => identical results will have identical ID
-					$entity.'Ids' => $entityIds
+					Util::snakeToCamelCase($entity).'Ids' => $entityIds
 				]);
 			} else {
 				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Entity type '$entity' is not supported");

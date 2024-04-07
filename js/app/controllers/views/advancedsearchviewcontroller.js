@@ -589,13 +589,26 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				} else if ($scope.results?.albums.length) {
 					const track = libraryService.getTrack(trackId);
 					if (track) {
-						$scope.$parent.scrollToItem('track-' + track.album.id); // the prefix is 'track-' regardless of the actual entity type!
+						$scope.$parent.scrollToItem('album-' + track.album.id);
+					}
+				} else if ($scope.results?.artists.length) {
+					const track = libraryService.getTrack(trackId);
+					if (track) {
+						$scope.$parent.scrollToItem('artist-' + track.artist.id);
 					}
 				}
-			} else if ($scope.results?.artists.length) {
-				const track = libraryService.getTrack(trackId);
-				if (track) {
-					$scope.$parent.scrollToItem('track-' + track.artist.id); // the prefix is 'track-' regardless of the actual entity type!
+			}
+		});
+
+		subscribe('scrollToPodcastEpisode', function(_event, episodeId) {
+			if ($scope.$parent) {
+				if ($scope.results?.podcastEpisodes.length) {
+					$scope.$parent.scrollToItem('podcast-episode-' + episodeId);
+				} else if ($scope.results?.podcastChannels.length) {
+					const episode = libraryService.getPodcastEpisode(episodeId);
+					if (episode) {
+						$scope.$parent.scrollToItem('podcast-channel-' + episode.channel.id);
+					}
 				}
 			}
 		});

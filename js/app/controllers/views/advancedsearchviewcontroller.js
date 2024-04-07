@@ -65,6 +65,12 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ value: 'rating',		text: 'by rating' },
 				{ value: 'random',		text: 'randomly' },
 			],
+			podcast_channel: [
+				{ value: 'name',		text: 'by name' },
+				{ value: 'newest',		text: 'by time added' },
+				{ value: 'rating',		text: 'by rating' },
+				{ value: 'random',		text: 'randomly' },
+			],
 		};
 
 		$scope.searchRuleTypes = {
@@ -277,6 +283,33 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					]
 				},
 			],
+			podcast_channel: [
+				{
+					label: 'Podcast metadata',
+					options: [
+						{ key: 'title',				name: 'Name',					type: 'text' },
+						{ key: 'podcast_episode',	name: 'Podcast episode',		type: 'text' },
+						{ key: 'time',				name: 'Duration (seconds)',		type: 'numeric' },
+					]
+				},
+				{
+					label: 'History',
+					options: [
+						{ key: 'pubdate',			name: 'Date published',			type: 'date' },
+						{ key: 'added',				name: 'Add date',				type: 'date' },
+						{ key: 'updated',			name: 'Update date',			type: 'date' },
+						{ key: 'recent_added',		name: 'Recently added',			type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: 'Recently updated',		type: 'numeric_limit' },
+					]
+				},
+				{
+					label: 'Rating',
+					options: [
+						{ key: 'favorite',			name: 'Favorite',				type: 'text' },
+						{ key: 'rating',			name: 'Rating',					type: 'numeric_rating' },
+					]
+				},
+			],
 		};
 
 		$scope.searchRuleOperators = {
@@ -404,7 +437,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			const tracksFromArtists = _($scope.resultList.artists).map(a => libraryService.findTracksByArtist(a.id)).flatten().value();
 			const tracksFromPlaylists = _($scope.resultList.playlists).map('tracks').flatten().map('track').value();
 			const episodeResults = $scope.resultList.podcastEpisodes;
-			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults);
+			const episodesFromChannels = _($scope.resultList.podcastChannels).map('episodes').flatten().value();
+			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults, episodesFromChannels);
 		}
 
 		// Call playlistService to play all songs in the current playlist from the beginning
@@ -418,7 +452,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.resultCount = function() {
 			const list = $scope.resultList;
-			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length + list.podcastEpisodes.length;
+			return list.tracks.length + list.albums.length + list.artists.length + list.playlists.length
+					+ list.podcastEpisodes.length + list.podcastChannels.length;
 		};
 
 		$scope.onTrackClick = function(trackId) {
@@ -449,7 +484,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.onAlbumClick = function(albumId) {
 			// TODO: play/pause if currently playing album clicked?
-			const tracks = _($scope.resultList.albums).map('tracks').flatten().value();
+			const tracks = getTracksFromResult();
 			const album = _.find($scope.resultList.albums, { id: albumId });
 			const index = _.findIndex(tracks, { id: album.tracks[0].id });
 			play(tracks, index);
@@ -523,6 +558,23 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.getPodcastEpisodeData = function(listItem, index, _scope) {
 			return {
 				title: listItem.title + ' (' + listItem.channel.title + ')',
+				tooltip: '',
+				number: index + 1,
+				id: listItem.id
+			};
+		};
+		
+		$scope.onPodcastChannelClick = function(channelId) {
+			// TODO: play/pause if currently playing channel clicked?
+			const episodes = getTracksFromResult();
+			const channel = _.find($scope.resultList.podcastChannels, { id: channelId });
+			const index = _.findIndex(episodes, { id: channel.episodes[0].id });
+			play(episodes, index);
+		};
+
+		$scope.getPodcastChannelData = function(listItem, index, _scope) {
+			return {
+				title: listItem.title,
 				tooltip: '',
 				number: index + 1,
 				id: listItem.id

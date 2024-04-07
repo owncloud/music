@@ -10,6 +10,7 @@
 				<option value="artist" translate>artists</option>
 				<option value="playlist" translate>playlists</option>
 				<option value="podcast_episode" translate>podcast episodes</option>
+				<option value="podcast_channel" translate>podcast channels</option>
 			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>matching all rules</option>
@@ -81,6 +82,8 @@
 			play-track="onAlbumClick"
 			show-track-details="showAlbumDetails"
 			get-draggable="getAlbumDraggable"
+			track-id-prefix="'album'"
+			content-type="'album'"
 		></track-list>
 		<track-list
 			tracks="resultList.artists"
@@ -88,6 +91,8 @@
 			play-track="onArtistClick"
 			show-track-details="showArtistDetails"
 			get-draggable="getArtistDraggable"
+			track-id-prefix="'artist'"
+			content-type="'artist'"
 		></track-list>
 		<track-list
 			tracks="resultList.playlists"
@@ -95,6 +100,8 @@
 			play-track="onPlaylistClick"
 			show-track-details="showPlaylistDetails"
 			get-draggable="getPlaylistDraggable"
+			track-id-prefix="'playlist'"
+			content-type="'playlist'"
 		></track-list>
 		<track-list
 			tracks="resultList.podcastEpisodes"
@@ -103,6 +110,14 @@
 			show-track-details="showPodcastEpisodeDetails"
 			track-id-prefix="'podcast-episode'"
 			content-type="'podcast'"
+		></track-list>
+		<track-list
+			tracks="resultList.podcastChannels"
+			get-track-data="getPodcastChannelData"
+			play-track="onPodcastChannelClick"
+			show-track-details="showPodcastChannelDetails"
+			track-id-prefix="'podcast-channel'"
+			content-type="'podcast-channel'"
 		></track-list>
 	</div>
 </div>

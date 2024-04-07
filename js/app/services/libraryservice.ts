@@ -62,6 +62,7 @@ export interface AdvSearchResult {
 	artists? : Artist[];
 	playlists? : Playlist[];
 	podcastEpisodes? : PodcastEpisode[];
+	podcastChannels? : PodcastChannel[];
 }
 
 export interface Folder {
@@ -406,6 +407,7 @@ export class LibraryService {
 				artists: _(list.artistIds).map((id) => this.getArtist(id)).value(),
 				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
 				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
+				podcastChannels: _(list.podcastChannelIds).map((id) => this.getPodcastChannel(id)).value(),
 			};
 		}
 		return this.#advSearchResult;

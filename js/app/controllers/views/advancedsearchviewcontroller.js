@@ -447,7 +447,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		};
 
 		$scope.getHeaderDraggable = function() {
-			return { tracks: _.map($scope.resultList.tracks, 'id') };
+			const tracks = _.filter(getTracksFromResult(), {type: 'song'});
+			return { tracks: _.map(tracks, 'id') };
 		};
 
 		$scope.resultCount = function() {

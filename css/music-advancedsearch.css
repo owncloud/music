@@ -1,0 +1,67 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2024
+ */
+
+#adv-search-area {
+	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
+}
+
+#adv-search-area h1 {
+	margin: 14px;
+}
+
+#adv-search-area select {
+	scrollbar-width: thin;
+}
+
+#adv-search-rules .icon {
+	display: inline-block;
+	margin: 8px;
+	vertical-align: middle;
+}
+
+#adv-search-controls {
+	margin-left: 14px;
+}
+
+#adv-search-rules {
+	width: fit-content;
+	max-width: 100%;
+	white-space: normal;
+}
+
+.adv-search-rule-row {
+	margin-top: 10px;
+}
+
+#adv-search-rules a {
+	opacity: .5;
+}
+
+#adv-search-rules a:hover {
+	opacity: 1;
+}
+
+#adv-search-rules input {
+	width: unset;
+	max-width: unset;
+}
+
+#adv-search-rules .add-row:hover,
+#adv-search-rules .add-row *:hover {
+	background-color: var(--color-background-dark, #ededed);
+}
+
+#adv-search-common-parameters {
+	margin-bottom: 16px;
+}
+
+#adv-search-common-parameters select {
+	margin-right: 16px;
+}

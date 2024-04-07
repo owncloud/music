@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -1217,14 +1217,7 @@ class AmpacheController extends Controller {
 		try {
 			$businessLayer = $this->getBusinessLayer($type);
 			$userId = $this->session->getUserId();
-			if ($random) {
-				// in case the random order is requested, the limit/offset handling happens after the DB query
-				$entities = $businessLayer->findAllAdvanced($operator, $rules, $userId);
-				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_adv_search_'.$type);
-				$entities = Util::arrayMultiGet($entities, $indices);
-			} else {
-				$entities = $businessLayer->findAllAdvanced($operator, $rules, $userId, $limit, $offset);
-			}
+			$entities = $businessLayer->findAllAdvanced($operator, $rules, $userId, SortBy::Name, $random ? $this->random : null, $limit, $offset);
 		} catch (BusinessLayerException $e) {
 			throw new AmpacheException($e->getMessage(), 400);
 		}
@@ -1503,7 +1496,7 @@ class AmpacheController extends Controller {
 
 		$numericRules = [
 			'track', 'year', 'original_year', 'myrating', 'rating', 'songrating', 'albumrating', 'artistrating',
-			'played_times', 'album_count', 'song_count', 'time'
+			'played_times', 'album_count', 'song_count', 'time', 'bitrate'
 		];
 		// numeric but no support planned: 'yearformed', 'skipped_times', 'play_skip_ratio', 'image_height', 'image_width'
 
@@ -1548,8 +1541,8 @@ class AmpacheController extends Controller {
 			return 'limit';
 		} elseif (\in_array($rule, $dateOrDayRules)) {
 			switch ($rule_operator) {
-				case 0: return '<';
-				case 1: return '>';
+				case 0: return 'before';
+				case 1: return 'after';
 				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'date' or 'day' type rules", 400);
 			}
 		} elseif (\in_array($rule, $booleanRules)) {
@@ -1653,7 +1646,7 @@ class AmpacheController extends Controller {
 		} elseif ($entity instanceof Playlist) {
 			$type = 'playlist';
 		} else {
-			throw new AmpacheException('unexpeted entity type for cover image', 500);
+			throw new AmpacheException('unexpected entity type for cover image', 500);
 		}
 
 		// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist

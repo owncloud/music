@@ -82,15 +82,16 @@ angular.module('Music').controller('NavigationController', [
 		});
 		
 		/** 
-		 * Catch ctrl+f except when the Settings view is active or the search input is already focused.
-		 * In the latter case, let the cloud core and/or browser do its default handling.
+		 * Catch ctrl+f except when a view not supporting search is active or the search input is already
+		 * focused. In the latter case, let the cloud core and/or browser do its default handling.
 		 * Note: This event is bound in the *capturing* phase instead of the typical *bubbling* phase.
 		 * This is to enable us to execute before the event handler registered by the unified search.
 		 * During the bubbling phase, the handlers are executed in the order they are registered and we
 		 * can't register our handler before the cloud core.
 		 */
 		document.addEventListener('keydown', (e) => {
-			if ($rootScope.currentView !== '#/settings'
+			const noSearchViews = ['#/settings', '#/search'];
+			if (!noSearchViews.includes($rootScope.currentView)
 				&& !$('#search-input').is(':focus')
 				&& !$('#unified-search__input').is(':focus')
 				&& e.ctrlKey && e.key === 'f')
@@ -318,10 +319,17 @@ angular.module('Music').controller('NavigationController', [
 			addTracks(playlist, trackIdsFromGenre(genreId));
 		};
 
+		// Add all tracks of another playlist to the playlist
+		$scope.addPlaylist = function(playlist, anotherListId) {
+			addTracks(playlist, trackIdsFromPlaylist(anotherListId));
+		};
+
 		// An item dragged and dropped on a navigation bar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
 				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('tracks' in droppedItem) {
+				addTracks(playlist, droppedItem.tracks);
 			} else if ('album' in droppedItem) {
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {
@@ -330,8 +338,10 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addFolder(playlist, droppedItem.folder);
 			} else if ('genre' in droppedItem) {
 				$scope.addGenre(playlist, droppedItem.genre);
+			} else if ('playlist' in droppedItem) {
+				$scope.addPlaylist(playlist, droppedItem.playlist);
 			} else {
-				console.error('Unknwon entity dropped on playlist');
+				console.error('Unknown entity dropped on playlist');
 			}
 
 			// 50 ms haptic feedback for touch devices
@@ -401,6 +411,11 @@ angular.module('Music').controller('NavigationController', [
 		function trackIdsFromGenre(genreId) {
 			let genre = libraryService.getGenre(genreId);
 			return _.map(genre.tracks, 'track.id');
+		}
+
+		function trackIdsFromPlaylist(playlistId) {
+			let playlist = libraryService.getPlaylist(playlistId);
+			return _.map(playlist.tracks, 'track.id');
 		}
 
 		function addTracks(playlist, trackIds) {

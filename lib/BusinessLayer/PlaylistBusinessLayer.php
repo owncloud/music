@@ -232,13 +232,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	private static function sortRulesForHistory(?string $history) : array {
 		switch ($history) {
 			case 'recently-played':
-				return ['sortBy' => SortBy::LastPlayed, 'invert' => true];
-			case 'not-recently-played':
 				return ['sortBy' => SortBy::LastPlayed, 'invert' => false];
+			case 'not-recently-played':
+				return ['sortBy' => SortBy::LastPlayed, 'invert' => true];
 			case 'often-played':
-				return ['sortBy' => SortBy::PlayCount, 'invert' => true];
-			case 'rarely-played':
 				return ['sortBy' => SortBy::PlayCount, 'invert' => false];
+			case 'rarely-played':
+				return ['sortBy' => SortBy::PlayCount, 'invert' => true];
 			case 'recently-added':
 				return ['sortBy' => SortBy::Newest, 'invert' => false];
 			case 'not-recently-added':

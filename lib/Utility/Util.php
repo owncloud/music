@@ -240,6 +240,13 @@ class Util {
 		return \strcmp(\mb_strtolower($a ?? ''), \mb_strtolower($b ?? ''));
 	}
 
+	/** 
+	 * Convert snake case string (like_this) to camel case (likeThis).
+	 */
+	public static function snakeToCamelCase(string $input): string {
+		return \lcfirst(\str_replace('_', '', \ucwords($input, '_')));
+	}
+
 	/**
 	 * Test if $item is a string and not empty or only consisting of whitespace
 	 */

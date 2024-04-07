@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 /**
@@ -23,8 +23,6 @@
 
 .artist-area > h1 {
 	margin-left: 14px;
-	font-size: 34px;
-	line-height: 36px;
 }
 
 .artist-area > h1 span:hover,

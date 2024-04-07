@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 angular.module('Music').controller('MainController', [
@@ -339,16 +339,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}, 300);
 	}
 
-	$scope.showTrackDetails = function(trackId) {
-		showDetails('track', trackId);
+	$scope.showTrackDetails = function(trackOrId) {
+		showDetails('track', trackOrId.id ?? trackOrId);
 	};
 
-	$scope.showArtistDetails = function(artist) {
-		showDetails('artist', artist.id);
+	$scope.showArtistDetails = function(artistOrId) {
+		showDetails('artist', artistOrId.id ?? artistOrId);
 	};
 
-	$scope.showAlbumDetails = function(album) {
-		showDetails('album', album.id);
+	$scope.showAlbumDetails = function(albumOrId) {
+		showDetails('album', albumOrId.id ?? albumOrId);
+	};
+
+	$scope.showPlaylistDetails = function(playlistOrId) {
+		showDetails('playlist', playlistOrId.id ?? playlistOrId);
 	};
 
 	$scope.showSmartListFilters = function() {
@@ -356,8 +360,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.collapseNavigationPaneOnMobile();
 	};
 
-	$scope.showRadioStationDetails = function(station) {
-		showDetails('radioStation', station.id);
+	$scope.showRadioStationDetails = function(stationOrId) {
+		showDetails('radioStation', stationOrId.id ?? stationOrId);
 	};
 
 	$scope.showRadioHint = function() {
@@ -365,12 +369,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.collapseNavigationPaneOnMobile();
 	};
 
-	$scope.showPodcastChannelDetails = function(channel) {
-		showDetails('podcastChannel', channel.id);
+	$scope.showPodcastChannelDetails = function(channelOrId) {
+		showDetails('podcastChannel', channelOrId.id ?? channelOrId);
 	};
 
-	$scope.showPodcastEpisodeDetails = function(episodeId) {
-		showDetails('podcastEpisode', episodeId);
+	$scope.showPodcastEpisodeDetails = function(episodeOrId) {
+		showDetails('podcastEpisode', episodeOrId.id ?? episodeOrId);
 	};
 
 	$scope.hideSidebar = function() {

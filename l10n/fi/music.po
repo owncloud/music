@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-03-16 19:52+0200\n"
+"PO-Revision-Date: 2024-04-07 21:44+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -68,6 +68,12 @@ msgid_plural "{{ count }} genres"
 msgstr[0] "1 genre"
 msgstr[1] "{{ count }} genreä"
 
+#: templates/partials/views/advancedsearchview.php:68
+msgid "1 result"
+msgid_plural "{{ resultCount() }} results"
+msgstr[0] "1 tulos"
+msgstr[1] "{{ resultCount() }} tulosta"
+
 #: js/app/controllers/maincontroller.js:89
 msgid "1 station"
 msgid_plural "{{ count }} stations"
@@ -80,6 +86,22 @@ msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] "1 kappale"
 msgstr[1] "{{ count }} kappaletta"
+
+#: templates/partials/views/advancedsearchview.php:26
+msgid "10 matches"
+msgstr "10 osumaan"
+
+#: templates/partials/views/advancedsearchview.php:28
+msgid "100 matches"
+msgstr "100 osumaan"
+
+#: templates/partials/views/advancedsearchview.php:27
+msgid "30 matches"
+msgstr "30 osumaan"
+
+#: templates/partials/views/advancedsearchview.php:29
+msgid "500 matches"
+msgstr "500 osumaan"
 
 #: templates/partials/views/settingsview.php:30
 msgid ""
@@ -150,7 +172,7 @@ msgstr "<strong>SHIFT+VÄLILYÖNTI</strong> tai <strong>SHIFT+K</strong>"
 msgid "<strong>SPACE</strong> or <strong>K</strong>"
 msgstr "<strong>VÄLILYÖNTI</strong> tai <strong>K</strong>"
 
-#: templates/partials/views/settingsview.php:240
+#: templates/partials/views/settingsview.php:248
 msgid "About"
 msgstr "Tietoja"
 
@@ -161,6 +183,15 @@ msgstr "Uuden podcast-kanavan lisääminen RSS-syötteestä"
 #: js/app/services/podcastservice.ts:82
 msgid "Add channel"
 msgstr "Lisää kanava"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:105
+#: js/app/controllers/views/advancedsearchviewcontroller.js:162
+#: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/controllers/views/advancedsearchviewcontroller.js:252
+#: js/app/controllers/views/advancedsearchviewcontroller.js:272
+#: js/app/controllers/views/advancedsearchviewcontroller.js:299
+msgid "Add date"
+msgstr "Lisäyspäivä"
 
 #: templates/partials/navigationitem.php:97
 msgid "Add from RSS feed"
@@ -194,10 +225,47 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta esittäjän taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
+#: templates/partials/navigation.php:67
+#: templates/partials/views/advancedsearchview.php:2
+msgid "Advanced search"
+msgstr "Tarkennettu haku"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:345
+msgid "After"
+msgstr "Jälkeen"
+
 #: js/app/controllers/playercontroller.js:756
 #: templates/partials/sidebar/trackdetails.php:53
 msgid "Album"
 msgstr "Albumi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:146
+#: js/app/controllers/views/advancedsearchviewcontroller.js:90
+msgid "Album artist name"
+msgstr "Albumin esittäjän nimi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:203
+msgid "Album count"
+msgstr "Albumien määrä"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:152
+#: js/app/controllers/views/advancedsearchviewcontroller.js:96
+msgid "Album genre"
+msgstr "Albumin genre"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:143
+msgid "Album metadata"
+msgstr "Albumin tiedot"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:200
+#: js/app/controllers/views/advancedsearchviewcontroller.js:88
+msgid "Album name"
+msgstr "Albumin nimi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:118
+#: js/app/controllers/views/advancedsearchviewcontroller.js:227
+msgid "Album rating"
+msgstr "Albumin arvosana"
 
 #: js/app/controllers/playercontroller.js:749 templates/fake-template.php:9
 #: templates/partials/navigation.php:8
@@ -218,6 +286,10 @@ msgstr "Kaikki kappaleet"
 msgid "Ampache and Subsonic"
 msgstr "Ampache ja Subsonic"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:81
+msgid "Any searchable text"
+msgstr "Mikä tahansa teksti"
+
 #: js/app/services/playlistfileservice.ts:175
 msgid "Append to an existing playlist?"
 msgstr "Lisätäänkö olemassa olevan soittolistan perään?"
@@ -232,7 +304,7 @@ msgstr ""
 msgid "Are you sure to permanently erase all the configured podcast channels?"
 msgstr "Oletko varma, että haluat pysyvästi poistaa kaikki podcast-kanavat?"
 
-#: js/app/controllers/navigationcontroller.js:172
+#: js/app/controllers/navigationcontroller.js:173
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
@@ -269,18 +341,41 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:102
 msgid "Articles to ignore on artist names"
-msgstr "Etuliitteet, joita ei huomioida artistin nimessä"
+msgstr "Etuliitteet, joita ei huomioida esittäjän nimessä"
 
 #: js/app/controllers/playercontroller.js:757
 #: templates/partials/sidebar/trackdetails.php:50
 msgid "Artist"
 msgstr "Esittäjä"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:205
+#: js/app/controllers/views/advancedsearchviewcontroller.js:97
+msgid "Artist genre"
+msgstr "Esittäjän genre"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:197
+msgid "Artist metadata"
+msgstr "Esittäjän tiedot"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:89
+msgid "Artist name"
+msgstr "Esittäjän nimi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:119
+#: js/app/controllers/views/advancedsearchviewcontroller.js:174
+msgid "Artist rating"
+msgstr "Esittäjän arvosana"
+
 #: templates/fake-template.php:8
 #: templates/partials/sidebar/smartlistfilters.php:25
 msgid "Artists"
 msgstr "Esittäjät"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:344
+msgid "Before"
+msgstr "Ennen"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:94
 #: templates/partials/sidebar/radiostationdetails.php:44
 msgid "Bit rate"
 msgstr "Bittinopeus"
@@ -315,7 +410,7 @@ msgstr "Kanava"
 msgid "Check the filter values"
 msgstr "Tarkista suodattimien arvot"
 
-#: templates/main.php:54
+#: templates/main.php:55
 msgid "Click here to start the scan"
 msgstr "Napsauta aloittaaksesi skannauksen"
 
@@ -347,6 +442,10 @@ msgstr "Kommentti"
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:317
+msgid "Contains"
+msgstr "Sisältää"
+
 #: js/app/services/podcastservice.ts:158 js/app/services/podcastservice.ts:168
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
@@ -359,6 +458,11 @@ msgstr "Kanavan \"{{ title }}\" päivittäminen lähteestä epäonnistui"
 #: templates/partials/sidebar/radiostationdetails.php:26
 msgid "Created"
 msgstr "Luotu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:271
+#: js/app/controllers/views/advancedsearchviewcontroller.js:298
+msgid "Date published"
+msgstr "Julkaisupäivä"
 
 #: templates/partials/views/settingsview.php:130
 msgid "Decrease playback speed"
@@ -393,6 +497,30 @@ msgstr "Kuvaus (esim. sovelluksen nimi)"
 msgid "Details"
 msgstr "Tiedot"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:318
+msgid "Does not contain"
+msgstr "Ei sisällä"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:332
+msgid "Does not equal"
+msgstr "Ei ole sama kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:326
+msgid "Does not match regular expression"
+msgstr "Ei vastaa säännöllistä lauseketta"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:324
+msgid "Does not sound like"
+msgstr "Ei kuulosta samalta kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:150
+#: js/app/controllers/views/advancedsearchviewcontroller.js:202
+#: js/app/controllers/views/advancedsearchviewcontroller.js:265
+#: js/app/controllers/views/advancedsearchviewcontroller.js:292
+#: js/app/controllers/views/advancedsearchviewcontroller.js:93
+msgid "Duration (seconds)"
+msgstr "Kesto (sekunteina)"
+
 #: templates/partials/views/settingsview.php:52
 msgid "Enable metadata scanning"
 msgstr "Skannaa metatiedot"
@@ -409,9 +537,17 @@ msgstr ""
 "<samp>data:</samp> ja <samp>blob:</samp> lisätään CSP-otsikkoon <a "
 "href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:320
+msgid "Ends with"
+msgstr "Päättyy"
+
 #: js/app/controllers/playercontroller.js:762
 msgid "Episode"
 msgstr "Jakso"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:331
+msgid "Equals"
+msgstr "On sama kuin"
 
 #: js/app/controllers/playercontroller.js:136
 msgid "Error playing URL:"
@@ -442,7 +578,7 @@ msgstr ""
 "Uusien äänitiedostojen tarkistaminen epäonnistui (virhe {{ code }}); "
 "lisätietoja palvelinlokeista"
 
-#: js/app/controllers/views/radioviewcontroller.js:73
+#: js/app/controllers/views/radioviewcontroller.js:72
 msgid "Failed to delete the radio station:"
 msgstr "Radio-kanavan poistaminen epäonnistui:"
 
@@ -458,19 +594,19 @@ msgstr "Soittolistan tuominen tiedostosta {{ file }} epäonnistui"
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr "Radio-kanavien tuominen tiedostosta {{ file }} epäonnistui"
 
-#: js/app/controllers/maincontroller.js:189
+#: js/app/controllers/maincontroller.js:188
 msgid "Failed to load the collection:"
 msgstr "Kokoelman lataaminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:174
+#: js/app/controllers/views/settingsviewcontroller.js:173
 msgid "Failed to reset the collection:"
 msgstr "Kokoelman pyyhkiminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:242
+#: js/app/controllers/views/settingsviewcontroller.js:241
 msgid "Failed to reset the podcast channels:"
 msgstr "Podcast-kanavien pyyhkiminen epäonnistui:"
 
-#: js/app/controllers/views/settingsviewcontroller.js:212
+#: js/app/controllers/views/settingsviewcontroller.js:211
 msgid "Failed to reset the radio stations:"
 msgstr "Radio-kanavien pyyhkiminen epäonnistui:"
 
@@ -486,6 +622,34 @@ msgstr "Musiikkikokoelman polun tallentaminen epäonnistui"
 #: templates/partials/views/settingsview.php:56
 msgid "Failed to save the setting"
 msgstr "Asetuksen tallentaminen epäonnistui"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:114
+#: js/app/controllers/views/advancedsearchviewcontroller.js:171
+#: js/app/controllers/views/advancedsearchviewcontroller.js:224
+#: js/app/controllers/views/advancedsearchviewcontroller.js:281
+#: js/app/controllers/views/advancedsearchviewcontroller.js:308
+msgid "Favorite"
+msgstr "Suosikki"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:115
+msgid "Favorite album"
+msgstr "Suosikkialbumi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:116
+msgid "Favorite artist"
+msgstr "Suosikkiesittäjä"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:102
+#: js/app/controllers/views/advancedsearchviewcontroller.js:159
+#: js/app/controllers/views/advancedsearchviewcontroller.js:212
+msgid "File data"
+msgstr "Tiedoston tiedot"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:104
+#: js/app/controllers/views/advancedsearchviewcontroller.js:161
+#: js/app/controllers/views/advancedsearchviewcontroller.js:214
+msgid "File name"
+msgstr "Tiedoston nimi"
 
 #: templates/partials/navigationitem.php:142
 msgid "Filters"
@@ -520,7 +684,7 @@ msgstr "Yleinen"
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: js/app/controllers/navigationcontroller.js:255
+#: js/app/controllers/navigationcontroller.js:256
 msgid "Generated {{ datetime }}"
 msgstr "Generoitu {{ datetime }}"
 
@@ -539,6 +703,17 @@ msgstr "Genret"
 msgid "Getting started"
 msgstr "Aloitusohje"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:155
+#: js/app/controllers/views/advancedsearchviewcontroller.js:208
+msgid "Has image"
+msgstr "Kuva asetettu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:154
+#: js/app/controllers/views/advancedsearchviewcontroller.js:207
+#: js/app/controllers/views/advancedsearchviewcontroller.js:98
+msgid "Has no genre"
+msgstr "Ei genreä"
+
 #: templates/partials/views/settingsview.php:153
 msgid ""
 "Here you can generate passwords to use with the Ampache or Subsonic API. "
@@ -551,6 +726,8 @@ msgstr ""
 "ei voida käsitellä täysin turvallisesti. Voit luoda niin monta salasanaa "
 "kuin haluat ja peruuttaa ne koska vain."
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:269
+#: js/app/controllers/views/advancedsearchviewcontroller.js:296
 #: templates/partials/sidebar/smartlistfilters.php:32
 msgid "History"
 msgstr "Historia"
@@ -633,6 +810,61 @@ msgstr "Internet radio -asemat"
 msgid "Invalid RSS feed URL"
 msgstr "Epäkelpo RSS-syötteen osoite"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:321
+msgid "Is"
+msgstr "On"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:348
+msgid "Is equal to"
+msgstr "On sama kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:341
+msgid "Is false"
+msgstr "On epätosi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:333
+msgid "Is greater than"
+msgstr "On suurempi kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:329
+msgid "Is greater than or equal to"
+msgstr "On suurempi tai yhtä suuri kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:334
+msgid "Is less than"
+msgstr "On pienempi kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:330
+msgid "Is less than or equal to"
+msgstr "On pienempi tai yhtä suuri kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:322
+msgid "Is not"
+msgstr "Ei ole"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:349
+msgid "Is not equal to"
+msgstr "Ei ole sama kuin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:128
+#: js/app/controllers/views/advancedsearchviewcontroller.js:183
+#: js/app/controllers/views/advancedsearchviewcontroller.js:236
+msgid "Is played"
+msgstr "On soitettu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:129
+msgid "Is played album"
+msgstr "On soitettu albumi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:130
+#: js/app/controllers/views/advancedsearchviewcontroller.js:184
+msgid "Is played artist"
+msgstr "On soitettu esittäjä"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:340
+msgid "Is true"
+msgstr "On tosi"
+
 #: templates/partials/views/settingsview.php:126
 msgid "Jump to the next track"
 msgstr "Hyppää seuraavaan kappaleeseen"
@@ -656,6 +888,16 @@ msgstr ""
 "niiden tarjoamista selaimelle tai Subsonic/Ampache-asiakkaalle. Pienempiä "
 "kuvia ei suurenneta. Oletuskoko on 380 kuvapistettä. Arvo on annettava "
 "yhtenä kokonaislukuna."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:126
+#: js/app/controllers/views/advancedsearchviewcontroller.js:181
+#: js/app/controllers/views/advancedsearchviewcontroller.js:234
+msgid "Last played"
+msgstr "Viimeksi soitettu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:337
+msgid "Limit"
+msgstr "Raja"
 
 #: templates/partials/sidebar/smartlistfilters.php:6
 msgid "List size"
@@ -694,12 +936,16 @@ msgstr ""
 "Musiikkisovelluksen web-käyttöliittymän monia toimintoja voidaan hallita "
 "pikanäppäimillä."
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:325
+msgid "Matches regular expression"
+msgstr "Vastaa säännöllistä lauseketta"
+
 #: templates/partials/sidebar/playlistdetails.php:18
 #: templates/partials/sidebar/radiostationdetails.php:29
 msgid "Modified"
 msgstr "Muokattu"
 
-#: templates/fake-template.php:5 templates/partials/views/settingsview.php:245
+#: templates/fake-template.php:5 templates/partials/views/settingsview.php:253
 msgid "Music"
 msgstr "Musiikki"
 
@@ -721,6 +967,12 @@ msgstr "Vaimenna"
 msgid "Mute / Unmute"
 msgstr "Vaimenna / Poista vaimennus"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:145
+#: js/app/controllers/views/advancedsearchviewcontroller.js:199
+#: js/app/controllers/views/advancedsearchviewcontroller.js:251
+#: js/app/controllers/views/advancedsearchviewcontroller.js:263
+#: js/app/controllers/views/advancedsearchviewcontroller.js:290
+#: js/app/controllers/views/advancedsearchviewcontroller.js:87
 #: templates/partials/sidebar/radiostationdetails.php:8
 msgid "Name"
 msgstr "Nimi"
@@ -729,11 +981,11 @@ msgstr "Nimi"
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
-#: templates/main.php:53
+#: templates/main.php:54
 msgid "New music available"
 msgstr "Uusia kappaleita saatavilla"
 
-#: templates/main.php:86 templates/main.php:87
+#: templates/main.php:87 templates/main.php:88
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 "Uusia kappaleita saatavilla. Napsauta päivittääksesi musiikkikirjastosi."
@@ -750,11 +1002,11 @@ msgstr "Seuraava"
 msgid "No channels"
 msgstr "Ei kanavia"
 
-#: templates/main.php:45
+#: templates/main.php:46
 msgid "No music found"
 msgstr "Musiikkia ei löytynyt"
 
-#: templates/main.php:77
+#: templates/main.php:78
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 "Hakusanalla <strong>{{ queryString }}</strong> ei löytynyt tuloksia tästä "
@@ -839,7 +1091,7 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: templates/partials/views/settingsview.php:236
+#: templates/partials/views/settingsview.php:244
 msgid ""
 "OBSOLETE. This key is no longer needed or used by the Music application."
 msgstr "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avainta."
@@ -887,6 +1139,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: js/app/directives/listheading.js:23 templates/fake-template.php:25
+#: templates/partials/views/advancedsearchview.php:69
 #: templates/partials/views/albumsview.php:27
 #: templates/partials/views/alltracksview.php:5
 #: templates/partials/views/playlistview.php:5
@@ -900,6 +1153,12 @@ msgstr "Toista"
 msgid "Play / Pause"
 msgstr "Toista / Keskeytä"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:123
+#: js/app/controllers/views/advancedsearchviewcontroller.js:178
+#: js/app/controllers/views/advancedsearchviewcontroller.js:231
+msgid "Play history"
+msgstr "Soittohistoria"
+
 #: templates/partials/controls.php:46
 msgid "Playback rate"
 msgstr "Toistonopeus"
@@ -908,7 +1167,19 @@ msgstr "Toistonopeus"
 msgid "Playback speed not adjustible for the current song"
 msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:125
+#: js/app/controllers/views/advancedsearchviewcontroller.js:180
+#: js/app/controllers/views/advancedsearchviewcontroller.js:233
+msgid "Played times"
+msgstr "Soittokerrat"
+
 #: js/app/controllers/playercontroller.js:760
+#: js/app/controllers/views/advancedsearchviewcontroller.js:134
+#: js/app/controllers/views/advancedsearchviewcontroller.js:136
+#: js/app/controllers/views/advancedsearchviewcontroller.js:188
+#: js/app/controllers/views/advancedsearchviewcontroller.js:190
+#: js/app/controllers/views/advancedsearchviewcontroller.js:240
+#: js/app/controllers/views/advancedsearchviewcontroller.js:242
 msgid "Playlist"
 msgstr "Soittolista"
 
@@ -916,11 +1187,17 @@ msgstr "Soittolista"
 msgid "Playlist exported to file {{ path }}"
 msgstr "Soittolista vietiin tiedostoon {{ path }}"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:137
+#: js/app/controllers/views/advancedsearchviewcontroller.js:191
+#: js/app/controllers/views/advancedsearchviewcontroller.js:243
+msgid "Playlist name"
+msgstr "Soittolistan nimi"
+
 #: js/app/services/playlistfileservice.ts:53
 msgid "Playlist or folder not found"
 msgstr "Soittolista tai kansio ei löytynyt"
 
-#: templates/partials/views/settingsview.php:248
+#: templates/partials/views/settingsview.php:256
 msgid ""
 "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
 "target=\"_blank\">issue tracker</a>"
@@ -928,9 +1205,22 @@ msgstr ""
 "Ilmoita mahdollisista virheistä ja ongelmista <a "
 "href=\"{{issueTrackerUrl}}\" target=\"_blank\">seurantaan</a>"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:264
+msgid "Podcast channel"
+msgstr "Podcast-kanava"
+
 #: js/app/services/podcastservice.ts:59
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Podcast-kanava \"{{ title }}\" lisättiin"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:291
+msgid "Podcast episode"
+msgstr "Podcast-jakso"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:261
+#: js/app/controllers/views/advancedsearchviewcontroller.js:288
+msgid "Podcast metadata"
+msgstr "Podcastin tiedot"
 
 #: js/app/controllers/playercontroller.js:755
 #: templates/partials/navigation.php:19
@@ -981,13 +1271,44 @@ msgstr "Radioasemat vietiin tiedostoon {{ path }}"
 msgid "Rarely played"
 msgstr "Harvoin soitettu"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:112
+#: js/app/controllers/views/advancedsearchviewcontroller.js:117
+#: js/app/controllers/views/advancedsearchviewcontroller.js:169
+#: js/app/controllers/views/advancedsearchviewcontroller.js:172
+#: js/app/controllers/views/advancedsearchviewcontroller.js:222
+#: js/app/controllers/views/advancedsearchviewcontroller.js:225
+#: js/app/controllers/views/advancedsearchviewcontroller.js:279
+#: js/app/controllers/views/advancedsearchviewcontroller.js:282
+#: js/app/controllers/views/advancedsearchviewcontroller.js:306
+#: js/app/controllers/views/advancedsearchviewcontroller.js:309
+msgid "Rating"
+msgstr "Arvosana"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:107
+#: js/app/controllers/views/advancedsearchviewcontroller.js:164
+#: js/app/controllers/views/advancedsearchviewcontroller.js:217
+#: js/app/controllers/views/advancedsearchviewcontroller.js:254
+#: js/app/controllers/views/advancedsearchviewcontroller.js:274
+#: js/app/controllers/views/advancedsearchviewcontroller.js:301
 #: templates/partials/sidebar/smartlistfilters.php:39
 msgid "Recently added"
 msgstr "Lähiaikoina lisätty"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:127
+#: js/app/controllers/views/advancedsearchviewcontroller.js:182
+#: js/app/controllers/views/advancedsearchviewcontroller.js:235
 #: templates/partials/sidebar/smartlistfilters.php:35
 msgid "Recently played"
 msgstr "Lähiaikoina soitettu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:108
+#: js/app/controllers/views/advancedsearchviewcontroller.js:165
+#: js/app/controllers/views/advancedsearchviewcontroller.js:218
+#: js/app/controllers/views/advancedsearchviewcontroller.js:255
+#: js/app/controllers/views/advancedsearchviewcontroller.js:275
+#: js/app/controllers/views/advancedsearchviewcontroller.js:302
+msgid "Recently updated"
+msgstr "Lähiaikoina päivitetty"
 
 #: templates/partials/views/smartlistview.php:25
 msgid "Refine the filters defined for the smart playlist"
@@ -1014,7 +1335,7 @@ msgstr "Poista kanava"
 msgid "Remove duplicates"
 msgstr "Poista kaksoiskappaleet"
 
-#: js/app/controllers/navigationcontroller.js:173
+#: js/app/controllers/navigationcontroller.js:174
 msgid "Remove playlist"
 msgstr "Poista soittolista"
 
@@ -1063,17 +1384,26 @@ msgstr "Tyhjennä podcast-kanavat"
 msgid "Revoke API password"
 msgstr "Kumoa API-salasana"
 
+#: templates/partials/views/advancedsearchview.php:32
+msgid "Rules"
+msgstr "Säännöt"
+
 #: templates/partials/navigationitem.php:145
 msgid "Save playlist"
 msgstr "Tallenna soittolista"
 
-#: templates/main.php:61
+#: templates/main.php:62
 msgid "Scanning music …"
 msgstr "Skannataan musiikkia …"
 
-#: templates/partials/navigation.php:53 templates/partials/navigation.php:55
+#: templates/partials/navigation.php:54 templates/partials/navigation.php:56
+#: templates/partials/views/advancedsearchview.php:62
 #: templates/partials/views/settingsview.php:132
 msgid "Search"
+msgstr "Etsi"
+
+#: templates/partials/views/advancedsearchview.php:6
+msgid "Search for"
 msgstr "Etsi"
 
 #: js/app/controllers/searchcontroller.js:98
@@ -1112,7 +1442,7 @@ msgstr "Valitse kansio"
 msgid "Setting up radio stations"
 msgstr "Radio-asemien asettaminen"
 
-#: templates/partials/navigation.php:65
+#: templates/partials/navigation.php:77
 #: templates/partials/views/settingsview.php:2
 msgid "Settings"
 msgstr "Asetukset"
@@ -1177,7 +1507,7 @@ msgstr "Älykkään soittolistan suotimet"
 msgid "Some not playable tracks were skipped."
 msgstr "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa."
 
-#: templates/main.php:70
+#: templates/main.php:71
 msgid "Some search results are omitted"
 msgstr "Joitain hakutuloksia ei näytetä"
 
@@ -1195,6 +1525,10 @@ msgstr "Ilmoitukset kappaleen vaihtuessa"
 msgid "Sort …"
 msgstr "Järjestä …"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:323
+msgid "Sounds like"
+msgstr "Kuulostaa samalta kuin"
+
 #: templates/partials/views/settingsview.php:22
 msgid ""
 "Specify folders within your music collection path which shall be excluded "
@@ -1211,6 +1545,10 @@ msgstr ""
 "Määritä välilyönnillä erotettu luettelo etuliitteistä, jotka on jätettävä "
 "huomiotta järjestettäessä taiteilijoita aakkosjärjestykseen. Etuliitteissä "
 "ei oteta huomioon isoja ja pieniä kirjaimia."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:319
+msgid "Starts with"
+msgstr "Alkaa"
 
 #: templates/partials/controls.php:14 templates/partials/controls.php:15
 #: templates/partials/controls.php:27
@@ -1247,6 +1585,14 @@ msgid ""
 msgstr ""
 "Ampache API:n pääversio, jota käytetään, jos asiakas ei määritä mitään "
 "versiota. Oletusarvo on {{defaultVer}}."
+
+#: templates/partials/views/settingsview.php:235
+msgid ""
+"The Ampache session expiry time in seconds. The default is {{defaultExpiry}} "
+"and the maximum is {{maxExpiry}}."
+msgstr ""
+"Ampache-session vanhenemisaika sekunteina. Oletusarvo on {{defaultExpiry}} "
+"ja suurin sallittu arvo {{maxExpiry}}."
 
 #: templates/partials/sidebar/radiohint.php:15
 msgid ""
@@ -1409,6 +1755,39 @@ msgstr "Kokonaiskesto"
 msgid "Track"
 msgstr "Kappale"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:147
+msgid "Track artist name"
+msgstr "Kappaleen esittäjän nimi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:151
+#: js/app/controllers/views/advancedsearchviewcontroller.js:204
+msgid "Track count"
+msgstr "Kappaleiden määrä"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:153
+#: js/app/controllers/views/advancedsearchviewcontroller.js:206
+#: js/app/controllers/views/advancedsearchviewcontroller.js:95
+msgid "Track genre"
+msgstr "Kappaleen genre"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:85
+msgid "Track metadata"
+msgstr "Kappaleen tiedot"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:148
+#: js/app/controllers/views/advancedsearchviewcontroller.js:201
+msgid "Track name"
+msgstr "Kappaleen nimi"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:91
+msgid "Track number"
+msgstr "Kappaleen numero"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:173
+#: js/app/controllers/views/advancedsearchviewcontroller.js:226
+msgid "Track rating"
+msgstr "Kappaleen arvosana"
+
 #: templates/fake-template.php:10
 msgid "Tracks"
 msgstr "Kappaleet"
@@ -1421,7 +1800,7 @@ msgstr "Puumainen asettelu"
 msgid "Troubleshooting"
 msgstr "Vian etsintä"
 
-#: templates/main.php:71
+#: templates/main.php:72
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
 
@@ -1461,6 +1840,15 @@ msgstr "Poista vaimennus"
 msgid "Update"
 msgstr "Päivitä"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:106
+#: js/app/controllers/views/advancedsearchviewcontroller.js:163
+#: js/app/controllers/views/advancedsearchviewcontroller.js:216
+#: js/app/controllers/views/advancedsearchviewcontroller.js:253
+#: js/app/controllers/views/advancedsearchviewcontroller.js:273
+#: js/app/controllers/views/advancedsearchviewcontroller.js:300
+msgid "Update date"
+msgstr "Päivityspäivä"
+
 #: js/app/controllers/sidebar/artistdetailscontroller.js:62
 msgid ""
 "Upload image named \"{{name}}\" to anywhere within your library path to see "
@@ -1469,7 +1857,7 @@ msgstr ""
 "Lataa kuvatiedosto nimellä \"{{name}}\" mihin tahansa kirjastopolkusi alla "
 "nähdäksesi kuvan tässä."
 
-#: templates/main.php:46
+#: templates/main.php:47
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 "Lähetä musiikkitiedostoja tiedostosovelluksen kautta, jonka jälkeen voit "
@@ -1514,7 +1902,7 @@ msgstr ""
 "Käytä tätä osoitetta selataksesi musiikkikokoelmaasi Ampache-yhteensopivalta "
 "soittimelta."
 
-#: js/app/controllers/navigationcontroller.js:257
+#: js/app/controllers/navigationcontroller.js:258
 msgid "Used filters: {{ params }}"
 msgstr "Käytetyt suotimet: {{ params }}"
 
@@ -1537,6 +1925,11 @@ msgstr "Verkkosivu"
 #: js/app/services/playlistfileservice.ts:57
 msgid "Writing to the file is not allowed"
 msgstr "Tiedostoon kirjoittaminen ei ole sallittua"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:149
+#: js/app/controllers/views/advancedsearchviewcontroller.js:92
+msgid "Year"
+msgstr "Vuosi"
 
 #: templates/partials/sidebar/smartlistfilters.php:11
 msgid "Years"
@@ -1569,6 +1962,14 @@ msgstr ""
 "löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
 "kuvaketta."
 
+#: templates/partials/views/advancedsearchview.php:9
+msgid "albums"
+msgstr "albumit"
+
+#: templates/partials/views/advancedsearchview.php:10
+msgid "artists"
+msgstr "esittäjät"
+
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:97
 msgid "author"
 msgstr "tekijä"
@@ -1585,9 +1986,49 @@ msgstr "koostettu"
 msgid "by album"
 msgstr "albumin mukaan"
 
+#: js/app/controllers/views/advancedsearchviewcontroller.js:36
+#: js/app/controllers/views/advancedsearchviewcontroller.js:45
 #: templates/partials/navigationitem.php:52
 msgid "by artist"
 msgstr "esittäjän mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:63
+msgid "by channel"
+msgstr "kanavan mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:35
+#: js/app/controllers/views/advancedsearchviewcontroller.js:44
+#: js/app/controllers/views/advancedsearchviewcontroller.js:51
+#: js/app/controllers/views/advancedsearchviewcontroller.js:57
+#: js/app/controllers/views/advancedsearchviewcontroller.js:62
+#: js/app/controllers/views/advancedsearchviewcontroller.js:69
+msgid "by name"
+msgstr "nimen mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:38
+msgid "by play count"
+msgstr "soittokertojen mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:40
+#: js/app/controllers/views/advancedsearchviewcontroller.js:47
+#: js/app/controllers/views/advancedsearchviewcontroller.js:53
+#: js/app/controllers/views/advancedsearchviewcontroller.js:65
+#: js/app/controllers/views/advancedsearchviewcontroller.js:71
+msgid "by rating"
+msgstr "arvosanan mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:39
+msgid "by recent play"
+msgstr "tuoreen soiton mukaan"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:37
+#: js/app/controllers/views/advancedsearchviewcontroller.js:46
+#: js/app/controllers/views/advancedsearchviewcontroller.js:52
+#: js/app/controllers/views/advancedsearchviewcontroller.js:58
+#: js/app/controllers/views/advancedsearchviewcontroller.js:64
+#: js/app/controllers/views/advancedsearchviewcontroller.js:70
+msgid "by time added"
+msgstr "lisäysajan mukaan"
 
 #: templates/partials/navigationitem.php:49
 msgid "by title"
@@ -1625,9 +2066,46 @@ msgstr "avainsanat"
 msgid "language"
 msgstr "kieli"
 
+#: templates/partials/views/advancedsearchview.php:23
+msgid "limiting to"
+msgstr "rajoittaen"
+
+#: templates/partials/views/advancedsearchview.php:16
+msgid "matching all rules"
+msgstr "jotka vastaavat kaikkia sääntöjä"
+
+#: templates/partials/views/advancedsearchview.php:17
+msgid "matching any rule"
+msgstr "jotka vastaavat mitä tahansa sääntöä"
+
+#: templates/partials/views/advancedsearchview.php:19
+msgid "ordering results"
+msgstr "järjestäen tulokset"
+
+#: templates/partials/views/advancedsearchview.php:11
+msgid "playlists"
+msgstr "soittolistat"
+
+#: templates/partials/views/advancedsearchview.php:13
+msgid "podcast channels"
+msgstr "podcast-kanavat"
+
+#: templates/partials/views/advancedsearchview.php:12
+msgid "podcast episodes"
+msgstr "podcast-jaksot"
+
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:99
 msgid "published"
 msgstr "julkaistu"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:41
+#: js/app/controllers/views/advancedsearchviewcontroller.js:48
+#: js/app/controllers/views/advancedsearchviewcontroller.js:54
+#: js/app/controllers/views/advancedsearchviewcontroller.js:59
+#: js/app/controllers/views/advancedsearchviewcontroller.js:66
+#: js/app/controllers/views/advancedsearchviewcontroller.js:72
+msgid "randomly"
+msgstr "satunnaisesti"
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:103
 msgid "season"
@@ -1645,11 +2123,19 @@ msgstr "striimin URL"
 msgid "title"
 msgstr "otsikko"
 
+#: templates/partials/views/advancedsearchview.php:8
+msgid "tracks"
+msgstr "kappaleet"
+
+#: templates/partials/views/advancedsearchview.php:25
+msgid "unlimited"
+msgstr "rajoittamaton"
+
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:101
 msgid "updates checked"
 msgstr "päivitykset tarkastettu"
 
-#: templates/partials/views/settingsview.php:246
+#: templates/partials/views/settingsview.php:254
 msgid "version history"
 msgstr "versiohistoria"
 
@@ -1657,7 +2143,7 @@ msgstr "versiohistoria"
 msgid "website"
 msgstr "verkkosivu"
 
-#: js/app/controllers/navigationcontroller.js:158
+#: js/app/controllers/navigationcontroller.js:159
 msgid "{{ count }} duplicate track was removed"
 msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] "{{ count }} kaksoiskappale poistettiin"
@@ -1671,7 +2157,7 @@ msgstr "{{ count }}  riviä ohitettiin."
 msgid "{{ count }} files were skipped."
 msgstr "{{ count }} tiedostoa ohitettiin."
 
-#: templates/main.php:62
+#: templates/main.php:63
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 

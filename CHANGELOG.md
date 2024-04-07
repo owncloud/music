@@ -1,12 +1,19 @@
 ## [Unreleased]
 
 ### Added
+- Advanced search view
+  [#1141](https://github.com/owncloud/music/pull/1141)
 - Support for Nextcloud 29
   [#1132](https://github.com/owncloud/music/issues/1132)
 - Option to change the Ampache session timeout with the `config.php` key `music.ampache_session_expiry_time`
   [#1134](https://github.com/owncloud/music/issues/1134)
 
 ### Changed
+- Ampache:
+  * Advanced search rule `bitrate` supported for songs
+  * Advanced search operators `matches regex` and `does not match regex` supported also on SQLite (this is important to properly support [Ample](https://github.com/mitchray/ample))
+  * Advanced search operators `sounds like` and `does not sound like` supported also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
+  * Advanced search rules `album_genre` and `artist_genre` supported also on PgSQL
 
 ### Fixed
 - Subsonic: Method `getAlbumInfo2` response having incorrect root element name
@@ -15,6 +22,12 @@
 - Some Finnish translations being replaced with English (since v1.9.0)
 - Error "Cannot set response code - headers already sent" logged on each played song on PHP 8.3
   [#1133](https://github.com/owncloud/music/issues/1133)
+- Ampache:
+  * Advanced search rule `playlist_name` not being case insensitive like the other string rules
+  * Advanced search rules `playlist` and `playlist_name` not working with SQLite
+  * Advanced search operator `does not sound like` not working
+  * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
+  * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
 
 ## 1.10.0 - 2024-01-27
 

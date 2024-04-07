@@ -47,7 +47,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 			title="{{ trackCountText(playlist) }}"
 			icon="'playlist'">
 		</li>
-		<li id="music-nav-search" class="docked-navigation-item" title="{{ showSearch ? null : '[CTRL+F]' }}">
+		<li id="music-nav-search" class="docked-navigation-item item-with-actions" ng-class="{active: currentView=='#/search'}"
+			title="{{ showSearch ? null : '[CTRL+F]' }}">
 			<div class="music-navigation-item-content">
 				<div class="icon-search" ng-click="startSearch()"></div>
 				<div class="label app-navigation-noclose" ng-click="startSearch()" ng-hide="showSearch" translate>Search</div>
@@ -56,6 +57,17 @@ HtmlUtil::printNgTemplate('navigationitem');
 						ng-model="searchInput" on-enter="collapseNavigationPaneOnMobile()"
 						on-esc="clearSearch(); collapseNavigationPaneOnMobile()" />
 					<button id="clear-search" class="icon-close" ng-click="clearSearch()"></button>
+				</div>
+				<div class="actions" title="">
+					<span class="icon-more"
+						ng-click="onNaviItemMoreButton('search'); $event.stopPropagation()"></span>
+					<div class="popovermenu bubble" ng-show="popupShownForNaviItem == 'search'">
+						<ul>
+							<li ng-click="navigateTo('#/search')">
+								<a><span class="icon-search icon"></span><span translate>Advanced search</span></a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</li>

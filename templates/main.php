@@ -20,6 +20,7 @@ HtmlUtil::addWebpackStyle('app');
 	HtmlUtil::printNgTemplate('views/playlistview');
 	HtmlUtil::printNgTemplate('views/radioview');
 	HtmlUtil::printNgTemplate('views/podcastsview');
+	HtmlUtil::printNgTemplate('views/advancedsearchview');
 	HtmlUtil::printNgTemplate('views/settingsview');
 	HtmlUtil::printNgTemplate('alphabetnavigation');
 	HtmlUtil::printNgTemplate('foldertreenode');

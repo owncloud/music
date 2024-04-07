@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -41,12 +41,12 @@ class PodcastChannelMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		switch ($rule) {
-			case 'podcast_episode':	return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` `e` WHERE LOWER(`e`.`title`) $sqlOp LOWER(?))";
+			case 'podcast_episode':	return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` `e` WHERE $conv(`e`.`title`) $sqlOp $conv(?))";
 			case 'time':			return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT * FROM (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` GROUP BY `channel_id` HAVING SUM(`duration`) $sqlOp ?) mysqlhack)";
 			case 'pubdate':			return "`published` $sqlOp ?";
-			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 		}
 	}
 

@@ -55,6 +55,16 @@ export interface Playlist {
 	tracks : PlaylistEntry<Track>[];
 }
 
+export interface AdvSearchResult {
+	id : number;
+	tracks? : Track[];
+	albums? : Album[];
+	artists? : Artist[];
+	playlists? : Playlist[];
+	podcastEpisodes? : PodcastEpisode[];
+	podcastChannels? : PodcastChannel[];
+}
+
 export interface Folder {
 	id : number;
 	name : string;
@@ -100,6 +110,7 @@ export class LibraryService {
 	#albumsCount : number = 0;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
+	#advSearchResult : AdvSearchResult = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
 	#radioStations : PlaylistEntry<RadioStation>[] = null;
@@ -385,6 +396,22 @@ export class LibraryService {
 			this.#smartList = this.#wrapPlaylist(list);
 		}
 	}
+	setAdvancedSearchResult(list : any) : AdvSearchResult|null {
+		if (!list) {
+			this.#advSearchResult = null;
+		} else {
+			this.#advSearchResult = {
+				id: list.id,
+				tracks: _(list.trackIds).map((id) => this.getTrack(id)).value(),
+				albums: _(list.albumIds).map((id) => this.getAlbum(id)).value(),
+				artists: _(list.artistIds).map((id) => this.getArtist(id)).value(),
+				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
+				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
+				podcastChannels: _(list.podcastChannelIds).map((id) => this.getPodcastChannel(id)).value(),
+			};
+		}
+		return this.#advSearchResult;
+	}
 	setFolders(folderData : any[]|null) : void {
 		if (!folderData) {
 			this.#folders = null;
@@ -599,10 +626,13 @@ export class LibraryService {
 	getSmartListTrackCount() : number {
 		return this.#smartList?.tracks?.length ?? 0;
 	}
-	getSmartList() : Playlist {
+	getSmartList() : Playlist|null {
 		return this.#smartList;
 	}
-	getPlaylist(id : number) : Playlist {
+	getAdvancedSearchResult() : AdvSearchResult|null {
+		return this.#advSearchResult;
+	}
+	getPlaylist(id : number) : Playlist|undefined {
 		return _.find(this.#playlists, { id: Number(id) });
 	}
 	getAllPlaylists() : Playlist[] {

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -53,14 +53,16 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::formatSortingClause()
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
-		$dir = $invertSort ? 'DESC' : 'ASC';
 		switch ($sortBy) {
 			case SortBy::Parent:
+				$dir = $invertSort ? 'DESC' : 'ASC';
 				// Note: the alternative form "LOWER(`artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046 for a similar case
 				return "ORDER BY LOWER(`artist`.`name`) $dir, LOWER(`title`) $dir";
 			case SortBy::PlayCount:
+				$dir = $invertSort ? 'ASC' : 'DESC';
 				return "ORDER BY `play_count` $dir";
 			case SortBy::LastPlayed:
+				$dir = $invertSort ? 'ASC' : 'DESC';
 				return "ORDER BY `last_played` $dir";
 			default:
 				return parent::formatSortingClause($sortBy, $invertSort);
@@ -451,19 +453,19 @@ class TrackMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
 		switch ($rule) {
-			case 'anywhere':		return self::formatAdvSearchAnywhereCond($sqlOp); 
-			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
-			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
-			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'anywhere':		return self::formatAdvSearchAnywhereCond($sqlOp, $conv); 
+			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE $conv(`al`.`name`) $sqlOp $conv(?))";
+			case 'artist':			return "$conv(`artist`.`name`) $sqlOp $conv(?)";
+			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))";
 			case 'track':			return "`number` $sqlOp ?";
 			case 'year':			return "`year` $sqlOp ?";
 			case 'albumrating':		return "`album`.`rating` $sqlOp ?";
 			case 'artistrating':	return "`artist`.`rating` $sqlOp ?";
-			case 'favorite_album':	return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?) AND `al`.`starred` IS NOT NULL)";
-			case 'favorite_artist':	return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?) AND `ar`.`starred` IS NOT NULL)";
+			case 'favorite_album':	return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE $conv(`al`.`name`) $sqlOp $conv(?) AND `al`.`starred` IS NOT NULL)";
+			case 'favorite_artist':	return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE $conv(`ar`.`name`) $sqlOp $conv(?) AND `ar`.`starred` IS NOT NULL)";
 			case 'played_times':	return "`play_count` $sqlOp ?";
 			case 'last_play':		return "`last_played` $sqlOp ?";
 			case 'played':			// fall through, we give no access to other people's data
@@ -471,23 +473,24 @@ class TrackMapper extends BaseMapper {
 			case 'myplayedalbum':	return "`album_id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
 			case 'myplayedartist':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
 			case 'time':			return "`length` $sqlOp ?";
+			case 'bitrate':			return "`bitrate` $sqlOp ?";
 			case 'genre':			// fall through
-			case 'song_genre':		return "LOWER(`genre`.`name`) $sqlOp LOWER(?)";
-			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
-			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
+			case 'song_genre':		return "$conv(`genre`.`name`) $sqlOp $conv(?)";
+			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";
+			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";
 			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
-			case 'playlist':		return "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
-			case 'playlist_name':	return "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`name` $sqlOp ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
+			case 'playlist':		return "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')';
+			case 'playlist_name':	return "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE $conv(`p`.`name`) $sqlOp $conv(?) AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')';
 			case 'recent_played':	return "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)";
-			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
-			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
+			case 'file':			return "$conv(`file`.`name`) $sqlOp $conv(?)";
+			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp, $conv); // alias
 			case 'mbid_album':		return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE `al`.`mbid` $sqlOp ?)";
 			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
-			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 		}
 	}
 
-	private static function formatAdvSearchAnywhereCond(string $sqlOp) : string {
+	private static function formatAdvSearchAnywhereCond(string $sqlOp, string $conv) : string {
 		$fields = [
 			"`*PREFIX*music_tracks`.`title`",
 			"`file`.`name`",
@@ -495,11 +498,11 @@ class TrackMapper extends BaseMapper {
 			"`album`.`name`",
 			"`genre`.`name`"
 		];
-		$parts = \array_map(function(string $field) use ($sqlOp) {
-			return "LOWER($field) $sqlOp LOWER(?)";
+		$parts = \array_map(function(string $field) use ($sqlOp, $conv) {
+			return "$conv($field) $sqlOp $conv(?)";
 		}, $fields);
 
-		$negativeOp = \in_array($sqlOp, ['NOT LIKE', '!=', 'NOT SOUNDS LIKE', 'NOT REGEXP']);
+		$negativeOp = \in_array($sqlOp, ['NOT LIKE', '!=', 'NOT REGEXP']);
 		$cond = \implode($negativeOp ? ' AND ' : ' OR ', $parts);
 
 		return "($cond)";

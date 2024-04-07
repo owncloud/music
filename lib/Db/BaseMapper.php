@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -34,7 +34,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	protected $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
-	protected $dbIsPgsql; // the database type is PostgreSQL
+	protected $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass
@@ -45,7 +45,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$this->parentIdColumn = $parentIdColumn;
 		// eclipse the base class property to help phpstan
 		$this->entityClass = $entityClass;
-		$this->dbIsPgsql = ($config->getSystemValue('dbtype') == 'pgsql');
+		$this->dbType = $config->getSystemValue('dbtype');
 	}
 
 	/**
@@ -54,6 +54,10 @@ abstract class BaseMapper extends CompatibleMapper {
 	 */
 	public function createEntity() : Entity {
 		return new $this->entityClass();
+	}
+
+	public function unprefixedTableName() : string {
+		return \str_replace('*PREFIX*', '', $this->getTableName());
 	}
 
 	/**
@@ -175,18 +179,19 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of 
-	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
+	 * 				 '>=', '<=', '=', '!=', '>', '<', 'before', 'after', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
 		$sqlConditions = [];
 		$sqlParams = [$userId];
 
 		foreach ($rules as $rule) {
-			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input'], $userId);
-			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
+			list('op' => $sqlOp, 'conv' => $sqlConv, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], (string)$rule['input'], $userId);
+			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp, $sqlConv);
 			$sqlConditions[] = $cond;
 			// On some conditions, the parameter may need to be repeated several times
 			$paramCount = \substr_count($cond, '?');
@@ -196,7 +201,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 		$sqlConditions = \implode(" $conjunction ", $sqlConditions);
 
-		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause(SortBy::Name));
+		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause($sortBy));
 		return $this->findEntities($sql, $sqlParams, $limit, $offset);
 	}
 
@@ -371,8 +376,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
-	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
-	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
+	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
@@ -391,8 +396,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Update an entity whose unique constraint fields match the given entity. If such entity is not found,
 	 * a new entity is inserted.
-	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
-	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
+	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
@@ -544,7 +549,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Convert given sorting condition to an SQL clause. Derived class may overide this if necessary.
+	 * Convert given sorting condition to an SQL clause. Derived class may override this if necessary.
 	 * @param int $sortBy One of the constants defined in the class SortBy
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
@@ -592,44 +597,63 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Format SQL operator and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'param' => string]
+	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
+	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
-		$pqsql = $this->dbIsPgsql;
+		if ($this->dbType == 'sqlite3' && ($ruleOperator == 'regexp' || $ruleOperator == 'notregexp')) {
+			$this->registerRegexpFuncForSqlite();
+		}
+
+		$pgsql = ($this->dbType == 'pgsql');
+
 		switch ($ruleOperator) {
-			case 'contain':		return ['op' => 'LIKE',							'param' => "%$ruleInput%"];
-			case 'notcontain':	return ['op' => 'NOT LIKE',						'param' => "%$ruleInput%"];
-			case 'start':		return ['op' => 'LIKE',							'param' => "$ruleInput%"];
-			case 'end':			return ['op' => 'LIKE',							'param' => "%$ruleInput"];
-			case 'is':			return ['op' => '=',							'param' => "$ruleInput"];
-			case 'isnot':		return ['op' => '!=',							'param' => "$ruleInput"];
-			case 'sounds':		return ['op' => 'SOUNDS LIKE',					'param' => $ruleInput]; // MySQL-specific syntax
-			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',				'param' => $ruleInput]; // MySQL-specific syntax
-			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',		'param' => $ruleInput];
-			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',	'param' => $ruleInput];
-			case 'true':		return ['op' => 'IS NOT NULL',					'param' => null];
-			case 'false':		return ['op' => 'IS NULL',						'param' => null];
-			case 'equal':		return ['op' => '',								'param' => $ruleInput];
-			case 'ne':			return ['op' => 'NOT',							'param' => $ruleInput];
-			case 'limit':		return ['op' => (string)(int)$ruleInput,		'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
-			default:			return ['op' => $ruleOperator,					'param' => $ruleInput]; // all numerical operators fall here
+			case 'contain':		return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',								'conv' => 'LOWER',		'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',									'conv' => 'LOWER',		'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',									'conv' => 'LOWER',		'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',									'conv' => 'LOWER',		'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => '=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
+			case 'notsounds':	return ['op' => '!=',									'conv' => 'SOUNDEX',	'param' => $ruleInput]; // requires extension `fuzzystrmatch` on PgSQL
+			case 'regexp':		return ['op' => $pgsql ? '~' : 'REGEXP',				'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'notregexp':	return ['op' => $pgsql ? '!~' : 'NOT REGEXP',			'conv' => 'LOWER',		'param' => $ruleInput];
+			case 'true':		return ['op' => 'IS NOT NULL',							'conv' => '',			'param' => null];
+			case 'false':		return ['op' => 'IS NULL',								'conv' => '',			'param' => null];
+			case 'equal':		return ['op' => '',										'conv' => '',			'param' => $ruleInput];
+			case 'ne':			return ['op' => 'NOT',									'conv' => '',			'param' => $ruleInput];
+			case 'limit':		return ['op' => (string)(int)$ruleInput,				'conv' => '',			'param' => $userId]; // this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			case 'before':		return ['op' => '<',									'conv' => '',			'param' => $ruleInput];
+			case 'after':		return ['op' => '>',									'conv' => '',			'param' => $ruleInput];
+			default:			return ['op' => self::sanitizeNumericOp($ruleOperator),	'conv' => '',			'param' => (int)$ruleInput]; // all numerical operators fall here
+		}
+	}
+
+	protected static function sanitizeNumericOp($comparisonOperator) {
+		if (\in_array($comparisonOperator, ['>=', '<=', '=', '!=', '>', '<'])) {
+			return $comparisonOperator;
+		} else {
+			throw new \DomainException("Bad advanced search operator: $comparisonOperator");
 		}
 	}
 
 	/**
 	 * Format SQL condition matching the given advanced search rule and SQL operator.
 	 * Derived classes should override this to provide support for table-specific rules.
+	 * @param string $rule	Identifier of the property which is the target of the SQL condition. The identifiers match the Ampache API specification.
+	 * @param string $sqlOp	SQL (comparison) operator to be used
+	 * @param string $conv	SQL conversion function to be applied on the target column and the parameter (e.g. "LOWER")
+	 * @return string SQL condition statement to be used in the "WHERE" clause
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		$table = $this->getTableName();
 		$nameCol = $this->nameColumn;
 
 		switch ($rule) {
-			case 'title':			return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
+			case 'title':			return "$conv(`$table`.`$nameCol`) $sqlOp $conv(?)";
 			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
-			case 'favorite':		return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
-			case 'myrating':		// fall throuhg, we provide no access to other people's data
+			case 'favorite':		return "($conv(`$table`.`$nameCol`) $sqlOp $conv(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'myrating':		// fall through, we provide no access to other people's data
 			case 'rating':			return "`$table`.`rating` $sqlOp ?";
 			case 'added':			return "`$table`.`created` $sqlOp ?";
 			case 'updated':			return "`$table`.`updated` $sqlOp ?";
@@ -637,6 +661,66 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'recent_added':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `created` DESC LIMIT $sqlOp) mysqlhack)";
 			case 'recent_updated':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `updated` DESC LIMIT $sqlOp) mysqlhack)";
 			default:				throw new \DomainException("Rule '$rule' not supported on this entity type");
+		}
+	}
+
+	protected function sqlConcat(string ...$parts) : string {
+		if ($this->dbType == 'sqlite3') {
+			return '(' . \implode(' || ', $parts) . ')';
+		} else {
+			return 'CONCAT(' . \implode(', ', $parts) . ')';
+		}
+	}
+
+	protected function sqlGroupConcat(string $column) : string {
+		if ($this->dbType == 'pgsql') {
+			return "string_agg($column, ',')";
+		} else {
+			return "GROUP_CONCAT($column)";
+		}
+	}
+
+	/**
+	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
+	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
+	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.
+	 */
+	private function registerRegexpFuncForSqlite() {
+		// skip if the function already exists
+		if (!$this->funcExistsInSqlite('regexp')) {
+			// We need to use a private interface here to drill down to the native DB connection. The interface is
+			// slightly different on NC compared to OC.
+			if (\method_exists($this->db, 'getInner')) {
+				$connection = $this->db->/** @scrutinizer ignore-call */getInner()->getWrappedConnection();
+				$pdo = $connection->getWrappedConnection();
+			} else if (\method_exists($this->db, 'getWrappedConnection')) {
+				$pdo = $this->db->/** @scrutinizer ignore-call */getWrappedConnection();
+			}
+
+			if (isset($pdo)) {
+				$pdo->sqliteCreateFunction(
+					'regexp',
+					function ($pattern, $data, $delimiter = '~', $modifiers = 'isuS') {
+						if (isset($pattern, $data) === true) {
+							return (\preg_match(\sprintf('%1$s%2$s%1$s%3$s', $delimiter, $pattern, $modifiers), $data) > 0);
+						}
+						return null;
+					}
+				);
+			}
+		}
+	}
+
+	private function funcExistsInSqlite(string $funcName) : bool {
+		// If the SQLite version is very old, it may not have the `pragma_function_list` table available. In such cases,
+		// assume that the queried function doesn't exist. It doesn't really make any harm if that leads to registering
+		// the same function again.
+		try {
+			$result = $this->execute('SELECT EXISTS(SELECT 1 FROM `pragma_function_list` WHERE `NAME` = ?)', [$funcName]);
+			$row = $result->fetch();
+			return (bool)\current($row);
+		} catch (\Exception $e) {
+			return false;
 		}
 	}
 

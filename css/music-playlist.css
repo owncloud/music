@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 .playlist-area {
@@ -16,8 +16,6 @@
 .playlist-area > h1 {
 	margin-left: 14px;
 	margin-bottom: 11px;
-	font-size: 34px;
-	line-height: 36px;
 }
 
 .playlist-area > h1 > span:hover,

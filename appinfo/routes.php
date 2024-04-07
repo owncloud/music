@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music;
@@ -48,6 +48,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#albumCover',		'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
 	['name' => 'api#albumDetails',		'url' => '/api/album/{albumId}/details',	'verb' => 'GET'],
 	['name' => 'api#scrobble',			'url' => '/api/track/{trackId}/scrobble',	'verb' => 'POST'],
+
+	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 
 	// Shiva API https://shiva.readthedocs.io/en/latest/index.html
 	['name' => 'shivaApi#artists',		'url' => '/api/artists',					'verb' => 'GET'],

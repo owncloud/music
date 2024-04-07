@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -63,12 +63,12 @@ class PodcastEpisodeMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		switch ($rule) {
-			case 'podcast':	return "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE LOWER(`c`.`title`) $sqlOp LOWER(?))";
+			case 'podcast':	return "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE $conv(`c`.`title`) $sqlOp $conv(?))";
 			case 'time':	return "`duration` $sqlOp ?";
 			case 'pubdate':	return "`published` $sqlOp ?";
-			default:		return parent::advFormatSqlCondition($rule, $sqlOp);
+			default:		return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 		}
 	}
 

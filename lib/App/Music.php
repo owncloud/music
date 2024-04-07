@@ -30,6 +30,7 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
+use OCA\Music\Controller\AdvSearchController;
 use OCA\Music\Controller\AmpacheController;
 use OCA\Music\Controller\AmpacheImageController;
 use OCA\Music\Controller\ApiController;
@@ -108,6 +109,26 @@ class Music extends App {
 		/**
 		 * Controllers
 		 */
+
+		 $container->registerService('AdvSearchController', function (IAppContainer $c) {
+			return new AdvSearchController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('RadioStationBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('UserId'),
+				$c->query('Random'),
+				$c->query('Logger')
+			);
+		});
+
 		$container->registerService('AmpacheController', function (IAppContainer $c) {
 			return new AmpacheController(
 				$c->query('AppName'),

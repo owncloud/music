@@ -659,7 +659,7 @@ class AmpacheController extends Controller {
 		$allTracksIndex = $this->playlistBusinessLayer->count($userId);
 		if (!$hide_search && empty($filter) && empty($add) && empty($update)
 				&& self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
-			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
+			$playlists[] = $this->getAllTracksPlaylist();
 		}
 
 		return $this->renderPlaylists($playlists);
@@ -671,7 +671,7 @@ class AmpacheController extends Controller {
 	protected function playlist(int $filter) : array {
 		$userId = $this->session->getUserId();
 		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
-			$playlist = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
+			$playlist = $this->getAllTracksPlaylist();
 		} else {
 			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
 		}
@@ -1576,6 +1576,20 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	private function getAllTracksPlaylist() : Playlist {
+		$pl = new class extends Playlist {
+			public $trackCount;
+			public function getTrackCount() : int {
+				return $this->trackCount;
+			}
+		};
+		$pl->id = self::ALL_TRACKS_PLAYLIST_ID;
+		$pl->name = $this->l10n->t('All tracks');
+		$pl->trackCount = $this->trackBusinessLayer->count($this->session->getUserId());
+
+		return $pl;
+	}
+
 	private function getCover(int $entityId, BusinessLayer $businessLayer) : Response {
 		$userId = $this->session->getUserId();
 		$userFolder = $this->librarySettings->getFolder($userId);
@@ -2158,32 +2172,5 @@ class AmpacheController extends Controller {
 			case 501:	return 4700;	// access control not enabled
 			default:	return 5000;	// unexcpected (not part of the API spec)
 		}
-	}
-}
-
-/**
- * Adapter class which acts like the Playlist class for the purpose of
- * AmpacheController::renderPlaylists but contains all the track of the user.
- */
-class AmpacheController_AllTracksPlaylist extends Playlist {
-	private $trackBusinessLayer;
-	private $l10n;
-
-	public function __construct(string $userId, TrackBusinessLayer $trackBusinessLayer, IL10N $l10n) {
-		$this->userId = $userId;
-		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->l10n = $l10n;
-	}
-
-	public function getId() : int {
-		return AmpacheController::ALL_TRACKS_PLAYLIST_ID;
-	}
-
-	public function getName() : string {
-		return $this->l10n->t('All tracks');
-	}
-
-	public function getTrackCount() : int {
-		return $this->trackBusinessLayer->count($this->userId);
 	}
 }

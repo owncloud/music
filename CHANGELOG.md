@@ -23,6 +23,8 @@
 - Error "Cannot set response code - headers already sent" logged on each played song on PHP 8.3
   [#1133](https://github.com/owncloud/music/issues/1133)
 - Ampache:
+  * API not working on ownCloud 10.14.0 (HTTP error 500 on all Ampache API calls)
+    [#1138](https://github.com/owncloud/music/issues/1138)
   * Advanced search rule `playlist_name` not being case insensitive like the other string rules
   * Advanced search rules `playlist` and `playlist_name` not working with SQLite
   * Advanced search operator `does not sound like` not working

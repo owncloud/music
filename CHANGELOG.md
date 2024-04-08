@@ -30,6 +30,8 @@
   * Advanced search operator `does not sound like` not working
   * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
   * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
+- Subsonic: On NC28+, every XML API call logged an error 'Undefined array key "" at /var/www/html/lib/private/AppFramework/Http.php#128'.
+  [#1142](https://github.com/owncloud/music/issues/1142)
 
 ## 1.10.0 - 2024-01-27
 

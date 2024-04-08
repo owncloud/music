@@ -7,11 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2023
+ * @copyright Pauli Järvinen 2019 - 2024
  */
 
 namespace OCA\Music\Http;
 
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Response;
 
 /**
@@ -49,6 +50,7 @@ class XmlResponse extends Response {
 	public function __construct(array $content, /*mixed*/ $attributes=true,
 								bool $boolAsInt=false, bool $nullAsEmpty=false,
 								?string $textNodeKey='value') {
+		$this->setStatus(Http::STATUS_OK);
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary

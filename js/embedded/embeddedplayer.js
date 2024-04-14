@@ -20,9 +20,18 @@ import radioIconPath from '../../img/radio-file.svg';
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio) {
+OCA.Music.EmbeddedPlayer = function() {
 
 	let player = new OCA.Music.PlayerWrapper();
+
+	// callbacks
+	let onClose = null;
+	let onNext = null;
+	let onPrev = null;
+	let onMenuOpen = null;
+	let onShowList = null;
+	let onImportList = null;
+	let onImportRadio = null;
 
 	let volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
 	player.setVolume(volume);
@@ -74,7 +83,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		player.stop();
 		musicControls?.css('display', 'none');
 		$('footer').css('display', ''); // undo hiding the footer in public shares
-		onClose();
+		if (onClose) {
+			onClose();
+		}
 	}
 
 	function previous() {
@@ -568,7 +579,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', onNext);
+		if (onNext) {
+			player.on('end', onNext);
+		}
 	}
 
 	function musicAppLinkElements() {
@@ -716,6 +729,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	/**
 	 * PUBLIC INTEFACE
 	 */
+
+	this.setCallbacks = function(closeCb, nextCb, prevCb, menuCb, showListCb, importListCb, importRadioCb) {
+		onClose = closeCb;
+		onNext = nextCb;
+		onPrev = prevCb;
+		onMenuOpen = menuCb;
+		onShowList = showListCb;
+		onImportList = importListCb;
+		onImportRadio = importRadioCb;
+	};
 
 	this.show = function(playlistName = null) {
 		if (!musicControls) {

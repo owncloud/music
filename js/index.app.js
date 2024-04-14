@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 /**
@@ -50,5 +50,5 @@ if (typeof MutationObserver !== 'undefined') {
 requireAll(require.context('./app', /*use subdirectories:*/ true));
 requireAll(require.context('./shared', /*use subdirectories:*/ false));
 requireAll(require.context('../img', /*use subdirectories:*/ true));
-requireAll(require.context('../css', /*use subdirectories:*/ false));
+requireAll(require.context('../css/app', /*use subdirectories:*/ false));
 requireAll(require.context('../css/shared', /*use subdirectories:*/ false));

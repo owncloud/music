@@ -10,14 +10,9 @@
 
 import playIconPath from '../../img/play-big.svg';
 import playIconSvgData from '../../img/play-big.svg?raw';
-import playOverlayPath from '../../img/play-overlay.svg';
 
 window.addEventListener('DOMContentLoaded', function() {
-	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
-	// Initialize our player only if such player is not found.
-	if ($('audio').length === 0) {
-		initEmbeddedPlayer();
-	}
+	initEmbeddedPlayer();
 });
 
 function initEmbeddedPlayer() {
@@ -194,18 +189,17 @@ function initEmbeddedPlayer() {
 	}
 
 	function register() {
+		// Add player on single-file-share page if the MIME is a supported audio type
+		if ($('#header').hasClass('share-file')) {
+			OCA.Music.fileShareView = new OCA.Music.FileShareView(mAudioMimes);
+		}
 		// Add play action to file rows with supported mime type, either audio or playlist.
 		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
-		if (typeof OCA.Files !== 'undefined') {
+		else if (typeof OCA.Files !== 'undefined') {
 			OCA.Music.initPlaylistTabView(mPlaylistMimes);
 			connectPlaylistTabViewEvents();
 			registerFolderPlayer(mAudioMimes, openAudioFile, 'music_play_audio_file');
 			registerFolderPlayer(mPlaylistMimes, openPlaylistFile, 'music_play_playlist_file');
-		}
-
-		// Add player on single-file-share page if the MIME is a supported audio type
-		if ($('#header').hasClass('share-file')) {
-			registerFileSharePlayer(mAudioMimes);
 		}
 	}
 
@@ -402,69 +396,6 @@ function initEmbeddedPlayer() {
 			}
 		};
 		OCA.Music.PlaylistFileService.readFile(listFileId, onPlaylistLoaded, onError, mShareToken);
-	}
-
-	/**
-	 * "File share player" is used on individually shared files
-	 */
-	function registerFileSharePlayer(supportedMimes) {
-		let onClick = function() {
-			if (!mPlayer.isVisible()) {
-				mPlayer.show();
-				mPlayer.playFile(
-						$('#downloadURL').val(),
-						$('#mimetype').val(),
-						0,
-						$('#filename').val(),
-						mShareToken
-				);
-			}
-			else {
-				mPlayer.togglePlayback();
-			}
-		};
-
-		// Add click handler to the file preview if this is a supported file.
-		// The feature is disabled on old IE versions where there's no MutationObserver and
-		// $.initialize would not work.
-		if (typeof MutationObserver !== 'undefined'
-				&& _.includes(supportedMimes, $('#mimetype').val()))
-		{
-			// The #publicpreview is added dynamically by another script.
-			// Augment it with the click handler once it gets added.
-			$.initialize('img.publicpreview', function() {
-				const previewImg = $(this);
-				// All of the following are needed only for IE. There, the overlay doesn't work without setting
-				// the image position to relative. And still, the overlay is sometimes much smaller than the image,
-				// creating a need to have also the image itself as clickable area.
-				previewImg.css('position', 'relative').css('cursor', 'pointer').click(onClick);
-
-				// Add "play overlay" shown on hover
-				const overlay = $('<img class="play-overlay">')
-					.attr('src', playOverlayPath)
-					.click(onClick)
-					.insertAfter(previewImg);
-
-				const adjustOverlay = function() {
-					const width = previewImg.width();
-					const height = previewImg.height();
-					overlay.width(width).height(height).css('margin-left', `-${width}px`);
-				};
-				adjustOverlay();
-
-				// In case the image data is not actually loaded yet, the size information 
-				// is not valid above. Recheck once loaded.
-				previewImg.on('load', adjustOverlay);
-
-				// At least in ownCloud 10 and Nextcloud 11-13, there is such an oversight
-				// that if MP3 file has no embedded cover, then the placeholder is not shown
-				// either. Fix that on our own.
-				previewImg.on('error', function() {
-					previewImg.attr('src', OC.imagePath('core', 'filetypes/audio')).width(128).height(128);
-					adjustOverlay();
-				});
-			});
-		}
 	}
 
 }

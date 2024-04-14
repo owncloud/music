@@ -568,7 +568,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', onNext);
+		if (onNext) {
+			player.on('end', onNext);
+		}
 	}
 
 	function musicAppLinkElements() {

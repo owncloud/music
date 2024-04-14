@@ -65,7 +65,7 @@ class LyricsParser {
 	 * c) several actual timestamp lines, in case the line contains several timestamps,
 	 *    meaning that the same line of text is repeated multiple times during the song
 	 *
-	 * If the line defines a time offset, this is returned in the reference paramete. If the offset
+	 * If the line defines a time offset, this is returned in the reference parameter. If the offset
 	 * parameter holds a non-zero value on call, the offset is applied on any extracted timestamps.
 	 *
 	 * @param string $line One line from the LRC data

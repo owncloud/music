@@ -122,7 +122,7 @@ class RadioApiController extends Controller {
 	 */
 	public function update(int $id, string $name = null, string $streamUrl = null, string $homeUrl = null) {
 		if ($name === null && $streamUrl === null && $homeUrl === null) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'streamUrl', 'homrUrl'] must be given");
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'streamUrl', 'homeUrl'] must be given");
 		}
 
 		try {

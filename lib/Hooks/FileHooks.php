@@ -54,7 +54,7 @@ class FileHooks {
 		// by the time the execution gets here. See #636.
 		// Furthermore, when the core opens a file in stream mode for writing using
 		// File::fopen, this hook gets triggered immediately after the opening succeeds,
-		// before anything is actually written and while the file is *exlusively locked
+		// before anything is actually written and while the file is *exclusively locked
 		// because of the write mode*. See #638.
 		$app = \OC::$server->query(Music::class);
 		$container = $app->getContainer();

@@ -47,7 +47,7 @@ class PreMigration implements IRepairStep {
 				'music_playlist_tracks'
 		]);
 
-		// Wipe clean the tables which have chenged so that the old data does not
+		// Wipe clean the tables which have changed so that the old data does not
 		// fulfill the new schema.
 		$tablesToErase = [];
 

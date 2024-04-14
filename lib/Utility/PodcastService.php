@@ -148,7 +148,7 @@ class PodcastService {
 			$this->episodeBusinessLayer->deleteByChannel($channelId, $userId); // does not throw
 			return self::STATUS_OK;
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Channel $channelId to be unsubscirbed not found: " . $ex->getMessage(), 'warn');
+			$this->logger->log("Channel $channelId to be unsubscribed not found: " . $ex->getMessage(), 'warn');
 			return self::STATUS_NOT_FOUND;
 		}
 	}
@@ -209,7 +209,7 @@ class PodcastService {
 	}
 
 	/**
-	 * Check updates for all chanenls of the user, one-by-one
+	 * Check updates for all channels of the user, one-by-one
 	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
 	 *			where each int represent number of channels in that category
 	 */

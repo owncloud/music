@@ -196,7 +196,7 @@ class Util {
 	}
 
 	/**
-	 * Truncate the given string to maximum length, appendig ellipsis character
+	 * Truncate the given string to maximum length, appending ellipsis character
 	 * if the truncation happened. Also null argument may be safely passed and
 	 * it remains unaltered.
 	 */

@@ -25,7 +25,7 @@ class Random {
 	}
 
 	/**
-	 * Create cryptographicaly secure random string
+	 * Create cryptographically secure random string
 	 */
 	public static function secure(int $length) : string {
 		return \bin2hex(\random_bytes($length));
@@ -77,11 +77,11 @@ class Random {
 	 * page 0 is requested. Also, if the size of the array in question has changed
 	 * since the previous call, then the indices are reshuffled.
 	 *
-	 * @param int $arrSize Size of the aray for which random indices are to be generated
+	 * @param int $arrSize Size of the array for which random indices are to be generated
 	 * @param int|null $offset Offset to get only part of the results (paging), null implies offset 0
 	 * @param int|null $count Result size to get only part of the results (paging), null gets all the remaining indices from the @a offset
 	 * @param string $userId The current user ID
-	 * @param string $arrId Identier for the logical array to facilitate paging
+	 * @param string $arrId Identifier for the logical array to facilitate paging
 	 * @return int[]
 	 */
 	public function getIndices(int $arrSize, ?int $offset, ?int $count, string $userId, string $arrId) : array {

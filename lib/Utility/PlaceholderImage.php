@@ -198,7 +198,7 @@ class PlaceholderImage {
 namespace OCA\Music\Utility\PlaceholderImage;
 
 /**
- * A strripped-down copy of https://github.com/nextcloud/server/blob/master/lib/public/Color.php
+ * A stripped-down copy of https://github.com/nextcloud/server/blob/master/lib/public/Color.php
  */
 class Color {
 	private $r;

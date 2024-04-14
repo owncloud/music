@@ -704,7 +704,7 @@ class Scanner extends PublicEmitter {
 	private static function parseFileName(string $fileName) : array {
 		$matches = null;
 		// If the file name starts e.g like "12. something" or "12 - something", the
-		// preceeding number is extracted as track number. Everything after the optional
+		// preceding number is extracted as track number. Everything after the optional
 		// track number + delimiters part but before the file extension is extracted as title.
 		// The file extension consists of a '.' followed by 1-4 "word characters".
 		if (\preg_match('/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/', $fileName, $matches) === 1) {

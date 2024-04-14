@@ -44,7 +44,7 @@ class XmlResponse extends Response {
 	 *                        If false, any boolean values are yielded as string "false"/"true".
 	 * @param bool $nullAsEmpty If true, any null values are converted to empty strings, and the result has an empty element or attribute.
 	 *                          If false, any null-valued keys are are left out from the result.
-	 * @param ?string $textNodeKey When a key within @a $content mathes this, the corresponding value is converted to a text node,
+	 * @param ?string $textNodeKey When a key within @a $content matches this, the corresponding value is converted to a text node,
 	 *                             instead of creating an element or attribute named by the key.
 	 */
 	public function __construct(array $content, /*mixed*/ $attributes=true,

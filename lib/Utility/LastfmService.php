@@ -184,7 +184,7 @@ class LastfmService {
 
 	/**
 	 * Get artist tracks from the user's library, sorted by their popularity on Last.fm
-	 * @param int|string $artistIdOrName Either the ID of the artist or the artist's name written exectly
+	 * @param int|string $artistIdOrName Either the ID of the artist or the artist's name written exactly
 	 * 									like in the DB. Any integer-typed value is treated as an ID and 
 	 * 									string-typed value as a name.
 	 * @param int $maxCount Number of tracks to request from Last.fm. Note that the function may return much

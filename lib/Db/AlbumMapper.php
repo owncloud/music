@@ -20,7 +20,7 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
- * Type hint a base class methdo to help Scrutinizer
+ * Type hint a base class method to help Scrutinizer
  * @method Album updateOrInsert(Album $album)
  * @phpstan-extends BaseMapper<Album>
  */
@@ -174,7 +174,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns summed track play counts of each album of the user, omittig albums which have never been played
+	 * returns summed track play counts of each album of the user, omitting albums which have never been played
 	 *
 	 * @return array [int => int], keys are album IDs and values are play count sums; ordered largest counts first
 	 */
@@ -194,7 +194,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns the latest play time of each album of the user, omittig albums which have never been played
+	 * returns the latest play time of each album of the user, omitting albums which have never been played
 	 *
 	 * @return array [int => string], keys are album IDs and values are date-times; ordered latest times first
 	 */
@@ -421,7 +421,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * Given an array of track IDs, find corresponding uniqu album IDs, including only
+	 * Given an array of track IDs, find corresponding unique album IDs, including only
 	 * those album which have a cover art set.
 	 * @param int[] $trackIds
 	 * @return Album[]

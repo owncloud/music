@@ -33,7 +33,7 @@ use OCA\Music\Utility\Util;
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
 	/* Character set without look-alike characters. Similar but even more stripped set would be found
-	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not availalbe on ownCloud. */
+	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not available on ownCloud. */
 	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 	private $ampacheSessionMapper;

@@ -90,7 +90,7 @@ class Maintenance {
 	}
 
 	/**
-	 * Remvoe tracks which do not have corresponding file in the file system
+	 * Remove tracks which do not have corresponding file in the file system
 	 * @return int Number of removed tracks
 	 */
 	private function removeObsoleteTracks() {

@@ -192,7 +192,7 @@ class CoverHelper {
 				} catch (UniqueConstraintViolationException $ex) {
 					$this->logger->log("Cover hash with key $hashKey is already cached", 'debug');
 				}
-				// collection.json needs to be regenrated the next time it's fetched
+				// collection.json needs to be regenerated the next time it's fetched
 				$this->cache->remove($userId, 'collection');
 			} else {
 				$this->logger->log("Cover image of entity with key $hashKey is large ($size B), skip caching", 'debug');

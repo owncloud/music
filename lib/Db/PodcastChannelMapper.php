@@ -16,7 +16,7 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
- * Type hint a base class methdo to help Scrutinizer
+ * Type hint a base class method to help Scrutinizer
  * @method PodcastChannel insert(PodcastChannel $channel)
  * @phpstan-extends BaseMapper<PodcastChannel>
  */

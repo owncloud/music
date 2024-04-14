@@ -61,7 +61,7 @@ class ExtractorGetID3 implements Extractor {
 		$metadata = [];
 
 		try {
-			// It would be pointless to try to analzye 0-byte files and it may cause problems when
+			// It would be pointless to try to analyze 0-byte files and it may cause problems when
 			// the file is stored on a SMB share, see https://github.com/owncloud/music/issues/600
 			if ($file->getSize() > 0) {
 				$metadata = $this->doExtract($file);
@@ -90,7 +90,7 @@ class ExtractorGetID3 implements Extractor {
 
 			if (\array_key_exists('error', $metadata)) {
 				foreach ($metadata['error'] as $error) {
-					$this->logger->log('getID3 error occured', 'debug');
+					$this->logger->log('getID3 error occurred', 'debug');
 					// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
 					$this->logger->log('getID3 error message: '. $error, 'debug');
 				}

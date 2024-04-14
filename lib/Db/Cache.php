@@ -98,7 +98,7 @@ class Cache {
 	}
 
 	/**
-	 * Get all key-value pairs of one user, optionally limitting to keys with a given prefix.
+	 * Get all key-value pairs of one user, optionally limiting to keys with a given prefix.
 	 * @param string $userId
 	 * @param string|null $prefix
 	 * @return array of arrays with keys 'key', 'data'

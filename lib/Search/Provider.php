@@ -24,7 +24,7 @@ class Provider extends \OCP\Search\Provider {
 	/* Limit the maximum number of matches because the Provider API is limited and does
 	 * not support pagination. The core paginates the results to 30 item pages, but it
 	 * obtains all the items from the Providers again on creation of each page.
-	 * If there were thousands of mathces, we would end up doing lot of unnecessary work.
+	 * If there were thousands of matches, we would end up doing lot of unnecessary work.
 	 */
 	const MAX_RESULTS_PER_TYPE = 100;
 

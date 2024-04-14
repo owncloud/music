@@ -59,7 +59,7 @@ class SubsonicMiddleware extends Middleware {
 	}
 
 	/**
-	 * Evaluate the reponse format parameters and setup the controller to use
+	 * Evaluate the response format parameters and setup the controller to use
 	 * the requested format
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
@@ -82,7 +82,7 @@ class SubsonicMiddleware extends Middleware {
 
 	/**
 	 * Check that valid credentials have been given.
-	 * Setup the controller with the acitve user if the authentication is ok.
+	 * Setup the controller with the active user if the authentication is ok.
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
@@ -128,8 +128,8 @@ class SubsonicMiddleware extends Middleware {
 	}
 
 	/**
-	 * Catch SubsonicException and BusinessLayerExcpetion instances thrown when handling
-	 * Subsonic requests, and render the the appropiate Subsonic error response. Any other
+	 * Catch SubsonicException and BusinessLayerException instances thrown when handling
+	 * Subsonic requests, and render the the appropriate Subsonic error response. Any other
 	 * exceptions are allowed to flow through, reaching eventually the default handler if
 	 * no-one else intercepts them. The default handler logs the error and returns response
 	 * code 500.

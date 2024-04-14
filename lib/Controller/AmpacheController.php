@@ -200,7 +200,7 @@ class AmpacheController extends Controller {
 	 * @NoSameSiteCookieRequired
 	 */
 	public function xmlApi(string $action) : Response {
-		// differentation between xmlApi and jsonApi is made already by the middleware
+		// differentiation between xmlApi and jsonApi is made already by the middleware
 		return $this->dispatch($action);
 	}
 
@@ -211,7 +211,7 @@ class AmpacheController extends Controller {
 	 * @NoSameSiteCookieRequired
 	 */
 	public function jsonApi(string $action) : Response {
-		// differentation between xmlApi and jsonApi is made already by the middleware
+		// differentiation between xmlApi and jsonApi is made already by the middleware
 		return $this->dispatch($action);
 	}
 
@@ -255,7 +255,7 @@ class AmpacheController extends Controller {
 	}
 
 	/***********************
-	 * Ampahce API methods *
+	 * Ampache API methods *
 	 ***********************/
 
 	/**
@@ -655,7 +655,7 @@ class AmpacheController extends Controller {
 		$userId = $this->session->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 
-		// append "All tracks" if "seaches" are not forbidden, and not filtering by any criteria, and it is not off-limits
+		// append "All tracks" if "searches" are not forbidden, and not filtering by any criteria, and it is not off-limits
 		$allTracksIndex = $this->playlistBusinessLayer->count($userId);
 		if (!$hide_search && empty($filter) && empty($add) && empty($update)
 				&& self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
@@ -1345,7 +1345,7 @@ class AmpacheController extends Controller {
 		// This is just a dummy implementation. We don't support transcoding or streaming
 		// from a time offset.
 		// All the other unsupported arguments are just ignored, but a request with an offset
-		// is responded with an error. This is becuase the client would probably work in an
+		// is responded with an error. This is because the client would probably work in an
 		// unexpected way if it thinks it's streaming from offset but actually it is streaming
 		// from the beginning of the file. Returning an error gives the client a chance to fallback
 		// to other methods of seeking.
@@ -1715,8 +1715,8 @@ class AmpacheController extends Controller {
 		$userId = $this->session->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 		$genreKey = $this->genreKey();
-		// In APIv3-4, the properties 'albums' and 'songs' were used for the album/song count in case the inclusion of the relevan
-		// child objects wasn't requested. APIv5+ has the dedoicated properties 'albumcount' and 'songcount' for this purpose.
+		// In APIv3-4, the properties 'albums' and 'songs' were used for the album/song count in case the inclusion of the relevant
+		// child objects wasn't requested. APIv5+ has the dedicated properties 'albumcount' and 'songcount' for this purpose.
 		$oldCountApi = ($this->apiMajorVersion() < 5);
 
 		return [
@@ -2030,7 +2030,7 @@ class AmpacheController extends Controller {
 	 * @param RadioStation[] $stations
 	 */
 	private function renderLiveStreamsIndex(array $stations) : array {
-		// The API spec gives no examples of this, but testing with Ampache demo server revealed that the format is indentical to the "full" format
+		// The API spec gives no examples of this, but testing with Ampache demo server revealed that the format is identical to the "full" format
 		return $this->renderLiveStreams($stations);
 	}
 
@@ -2072,12 +2072,12 @@ class AmpacheController extends Controller {
 				$action = $this->request->getParam('action');
 				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'list']));
 
-				// In APIv5, the action "album" is an excption, it is formatted as if it was a plural action.
+				// In APIv5, the action "album" is an exception, it is formatted as if it was a plural action.
 				// This outlier has been fixed in APIv6.
 				$api5albumOddity = ($apiVer === 5 && $action === 'album');
 
 				// The actions "user_preference" and "system_preference" are another kind of outliers in APIv5,
-				// their reponses are anonymou 1-item arrays. This got fixed in the APIv6.0.1
+				// their responses are anonymous 1-item arrays. This got fixed in the APIv6.0.1
 				$api5preferenceOddity = ($apiVer === 5 && Util::endsWith($action, 'preference'));
 
 				if ($api5preferenceOddity) {
@@ -2135,7 +2135,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function apiMajorVersion() : int {
-		// During the handshake, we don't yet have a session but the requeted version may be in the request args
+		// During the handshake, we don't yet have a session but the requested version may be in the request args
 		$verString = ($this->session !== null) 
 			? $this->session->getApiVersion()
 			: $this->request->getParam('version');
@@ -2170,7 +2170,7 @@ class AmpacheController extends Controller {
 			case 405:	return 4705;	// missing
 			case 412:	return 4742;	// failed access check
 			case 501:	return 4700;	// access control not enabled
-			default:	return 5000;	// unexcpected (not part of the API spec)
+			default:	return 5000;	// unexpected (not part of the API spec)
 		}
 	}
 }

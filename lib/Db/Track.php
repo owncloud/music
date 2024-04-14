@@ -248,7 +248,7 @@ class Track extends Entity {
 		}
 
 		if ($includeArtists) {
-			// Add another property `artists`. Apparently, it exists to support mulitple artists per song
+			// Add another property `artists`. Apparently, it exists to support multiple artists per song
 			// but we don't have such possibility and this is always just a 1-item array.
 			$result['artists'] = [$result['artist']];
 		}

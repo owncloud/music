@@ -73,7 +73,7 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns summed track play counts of each aritst of the user, omittig artists which have never been played
+	 * returns summed track play counts of each artist of the user, omitting artists which have never been played
 	 *
 	 * @return array [int => int], keys are artist IDs and values are play count sums; ordered largest counts first
 	 */
@@ -93,7 +93,7 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns the latest play time of each artist of the user, omittig artists which have never been played
+	 * returns the latest play time of each artist of the user, omitting artists which have never been played
 	 *
 	 * @return array [int => string], keys are artist IDs and values are date-times; ordered latest times first
 	 */

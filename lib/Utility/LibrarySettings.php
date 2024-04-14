@@ -138,7 +138,7 @@ class LibrarySettings {
 		$pattern = \rtrim($pattern, '/');
 
 		if (\strpos($pattern, '*') === false && \strpos($pattern, '?') === false) {
-			// no wildcards, begininning of the path should match the pattern exactly
+			// no wildcards, beginning of the path should match the pattern exactly
 			// and the next character after the matching part (if any) should be '/'
 			$patternLen = \strlen($pattern);
 			return Util::startsWith($path, $pattern)
@@ -149,9 +149,9 @@ class LibrarySettings {
 			// - '*' matches zero or more arbitrary characters except the directory separator '/'
 			// - '**' matches zero or more arbitrary characters including directory separator '/'
 			$pattern = \preg_quote($pattern, '/');				// escape regex meta characters
-			$pattern = \str_replace('\*\*', '.*', $pattern);	// convert ** to its regex equivaleant
-			$pattern = \str_replace('\*', '[^\/]*', $pattern);	// convert * to its regex equivaleant
-			$pattern = \str_replace('\?', '[^\/]', $pattern);	// convert ? to its regex equivaleant
+			$pattern = \str_replace('\*\*', '.*', $pattern);	// convert ** to its regex equivalent
+			$pattern = \str_replace('\*', '[^\/]*', $pattern);	// convert * to its regex equivalent
+			$pattern = \str_replace('\?', '[^\/]', $pattern);	// convert ? to its regex equivalent
 			$pattern = $pattern . '(\/.*)?$';					// after given pattern, there should be '/' or nothing
 			$pattern = '/' . $pattern . '/';
 
@@ -161,7 +161,7 @@ class LibrarySettings {
 
 	private static function normalizePath(string $path) : string {
 		// The file system may create paths where there are two consecutive
-		// path seprator characters (/). This was seen with an external local
+		// path separator characters (/). This was seen with an external local
 		// folder on NC13, but may apply to other cases, too. Normalize such paths.
 		return \str_replace('//', '/', $path);
 	}

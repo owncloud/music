@@ -141,7 +141,7 @@ class ApiController extends Controller {
 
 		// Instruct the client to cache the result in case it requested the collection with
 		// the correct hash. The hash could be incorrect if the collection would have changed
-		// between calls to prepareCollection() and colletion().
+		// between calls to prepareCollection() and collection().
 		$requestHash = $this->request->getParam('hash');
 		$actualHash = $this->collectionHelper->getCachedJsonHash();
 		if (!empty($actualHash) && $requestHash === $actualHash) {

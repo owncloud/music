@@ -146,7 +146,7 @@ class Album extends Entity {
 	/**
 	 * Returns the years(s) of the album.
 	 * The album may have zero, one, or multiple years as people may tag tracks of
-	 * colletion albums with their original release dates. The respective formatted
+	 * collection albums with their original release dates. The respective formatted
 	 * year ranges could be e.g. null, '2016', and '1995 - 2000'.
 	 * @return string|null
 	 */

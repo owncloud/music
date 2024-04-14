@@ -64,7 +64,7 @@ class Bookmark extends Entity {
 			'owner' => $this->getUserId(),
 			'object_type' => $objectType,
 			'object_id' => (string)$this->getEntryId(),
-			'position' => (int)($this->getPosition() / 1000), // millisecods to seconds
+			'position' => (int)($this->getPosition() / 1000), // milliseconds to seconds
 			'client' => $this->getComment(),
 			'creation_date' => Util::formatDateTimeUtcOffset($this->getCreated()),
 			'update_date' => Util::formatDateTimeUtcOffset($this->getUpdated())

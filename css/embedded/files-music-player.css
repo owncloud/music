@@ -8,11 +8,11 @@
  * @copyright Pauli Järvinen 2017 - 2024
  */
 
-.icon-music-dark {
+#music-controls .icon-music-dark {
 	background-image: url(../../img/music-dark.svg);
 }
 
-.icon-radio-nav {
+#music-controls .icon-radio-nav {
 	background-image: url(../../img/radio.svg);
 }
 

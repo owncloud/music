@@ -20,7 +20,7 @@ OCA.Music.FileShareView = class {
 	#mPlayer;
 	#mShareToken;
 
-	constructor(supportedMimes) {
+	constructor(embeddedPlayer, supportedMimes) {
 		// Add click handler to the file preview if this is a supported file.
 		// The feature is disabled on old IE versions where there's no MutationObserver and
 		// $.initialize would not work.
@@ -30,7 +30,7 @@ OCA.Music.FileShareView = class {
 			&& $('audio').length === 0
 			&& supportedMimes.includes($('#mimetype').val()))
 		{
-			this.#mPlayer = new OCA.Music.EmbeddedPlayer();
+			this.#mPlayer = embeddedPlayer;
 			this.#mShareToken = $('#sharingToken').val();
 			this.#initView();
 		}

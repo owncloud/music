@@ -16,8 +16,6 @@
   * Advanced search rules `album_genre` and `artist_genre` supported also on PgSQL
 
 ### Fixed
-- Subsonic: Method `getAlbumInfo2` response having incorrect root element name
-  [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
 - Playlist file not playing within Files in case the first track of the list is in unsupported format
 - Some Finnish translations being replaced with English (since v1.9.0)
 - Error "Cannot set response code - headers already sent" logged on each played song on PHP 8.3
@@ -30,8 +28,11 @@
   * Advanced search operator `does not sound like` not working
   * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
   * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
-- Subsonic: On NC28+, every XML API call logged an error 'Undefined array key "" at /var/www/html/lib/private/AppFramework/Http.php#128'.
-  [#1142](https://github.com/owncloud/music/issues/1142)
+- Subsonic: 
+  * Method `getAlbumInfo2` response having incorrect root element name
+    [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
+  * On NC28+, every XML API call logged an error 'Undefined array key "" at /var/www/html/lib/private/AppFramework/Http.php#128'.
+    [#1142](https://github.com/owncloud/music/issues/1142)
 
 ## 1.10.0 - 2024-01-27
 

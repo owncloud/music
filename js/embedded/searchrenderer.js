@@ -1,8 +1,19 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2020 - 2024
+ */
+
 import musicIconPath from '../../img/music-dark.svg';
 
 (function() {
 	/**
 	 * This custom renderer handles rendering Music app search results shown within the Files app
+	 * on ownCloud and older versions of Nextcloud.
 	 */
 	let Music = function() {
 		this.initialize();
@@ -27,6 +38,10 @@ import musicIconPath from '../../img/music-dark.svg';
 			return $row;
 		}
 	};
-	OCA.Search.Music = Music;
-	OCA.Search.music = new Music();
+
+	// The OCA.Search API is no longer available on NC28+
+	if (OCA.Search) {
+		OCA.Search.Music = Music;
+		OCA.Search.music = new Music();
+	}
 })();

@@ -23,12 +23,14 @@ OCA.Music.FolderView = class {
 	#fileList = null; // FileList from Files (prior to NC28) or Sharing app
 	#shareToken = $('#sharingToken').val(); // undefined when not on share page
 	#audioMimes = null;
+	#playlistMimes = null;
 
 	#player = null;
 	#playlist = null;
 
 	constructor(embeddedPlayer, audioMimes, playlistMimes) {
 		this.#audioMimes = audioMimes;
+		this.#playlistMimes = playlistMimes;
 		this.#player = embeddedPlayer;
 		this.#player.setCallbacks(
 			this.#onClose.bind(this),
@@ -39,13 +41,22 @@ OCA.Music.FolderView = class {
 			this.#onImportList.bind(this),
 			this.#onImportRadio.bind(this)
 		);
+	}
 
-		// Add play action to file rows with supported mime type, either audio or playlist.
-		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
-		if (typeof OCA.Files !== 'undefined') {
-			this.#registerMimes(audioMimes, this.#openAudioFile.bind(this), 'music_play_audio_file');
-			this.#registerMimes(playlistMimes, this.#openPlaylistFile.bind(this), 'music_play_playlist_file');
-		}
+	registerToNcFiles(ncFiles) {
+		const audioFileCb = this.#createFileClickCallback(() => this.#openAudioFile());
+		const plFileCb = this.#createFileClickCallback(() => this.#openPlaylistFile());
+
+		this.#registerToNcFiles(ncFiles, this.#audioMimes, audioFileCb, 'music_play_audio_file');
+		this.#registerToNcFiles(ncFiles, this.#playlistMimes, plFileCb, 'music_play_playlist_file');
+	}
+
+	registerToFileActions(fileActions) {
+		const audioFileCb = this.#createFileClickCallback(() => this.#openAudioFile());
+		const plFileCb = this.#createFileClickCallback(() => this.#openPlaylistFile());
+
+		this.#registerToFileActions(fileActions, this.#audioMimes, audioFileCb, 'music_play_audio_file');
+		this.#registerToFileActions(fileActions, this.#playlistMimes, plFileCb, 'music_play_playlist_file');
 	}
 
 	onPlaylistItemClick(playlistFile, itemIdx) {
@@ -222,80 +233,72 @@ OCA.Music.FolderView = class {
 		}
 	}
 
-	#registerMimes(mimes, openFileCallback, actionId) {
-		const wrappedCallback = (file) => {
+	#createFileClickCallback(fileOpenCallback) {
+		return (file) => {
 			// Check if playing file changes
-			if (this.#currentFile === null || this.#currentFile.id != file.id) {
+			if (this.#currentFile?.id != file.id) {
 				this.#currentFile = file;
-				openFileCallback();
+				fileOpenCallback();
 			}
 			else {
 				this.#player.togglePlayback();
 			}
 		};
-
-		if (OCA.Files?.fileActions) {
-			this.#registerBeforeNC28(mimes, wrappedCallback, actionId);
-		} else {
-			this.#registerAfterNC28(mimes, wrappedCallback, actionId);
-		}
 	}
 
-	#registerAfterNC28(mimes, onActionCallback, actionId) {
-		import('@nextcloud/files').then(ncFiles => {
-			ncFiles.registerFileAction(new ncFiles.FileAction({
-				id: actionId,
-				displayName: () => t('music', 'Play'),
-				iconSvgInline: () => playIconSvgData,
-				default: ncFiles.DefaultType.DEFAULT,
-				order: -1, // prioritize over the built-in Viewer app
+	#registerToNcFiles(ncFiles, mimes, onActionCallback, actionId) {
+		ncFiles.registerFileAction(new ncFiles.FileAction({
+			id: actionId,
+			displayName: () => t('music', 'Play'),
+			iconSvgInline: () => playIconSvgData,
+			default: ncFiles.DefaultType.DEFAULT,
+			order: -1, // prioritize over the built-in Viewer app
 
-				enabled: (nodes, _view) => {
-					if (nodes.length !== 1) {
-						return false;
-					}	
-					return mimes.includes(nodes[0].mime);
-				},
+			enabled: (nodes, _view) => {
+				if (nodes.length !== 1) {
+					return false;
+				}	
+				return mimes.includes(nodes[0].mime);
+			},
 
-				/**
-				 * Function executed on single file action
-				 * @return true if the action was executed successfully,
-				 * false otherwise and null if the action is silent/undefined.
-				 * @throws Error if the action failed
-				 */
-				exec: (file, view, dir) => {
-					const adaptFile = (f) => {
-						return {id: f.fileid, name: f.basename, mimetype: f.mime, path: dir};
-					};
-					onActionCallback(adaptFile(file));
+			/**
+			 * Function executed on single file action
+			 * @return true if the action was executed successfully,
+			 * false otherwise and null if the action is silent/undefined.
+			 * @throws Error if the action failed
+			 */
+			exec: (file, view, dir) => {
+				const adaptFile = (f) => {
+					return {id: f.fileid, name: f.basename, mimetype: f.mime, path: dir};
+				};
+				onActionCallback(adaptFile(file));
 
-					if (!this.#playingListFile) {
-						// get the directory contents and use them as the play queue
-						view.getContents(dir).then(contents => {
-							const dirFiles = _.map(contents.contents, adaptFile);
-							// By default, the files are sorted simply by the character codes, putting upper case names before lower case
-							// and not respecting any locale settings. This doesn't match the order on the UI, regardless of the column
-							// used for sorting. Sort on our own treating numbers "naturally" and using the locale of the browser since
-							// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
-							// as the locale for sorting although user-selected locale would have made even more sense).
-							// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
-							// what NC28 Files does (it uses the 3rd party library natural-orderby for this).
-							dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-	
-							this.#playlist = new OCA.Music.Playlist(dirFiles, this.#audioMimes, this.#currentFile.id);
-							this.#player.setNextAndPrevEnabled(this.#playlist.length() > 1);
-						});
-					}
+				if (!this.#playingListFile) {
+					// get the directory contents and use them as the play queue
+					view.getContents(dir).then(contents => {
+						const dirFiles = _.map(contents.contents, adaptFile);
+						// By default, the files are sorted simply by the character codes, putting upper case names before lower case
+						// and not respecting any locale settings. This doesn't match the order on the UI, regardless of the column
+						// used for sorting. Sort on our own treating numbers "naturally" and using the locale of the browser since
+						// this is how NC28 seems to do this (older NC versions, on the other hand, used the user-selected UI-language
+						// as the locale for sorting although user-selected locale would have made even more sense).
+						// This still leaves such a mismatch that the special characters may be sorted differently by localeCompare than
+						// what NC28 Files does (it uses the 3rd party library natural-orderby for this).
+						dirFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
 
-					return true;
-				},
-			}));
-		});
+						this.#playlist = new OCA.Music.Playlist(dirFiles, this.#audioMimes, this.#currentFile.id);
+						this.#player.setNextAndPrevEnabled(this.#playlist.length() > 1);
+					});
+				}
+
+				return true;
+			},
+		}));
 	}
 
-	#registerBeforeNC28(mimes, onActionCallback, actionId) {
+	#registerToFileActions(fileActions, mimes, onActionCallback, actionId) {
 		// Handle 'play' action on file row
-		let onPlay = (fileName, context) => {
+		const onPlay = (fileName, context) => {
 			this.#fileList = context.fileList;
 			let file = this.#fileList.findFile(fileName);
 
@@ -307,8 +310,8 @@ OCA.Music.FolderView = class {
 			}
 		};
 
-		let registerPlayerForMime = (mime) => {
-			OCA.Files.fileActions.register(
+		const registerPlayerForMime = (mime) => {
+			fileActions.register(
 					mime,
 					actionId,
 					OC.PERMISSION_READ,
@@ -316,7 +319,7 @@ OCA.Music.FolderView = class {
 					onPlay,
 					t('music', 'Play')
 			);
-			OCA.Files.fileActions.setDefault(mime, actionId);
+			fileActions.setDefault(mime, actionId);
 		};
 		_.forEach(mimes, registerPlayerForMime);
 	}

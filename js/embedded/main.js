@@ -8,7 +8,7 @@
  * @copyright Pauli Järvinen 2017 - 2024
  */
 
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
 	let mPlayer = new OCA.Music.EmbeddedPlayer();
 
 	const mAudioMimes = _.filter([
@@ -31,17 +31,30 @@ window.addEventListener('DOMContentLoaded', function() {
 	];
 
 	function register() {
-		// Add player on single-file-share page if the MIME is a supported audio type
-		if ($('#header').hasClass('share-file')) {
-			OCA.Music.fileShareView = new OCA.Music.FileShareView(mPlayer, mAudioMimes);
-		}
-		// Add play action to file rows with supported mime type, either audio or playlist.
-		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
-		else if (typeof OCA.Files !== 'undefined') {
-			OCA.Music.folderView = new OCA.Music.FolderView(mPlayer, mAudioMimes, mPlaylistMimes);
-			OCA.Music.initPlaylistTabView(mPlaylistMimes);
-			connectPlaylistTabViewEvents(OCA.Music.folderView);
-		}
+		OCA.Music.folderView = new OCA.Music.FolderView(mPlayer, mAudioMimes, mPlaylistMimes);
+
+		// First, try to load the Nextcloud Files API. This works on NC28+ but not on NC27. On the other hand, 
+		// the call succeeds on ownCloud but the registration just does nothing there. Note that we can't wait
+		// for the page load to be finished before doing this because that would be too late for the registration
+		// and cause the issue https://github.com/owncloud/music/issues/1126.
+		import('@nextcloud/files').then(ncFiles => OCA.Music.folderView.registerToNcFiles(ncFiles)).catch(_e => {/*ignore*/});
+
+		// The older fileActions API is used on ownCloud and NC27 and older, but also in NC28+ when operating
+		// within a link-shared folder. It's also possible that we are operating within the share page of an
+		// individual file; this situation can be identified only after the page has been completely loaded.
+		window.addEventListener('DOMContentLoaded', () => {
+			if ($('#header').hasClass('share-file')) {
+				// individual link shared file
+				OCA.Music.fileShareView = new OCA.Music.FileShareView(mPlayer, mAudioMimes);
+			} else {
+				// Files app or a link shared folder
+				if (OCA.Files.fileActions) {
+					OCA.Music.folderView.registerToFileActions(OCA.Files.fileActions);
+				}
+				OCA.Music.initPlaylistTabView(mPlaylistMimes);
+				connectPlaylistTabViewEvents(OCA.Music.folderView);
+			}
+		});
 	}
 
 	function connectPlaylistTabViewEvents(folderView) {
@@ -60,4 +73,4 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	register();
-});
+})();

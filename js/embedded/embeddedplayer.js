@@ -727,7 +727,7 @@ OCA.Music.EmbeddedPlayer = function() {
 	}
 
 	/**
-	 * PUBLIC INTEFACE
+	 * PUBLIC INTERFACE
 	 */
 
 	this.setCallbacks = function(closeCb, nextCb, prevCb, menuCb, showListCb, importListCb, importRadioCb) {

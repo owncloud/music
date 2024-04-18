@@ -23,6 +23,8 @@
 - Files player: Menu icon for "Import list to Music" not adjusted correctly for the dark theme
 - Standard NC viewer opened instead of embedded Music player when opening file from Dashboard on NC28+
   [#1126](https://github.com/owncloud/music/issues/1126)
+- Music app page loading randomly failing on Chrome
+  [#1137](https://github.com/owncloud/music/issues/1137)
 - Ampache:
   * API not working on ownCloud 10.14.0 (HTTP error 500 on all Ampache API calls)
     [#1138](https://github.com/owncloud/music/issues/1138)

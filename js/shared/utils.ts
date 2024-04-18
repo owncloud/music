@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 declare var OCA : any;
@@ -70,7 +70,23 @@ OCA.Music.Utils = class {
 	}
 
 	/**
-	 * Capitalizes the firts character of the given string
+	 * Attempt to get a reference with the first supplied function. If the reference is available, then call the second
+	 * function giving the reference as an argument. Otherwise retry in a while. Keep trying until the reference is available.
+	 */
+	static executeOnceRefAvailable<T>(getRef : () => T|null|undefined, callback : (arg : T) => any, attemptInterval_ms = 500) : void {
+		const attempt = () => {
+			let ref = getRef();
+			if (ref) {
+				callback(ref);
+			} else {
+				setTimeout(attempt, attemptInterval_ms);
+			}
+		};
+		attempt();
+	}
+
+	/**
+	 * Capitalizes the first character of the given string
 	 */
 	static capitalize(str : string) : string {
 		return str && str[0].toUpperCase() + str.slice(1); 

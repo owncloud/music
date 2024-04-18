@@ -359,24 +359,32 @@ angular.module('Music').controller('NavigationController', [
 
 		// Dragging an entity over the navigation toggle pops the navigation pane open.
 		// Subsequently, ending the drag closes the navigation pane.
-		let navOpenedByDrag = false;
-		const navToggle = document.getElementById('app-navigation-toggle');
-		navToggle.addEventListener('dragenter', function() {
-			if (!navOpenedByDrag) {
-				navOpenedByDrag = true;
-				expandCollapsedNavigationPane();
+		// It occasionally happens (at least on Chrome) that the navigation toggle is not yet
+		// present when this controller is initialized. In those cases, the related logic
+		// is injected a bit later. See https://github.com/owncloud/music/issues/1137.
+		OCA.Music.Utils.executeOnceRefAvailable(
+			() => document.getElementById('app-navigation-toggle'),
+			(navToggle) => {
+				let navOpenedByDrag = false;
+				navToggle.addEventListener('dragenter', () => {
+					if (!navOpenedByDrag) {
+						navOpenedByDrag = true;
+						expandCollapsedNavigationPane();
+					}
+				});
+				document.addEventListener('dragend', () => {
+					if (navOpenedByDrag) { 
+						navOpenedByDrag = false;
+						$scope.collapseNavigationPaneOnMobile();
+					}
+				});
 			}
-		});
-		document.addEventListener('dragend', function() {
-			if (navOpenedByDrag) { 
-				navOpenedByDrag = false;
-				$scope.collapseNavigationPaneOnMobile();
-			}
-		});
+		);
 
 		function expandCollapsedNavigationPane() {
-			if (!$('body').hasClass('snapjs-left') && $(navToggle).is(':visible')) {
-				$timeout(() => $(navToggle).trigger('click'));
+			const $navToggle = $('#app-navigation-toggle');
+			if (!$('body').hasClass('snapjs-left') && $navToggle.is(':visible')) {
+				$timeout(() => $navToggle.trigger('click'));
 			}
 		}
 

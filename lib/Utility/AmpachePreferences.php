@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
 namespace OCA\Music\Utility;
@@ -18,6 +18,16 @@ namespace OCA\Music\Utility;
 class AmpachePreferences {
 
 	private const SETTINGS = [
+		[
+			'id' => 1,
+			'name' => 'download',
+			'level' => 100,
+			'description' => 'Allow Downloads',
+			'value' => '1',
+			'type' => 'boolean',
+			'category' => 'options',
+			'subcategory' => 'feature'
+		],
 		[
 			'id' => 122,
 			'name' => 'album_release_type',

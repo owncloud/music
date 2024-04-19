@@ -14,6 +14,8 @@
   * Advanced search operators `matches regex` and `does not match regex` supported also on SQLite (this is important to properly support [Ample](https://github.com/mitchray/ample))
   * Advanced search operators `sounds like` and `does not sound like` supported also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
   * Advanced search rules `album_genre` and `artist_genre` supported also on PgSQL
+  * Authentication tag can be delivered also using the bearer token header (required to support Ample v3)
+    [#1140](https://github.com/owncloud/music/issues/1140)
 
 ### Fixed
 - Playlist file not playing within Files in case the first track of the list is in unsupported format

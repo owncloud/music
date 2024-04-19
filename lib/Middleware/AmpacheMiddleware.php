@@ -147,7 +147,7 @@ class AmpacheMiddleware extends Middleware {
 	}
 
 	private function handleNonHandshakeAction(AmpacheController $controller, ?string $action) : void {
-		$token = $this->request->getParam('auth') ?: $this->request->getParam('ssid');
+		$token = $this->request->getParam('auth') ?: $this->request->getParam('ssid') ?: $this->getTokenFromHeader();
 
 		// 'ping' is allowed without a session (but if session token is passed, then it has to be valid)
 		if ($action === 'ping' && empty($token)) {
@@ -163,6 +163,19 @@ class AmpacheMiddleware extends Middleware {
 
 		if ($action === null) {
 			throw new AmpacheException("Required argument 'action' missing", 400);
+		}
+	}
+
+	private function getTokenFromHeader() : ?string {
+		// The Authorization header cannot be obtained with $this->request->getHeader(). Hence, we
+		// use the native PHP API for this. Apparently, the getallheaders() function is not available
+		// on non-Apache servers (e.g. nginx) prior to PHP 7.3.
+		$authHeader = getallheaders()['Authorization'] ?? '';
+		$prefix = 'Bearer ';
+		if (Util::startsWith($authHeader, $prefix)) {
+			return \substr($authHeader, \strlen($prefix));
+		} else {
+			return null;
 		}
 	}
 

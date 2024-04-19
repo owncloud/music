@@ -1300,6 +1300,20 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function system_preferences() : array {
+		return $this->user_preferences();
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function system_preference(string $filter) : array {
+		return $this->user_preference($filter);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function download(int $id, string $type='song') : Response {
 		// request param `format` is ignored
 		$userId = $this->session->getUserId();

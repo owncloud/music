@@ -1282,7 +1282,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function user_preferences() : array {
-		return ['user_preference' => AmpachePreferences::getAll()];
+		return ['preference' => AmpachePreferences::getAll()];
 	}
 
 	/**
@@ -1293,7 +1293,7 @@ class AmpacheController extends Controller {
 		if ($pref === null) {
 			throw new AmpacheException("Not Found: $filter", 400);
 		} else {
-			return ['user_preference' => [$pref]];
+			return ['preference' => [$pref]];
 		}
 	}
 

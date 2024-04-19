@@ -35,6 +35,7 @@
   * Advanced search operator `does not sound like` not working
   * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
   * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
+  * Incorrect root node name on the actions `user_preference` and `user_preferences`
 - Subsonic: 
   * Method `getAlbumInfo2` response having incorrect root element name
     [#1125](https://github.com/owncloud/music/pull/1125) @perillamint

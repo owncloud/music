@@ -680,6 +680,14 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 	}
 
+	protected function sqlCoalesce(string $value, string $replacement) : string {
+		if ($this->dbType == 'pgsql') {
+			return "COALESCE($value, $replacement)";
+		} else {
+			return "IFNULL($value, $replacement)";
+		}
+	}
+
 	/**
 	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP

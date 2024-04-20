@@ -105,7 +105,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
-	const API6_VERSION = '610000';
+	const API6_VERSION = '630000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -672,6 +672,24 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function user_playlists(
+			?string $filter, ?string $add, ?string $update,	int $limit, int $offset=0, bool $exact=false) : array {
+		// alias for playlists without smart lists
+		return $this->playlists($filter, $add, $update, $limit, $offset, $exact, 1);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function user_smartlists() {
+		// the only "smart list" currently supported is "All tracks", hence supporting any kind of filtering criteria
+		// isn't worthwhile
+		return $this->renderPlaylists([$this->getAllTracksPlaylist()]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function playlist(int $filter) : array {
 		$userId = $this->session->getUserId();
 		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
@@ -1227,6 +1245,14 @@ class AmpacheController extends Controller {
 		}
 		
 		return $this->renderEntities($entities, $type);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function search(int $limit, int $offset=0, string $type='song', string $operator='and', bool $random=false) : array {
+		// this is an alias
+		return $this->advanced_search($limit, $offset, $type, $operator, $random);
 	}
 
 	/**
@@ -2119,7 +2145,7 @@ class AmpacheController extends Controller {
 			// For singular actions (like "song", "artist"), the root object contains directly the entity properties.
 			else {
 				$action = $this->request->getParam('action');
-				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'list']));
+				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'search', 'list']));
 
 				// In APIv5, the action "album" is an exception, it is formatted as if it was a plural action.
 				// This outlier has been fixed in APIv6.

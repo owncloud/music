@@ -136,6 +136,7 @@ class Music extends App {
 				$c->query('Config'),
 				$c->query('L10N'),
 				$c->query('URLGenerator'),
+				$c->query('UserManager'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('BookmarkBusinessLayer'),

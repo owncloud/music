@@ -23,6 +23,7 @@ use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -78,6 +79,7 @@ class AmpacheController extends Controller {
 	private $config;
 	private $l10n;
 	private $urlGenerator;
+	private $userManager;
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $bookmarkBusinessLayer;
@@ -111,6 +113,7 @@ class AmpacheController extends Controller {
 								IConfig $config,
 								IL10N $l10n,
 								IURLGenerator $urlGenerator,
+								IUserManager $userManager,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								BookmarkBusinessLayer $bookmarkBusinessLayer,
@@ -133,6 +136,7 @@ class AmpacheController extends Controller {
 		$this->config = $config;
 		$this->l10n = $l10n;
 		$this->urlGenerator = $urlGenerator;
+		$this->userManager = $userManager;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
@@ -1276,6 +1280,36 @@ class AmpacheController extends Controller {
 		$timeOfPlay = ($date === null) ? null : new \DateTime('@' . $date);
 		$this->trackBusinessLayer->recordTrackPlayed($id, $this->session->getUserId(), $timeOfPlay);
 		return ['success' => 'play recorded'];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function user(?string $username) : array {
+		if (!empty($username) && $username !== $this->session->getUserId()) {
+			throw new AmpacheException("Getting info of other users is forbidden", 403);
+		}
+		$user = $this->userManager->get($this->session->getUserId());
+
+		return [
+			'id' => $user->getUID(),
+			'username' => $user->getUID(),
+			'fullname' => $user->getDisplayName(),
+			'auth' => '',
+			'email' => $user->getEMailAddress(),
+			'access' => 25,
+			'streamtoken' => null,
+			'fullname_public' => true,
+			'validation' => null,
+			'disabled' => !$user->isEnabled(),
+			'create_date' => null,
+			'last_seen' => null,
+			'website' => null,
+			'state' => null,
+			'city' => null,
+			'art' => $this->urlGenerator->linkToRouteAbsolute('core.avatar.getAvatar', ['userId' => $user->getUID(), 'size' => 64]),
+			'has_art' => true
+		];
 	}
 
 	/**

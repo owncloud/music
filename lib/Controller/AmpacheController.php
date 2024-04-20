@@ -818,6 +818,27 @@ class AmpacheController extends Controller {
 
 	/**
 	 * @AmpacheAPI
+	 */
+	protected function playlist_add(int $filter, int $id, string $type) : array {
+		$userId = $this->session->getUserId();
+
+		if (!$this->getBusinessLayer($type)->exists($id, $userId)) {
+			throw new AmpacheException("Invalid $type ID $id", 404);
+		}
+
+		$playlist = $this->playlistBusinessLayer->find($filter, $userId);
+
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$newIds = $this->trackIdsForEntity($id, $type);
+		$trackIds = \array_merge($trackIds, $newIds);
+
+		$playlist->setTrackIdsFromArray($trackIds);
+		$this->playlistBusinessLayer->update($playlist);
+		return ['success' => "songs added to playlist"];
+	}
+
+	/**
+	 * @AmpacheAPI
 	 *
 	 * @param int $filter Playlist ID
 	 * @param ?int $song Track ID
@@ -1496,6 +1517,22 @@ class AmpacheController extends Controller {
 			case 'genre':			return $this->renderGenres($entities); // not part of the API spec
 			case 'bookmark':		return $this->renderBookmarks($entities); // not part of the API spec
 			default:				throw new AmpacheException("Unsupported type $type", 400);
+		}
+	}
+
+	private function trackIdsForEntity(int $id, string $type) : array {
+		$userId = $this->session->getUserId();
+		switch ($type) {
+			case 'song':
+				return [$id];
+			case 'album':
+				return Util::extractIds($this->trackBusinessLayer->findAllByAlbum($id, $userId));
+			case 'artist':
+				return Util::extractIds($this->trackBusinessLayer->findAllByArtist($id, $userId));
+			case 'playlist':
+				return $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
+			default:
+				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
 

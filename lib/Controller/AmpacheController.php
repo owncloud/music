@@ -1599,6 +1599,7 @@ class AmpacheController extends Controller {
 		};
 		$pl->id = self::ALL_TRACKS_PLAYLIST_ID;
 		$pl->name = $this->l10n->t('All tracks');
+		$pl->userId = $this->session->getUserId();
 		$pl->trackCount = $this->trackBusinessLayer->count($this->session->getUserId());
 
 		return $pl;

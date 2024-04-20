@@ -354,6 +354,30 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function index(
+			string $type, ?string $filter, ?string $add, ?string $update,
+			?bool $include, int $limit, int $offset=0, bool $exact=false) : array {
+		if ($type === 'album_artist' || $type === 'song_artist') {
+			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
+			$matchMode = $exact ? MatchMode::Exact : MatchMode::Substring;
+			if ($type === 'album_artist') {
+				$entities = $this->artistBusinessLayer->findAllHavingAlbums(
+					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
+			} else {
+				$entities = $this->artistBusinessLayer->findAllHavingTracks(
+					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
+			}
+		} else {
+			$businessLayer = $this->getBusinessLayer($type);
+			$entities = $this->findEntities($businessLayer, $filter, $exact, $limit, $offset, $add, $update);
+		}
+
+		return $this->renderEntityIds($entities, $type);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function list(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
 		$isAlbumArtist = ($type == 'album_artist');
 		if ($isAlbumArtist) {
@@ -2149,8 +2173,8 @@ class AmpacheController extends Controller {
 	/**
 	 * @param Entity[] $entities
 	 */
-	private function renderEntityIds(array $entities) : array {
-		return ['id' => Util::extractIds($entities)];
+	private function renderEntityIds(array $entities, string $key = 'id') : array {
+		return [$key => Util::extractIds($entities)];
 	}
 
 	/**
@@ -2182,7 +2206,7 @@ class AmpacheController extends Controller {
 			// For singular actions (like "song", "artist"), the root object contains directly the entity properties.
 			else {
 				$action = $this->request->getParam('action');
-				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'search', 'list']));
+				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'search', 'list', 'index']));
 
 				// In APIv5, the action "album" is an exception, it is formatted as if it was a plural action.
 				// This outlier has been fixed in APIv6.

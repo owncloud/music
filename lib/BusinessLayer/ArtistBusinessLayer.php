@@ -65,6 +65,23 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Finds all artists who have at least one track
+	 * @param ?string $name Optionally filter by artist name
+	 * @param int $matchMode Name match mode, disregarded if @a $name is null
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
+	 * @return Artist[] artists
+	 */
+	public function findAllHavingTracks(string $userId, int $sortBy=SortBy::Name,
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		return $this->mapper->findAllHavingTracks(
+			$userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
+	}
+
+	/**
 	 * Returns all artists filtered by genre
 	 * @return Artist[] artists
 	 */

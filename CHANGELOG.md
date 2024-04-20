@@ -9,6 +9,7 @@
   * Option to change the session timeout with the `config.php` key `music.ampache_session_expiry_time`
     [#1134](https://github.com/owncloud/music/issues/1134)
   * Support for the actions `search`, `user`, `user_playlists`, `user_smartlists`, `playlist_add`
+  * Initial support for the action `index`; argument `include` is not supported
 
 ### Changed
 - Ampache:

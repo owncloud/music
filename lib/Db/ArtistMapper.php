@@ -35,8 +35,31 @@ class ArtistMapper extends BaseMapper {
 	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::Name,
 			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
-		$params = [$userId];
+		
 		$condition = $this->formatExcludeChildlessCondition();
+		return $this->findAllWithCondition(
+			$condition, $userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param integer $sortBy sort order of the result set
+	 * @return Artist[]
+	 */
+	public function findAllHavingTracks(string $userId, int $sortBy=SortBy::Name,
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		
+		$condition = 'EXISTS (SELECT 1 FROM `*PREFIX*music_tracks` `track` WHERE `*PREFIX*music_artists`.`id` = `track`.`artist_id`)';
+		return $this->findAllWithCondition(
+			$condition, $userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
+	}
+
+	private function findAllWithCondition(
+			string $condition, string $userId, int $sortBy, ?int $limit, ?int $offset,
+			?string $name, int $matchMode, ?string $createdMin, ?string $createdMax,
+			?string $updatedMin, ?string $updatedMax) : array {
+		$params = [$userId];
 
 		if ($name !== null) {
 			[$nameCond, $nameParams] = $this->formatNameConditions($name, $matchMode);

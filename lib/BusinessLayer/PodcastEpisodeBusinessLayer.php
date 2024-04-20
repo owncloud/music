@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -26,7 +26,7 @@ use OCA\Music\Utility\Util;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method PodcastEpisode find(int $episodeId, string $userId)
- * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @method PodcastEpisode[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @phpstan-extends BusinessLayer<PodcastEpisode>
  */

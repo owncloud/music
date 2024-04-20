@@ -32,7 +32,7 @@ class ArtistMapper extends BaseMapper {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[]
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::Name,
 			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$params = [$userId];

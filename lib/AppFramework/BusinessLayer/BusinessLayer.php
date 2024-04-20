@@ -160,7 +160,7 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAll(
-			string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
+			string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		return $this->mapper->findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
@@ -217,7 +217,7 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllAdvanced(
-			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None,
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::Name,
 			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
 
 		if ($conjunction !== 'and' && $conjunction !== 'or') {

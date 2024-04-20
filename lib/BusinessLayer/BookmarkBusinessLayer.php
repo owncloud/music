@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -28,7 +28,7 @@ use OCP\AppFramework\Db\DoesNotExistException;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Bookmark find(int $bookmarkId, string $userId)
- * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method Bookmark[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @phpstan-extends BusinessLayer<Bookmark>
  */

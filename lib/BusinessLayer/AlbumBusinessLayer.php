@@ -71,7 +71,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAll()
 	 * @return Album[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
+	public function findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		$effectivelyLimited = ($limit !== null && $limit < \count($albums));
@@ -204,7 +204,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[]
 	 */
 	public function findAllAdvanced(
-			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None,
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::Name,
 			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
 		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $sortBy, $random, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);

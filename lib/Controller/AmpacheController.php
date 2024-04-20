@@ -472,7 +472,7 @@ class AmpacheController extends Controller {
 				$entities = $businessLayer->findAllStarred($userId, $limit, $offset);
 				break;
 			case 'random':
-				$entities = $businessLayer->findAll($userId, SortBy::None);
+				$entities = $businessLayer->findAll($userId, SortBy::Name);
 				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_stats_'.$type);
 				$entities = Util::arrayMultiGet($entities, $indices);
 				break;

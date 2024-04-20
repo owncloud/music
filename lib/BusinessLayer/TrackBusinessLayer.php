@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -29,7 +29,7 @@ use OCP\Files\Folder;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Track find(int $trackId, string $userId)
- * @method Track[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @phpstan-extends BusinessLayer<Track>
  */

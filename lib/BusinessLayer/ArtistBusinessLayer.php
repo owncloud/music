@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -30,7 +30,7 @@ use OCP\Files\File;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Artist find(int $trackId, string $userId)
- * @method Artist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Artist[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
  * @phpstan-extends BusinessLayer<Artist>
@@ -57,7 +57,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Artist[] artists
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::Name,
 			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		return $this->mapper->findAllHavingAlbums(

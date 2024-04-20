@@ -101,7 +101,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+	public function findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$sorting = $this->formatSortingClause($sortBy);
 		[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
@@ -185,7 +185,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null) : array {
 		$sqlConditions = [];
 		$sqlParams = [$userId];
 

@@ -224,6 +224,34 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
+	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
+	 * @param int[] $parentIds
+	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @throws \DomainException if the entity type handled by this mapper doesn't have a parent relation
+	 */
+	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
+		if ($this->parentIdColumn === null) {
+			throw new \DomainException("Finding by parent is not applicable for the table {$this->getTableName()}");
+		}
+
+		$result = [];
+		if (\count($parentIds) > 0) {
+			$sql = "SELECT `id`, `{$this->parentIdColumn}` AS `parent_id` FROM `{$this->getTableName()}`
+					WHERE `user_id` = ? AND `{$this->parentIdColumn}` IN " . $this->questionMarks(\count($parentIds));
+			$params = \array_merge([$userId], $parentIds);
+			$rows = $this->execute($sql, $params)->fetchAll();
+
+			// ensure that the result contains also "parents" with no children and has the same order as $parentIds
+			$result = \array_fill_keys($parentIds, []);
+			foreach ($rows as $row) {
+				$result[(int)$row['parent_id']][] = (int)$row['id'];
+			}
+		}	
+
+		return $result;
+	}
+
+	/**
 	 * Find all IDs and names of user's entities of this kind.
 	 * Optionally, limit results based on a parent entity (not applicable for all entity types) or update/insert times or name
 	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)

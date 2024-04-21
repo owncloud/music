@@ -357,22 +357,40 @@ class AmpacheController extends Controller {
 	protected function index(
 			string $type, ?string $filter, ?string $add, ?string $update,
 			?bool $include, int $limit, int $offset=0, bool $exact=false) : array {
+		$userId = $this->session->getUserId();
+		
 		if ($type === 'album_artist' || $type === 'song_artist') {
 			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			$matchMode = $exact ? MatchMode::Exact : MatchMode::Substring;
 			if ($type === 'album_artist') {
 				$entities = $this->artistBusinessLayer->findAllHavingAlbums(
-					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
+					$userId, SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
 			} else {
 				$entities = $this->artistBusinessLayer->findAllHavingTracks(
-					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
+					$userId, SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
 			}
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		}
 
-		return $this->renderEntityIds($entities, $type);
+		if ($include) {
+			$childType = self::getChildEntityType($type);
+			if ($childType !== null) {
+				if ($type == 'playlist') {
+					$idsWithChildren = [];
+					foreach ($entities as $playlist) {
+						\assert($playlist instanceof Playlist);
+						$idsWithChildren[$playlist->getId()] = $playlist->getTrackIdsAsArray();
+					}
+				} else {
+					$idsWithChildren = $this->getBusinessLayer($childType)->findAllIdsByParentIds($userId, Util::extractIds($entities));
+				}
+				return $this->renderIdsWithChildren($idsWithChildren, $type, $childType);
+			}
+		}
+
+		return $this->renderEntityIdIndex($entities, $type);
 	}
 
 	/**
@@ -1512,6 +1530,18 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	private static function getChildEntityType(string $type) : ?string {
+		switch ($type) {
+			case 'album':			return 'song';
+			case 'artist':			return 'album';
+			case 'album_artist':	return 'album';
+			case 'song_artist':		return 'album';
+			case 'playlist':		return 'song';
+			case 'podcast':			return 'podcast_episode';
+			default:				return null;
+		}
+	}
+
 	private function renderEntities(array $entities, string $type) : array {
 		switch ($type) {
 			case 'song':			return $this->renderSongs($entities);
@@ -2178,6 +2208,48 @@ class AmpacheController extends Controller {
 	}
 
 	/**
+	 * Render the way used by `action=index` when `include=0`
+	 * @param Entity[] $entities
+	 */
+	private function renderEntityIdIndex(array $entities, string $type) : array {
+		// the structure is quite different for JSON compared to XML
+		if ($this->jsonMode) {
+			return $this->renderEntityIds($entities, $type);
+		} else {
+			return [$type => \array_map(function($entity) {
+				return [
+					'id' => $entity->getId()
+				];
+			}, $entities)];
+		}
+	}
+
+	/**
+	 * Render the way used by `action=index` when `include=1`
+	 * @param array $idsWithChildren Array like [int => int[]]
+	 */
+	private function renderIdsWithChildren(array $idsWithChildren, string $type, string $childType) : array {
+		// the structure is quite different for JSON compared to XML
+		if ($this->jsonMode) {
+			foreach ($idsWithChildren as &$children) {
+				$children = \array_map(function ($childId) use ($childType) {
+					return ['id' => $childId, 'type' => $childType];
+				}, $children);
+			}
+			return [$type => $idsWithChildren];
+		} else {
+			return [$type => \array_map(function($id, $childIds) use ($childType) {
+				return [
+					'id' => $id,
+					$childType => \array_map(function($id) {
+						return ['id' => $id];
+					}, $childIds)
+				];
+			}, \array_keys($idsWithChildren), $idsWithChildren)];
+		}
+	}
+
+	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
 	 * Empty array is considered to be "indexed".
 	 */
@@ -2250,9 +2322,8 @@ class AmpacheController extends Controller {
 		$firstKey = \key($content);
 
 		// all 'entity list' kind of responses shall have the (deprecated) total_count element
-		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist' || $firstKey == 'playlist'
-				|| $firstKey == 'tag' || $firstKey == 'genre' || $firstKey == 'podcast' || $firstKey == 'podcast_episode'
-				|| $firstKey == 'live_stream') {
+		if (\in_array($firstKey, ['song', 'album', 'artist', 'album_artist', 'song_artist',
+				'playlist', 'tag', 'genre', 'podcast', 'podcast_episode', 'live_stream'])) {
 			$content = ['total_count' => \count($content[$firstKey])] + $content;
 		}
 

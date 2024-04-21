@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -237,6 +237,8 @@ class Track extends Entity {
 			'r128_album_gain' => null,
 			'r128_track_gain' => null,
 		];
+
+		$result['has_art'] = !empty($result['art']);
 
 		$genreId = $this->getGenreId();
 		if ($genreId !== null) {

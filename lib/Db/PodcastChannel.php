@@ -133,6 +133,7 @@ class PodcastChannel extends Entity {
 			'public_url' => $this->getLinkUrl(),
 			'website' => $this->getLinkUrl(),
 			'art' => $this->getImageUrl(),
+			'has_art' => !empty($this->getImageUrl()),
 			'flag' => !empty($this->getStarred()),
 			'rating' => $this->getRating() ?? 0,
 			'preciserating' => $this->getRating() ?? 0,

@@ -1905,6 +1905,7 @@ class AmpacheController extends Controller {
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationByArtist($artist->getId()),
 					'art' => $this->createCoverUrl($artist),
+					'has_art' => $artist->getCoverFileId() !== null,
 					'rating' => $artist->getRating() ?? 0,
 					'preciserating' => $artist->getRating() ?? 0,
 					'flag' => !empty($artist->getStarred()),
@@ -1968,6 +1969,7 @@ class AmpacheController extends Controller {
 					'preciserating' => $album->getRating() ?? 0,
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album),
+					'has_art' => $album->getCoverFileId() !== null,
 					'flag' => !empty($album->getStarred()),
 					$genreKey => \array_map(function ($genre) {
 						return [

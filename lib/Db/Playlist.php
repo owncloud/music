@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -87,7 +87,7 @@ class Playlist extends Entity {
 	}
 
 	public function toAmpacheApi(callable $createImageUrl) : array {
-		return [
+		$result = [
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
@@ -97,6 +97,8 @@ class Playlist extends Entity {
 			'rating' => $this->getRating() ?? 0,
 			'type' => 'Private'
 		];
+		$result['has_art'] = !empty($result['art']);
+		return $result;
 	}
 
 	public function toSubsonicApi() : array {

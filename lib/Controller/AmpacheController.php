@@ -1411,7 +1411,7 @@ class AmpacheController extends Controller {
 			'state' => null,
 			'city' => null,
 			'art' => $this->urlGenerator->linkToRouteAbsolute('core.avatar.getAvatar', ['userId' => $user->getUID(), 'size' => 64]),
-			'has_art' => true
+			'has_art' => ($user->getAvatarImage(64) != null)
 		];
 	}
 

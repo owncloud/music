@@ -1,20 +1,20 @@
-## [Unreleased]
+## 1.11.0 - 2024-04-21
 
 ### Added
 - Advanced search view
   [#1141](https://github.com/owncloud/music/pull/1141)
 - Support for Nextcloud 29
   [#1132](https://github.com/owncloud/music/issues/1132)
-- Ampache:
+- Ampache API:
   * Option to change the session timeout with the `config.php` key `music.ampache_session_expiry_time`
     [#1134](https://github.com/owncloud/music/issues/1134)
   * Support for the actions `search`, `user`, `user_playlists`, `user_smartlists`, `playlist_add`, `index`, `scrobble`
-- Subsonic:
-  * Support method `getOpenSubsonicExtensions`
+  * Support for the advanced search rule `bitrate` on songs
+- Subsonic API:
+  * Support for the method `getOpenSubsonicExtensions`
 
 ### Changed
-- Ampache:
-  * Advanced search rule `bitrate` supported for songs
+- Ampache API:
   * Advanced search operators `matches regex` and `does not match regex` supported also on SQLite (this is important to properly support [Ample](https://github.com/mitchray/ample))
   * Advanced search operators `sounds like` and `does not sound like` supported also on SQLite, and on PgSQL if module `fuzzystrmatch` is installed
   * Advanced search rules `album_genre` and `artist_genre` supported also on PgSQL
@@ -33,7 +33,7 @@
   [#1126](https://github.com/owncloud/music/issues/1126)
 - Music app page loading randomly failing on Chrome
   [#1137](https://github.com/owncloud/music/issues/1137)
-- Ampache:
+- Ampache API:
   * API not working on ownCloud 10.14.0 (HTTP error 500 on all Ampache API calls)
     [#1138](https://github.com/owncloud/music/issues/1138)
   * Advanced search rule `playlist_name` not being case insensitive like the other string rules
@@ -42,7 +42,7 @@
   * Advanced search numeric rules (e.g. `year`, `played_times`, `album_count`) not working properly on SQLite
   * Advanced search rules `album_count` and `song_count` never finding artists whose respective count is 0
   * Incorrect root node name on the actions `user_preference` and `user_preferences`
-- Subsonic: 
+- Subsonic API:
   * Method `getAlbumInfo2` response having incorrect root element name
     [#1125](https://github.com/owncloud/music/pull/1125) @perillamint
   * On NC28+, every XML API call logged an error 'Undefined array key "" at /var/www/html/lib/private/AppFramework/Http.php#128'.

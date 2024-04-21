@@ -1030,6 +1030,15 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['nowPlaying' => ['entry' => []]]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	protected function getOpenSubsonicExtensions() {
+		return $this->subsonicResponse(['openSubsonicExtensions' => [
+			[ 'name' => 'formPost', 'versions' => [1] ]
+		]]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
@@ -1518,6 +1527,7 @@ class SubsonicController extends Controller {
 
 		return null;
 	}
+
 	/**
 	 * Common logic for getAlbumInfo and getAlbumInfo2
 	 */

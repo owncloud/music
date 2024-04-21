@@ -19,6 +19,7 @@
   * Authentication tag can be delivered also using the bearer token header (required to support Ample v3)
     [#1140](https://github.com/owncloud/music/issues/1140)
   * All results with property `art` have also the property `has_art`
+  * Implicitly record the track as played with the actions `download` and `stream`
 
 ### Fixed
 - Playlist file not playing within Files in case the first track of the list is in unsupported format

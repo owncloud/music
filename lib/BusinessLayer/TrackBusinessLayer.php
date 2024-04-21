@@ -103,10 +103,10 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks specified by name and/or artist name
+	 * Returns all tracks specified by name, artist name, and/or album name
 	 * @return Track[] Tracks matching the criteria
 	 */
-	public function findAllByNameAndArtistName(?string $name, ?string $artistName, string $userId) : array {
+	public function findAllByNameArtistOrAlbum(?string $name, ?string $artistName, ?string $albumName, string $userId) : array {
 		if ($name !== null) {
 			$name = \trim($name);
 		}
@@ -114,7 +114,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$artistName = \trim($artistName);
 		}
 
-		return $this->mapper->findAllByNameAndArtistName($name, $artistName, $userId);
+		return $this->mapper->findAllByNameArtistOrAlbum($name, $artistName, $albumName, $userId);
 	}
 
 	/**

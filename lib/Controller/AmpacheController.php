@@ -1374,6 +1374,20 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function scrobble(string $song, string $artist, string $album, ?int $date) : array {
+		// arguments songmbid, artistmbid, and albummbid not supported for now
+		$matching = $this->trackBusinessLayer->findAllByNameArtistOrAlbum($song, $artist, $album, $this->session->getUserId());
+		if (\count($matching) === 0) {
+			throw new AmpacheException('Song matching the criteria was not found', 404);
+		} else if (\count($matching) > 1) {
+			throw new AmpacheException('Multiple songs matched the criteria, nothing recorded', 400);
+		}
+		return $this->record_play($matching[0]->getId(), $date);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function user(?string $username) : array {
 		if (!empty($username) && $username !== $this->session->getUserId()) {
 			throw new AmpacheException("Getting info of other users is forbidden", 403);

@@ -453,7 +453,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getLyrics(?string $artist, ?string $title) {
-		$matches = $this->trackBusinessLayer->findAllByNameAndArtistName($title, $artist, $this->userId);
+		$matches = $this->trackBusinessLayer->findAllByNameArtistOrAlbum($title, $artist, null, $this->userId);
 		$matchingCount = \count($matches);
 
 		if ($matchingCount === 0) {

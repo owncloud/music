@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -174,7 +174,8 @@ class LastfmService {
 		$similarArr = $similarOnLastfm['similartracks']['track'] ?? null;
 		if ($similarArr !== null) {
 			foreach ($similarArr as $lastfmTrack) {
-				$matchingLibTracks = $this->trackBusinessLayer->findAllByNameAndArtistName($lastfmTrack['name'], $lastfmTrack['artist']['name'], $userId);
+				$matchingLibTracks = $this->trackBusinessLayer->findAllByNameArtistOrAlbum(
+					$lastfmTrack['name'], $lastfmTrack['artist']['name'], null, $userId);
 				$result = \array_merge($result, $matchingLibTracks);
 			}
 		}

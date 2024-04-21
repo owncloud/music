@@ -234,24 +234,29 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Returns all tracks specified by name and/or artist name
+	 * Returns all tracks specified by name, artist name, and/or album name
 	 * @param string|null $name the name of the track
 	 * @param string|null $artistName the name of the artist
 	 * @param string $userId the name of the user
 	 * @return Track[] Tracks matching the criteria
 	 */
-	public function findAllByNameAndArtistName(?string $name, ?string $artistName, string $userId) : array {
+	public function findAllByNameArtistOrAlbum(?string $name, ?string $artistName, ?string $albumName, string $userId) : array {
 		$sqlConditions = [];
 		$params = [$userId];
 
 		if (!empty($name)) {
-			$sqlConditions[] = '`title` = ?';
+			$sqlConditions[] = 'LOWER(`title`) = LOWER(?)';
 			$params[] = $name;
 		}
 
 		if (!empty($artistName)) {
-			$sqlConditions[] = '`artist`.`name` = ?';
+			$sqlConditions[] = 'LOWER(`artist`.`name`) = LOWER(?)';
 			$params[] = $artistName;
+		}
+
+		if (!empty($albumName)) {
+			$sqlConditions[] = 'LOWER(`album`.`name`) = LOWER(?)';
+			$params[] = $albumName;
 		}
 
 		// at least one condition has to be given, otherwise return an empty set

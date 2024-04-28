@@ -1451,8 +1451,9 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function download(int $id, string $type='song') : Response {
+	protected function download(int $id, string $type='song', bool $recordPlay=false) : Response {
 		// request param `format` is ignored
+		// request param `recordPlay` is not a specified part of the API
 		$userId = $this->session->getUserId();
 
 		if ($type === 'song') {
@@ -1482,7 +1483,7 @@ class AmpacheController extends Controller {
 			if ($randomId === null) {
 				throw new AmpacheException("The playlist $id is empty", 404);
 			} else {
-				return $this->download((int)$randomId);
+				return $this->download((int)$randomId, 'song', $recordPlay);
 			}
 		} else {
 			throw new AmpacheException("Unsupported type '$type'", 400);
@@ -1506,7 +1507,7 @@ class AmpacheController extends Controller {
 			throw new AmpacheException('Streaming with time offset is not supported', 400);
 		}
 
-		return $this->download($id, $type);
+		return $this->download($id, $type, /*recordPlay=*/true);
 	}
 
 	/**
@@ -2018,7 +2019,7 @@ class AmpacheController extends Controller {
 		}
 
 		$createPlayUrl = function(Track $track) : string {
-			return $this->createAmpacheActionUrl('download', $track->getId());
+			return $this->createAmpacheActionUrl('stream', $track->getId());
 		};
 		$createImageUrl = function(Track $track) : string {
 			$album = $track->getAlbum();

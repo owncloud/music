@@ -1,3 +1,14 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+- Ampache API:
+  * The action `download` doesn't implicitly record the track as played (unlike `stream`)
+  * The song property `url` refers to the `stream` URL instead of `download` URL
+
+### Fixed
+
 ## 1.11.0 - 2024-04-21
 
 ### Added

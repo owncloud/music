@@ -61,8 +61,25 @@
 	margin-right: 6px;
 }
 
+.playlist-area .track-list .playlist-item-info .play-pause.overlay {
+	width: 36px;
+	height: 36px;
+	margin-left: -46px;
+}
+
+.current.playing .play-pause.overlay,
+:hover > .play-pause.overlay,
+#app-view .current:not(.playing):hover .play-pause.overlay {
+	background-image: url(../../img/play-overlay.svg);
+}
+
+.current:not(.playing) .play-pause.overlay,
+#app-view .current.playing:hover .play-pause.overlay {
+	background-image: url(../../img/pause-overlay.svg)
+}
+
 .playlist-area .track-list .playlist-item-info .title-and-artist {
-	max-width: calc(100% - 100px);
+	max-width: calc(100% - 72px);
 }
 
 .playlist-area .track-list .playlist-item-info .title-and-artist div {

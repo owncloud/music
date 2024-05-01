@@ -18,9 +18,9 @@
 			<div class="playlist-item-info" ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)"
 				ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}"
 			>
-				<div class="play-pause"></div>
 				<span class="ordinal muted">{{ $index + 1 }}.</span>
 				<div class="albumart" albumart="::song.album"></div>
+				<div class="play-pause overlay"></div>
 				<div class="title-and-artist">
 					<div>{{ ::song.title }}</div><br/>
 					<div class="muted">{{ ::song.artist.name }}</div>

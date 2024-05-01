@@ -8,6 +8,10 @@
  * @copyright Pauli Järvinen 2016 - 2024
  */
 
+#playlist-view {
+	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
+}
+
 .playlist-area {
 	clear: both;
 	padding-top: 15px;
@@ -32,9 +36,13 @@
 .playlist-area .track-list > li {
 	padding-bottom: 4px;
 	padding-top: 5px;
-	border: 1px solid transparent;
 	white-space: nowrap;
-	display: table;
+	cursor: default;
+}
+
+.playlist-area .track-list .playlist-item-info {
+	max-width: calc(100% - 72px);
+	white-space: nowrap;
 }
 
 .playlist-area .track-list .playlist-item-info > * {
@@ -50,6 +58,17 @@
 	width: 36px;
 	height: 36px;
 	line-height: 36px;
+	margin-right: 6px;
+}
+
+.playlist-area .track-list .playlist-item-info .title-and-artist {
+	max-width: calc(100% - 100px);
+}
+
+.playlist-area .track-list .playlist-item-info .title-and-artist div {
+	max-width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .playlist-area .track-list.insert-above > li.drag-hover {
@@ -66,17 +85,6 @@
 	cursor: pointer;
 }
 
-.playlist-area .track-list > li > div > div {
-	display: inline-block;
-	white-space: nowrap;
-	margin-right: 7px;
-}
-
-.playlist-area .track-list > li > div > div > div {
-	display: inline-block;
-	white-space: normal;
-}
-
 .playlist-area .track-list li .action {
 	visibility: hidden;
 	border: none;
@@ -91,7 +99,7 @@
 	opacity: 1;
 }
 
-.playlist-area .track-list li div:hover .action {
+.playlist-area .track-list li:hover .action {
 	visibility: visible;
 }
 

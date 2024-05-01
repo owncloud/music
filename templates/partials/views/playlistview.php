@@ -1,4 +1,4 @@
-<div class="view-container playlist-area" ng-show="!loading && !loadingCollection">
+<div id="playlist-view" class="view-container playlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span>{{ playlist.name }}</span>
@@ -15,22 +15,22 @@
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover"
 		>
-			<div ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}">
-				<div class="playlist-item-info" ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)">
-					<div class="play-pause"></div>
-					<span class="ordinal muted">{{ $index + 1 }}.</span>
-					<div class="albumart" albumart="::song.album"></div>
-					<div>
-						<span>{{ ::song.title }}</span><br/>
-						<span class="muted">{{ ::song.artist.name }}</span>
-					</div>
+			<div class="playlist-item-info" ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)"
+				ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}"
+			>
+				<div class="play-pause"></div>
+				<span class="ordinal muted">{{ $index + 1 }}.</span>
+				<div class="albumart" albumart="::song.album"></div>
+				<div class="title-and-artist">
+					<div>{{ ::song.title }}</div><br/>
+					<div class="muted">{{ ::song.artist.name }}</div>
 				</div>
-				<button class="action icon-details" ng-click="showTrackDetails(song.id)"
-					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"
-					ng-if="song.type != 'error'"></button>
-				<button class="action icon-close" ng-click="removeTrack($index)"
-					alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}"></button>
 			</div>
+			<button class="action icon-details" ng-click="showTrackDetails(song.id)"
+				alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"
+				ng-if="song.type != 'error'"></button>
+			<button class="action icon-close" ng-click="removeTrack($index)"
+				alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}"></button>
 		</li>
 	</ul>
 

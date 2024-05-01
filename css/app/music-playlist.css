@@ -53,11 +53,11 @@
 }
 
 .playlist-area .track-list.insert-above > li.drag-hover {
-	border-top-color: LightGray;
+	padding-top: 40px;
 }
 
 .playlist-area .track-list.insert-below > li.drag-hover {
-	border-bottom-color: LightGray;
+	padding-bottom: 40px;
 }
 
 .playlist-area .track-list > li > div,

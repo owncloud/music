@@ -85,24 +85,24 @@
 	cursor: pointer;
 }
 
-.playlist-area .track-list li .action {
+#app-view .playlist-area .track-list li .action {
 	visibility: hidden;
 	border: none;
 	background-color: transparent;
 	vertical-align: middle;
 	margin: 0;
 	opacity: 0.5;
-	padding: 7px 16px;
+	padding: 16px;
 }
 
-.playlist-area .track-list li .action:hover {
+#app-view .playlist-area .track-list li .action:hover {
 	opacity: 1;
 }
 
-.playlist-area .track-list li:hover .action {
+#app-view .playlist-area .track-list li:hover .action {
 	visibility: visible;
 }
 
-.playlist-area .track-list .icon-loading-small {
+#app-view .playlist-area .track-list .icon-loading-small {
 	margin-bottom: -3px;
 }

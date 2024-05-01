@@ -37,8 +37,19 @@
 	display: table;
 }
 
-.playlist-area .track-list > li span.muted {
-	vertical-align: top;
+.playlist-area .track-list .playlist-item-info > * {
+	vertical-align: middle;
+}
+
+.playlist-area .track-list .playlist-item-info .ordinal {
+	min-width: 30px;
+	text-align: right;
+}
+
+.playlist-area .track-list .playlist-item-info .albumart {
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
 }
 
 .playlist-area .track-list.insert-above > li.drag-hover {
@@ -47,11 +58,6 @@
 
 .playlist-area .track-list.insert-below > li.drag-hover {
 	border-bottom-color: LightGray;
-}
-
-.playlist-area .track-list .play-pause {
-	margin-top: 5px;
-	vertical-align: top;
 }
 
 .playlist-area .track-list > li > div,

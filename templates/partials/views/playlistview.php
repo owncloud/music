@@ -13,12 +13,17 @@
 			ui-on-drop="reorderDrop($data, $index)"
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"
-			drag-hover-class="drag-hover">
+			drag-hover-class="drag-hover"
+		>
 			<div ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}">
-				<div ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)">
+				<div class="playlist-item-info" ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)">
 					<div class="play-pause"></div>
-					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ ::song.artist.name }} - {{ ::song.title }}</div>
+					<span class="ordinal muted">{{ $index + 1 }}.</span>
+					<div class="albumart" albumart="::song.album"></div>
+					<div>
+						<span>{{ ::song.title }}</span><br/>
+						<span class="muted">{{ ::song.artist.name }}</span>
+					</div>
 				</div>
 				<button class="action icon-details" ng-click="showTrackDetails(song.id)"
 					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"

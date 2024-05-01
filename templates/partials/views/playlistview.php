@@ -22,7 +22,7 @@
 				<div class="albumart" albumart="::song.album"></div>
 				<div class="play-pause overlay"></div>
 				<div class="title-and-artist">
-					<div>{{ ::song.title }}</div><br/>
+					<div>{{ ::song.title }}</div>
 					<div class="muted">{{ ::song.artist.name }}</div>
 				</div>
 			</div>

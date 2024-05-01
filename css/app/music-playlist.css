@@ -83,7 +83,7 @@
 }
 
 .playlist-area .track-list .playlist-item-info .title-and-artist div {
-	max-width: 100%;
+	display: block;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }

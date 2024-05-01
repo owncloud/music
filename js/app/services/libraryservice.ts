@@ -122,16 +122,16 @@ export class LibraryService {
 	 * Note2: The array is sorted in-place instead of returning a new array.
 	 */
 	#sortByTextField<T>(items : T[], field : string) : void {
-		let getSortProperty = _.property(field);
-		let locale = OCA.Music.Utils.getLocale();
+		const getSortProperty = _.property(field);
+		const locale = OCA.Music.Utils.getLocale();
 
 		items.sort((a : T, b : T) => {
-			let aProp : any = getSortProperty(a);
-			let bProp : any = getSortProperty(b);
+			const aProp : any = getSortProperty(a);
+			const bProp : any = getSortProperty(b);
 
-			if (aProp === null) {
+			if (aProp == null) {
 				return -1;
-			} else if (bProp === null) {
+			} else if (bProp == null) {
 				return 1;
 			} else {
 				return aProp.localeCompare(bProp, locale);

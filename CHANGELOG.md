@@ -3,7 +3,7 @@
 ### Added
 
 ### Changed
-- Drop support for PHP versions older 7.4 (i.e. PHP 7.1-7.3)
+- Drop support for PHP versions older 7.4 (i.e. PHP 7.1 - 7.3)
 - Drop support for ownCloud versions older than 10.5.0 (i.e. OC 10.0 - 10.4)
 - Drop support for Nextcloud versions older than 18 (i.e. NC 13 - 17)
 - Ampache API:
@@ -11,6 +11,7 @@
   * The song property `url` refers to the `stream` URL instead of `download` URL
 
 ### Fixed
+- Playlist sorting not working if the list contains any broken track references
 
 ## 1.11.0 - 2024-04-21
 

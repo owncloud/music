@@ -173,6 +173,7 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 			let trackData = data.getTrackData(track, index, data.scope);
 			listItemContent.innerHTML = trackRenderer(trackData);
 			listItemContent.setAttribute('draggable', data.getDraggable !== undefined);
+			listItemContent.className = 'item-info';
 			listItem.appendChild(listItemContent);
 
 			if (data.showTrackDetails) {
@@ -236,7 +237,8 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 			if (trackId) {
 				if (event.target.className == 'icon-details') {
 					data.showTrackDetails(trackId);
-				} else {
+				} else if ($(event.target).closest('.item-info').length > 0) {
+					// target is .item-info or any of its descendants
 					data.playTrack(trackId);
 					data.scope.$apply();
 				}

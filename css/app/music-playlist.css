@@ -8,9 +8,13 @@
  * @copyright Pauli Järvinen 2016 - 2024
  */
 
-#playlist-view {
-	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
-}
+/**
+ * This file contains rules both for the playlist view specifically and for the other similar views like 'All tracks' and 'Genres' etc.
+ */
+
+/**
+ * Generic rules for multiple views
+ */
 
 .playlist-area {
 	clear: both;
@@ -40,49 +44,45 @@
 	cursor: default;
 }
 
-.playlist-area .track-list .playlist-item-info {
-	max-width: calc(100% - 72px);
+.playlist-area .track-list > li > div {
+	max-width: calc(100% - 36px);
 	white-space: nowrap;
 }
 
-.playlist-area .track-list .playlist-item-info > * {
-	vertical-align: middle;
-}
-
-.playlist-area .track-list .playlist-item-info .ordinal {
+.playlist-area .track-list .ordinal {
 	min-width: 30px;
 	text-align: right;
 }
 
-.playlist-area .track-list .playlist-item-info .albumart {
+.playlist-area .track-list .albumart {
 	width: 36px;
 	height: 36px;
 	line-height: 36px;
 	margin-right: 6px;
 }
 
-.playlist-area .track-list .playlist-item-info .play-pause.overlay {
+.playlist-area .track-list .play-pause.overlay {
 	width: 36px;
 	height: 36px;
 	margin-left: -46px;
 }
 
-.current.playing .play-pause.overlay,
-:hover > .play-pause.overlay,
-#app-view .current:not(.playing):hover .play-pause.overlay {
+.playlist-area .current.playing .play-pause.overlay,
+.playlist-area :hover > .play-pause.overlay,
+#app-view .playlist-area .current:not(.playing):hover .play-pause.overlay {
 	background-image: url(../../img/play-overlay.svg);
 }
 
-.current:not(.playing) .play-pause.overlay,
-#app-view .current.playing:hover .play-pause.overlay {
+.playlist-area .current:not(.playing) .play-pause.overlay,
+#app-view .playlist-area .current.playing:hover .play-pause.overlay {
 	background-image: url(../../img/pause-overlay.svg)
 }
 
-.playlist-area .track-list .playlist-item-info .title-and-artist {
+.playlist-area .track-list .title-lines {
 	max-width: calc(100% - 72px);
 }
 
-.playlist-area .track-list .playlist-item-info .title-and-artist div {
+.playlist-area .track-list > li .title-lines > div {
 	display: block;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -122,4 +122,16 @@
 
 #app-view .playlist-area .track-list .icon-loading-small {
 	margin-bottom: -3px;
+}
+
+/**
+ * Rules specific for the playlist view
+ */
+
+#playlist-view {
+	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
+}
+
+#playlist-view .track-list > li > div {
+	max-width: calc(100% - 72px);
 }

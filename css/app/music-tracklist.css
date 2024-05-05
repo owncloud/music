@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 /**
@@ -21,8 +21,12 @@
 	cursor: pointer;
 }
 
-.track-list li > div {
+.track-list > li > div {
 	display: table-cell;
+}
+
+.track-list > li > div > * {
+	vertical-align: middle;
 }
 
 .track-list > li.placeholder {
@@ -45,7 +49,6 @@
 #app-view:not(.searchmode) .track-list:not(.collapsed) li.more-less.collapsible {
 	display: inline-block;
 }
-
 
 /**
  * View specific rules for the track-list directive in the 'Albums' view
@@ -80,16 +83,4 @@
 
 #albums.compact:not(.single-col) .album-area .track-list li > div > span {
 	max-width: 272px;
-}
-
-/**
- * Rules for the track-list directive in "flat list views" like 'All tracks', 'Genres', and 'Folders'
- */
-
-.flat-list-view .track-list {
-	margin-right: 50px;
-}
-
-.flat-list-view .track-list li > div > span {
-	white-space: normal;
 }

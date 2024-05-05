@@ -21,7 +21,7 @@
 				<span class="ordinal muted">{{ $index + 1 }}.</span>
 				<div class="albumart" albumart="::song.album"></div>
 				<div class="play-pause overlay"></div>
-				<div class="title-and-artist">
+				<div class="title-lines">
 					<div>{{ ::song.title }}</div>
 					<div class="muted">{{ ::song.artist.name }}</div>
 				</div>

@@ -7,34 +7,11 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2016 - 2023 Pauli Järvinen
+ * @copyright 2016 - 2024 Pauli Järvinen
  *
  */
 
-angular.module('Music').directive('albumart', [function() {
-
-	function setCoverImage(element, imageUrl) {
-		// remove placeholder stuff
-		element.html('');
-		element.css('background-color', '');
-
-		element.css('background-image', 'url(' + imageUrl + ')');
-	}
-
-	function setPlaceholder(element, text, seed = null) {
-		if (text) {
-			// remove background image
-			element.css('background-image', '');
-			// add placeholder stuff
-			element.imageplaceholder(seed ?? text, text);
-			// remove inlined size-related style properties set by imageplaceholder() to allow
-			// dynamic changing between mobile and desktop styles when window size changes
-			element.css('line-height', '');
-			element.css('font-size', '');
-			element.css('width', '');
-			element.css('height', '');
-		}
-	}
+angular.module('Music').directive('albumart', ['albumartService', function(albumartService) {
 
 	return {
 		require: '?^inViewObserver',
@@ -53,30 +30,14 @@ angular.module('Music').directive('albumart', [function() {
 			 *    related attributes of the element.
 			 */
 
-			let loadAlbumart = function() {
-				const art = scope.albumart;
-				if (art) {
-					// the "albumart" may actually be an album or podcast channel object
-					if (art.cover) {
-						setCoverImage(element, art.cover);
-					} else if (art.image) {
-						setCoverImage(element, art.image);
-					} else if (art.name) {
-						setPlaceholder(element, art.name, art.artist.name + art.name);
-					} else if (art.title) {
-						setPlaceholder(element, art.title);
-					}
-				}
-			};
-
 			if (ctrl) {
 				ctrl.registerListener({
-					onEnterView: loadAlbumart,
-					onLeaveView: function() { /* nothing to do */ }
+					onEnterView: () => albumartService.setArt(element, scope.albumart),
+					onLeaveView: () => { /* nothing to do */ }
 				});
 			}
 			else {
-				scope.$watch('albumart', loadAlbumart);
+				scope.$watch('albumart', () => albumartService.setArt(element, scope.albumart));
 			}
 		}
 	};

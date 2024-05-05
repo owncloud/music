@@ -16,8 +16,11 @@
 	line-height: 20px;
 }
 
-.track-list li,
 .track-list li * {
+	cursor: pointer;
+}
+
+.track-list .more-less {
 	cursor: pointer;
 }
 

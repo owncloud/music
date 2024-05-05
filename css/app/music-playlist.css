@@ -127,7 +127,8 @@
  * Rules specific for the playlist view
  */
 
-#playlist-view {
+#playlist-view,
+#smartlist-view {
 	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
 }
 

@@ -1,6 +1,6 @@
 <div class="playlist-area folder-area flat-list-view" ng-class="{'matched': folder.matched}" id="folder-{{ folder.id }}">
 	<span class="icon icon-folder"></span>
-	<img class="overlay svg"
+	<img class="caret-overlay svg"
 		 ng-if="!searchMode"
 		 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"
 		 ng-class="{ 'flip-vertically': folder.expanded }"

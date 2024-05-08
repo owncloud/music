@@ -5,20 +5,33 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 .folder-tree {
 	margin-top: 16px;
-	margin-right: -40px; /* utilize the space reserved for the alphabet navigation */
+	margin-right: -50px; /* utilize the space reserved for the alphabet navigation */
+	white-space: nowrap;
 }
 
 .folder-tree .subfolders {
-	margin-left: 32px;
+	margin-left: 36px;
 }
 
 .folder-tree .track-list {
-	margin-left: 16px;
+	margin-left: 36px;
+}
+
+.folder-tree .track-list > li .ordinal {
+	display: none;
+}
+
+.folder-tree .track-list > li .title-lines {
+	max-width: calc(100% - 36px);
+}
+
+.folder-tree .track-list > li.more-less {
+	padding-left: 0;
 }
 
 .folder-tree .playlist-area {
@@ -27,26 +40,27 @@
 
 .folder-tree .playlist-area h2 {
 	margin-top: 4px;
+	line-height: 36px;
 }
 
 .folder-tree .icon-folder,
-.folder-tree .overlay {
-	width: 30px;
-	height: 30px;
+.folder-tree .caret-overlay {
+	width: 36px;
+	height: 36px;
 	float: left;
 	background-size: contain;
 	margin-right: 8px;
 }
 
-.folder-tree .overlay {
-	margin-left: -38px;
+.folder-tree .caret-overlay {
+	margin-left: -44px;
 	margin-top: 2px;
 	margin-bottom: -2px;
 	visibility: hidden;
 	cursor: pointer;
 }
 
-.folder-tree .icon-folder:hover ~ .overlay,
-.folder-tree .overlay:hover {
+.folder-tree .icon-folder:hover ~ .caret-overlay,
+.folder-tree .caret-overlay:hover {
 	visibility: visible;
 }

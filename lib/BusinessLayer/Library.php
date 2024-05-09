@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -90,7 +90,7 @@ class Library {
 				= $track->toCollection();
 		}
 
-		// Then create the actual collection by iterating over the previusly created
+		// Then create the actual collection by iterating over the previously created
 		// dictionary and creating artists and albums in the "toCollection" format.
 		$collection = [];
 		foreach ($trackDict as $artistId => $artistTracksByAlbum) {
@@ -101,13 +101,13 @@ class Library {
 						$this->urlGenerator, $this->l10n, $coverHash, $albumTracks);
 			}
 
-			$collection[] = $entities['artists'][$artistId]->toCollection($this->l10n, $artistAlbums);
+			$collection[] = $entities['artists'][$artistId]->toCollection($this->urlGenerator, $this->l10n, $artistAlbums);
 		}
 
 		// Add the artists with no own albums to the collection
 		foreach ($entities['artists'] as $artist) {
 			if (!isset($trackDict[$artist->getId()])) {
-				$collection[] = $artist->toCollection($this->l10n, []);
+				$collection[] = $artist->toCollection($this->urlGenerator, $this->l10n, []);
 			}
 		}
 
@@ -137,7 +137,7 @@ class Library {
 	}
 
 	/**
-	 * Inject tracks to the given albums. Sets also the album refence of each injected track.
+	 * Inject tracks to the given albums. Sets also the album reference of each injected track.
 	 * @param Album[] $albums input/output
 	 */
 	public function injectTracksToAlbums(array &$albums, string $userId) : void {

@@ -88,9 +88,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function getAll() {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
-		$serializer = new ApiSerializer();
-
-		return $serializer->serialize($playlists);
+		return Util::arrayMapMethod($playlists, 'toAPI', [$this->urlGenerator]);
 	}
 
 	/**
@@ -111,7 +109,7 @@ class PlaylistApiController extends Controller {
 			$playlist = $this->playlistBusinessLayer->setComment($comment, $playlist->getId(), $this->userId);
 		}
 
-		return $playlist->toAPI();
+		return $playlist->toAPI($this->urlGenerator);
 	}
 
 	/**
@@ -141,7 +139,7 @@ class PlaylistApiController extends Controller {
 			if ($fulltree) {
 				return $this->toFullTree($playlist);
 			} else {
-				return $playlist->toAPI();
+				return $playlist->toAPI($this->urlGenerator);
 			}
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
@@ -153,7 +151,7 @@ class PlaylistApiController extends Controller {
 		$tracks = $this->trackBusinessLayer->findById($trackIds, $this->userId);
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
 
-		$result = $playlist->toAPI();
+		$result = $playlist->toAPI($this->urlGenerator);
 		unset($result['trackIds']);
 		$result['tracks'] = Util::arrayMapMethod($tracks, 'toAPI', [$this->urlGenerator]);
 
@@ -195,7 +193,7 @@ class PlaylistApiController extends Controller {
 
 		$playlist = $this->playlistBusinessLayer->generate(
 				$history, $historyStrict, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
-		$result = $playlist->toAPI();
+		$result = $playlist->toAPI($this->urlGenerator);
 
 		$result['params'] = [
 			'history' => $history ?: null,
@@ -330,7 +328,7 @@ class PlaylistApiController extends Controller {
 	public function importFromFile(int $id, string $filePath) {
 		try {
 			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
-			$result['playlist'] = $result['playlist']->toAPI();
+			$result['playlist'] = $result['playlist']->toAPI($this->urlGenerator);
 			return $result;
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
@@ -397,7 +395,7 @@ class PlaylistApiController extends Controller {
 	private function modifyPlaylist(string $funcName, array $funcParams) : JSONResponse {
 		try {
 			$playlist = \call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
-			return new JSONResponse($playlist->toAPI());
+			return new JSONResponse($playlist->toAPI($this->urlGenerator));
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}

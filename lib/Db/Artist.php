@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -97,7 +97,7 @@ class Artist extends Entity {
 	}
 
 	/**
-	 * Return the cover URL to be used in the Shiva API
+	 * Return the cover URL to be used in the API
 	 */
 	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
@@ -111,11 +111,12 @@ class Artist extends Entity {
 	/**
 	 * @param array $albums in the "toCollection" format
 	 */
-	public function toCollection(IL10N $l10n, array $albums) : array {
+	public function toCollection(IURLGenerator $urlGenerator, IL10N $l10n, array $albums) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
-			'albums' => $albums
+			'albums' => $albums,
+			'cover' => $this->coverToAPI($urlGenerator)
 		];
 	}
 

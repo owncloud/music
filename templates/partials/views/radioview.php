@@ -1,4 +1,4 @@
-<div id="radio-area" class="view-container playlist-area" ng-show="!loading && !loadingRadio">
+<div id="radio-view" class="view-container playlist-area" ng-show="!loading && !loadingRadio">
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span translate>Internet radio stations</span>
@@ -10,18 +10,20 @@
 			ng-init="station = entry.track"
 			id="{{ 'radio-station-' + station.id }}"
 		>
-			<div ng-class="{current: getCurrentStationIndex() === $index, playing: playing}">
-				<div ng-click="onStationClick($index)">
-					<div class="play-pause"></div>
-					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ station.name || station.stream_url }}</div>
+			<div class="playlist-item-info" ng-click="onStationClick($index)" ng-class="{current: getCurrentStationIndex() === $index, playing: playing}">
+				<span class="ordinal muted">{{ $index + 1 }}.</span>
+				<div class="albumart" albumart="station"></div>
+				<div class="play-pause overlay"></div>
+				<div class="title-lines">
+					<div>{{ station.name }}</div>
+					<div class="muted">{{ station.stream_url }}</div>
 				</div>
-				<button class="action icon-details" ng-click="showRadioStationDetails(station)"
-					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"></button>
-				<button class="action icon-delete" ng-click="deleteStation(station)" ng-show="!station.busy"
-					alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
-				<span class="icon-loading-small" ng-show="station.busy"></span>
 			</div>
+			<button class="action icon-details" ng-click="showRadioStationDetails(station)"
+				alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"></button>
+			<button class="action icon-delete" ng-click="deleteStation(station)" ng-show="!station.busy"
+				alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
+			<span class="icon-loading-small" ng-show="station.busy"></span>
 		</li>
 	</ul>
 

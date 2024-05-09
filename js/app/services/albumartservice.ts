@@ -39,11 +39,13 @@ ng.module('Music').service('albumartService', [function() {
 	return {
 		setArt: function(element : JQuery, art : any) {
 			if (art) {
-				// the "albumart" may actually be an album or podcast channel object
+				// the "albumart" may actually be an album or podcast channel or radio station object
 				if (art.cover) {
 					setCoverImage(element, art.cover);
 				} else if (art.image) {
 					setCoverImage(element, art.image);
+				} else if (art.stream_url) {
+					setPlaceholder(element, art.name || '?', art.stream_url + art.name);
 				} else if (art.name) {
 					setPlaceholder(element, art.name, art.artist.name + art.name);
 				} else if (art.title) {

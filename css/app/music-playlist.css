@@ -124,7 +124,7 @@
 }
 
 /**
- * Rules specific for the playlist view
+ * Rules specific for the playlist/smartlist/radio views
  */
 
 #playlist-view,
@@ -132,6 +132,7 @@
 	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
 }
 
-#playlist-view .track-list > li > div {
-	max-width: calc(100% - 72px);
+#playlist-view .track-list > li > div,
+#radio-view .track-list > li > div {
+	max-width: calc(100% - 72px); /* more space needs to be reserved as there are two action icons instead of just one */
 }

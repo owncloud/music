@@ -177,7 +177,7 @@ class CoverHelper {
 		} else {
 			$seed = $name;
 		}
-		$size = $size > 0 ? $size : $this->coverSize;
+		$size = $size > 0 ? (int)$size : $this->coverSize;
 		return PlaceholderImage::generateForResponse($name, $seed, $size);
 	}
 

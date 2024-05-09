@@ -32,7 +32,6 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\ApiSerializer;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;

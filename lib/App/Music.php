@@ -579,6 +579,7 @@ class Music extends App {
 				$c->query('DbCache'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('Config'),
+				$c->query('L10N'),
 				$c->query('Logger')
 			);
 		});

@@ -178,7 +178,7 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 
 			if (data.showTrackDetails) {
 				let detailsButton = document.createElement('button');
-				detailsButton.className = 'icon-details';
+				detailsButton.className = 'icon-details action';
 				detailsButton.title = detailsText;
 				listItem.appendChild(detailsButton);
 			}

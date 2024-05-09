@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -25,6 +25,7 @@ use OCP\Files\Folder;
 use OCP\Files\File;
 
 use OCP\IConfig;
+use OCP\IL10N;
 
 /**
  * utility to get cover image for album
@@ -34,6 +35,7 @@ class CoverHelper {
 	private $cache;
 	private $albumBusinessLayer;
 	private $coverSize;
+	private $l10n;
 	private $logger;
 
 	const MAX_SIZE_TO_CACHE = 102400;
@@ -44,22 +46,21 @@ class CoverHelper {
 			Cache $cache,
 			AlbumBusinessLayer $albumBusinessLayer,
 			IConfig $config,
+			IL10N $l10n,
 			Logger $logger) {
 		$this->extractor = $extractor;
 		$this->cache = $cache;
 		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->l10n = $l10n;
 		$this->logger = $logger;
 
 		// Read the cover size to use from config.php or use the default
 		$this->coverSize = \intval($config->getSystemValue('music.cover_size')) ?: 380;
 	}
 
-	public function getDefaultSize() : int {
-		return $this->coverSize;
-	}
-
 	/**
-	 * Get cover image of an album or and artist
+	 * Get cover image of an album, an artist, a podcast, or a playlist.
+	 * Returns a generated placeholder in case there's no art set.
 	 *
 	 * @param Album|Artist|PodcastChannel|Playlist $entity
 	 * @param string $userId
@@ -69,18 +70,24 @@ class CoverHelper {
 	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null) : ?array {
+	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null, bool $allowPlaceholder=true) : ?array {
 		if ($entity instanceof Playlist) {
 			$trackIds = $entity->getTrackIdsAsArray();
 			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
-			return $this->getCoverMosaic($albums, $userId, $rootFolder);
+			$result = $this->getCoverMosaic($albums, $userId, $rootFolder);
 		} elseif ($size !== null) {
 			// Skip using cache in case the cover is requested in specific size
-			return $this->readCover($entity, $rootFolder, $size);
+			$result = $this->readCover($entity, $rootFolder, $size);
 		} else {
 			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
-			return $dataAndHash['data'];
+			$result = $dataAndHash['data'];
 		}
+
+		if ($result === null && $allowPlaceholder) {
+			$result = $this->getPlaceholder($entity, $size);
+		}
+
+		return $result;
 	}
 
 	public function getCoverMosaic(array $entities, string $userId, Folder $rootFolder, int $size=null) : ?array {
@@ -161,6 +168,17 @@ class CoverHelper {
 			return ['mimetype' => $mime, 'content' => $content];
 		}
 		return null;
+	}
+
+	private function getPlaceholder($entity, ?int $size) : array {
+		$name = $entity->getNameString($this->l10n);
+		if (\method_exists($entity, 'getAlbumArtistNameString')) {
+			$seed = $entity->getAlbumArtistNameString($this->l10n) . $name;
+		} else {
+			$seed = $name;
+		}
+		$size = $size > 0 ? $size : $this->coverSize;
+		return PlaceholderImage::generateForResponse($name, $seed, $size);
 	}
 
 	/**

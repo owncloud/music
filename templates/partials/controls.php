@@ -55,10 +55,8 @@
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
-	<div ng-show="currentTrack.type != 'radio'" ng-click="scrollToCurrentTrack()" class="albumart clickable"
-		albumart="currentTrack.album || currentTrack.channel" title="{{ coverArtTitle() }}" ></div>
-
-	<div ng-show="currentTrack.type === 'radio'" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
+	<div ng-click="scrollToCurrentTrack()" class="albumart clickable" title="{{ coverArtTitle() }}"
+		albumart="currentTrack.album || currentTrack.channel || currentTrack "></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()"
 		draggable="{{ currentTrack.type === 'song' }}" ui-draggable="true" drag="getDraggable()"

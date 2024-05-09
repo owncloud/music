@@ -50,15 +50,18 @@ angular.module('Music').controller('SmartListViewController', [
 		};
 
 		/**
-		 * Gets track data to be dislayed in the tracklist directive
+		 * Gets track data to be displayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(listItem, index, _scope) {
 			var track = listItem.track;
 			return {
-				title: track.artist.name + ' - ' + track.title,
-				tooltip: '',
+				title: track.title,
+				title2: track.artist.name,
+				tooltip: track.title,
+				tooltip2: track.artist.name,
 				number: index + 1,
-				id: track.id
+				id: track.id,
+				art: track.album
 			};
 		};
 

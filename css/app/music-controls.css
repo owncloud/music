@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 #controls {
@@ -111,7 +111,7 @@ body:not(.snapjs-left) #controls.taller-header {
 	width: 50px;
 	margin: 8px 12px 8px 46px;
 	line-height: 50px;
-	font-size: 28px;
+	font-size: 25px;
 	vertical-align: top;
 }
 

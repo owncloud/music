@@ -235,7 +235,7 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 		data.element.on('click', 'li', function(event) {
 			let trackId = trackIdFromElementId(this.id);
 			if (trackId) {
-				if (event.target.className == 'icon-details') {
+				if (event.target.className.includes('icon-details')) {
 					data.showTrackDetails(trackId);
 				} else if ($(event.target).closest('.item-info').length > 0) {
 					// target is .item-info or any of its descendants

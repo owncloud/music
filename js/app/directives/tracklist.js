@@ -239,7 +239,7 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 					data.showTrackDetails(trackId);
 				} else if ($(event.target).closest('.item-info').length > 0) {
 					// target is .item-info or any of its descendants
-					data.playTrack(trackId);
+					data.playTrack(trackId, $(this).index());
 					data.scope.$apply();
 				}
 			}

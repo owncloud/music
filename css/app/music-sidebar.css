@@ -55,14 +55,14 @@
 	opacity: 1;
 }
 
-#app-sidebar .albumart {
+#app-sidebar .sidebar-content > .albumart {
 	width: 100%;
 	height: 35%;
 	background-size: contain;
 	display: table;
 }
 
-#app-sidebar .albumart span {
+#app-sidebar .sidebar-content > .albumart span {
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;

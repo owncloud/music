@@ -69,12 +69,12 @@
 
 .playlist-area .current.playing .play-pause.overlay,
 .playlist-area :hover > .play-pause.overlay,
-#app-view .playlist-area .current:not(.playing):hover .play-pause.overlay {
+#app-content .playlist-area .current:not(.playing):hover .play-pause.overlay {
 	background-image: url(../../img/play-overlay.svg);
 }
 
 .playlist-area .current:not(.playing) .play-pause.overlay,
-#app-view .playlist-area .current.playing:hover .play-pause.overlay {
+#app-content .playlist-area .current.playing:hover .play-pause.overlay {
 	background-image: url(../../img/pause-overlay.svg)
 }
 
@@ -102,7 +102,7 @@
 	cursor: pointer;
 }
 
-#app-view .playlist-area .track-list li .action {
+#app-content .playlist-area .track-list li .action {
 	visibility: hidden;
 	border: none;
 	background-color: transparent;
@@ -112,15 +112,15 @@
 	padding: 16px;
 }
 
-#app-view .playlist-area .track-list li .action:hover {
+#app-content .playlist-area .track-list li .action:hover {
 	opacity: 1;
 }
 
-#app-view .playlist-area .track-list li:hover .action {
+#app-content .playlist-area .track-list li:hover .action {
 	visibility: visible;
 }
 
-#app-view .playlist-area .track-list .icon-loading-small {
+#app-content .playlist-area .track-list .icon-loading-small {
 	margin-bottom: -3px;
 }
 

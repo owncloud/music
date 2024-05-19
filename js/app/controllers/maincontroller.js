@@ -135,7 +135,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$scope.artists = libraryService.getCollection();
 
 			// Emit the event asynchronously so that the DOM tree has already been
-			// manipulated and rendered by the browser when obeservers get the event.
+			// manipulated and rendered by the browser when observers get the event.
 			$timeout(function() {
 				$rootScope.$emit('collectionLoaded');
 			});
@@ -506,7 +506,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		let appViewWidth = appView.outerWidth();
 
 		// Adjust controls bar width to not overlap with the scroll bar.
-		// Subtrack one pixel from the width because outerWidth() seems to
+		// Subtract one pixel from the width because outerWidth() seems to
 		// return rounded integer value which may sometimes be slightly larger
 		// than the actual width of the #app-view.
 		let controlsWidth = appViewWidth - 1;

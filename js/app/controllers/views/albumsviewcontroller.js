@@ -18,7 +18,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$rootScope.currentView = '#';
 
-		// apply the layout mode stored by the maincontroller
+		// apply the layout mode stored by the MainController
 		$('#albums').toggleClass('compact', $scope.albumsCompactLayout);
 
 		// When making the view visible, the artists are added incrementally step-by-step.
@@ -27,7 +27,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		const INCREMENTAL_LOAD_STEP = 20;
 		$scope.incrementalLoadLimit = 0;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -281,7 +281,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		}
 
 		/**
-		 * Increase number of shown artists aynchronously step-by-step until
+		 * Increase number of shown artists asynchronously step-by-step until
 		 * they are all visible. This is to avoid script hanging up for too
 		 * long on huge collections.
 		 */
@@ -308,14 +308,14 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		// Start making artists visible immediatedly if the artists are already loaded.
+		// Start making artists visible immediately if the artists are already loaded.
 		// Otherwise it happens on the 'collectionLoaded' event handler.
 		if ($scope.$parent.artists) {
 			showMore();
 		}
 
 		subscribe('collectionLoaded', function() {
-			// Start the anynchronus process of making aritsts visible
+			// Start the asynchronous process of making artists visible
 			$scope.incrementalLoadLimit = 0;
 			showMore();
 		});

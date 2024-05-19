@@ -76,6 +76,10 @@
 	margin: 0 auto 16px auto;
 }
 
+#app-sidebar .tabHeaders {
+	margin-top: 16px;
+}
+
 #app-sidebar .tabsContainer {
 	width: 100%;
 }
@@ -237,6 +241,7 @@
 	width: 100%;
 	margin-top: 16px;
 	margin-bottom: 0;
+	margin-left: 0;
 }
 
 #app-sidebar #lastfm-info {

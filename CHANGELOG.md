@@ -2,6 +2,7 @@
 
 ### Added
 - Additional tabs "Albums" and "Tracks" to the artist details pane
+- Additional tabs "Tracks" and "Artists" to the album details pane
 
 ### Changed
 - Drop support for PHP versions older 7.4 (i.e. PHP 7.1 - 7.3)

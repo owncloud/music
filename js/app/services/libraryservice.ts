@@ -23,6 +23,8 @@ export interface Album {
 	id : number;
 	name : string;
 	artist : Artist;
+	disk : number;
+	diskCount : number;
 	tracks : Track[];
 }
 
@@ -35,9 +37,12 @@ export interface Track extends BaseTrack {
 	title : string;
 	album : Album;
 	artistId : number;
+	number : number|null;
+	disk : number;
 	artist : Artist;
 	folder : Folder;
 	genre : Genre;
+	get formattedNumber() : string|null;
 }
 
 export interface RadioStation extends BaseTrack {
@@ -176,6 +181,21 @@ export class LibraryService {
 		return name;
 	}
 
+	
+	/**
+	 * Formats a track number, possible including disk number, for displaying in tracklist directive
+	 */
+	#formatTrackNumber(track : Track) : string|null {
+		if (track.album.diskCount <= 1) {
+			return track.number ? String(track.number) : null;
+		} else {
+			// multi-disk album
+			let number = track.disk + '-';
+			number += track.number ?? '?';
+			return number;
+		}
+	}
+
 	/**
 	 * Sort the passed in collection alphabetically, and set up parent references
 	 */
@@ -191,6 +211,9 @@ export class LibraryService {
 					track.artist = this.getArtist(track.artistId);
 					track.album = album;
 					track.type = 'song';
+					Object.defineProperty(track, 'formattedNumber', {
+						get: () => this.#formatTrackNumber(track)
+					});
 				});
 			});
 		});
@@ -215,7 +238,10 @@ export class LibraryService {
 			artistId : null,
 			artist : null,
 			folder : null,
-			genre : null
+			genre : null,
+			number : null,
+			disk : null,
+			formattedNumber : null
 		};
 	}
 

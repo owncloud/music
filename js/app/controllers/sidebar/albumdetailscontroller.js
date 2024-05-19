@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('AlbumDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
-	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
+	'$rootScope', '$scope', '$timeout', 'Restangular', 'gettextCatalog', 'libraryService', 'playlistService',
+	function ($rootScope, $scope, $timeout, Restangular, gettextCatalog, libraryService, playlistService) {
 
 		function resetContents() {
 			$scope.album = null;
@@ -20,6 +20,8 @@ angular.module('Music').controller('AlbumDetailsController', [
 			$scope.albumInfo = null;
 			$scope.albumTags = null;
 			$scope.mbid = null;
+			$scope.featuredArtists = null;
+			setImageUrl('');
 		}
 		resetContents();
 
@@ -34,17 +36,19 @@ angular.module('Music').controller('AlbumDetailsController', [
 			if (!$scope.album || albumId != $scope.album.id) {
 				resetContents();
 
-				$scope.album = libraryService.getAlbum(albumId);
-				$scope.totalLength = _.reduce($scope.album.tracks, function(sum, track) {
-					return sum + track.length;
-				}, 0);
+				$timeout(() => {
+					$scope.album = libraryService.getAlbum(albumId);
+					$scope.totalLength = _.reduce($scope.album.tracks, function(sum, track) {
+						return sum + track.length;
+					}, 0);
+	
+					if ($scope.album.cover) {
+						let url = OC.generateUrl('apps/music/api/album/') + albumId + '/cover?originalSize=true';
+						setImageUrl(url);
+					}
 
-				if ($scope.album.cover) {
-					let url = OC.generateUrl('apps/music/api/album/') + albumId + '/cover?originalSize=true';
-					setImageUrl(url);
-				} else {
-					setImageUrl('');
-				}
+					$scope.featuredArtists = _($scope.album.tracks).map('artist').uniq().sortBy('name').value();
+				});
 
 				// Because of the asynchronous nature of teh REST queries, it is possible that the
 				// current album has already changed again by the time we get the result. If that has
@@ -88,6 +92,60 @@ angular.module('Music').controller('AlbumDetailsController', [
 			}
 		}
 
+		$scope.getTrackData = function(listItem, _index, _scope) {
+			return {
+				title: listItem.title,
+				title2: listItem.artist.name,
+				tooltip: listItem.title,
+				tooltip2: listItem.artist.name,
+				number: listItem.formattedNumber,
+				id: listItem.id,
+				art: listItem.album
+			};
+		};
+
+		$scope.getTrackDraggable = function(trackId) {
+			return { track: trackId };
+		};
+
+		$scope.onTrackClick = function(trackId, index) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack?.id === trackId && currentTrack?.type == 'song') {
+				// play/pause if currently playing list item clicked
+				playlistService.publish('togglePlayback');
+			} else {
+				// on any other list item, start playing the list from this item
+				playTracks('album-' + $scope.album.id, $scope.album.tracks, index);
+			}
+		};
+
+		$scope.getArtistData = function(listItem, index, _scope) {
+			return {
+				title: listItem.name,
+				tooltip: listItem.name,
+				number: index + 1,
+				id: listItem.id,
+				art: listItem
+			};
+		};
+
+		$scope.getArtistDraggable = function(artistId) {
+			return { artist: artistId };
+		};
+
+		$scope.onArtistClick = function(artistId, _index) {
+			const tracks = libraryService.findTracksByArtist(artistId);
+			playTracks('featured-artist-' + artistId, tracks);
+		};
+
+		function playTracks(listId, tracks, startIndex /*optional*/) {
+			let playlist = _.map(tracks, (track) => {
+				return { track: track };
+			});
+			playlistService.setPlaylist(listId, playlist, startIndex);
+			playlistService.publish('play');
+		}
+
 		$scope.$watch('contentId', function(newId) {
 			if (newId !== null) {
 				showDetails(newId);
@@ -95,6 +153,8 @@ angular.module('Music').controller('AlbumDetailsController', [
 				resetContents();
 			}
 		});
+
+		$scope.$watch('selectedTab', $scope.$parent.adjustFixedPositions);
 
 		$scope.showArtist = function() {
 			$rootScope.$emit('showArtistDetails', $scope.album.artist.id);

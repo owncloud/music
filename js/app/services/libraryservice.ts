@@ -703,8 +703,8 @@ export class LibraryService {
 	getPodcastChannelsCount() : number {
 		return this.#podcastChannels?.length ?? 0;
 	}
-	findTracksByArtist(artistId : number) : {[id: number] : Track} {
-		return _.filter(this.#tracksIndex, {artistId: Number(artistId)});
+	findTracksByArtist(artistId : number) : Track[] {
+		return _(this.#tracksInAlphaOrder).filter(e => e.track.artistId == artistId).map('track').value();
 	}
 	collectionLoaded() : boolean {
 		return this.#collection !== null;

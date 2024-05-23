@@ -16,6 +16,7 @@ export interface Artist {
 	id : number;
 	name : string;
 	sortName : string;
+	favorite : boolean;
 	albums : Album[];
 }
 
@@ -25,6 +26,7 @@ export interface Album {
 	artist : Artist;
 	disk : number;
 	diskCount : number;
+	favorite : boolean;
 	tracks : Track[];
 }
 
@@ -42,6 +44,7 @@ export interface Track extends BaseTrack {
 	artist : Artist;
 	folder : Folder;
 	genre : Genre;
+	favorite : boolean;
 	get formattedNumber() : string|null;
 }
 
@@ -85,6 +88,7 @@ export interface PodcastChannel {
 	id : number;
 	title : string;
 	hash : string;
+	favorite : boolean;
 	episodes : PodcastEpisode[];
 }
 
@@ -92,6 +96,7 @@ export interface PodcastEpisode {
 	id : number;
 	title : string;
 	channel : PodcastChannel;
+	favorite : boolean;
 	type : string;
 }
 
@@ -241,6 +246,7 @@ export class LibraryService {
 			genre : null,
 			number : null,
 			disk : null,
+			favorite : false,
 			formattedNumber : null
 		};
 	}

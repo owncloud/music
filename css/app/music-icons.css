@@ -99,3 +99,12 @@
 .app-music .icon-filter {
 	background-image: url(../../img/filter.svg);
 }
+
+/* The core does have style definitions for the starred icon but, at least on NC27, they use a css
+ * variable which is undefined in our context. On the other hand, the basic gray star icon works fine.
+ */
+.app-music .icon-starred,
+.app-music .icon-star:hover,
+.app-music .icon-star:focus {
+	background-image: url(../../img/starred.svg);
+}

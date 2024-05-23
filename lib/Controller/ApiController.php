@@ -439,6 +439,20 @@ class ApiController extends Controller {
 		}
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function setFavoriteTrack(int $trackId, $status) {
+		$status = \filter_var($status, FILTER_VALIDATE_BOOLEAN);
+		if ($status) {
+			$this->trackBusinessLayer->setStarred([$trackId], $this->userId);
+		} else {
+			$this->trackBusinessLayer->unsetStarred([$trackId], $this->userId);
+		}
+		return new JSONResponse(['favorite' => ($status != 0)]);
+	}
+
 	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
 		$httpResponse->cacheFor($days * 24 * 60 * 60);
 		$httpResponse->addHeader('Pragma', 'cache');

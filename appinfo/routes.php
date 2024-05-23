@@ -48,6 +48,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#albumCover',		'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
 	['name' => 'api#albumDetails',		'url' => '/api/album/{albumId}/details',	'verb' => 'GET'],
 	['name' => 'api#scrobble',			'url' => '/api/track/{trackId}/scrobble',	'verb' => 'POST'],
+	['name' => 'api#setFavoriteTrack',	'url' => '/api/track/{trackId}/favorite',	'verb' => 'PUT'],
 
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 

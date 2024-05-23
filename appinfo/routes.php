@@ -33,6 +33,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#collection',		'url' => '/api/collection',					'verb' => 'GET'],
 	['name' => 'api#folders',			'url' => '/api/folders',					'verb' => 'GET'],
 	['name' => 'api#genres',			'url' => '/api/genres',						'verb' => 'GET'],
+	['name' => 'api#favorites',			'url' => '/api/favorites',					'verb' => 'GET'],
 	['name' => 'api#trackByFileId',		'url' => '/api/file/{fileId}',				'verb' => 'GET'],
 	['name' => 'api#download',			'url' => '/api/file/{fileId}/download',		'verb' => 'GET'],
 	['name' => 'api#filePath',			'url' => '/api/file/{fileId}/path',			'verb' => 'GET'],

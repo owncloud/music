@@ -193,6 +193,14 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Find IDSs of all starred entities
+	 * @return int[]
+	 */
+	public function findAllStarredIds(string $userId) : array {
+		return $this->mapper->findAllStarredIds($userId);
+	}
+
+	/**
 	 * Find all entities with user-given rating 1-5
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]

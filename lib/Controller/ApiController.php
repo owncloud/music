@@ -180,6 +180,21 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function favorites() {
+		return new JSONResponse([
+			'tracks' => $this->trackBusinessLayer->findAllStarredIds($this->userId),
+			'albums' => $this->albumBusinessLayer->findAllStarredIds($this->userId),
+			'artists' => $this->trackBusinessLayer->findAllStarredIds($this->userId),
+			'playlists' => [], // TODO
+			'podcast_channels' => [], // TODO
+			'podcast_episodes' => [], // TODO
+		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function trackByFileId(int $fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {

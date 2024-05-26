@@ -17,9 +17,17 @@ angular.module('Music').directive('favoriteToggle', ['Restangular', function(Res
 		templateUrl: 'favoritetoggle.html',
 		replace: true,
 		link: function(scope, _element, _attrs, _controller) {
+			scope.busy = false;
+
 			scope.setFavorite = function(favStatus) {
+				scope.busy = true;
 				Restangular.one(scope.restPrefix, scope.entity.id).one('favorite').customPUT({ status: favStatus }).then((result) => {
 					scope.entity.favorite = result.favorite;
+					scope.busy = false;
+				},
+				(error) => {
+					console.error('Failed to set favorite status: ' + error);
+					scope.busy = false;
 				});
 			};
 		}

@@ -33,7 +33,6 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#collection',		'url' => '/api/collection',					'verb' => 'GET'],
 	['name' => 'api#folders',			'url' => '/api/folders',					'verb' => 'GET'],
 	['name' => 'api#genres',			'url' => '/api/genres',						'verb' => 'GET'],
-	['name' => 'api#favorites',			'url' => '/api/favorites',					'verb' => 'GET'],
 	['name' => 'api#trackByFileId',		'url' => '/api/file/{fileId}',				'verb' => 'GET'],
 	['name' => 'api#download',			'url' => '/api/file/{fileId}/download',		'verb' => 'GET'],
 	['name' => 'api#filePath',			'url' => '/api/file/{fileId}/path',			'verb' => 'GET'],
@@ -49,7 +48,6 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#albumCover',		'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
 	['name' => 'api#albumDetails',		'url' => '/api/album/{albumId}/details',	'verb' => 'GET'],
 	['name' => 'api#scrobble',			'url' => '/api/track/{trackId}/scrobble',	'verb' => 'POST'],
-	['name' => 'api#setFavoriteTrack',	'url' => '/api/track/{trackId}/favorite',	'verb' => 'PUT'],
 
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 
@@ -105,6 +103,15 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',					'verb' => 'DELETE'],
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
 	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
+
+	// favorites API
+	['name' => 'favorites#favorites',			'url' => '/api/favorites',						'verb' => 'GET'],
+	['name' => 'favorites#setFavoriteTrack',	'url' => '/api/track/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteAlbum',	'url' => '/api/album/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteArtist',	'url' => '/api/artist/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoritePlaylist',	'url' => '/api/playlists/{id}/favorite',		'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteChannel',	'url' => '/api/podcasts/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteEpisode',	'url' => '/api/podcasts/episodes/{id}/favorite','verb' => 'PUT'],
 
 	// settings API
 	['name' => 'setting#getAll',			'url' => '/api/settings',							'verb' => 'GET'],

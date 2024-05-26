@@ -180,21 +180,6 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function favorites() {
-		return new JSONResponse([
-			'tracks' => $this->trackBusinessLayer->findAllStarredIds($this->userId),
-			'albums' => $this->albumBusinessLayer->findAllStarredIds($this->userId),
-			'artists' => $this->trackBusinessLayer->findAllStarredIds($this->userId),
-			'playlists' => [], // TODO
-			'podcast_channels' => [], // TODO
-			'podcast_episodes' => [], // TODO
-		]);
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
 	public function trackByFileId(int $fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {
@@ -452,20 +437,6 @@ class ApiController extends Controller {
 			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function setFavoriteTrack(int $trackId, $status) {
-		$status = \filter_var($status, FILTER_VALIDATE_BOOLEAN);
-		if ($status) {
-			$this->trackBusinessLayer->setStarred([$trackId], $this->userId);
-		} else {
-			$this->trackBusinessLayer->unsetStarred([$trackId], $this->userId);
-		}
-		return new JSONResponse(['favorite' => ($status != 0)]);
 	}
 
 	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {

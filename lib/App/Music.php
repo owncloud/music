@@ -34,6 +34,7 @@ use OCA\Music\Controller\AdvSearchController;
 use OCA\Music\Controller\AmpacheController;
 use OCA\Music\Controller\AmpacheImageController;
 use OCA\Music\Controller\ApiController;
+use OCA\Music\Controller\FavoritesController;
 use OCA\Music\Controller\LogController;
 use OCA\Music\Controller\PageController;
 use OCA\Music\Controller\PlaylistApiController;
@@ -190,6 +191,20 @@ class Music extends App {
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('FavoritesController', function (IAppContainer $c) {
+			return new FavoritesController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('UserId')
 			);
 		});
 

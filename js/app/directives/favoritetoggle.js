@@ -17,10 +17,6 @@ angular.module('Music').directive('favoriteToggle', ['Restangular', function(Res
 		templateUrl: 'favoritetoggle.html',
 		replace: true,
 		link: function(scope, _element, _attrs, _controller) {
-			scope.isFavorite = function() {
-				return scope.entity.favorite;
-			};
-		
 			scope.setFavorite = function(favStatus) {
 				Restangular.one(scope.restPrefix, scope.entity.id).one('favorite').customPUT({ status: favStatus }).then((result) => {
 					scope.entity.favorite = result.favorite;

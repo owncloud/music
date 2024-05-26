@@ -253,6 +253,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
 						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
 						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
+						{ key: 'favorite',			name: gettextCatalog.getString('Favorite'),				type: 'text' },
 					]
 				},
 			],

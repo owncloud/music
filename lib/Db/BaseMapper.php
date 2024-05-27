@@ -157,6 +157,22 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
+	 * Find IDSs of all user's starred entities. It is safe to call this also on entity types
+	 * not supporting starring in which case an empty array will be returned.
+	 * @return int[]
+	 */
+	public function findAllStarredIds(string $userId) : array {
+		if (\property_exists($this->entityClass, 'starred')) {
+			$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `starred` IS NOT NULL AND `user_id` = ?";
+			$result = $this->execute($sql, [$userId]);
+	
+			return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+		} else {
+			return [];
+		}
+	}
+
+	/**
 	 * Find all entities with user-given rating 1-5
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]

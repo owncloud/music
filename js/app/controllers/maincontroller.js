@@ -145,6 +145,11 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 				libraryService.setPlaylists(playlists);
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
+
+				// fetch favorites once library, playlists, and podcasts are all loaded
+				if (libraryService.podcastsLoaded()) {
+					updateFavorites();
+				}
 			});
 
 			// Load also the smart playlist once the collection is ready
@@ -206,8 +211,17 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		Restangular.one('podcasts').get().then(function(podcasts) {
 			libraryService.setPodcasts(podcasts);
 			$rootScope.$emit('podcastsLoaded');
+
+			// fetch favorites once library, playlists, and podcasts are all loaded
+			if (libraryService.collectionLoaded() && libraryService.playlistsLoaded()) {
+				updateFavorites();
+			}
 		});
 	};
+
+	function updateFavorites() {
+		Restangular.one('favorites').get().then((favorites) => libraryService.setFavorites(favorites));
+	}
 
 	// initial loading of artists and radio stations
 	$scope.update();

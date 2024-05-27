@@ -104,6 +104,15 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
 	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
 
+	// favorites API
+	['name' => 'favorites#favorites',			'url' => '/api/favorites',						'verb' => 'GET'],
+	['name' => 'favorites#setFavoriteTrack',	'url' => '/api/track/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteAlbum',	'url' => '/api/album/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteArtist',	'url' => '/api/artist/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoritePlaylist',	'url' => '/api/playlists/{id}/favorite',		'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteChannel',	'url' => '/api/podcasts/{id}/favorite',			'verb' => 'PUT'],
+	['name' => 'favorites#setFavoriteEpisode',	'url' => '/api/podcasts/episodes/{id}/favorite','verb' => 'PUT'],
+
 	// settings API
 	['name' => 'setting#getAll',			'url' => '/api/settings',							'verb' => 'GET'],
 	['name' => 'setting#userPath',			'url' => '/api/settings/user/path',					'verb' => 'POST'],

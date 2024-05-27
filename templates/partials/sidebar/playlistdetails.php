@@ -1,5 +1,6 @@
 <div id="playlist-details" class="sidebar-content" ng-controller="PlaylistDetailsController" ng-if="contentType=='playlist'">
 
+	<div favorite-toggle entity="playlist" rest-prefix="'playlists'"></div>
 	<div class="albumart"></div>
 
 	<div class="sidebar-container">

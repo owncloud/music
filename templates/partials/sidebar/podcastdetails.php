@@ -1,5 +1,6 @@
 <div id="podcast-details" class="sidebar-content" ng-controller="PodcastDetailsController" ng-if="contentType=='podcastChannel' || contentType=='podcastEpisode'">
 
+	<div favorite-toggle entity="entity" rest-prefix="restPrefix()"></div>
 	<div class="albumart clickable" ng-show="details.image" ng-click="scrollToEntity(contentType, entity)"></div>
 
 	<div class="sidebar-container">

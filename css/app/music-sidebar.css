@@ -30,6 +30,15 @@
 	width: 100%;
 }
 
+#app-sidebar .fav-button {
+	display: block;
+	position: static;
+	float: left;
+	margin-bottom: -16px;
+	margin-left: 8px;
+	cursor: pointer;
+}
+
 #app-sidebar .close {
 	position: fixed;
 	top: var(--header-height, 45px);
@@ -222,6 +231,11 @@
 	width: 16px;
 	margin-top: -7px;
 	margin-left: -5px;
+}
+
+#app-sidebar #favorite-toggle .icon-loading.inline::after {
+	margin-top: 4px;
+	margin-left: 6px;
 }
 
 #app-sidebar h1 {

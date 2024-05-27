@@ -1,5 +1,6 @@
 <div id="track-details" class="sidebar-content" ng-controller="TrackDetailsController" ng-if="contentType=='track'">
 
+	<div favorite-toggle entity="track" rest-prefix="'track'"></div>
 	<div class="albumart"></div>
 	<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
 

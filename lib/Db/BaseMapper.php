@@ -634,7 +634,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		} else {
 			// split to parts by whitespace
 			$parts = \preg_split('/\s+/', $input, -1, PREG_SPLIT_NO_EMPTY);
-			// glue the parts back together with a wildcard charater
+			// glue the parts back together with a wildcard character
 			$pattern = \implode('%', $parts);
 		}
 		return "%$pattern%";

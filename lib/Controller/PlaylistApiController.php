@@ -165,7 +165,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function generate(
 			?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists,
-			?int $fromYear, ?int $toYear, int $size=100, string $historyStrict='false') {
+			?int $fromYear, ?int $toYear, ?string $favorite=null, int $size=100, string $historyStrict='false') {
 
 		if ($useLatestParams) {
 			$history = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history') ?: null;
@@ -173,6 +173,7 @@ class PlaylistApiController extends Controller {
 			$artists = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_artists') ?: null;
 			$fromYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_from_year') ?: null;
 			$toYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_to_year') ?: null;
+			$favorite = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_favorite') ?: null;
 			$size = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_size', 100);
 			$historyStrict = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history_strict', 'false');
 		} else {
@@ -181,6 +182,7 @@ class PlaylistApiController extends Controller {
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_artists', $artists ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_from_year', (string)$fromYear);
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_to_year', (string)$toYear);
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_favorite', $favorite ?? '');
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_size', (string)$size);
 			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_history_strict', $historyStrict);
 		}
@@ -191,7 +193,7 @@ class PlaylistApiController extends Controller {
 		$artists = $this->artistBusinessLayer->findAllIds($this->userId, self::toIntArray($artists));
 
 		$playlist = $this->playlistBusinessLayer->generate(
-				$history, $historyStrict, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
+				$history, $historyStrict, $genres, $artists, $fromYear, $toYear, $favorite, $size, $this->userId);
 		$result = $playlist->toAPI($this->urlGenerator);
 
 		$result['params'] = [
@@ -201,6 +203,7 @@ class PlaylistApiController extends Controller {
 			'artists' => \implode(',', $artists) ?: null,
 			'fromYear' => $fromYear ?: null,
 			'toYear' => $toYear ?: null,
+			'favorite' => $favorite ?: null,
 			'size' => $size
 		];
 

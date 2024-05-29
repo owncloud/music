@@ -268,18 +268,23 @@ class TrackMapper extends BaseMapper {
 		}
 	}
 
+	const FAVORITE_TRACK = 0x1;
+	const FAVORITE_ALBUM = 0x2;
+	const FAVORITE_ARTIST = 0x4;
+
 	/**
 	 * Returns all tracks specified by various criteria, all of which are optional
 	 * @param int[] $genres Array of genre IDs
 	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
 	 * @param int|null $toYear Latest release year to include
+	 * @param int|null $favorite Bit mask of FAVORITE_TRACK, FAVORITE_ALBUM, FAVORITE_ARTIST (given favorite types are ORed in the query)
 	 * @param int $sortBy Sorting rule as defined in the class SortBy
 	 * @param string $userId the name of the user
 	 * @return Track[] Tracks matching the criteria
 	 */
 	public function findAllByCriteria(
-			array $genres, array $artists, ?int $fromYear, ?int $toYear,
+			array $genres, array $artists, ?int $fromYear, ?int $toYear, ?int $favorite,
 			int $sortBy, bool $invertSort, string $userId, ?int $limit=null, ?int $offset=null) : array {
 
 		$sqlConditions = [];
@@ -304,6 +309,20 @@ class TrackMapper extends BaseMapper {
 			$sqlConditions[] = '`year` <= ?';
 			$params[] = $toYear;
 		}
+
+		if (!empty($favorite)) {
+			$favConds = [];
+			if ($favorite & self::FAVORITE_TRACK) {
+				$favConds[] = '`*PREFIX*music_tracks`.`starred` IS NOT NULL';
+			}
+			if ($favorite & self::FAVORITE_ALBUM) {
+				$favConds[] = '`album`.`starred` IS NOT NULL';
+			}
+			if ($favorite & self::FAVORITE_ARTIST) {
+				$favConds[] = '`artist`.`starred` IS NOT NULL';
+			}
+			$sqlConditions[] = '(' . \implode(' OR ', $favConds) . ')';
+		} 
 
 		$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions), $this->formatSortingClause($sortBy, $invertSort));
 		return $this->findEntities($sql, $params, $limit, $offset);

@@ -43,5 +43,16 @@
 		<input id="filter-history-strict" type="checkbox" ng-model="smartListParams.historyStrict" />
 	</div>
 
+	<div>
+		<label for="filter-favorite" translate>Favorite</label>
+		<select id="filter-favorite" ng-model="smartListParams.favorite">
+			<option value=""></option>
+			<option value="track" translate>Favorite track</option>
+			<option value="album" translate>Favorite album</option>
+			<option value="artist" translate>Favorite artist</option>
+			<option value="track_album_artist" translate>Favorite track, album, or artist</option>
+		</select>
+	</div>
+
 	<div><button id="update-button" ng-click="onUpdateButton()" ng-disabled="!fieldsValid" translate>Update</button></div>
 </div>

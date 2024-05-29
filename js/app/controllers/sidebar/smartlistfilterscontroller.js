@@ -34,6 +34,7 @@ angular.module('Music').controller('SmartListFiltersController', [
 			$('#filter-genres').chosen();
 			$('#filter-artists').chosen();
 			$('#filter-history').chosen({allow_single_deselect: true, disable_search: true, placeholder_text_single: ' '});
+			$('#filter-favorite').chosen({allow_single_deselect: true, disable_search: true, placeholder_text_single: ' '});
 			const $chosenInputs = $('#smartlist-filters .chosen-container');
 			const $filterGenres = $('#filter-genres');
 			const $filterSize = $('#filter-size');

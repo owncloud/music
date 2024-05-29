@@ -193,12 +193,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
 	 * @param int|null $toYear Latest release year to include
+	 * @param string|null $favorite One of: 'track', 'album', 'artists', 'track_album_artist', null
 	 * @param int $size Size of the playlist to generate, provided that there are enough matching tracks
 	 * @param string $userId the name of the user
 	 */
 	public function generate(
 			?string $history, bool $historyStrict, array $genres, array $artists,
-			?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+			?int $fromYear, ?int $toYear, ?string $favorite, int $size, string $userId) : Playlist {
 
 		$now = new \DateTime();
 		$nowStr = $now->format(PlaylistMapper::SQL_DATE_FORMAT);
@@ -212,7 +213,9 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForHistory($history);
 		$limit = ($sortBy === SortBy::None) ? null : ($historyStrict ? $size : $size * 4);
 
-		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
+		$favoriteMask = self::favoriteMask($favorite);
+
+		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $favoriteMask, $sortBy, $invertSort, $userId, $limit);
 
 		if ($sortBy !== SortBy::None && !$historyStrict) {
 			// When generating by non-strict history, use a pool of tracks at maximum twice the size of final list.
@@ -245,6 +248,16 @@ class PlaylistBusinessLayer extends BusinessLayer {
 				return ['sortBy' => SortBy::Newest, 'invert' => true];
 			default:
 				return ['sortBy' => SortBy::None, 'invert' => false];
+		}
+	}
+
+	private static function favoriteMask(?string $mode) : ?int {
+		switch ($mode) {
+			case 'track':				return TrackMapper::FAVORITE_TRACK;
+			case 'album':				return TrackMapper::FAVORITE_ALBUM;
+			case 'artist':				return TrackMapper::FAVORITE_ARTIST;
+			case 'track_album_artist':	return TrackMapper::FAVORITE_TRACK | TrackMapper::FAVORITE_ALBUM | TrackMapper::FAVORITE_ARTIST;
+			default:					return null;
 		}
 	}
 }

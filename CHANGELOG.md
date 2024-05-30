@@ -11,6 +11,8 @@
 - Drop support for ownCloud versions older than 10.5.0 (i.e. OC 10.0 - 10.4)
 - Drop support for Nextcloud versions older than 18 (i.e. NC 13 - 17)
 - New design including cover art on all list-like views
+- Ampache and Subsonic APIs: Check the username in case-insensitive manner
+  [#1147](https://github.com/owncloud/music/issues/1147)
 - Ampache API:
   * The action `download` doesn't implicitly record the track as played (unlike `stream`)
   * The song property `url` refers to the `stream` URL instead of `download` URL

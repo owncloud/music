@@ -94,8 +94,8 @@ class AmpacheMiddleware extends Middleware {
 		// year 2038 (or already in 2037 if the admin has configured close to the maximum expiry time).
 
 		$this->checkHandshakeTimestamp($timestamp, $currentTime);
-		$apiKeyId = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
-		$session = $this->startNewSession($user, $expiryDate, $version, $apiKeyId);
+		$credentials = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
+		$session = $this->startNewSession($credentials['user'], $expiryDate, $version, $credentials['apiKeyId']);
 		$controller->setSession($session);
 	}
 
@@ -113,18 +113,20 @@ class AmpacheMiddleware extends Middleware {
 		}
 	}
 
-	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : int {
+	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : array {
 		if ($user === null || $auth === null) {
 			throw new AmpacheException('Invalid Login - required credentials missing', 401);
 		}
 
-		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
+		$user = $this->ampacheUserMapper->getProperUserId($user);
+
+		$hashes = ($user !== null) ? $this->ampacheUserMapper->getPasswordHashes($user) : [];
 
 		foreach ($hashes as $keyId => $hash) {
 			$expectedHash = \hash('sha256', $timestamp . $hash);
 
 			if ($expectedHash === $auth) {
-				return (int)$keyId;
+				return ['user' => $user, 'apiKeyId' => (int)$keyId];
 			}
 		}
 

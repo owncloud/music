@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019, 2020
+ * @copyright Pauli Järvinen 2019 - 2024
  */
 
 namespace OCA\Music\Middleware;
@@ -103,7 +103,8 @@ class SubsonicMiddleware extends Middleware {
 			$pass = \hex2bin(\substr($pass, \strlen('enc:')));
 		}
 
-		if ($this->credentialsAreValid($user, $pass)) {
+		$user = $this->userMapper->getProperUserId($user);
+		if ($user !== null && $this->credentialsAreValid($user, $pass)) {
 			$controller->setAuthenticatedUser($user);
 		} else {
 			throw new SubsonicException('Invalid Login', 40);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -56,6 +56,23 @@ class AmpacheUserMapper {
 		}
 
 		return $row['hash'];
+	}
+
+	/**
+	 * @param string $user Username, case-insensitive
+	 * @return ?string Case-sensitively correct username, if the user has any API key(s)
+	 */
+	public function getProperUserId(string $user) : ?string {
+		$sql = 'SELECT `user_id` FROM `*PREFIX*music_ampache_users` WHERE LOWER(`user_id`) = LOWER(?)';
+		$params = [$user];
+		$result = $this->db->executeQuery($sql, $params);
+		$row = $result->fetch();
+
+		if ($row === false) {
+			return null;
+		}
+
+		return $row['user_id'];
 	}
 
 	public function getUserId(int $id) : ?string {

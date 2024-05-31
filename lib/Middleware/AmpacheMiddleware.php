@@ -120,13 +120,15 @@ class AmpacheMiddleware extends Middleware {
 
 		$user = $this->ampacheUserMapper->getProperUserId($user);
 
-		$hashes = ($user !== null) ? $this->ampacheUserMapper->getPasswordHashes($user) : [];
+		if ($user !== null) {
+			$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
 
-		foreach ($hashes as $keyId => $hash) {
-			$expectedHash = \hash('sha256', $timestamp . $hash);
+			foreach ($hashes as $keyId => $hash) {
+				$expectedHash = \hash('sha256', $timestamp . $hash);
 
-			if ($expectedHash === $auth) {
-				return ['user' => $user, 'apiKeyId' => (int)$keyId];
+				if ($expectedHash === $auth) {
+					return ['user' => $user, 'apiKeyId' => (int)$keyId];
+				}
 			}
 		}
 

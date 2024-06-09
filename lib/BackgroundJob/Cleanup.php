@@ -14,16 +14,16 @@
 
 namespace OCA\Music\BackgroundJob;
 
-use OCA\Music\App\Music;
+use OCA\Music\AppInfo\Application;
 
-// The base class extended is a class alias created in OCA\Music\App\Music
+// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class Cleanup extends TimedJob {
 
 	/**
 	 * Run background cleanup task
 	 */
 	public function run($arguments) {
-		$app = \OC::$server->query(Music::class);
+		$app = \OC::$server->query(Application::class);
 
 		$container = $app->getContainer();
 

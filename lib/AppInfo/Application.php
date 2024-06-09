@@ -12,10 +12,13 @@
  * @copyright Pauli Järvinen 2017 - 2024
  */
 
-namespace OCA\Music\App;
+namespace OCA\Music\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -79,7 +82,7 @@ use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\LibrarySettings;
 
-class Music extends App {
+class Application extends App implements IBootstrap {
 	public function __construct(array $urlParams=[]) {
 		parent::__construct('music', $urlParams);
 
@@ -732,4 +735,90 @@ class Music extends App {
 			);
 		});
 	}
+
+	public function register(IRegistrationContext $context): void {
+		$request = \OC::$server->getRequest();
+
+		if (isset($request->server['REQUEST_URI'])) {
+
+			$url = $request->server['REQUEST_URI'];
+			$url = \explode('?', $url)[0]; // get rid of any query args
+			$url = \explode('#', $url)[0]; // get rid of any hash part
+		
+			$container = $this->getContainer();
+			if (self::isFilesUrl($url) || self::isShareUrl($url)) {
+				self::adjustCsp($container);
+				self::loadEmbeddedMusicPlayer();
+			} elseif (self::isMusicUrl($url)) {
+				self::adjustCsp($container);
+			}
+		}
+	}
+
+    public function boot(IBootContext $context): void {
+		$container = $this->getContainer();
+		self::registerHooks($container);
+    }
+
+	private static function registerHooks(IAppContainer $container) {
+		$container->query('FileHooks')->register();
+		$container->query('ShareHooks')->register();
+		$container->query('UserHooks')->register();
+	}
+
+	/**
+	 * Set content security policy to allow streaming media from the configured external sources
+	 */
+	private static function adjustCsp(IAppContainer $container) {
+		/** @var \OCP\IConfig $config */
+		$config = $container->query('Config');
+		$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
+		$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
+
+		if (\is_string($radioSources)) {
+			$radioSources = [$radioSources];
+		}
+
+		$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+
+		foreach ($radioSources as $source) {
+			$policy->addAllowedMediaDomain($source);
+			$policy->addAllowedImageDomain($source); // for podcast images
+		}
+
+		// Also the media sources 'data:' and 'blob:' are needed for HLS streaming
+		if ($enableHls) {
+			$policy->addAllowedMediaDomain('data:');
+			$policy->addAllowedMediaDomain('blob:');
+		}
+
+		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+	}
+
+	/**
+	 * Load embedded music player for Files and Sharing apps
+	 *
+	 * The nice way to do this would be
+	 * \OC::$server->getEventDispatcher()->addListener('OCA\Files::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
+	 * \OC::$server->getEventDispatcher()->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
+	 * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
+	 * directly if the requested URL seems to be for Files or Sharing.
+	 */
+	private static function loadEmbeddedMusicPlayer() {
+		\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
+		\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
+	}
+
+	private static function isFilesUrl($url) {
+		return \preg_match('%/apps/files/?$%', $url) || \preg_match('%/apps/files/files(/\d*)?$%', $url);
+	}
+
+	private static function isShareUrl($url) {
+		return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
+	}
+
+	private static function isMusicUrl($url) {
+		return \preg_match('%/apps/music/?$%', $url);
+	}
+
 }

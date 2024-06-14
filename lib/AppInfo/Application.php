@@ -16,9 +16,8 @@ namespace OCA\Music\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
-use OCP\AppFramework\Bootstrap\IBootContext;
-use OCP\AppFramework\Bootstrap\IBootstrap;
-use OCP\AppFramework\Bootstrap\IRegistrationContext;
+//use OCP\AppFramework\Bootstrap\IBootContext;
+//use OCP\AppFramework\Bootstrap\IRegistrationContext;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -82,7 +81,16 @@ use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\LibrarySettings;
 
-class Application extends App implements IBootstrap {
+// The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
+// from the actual Application class.
+$useOwncloudBootstrapping = (\OCA\Music\Utility\AppInfo::getVendor() == 'owncloud');
+if ($useOwncloudBootstrapping) {
+	class ApplicationBase extends App {}
+} else {
+	abstract class ApplicationBase extends App implements \OCP\AppFramework\Bootstrap\IBootstrap {}
+}
+
+class Application extends ApplicationBase {
 	public function __construct(array $urlParams=[]) {
 		parent::__construct('music', $urlParams);
 
@@ -90,26 +98,33 @@ class Application extends App implements IBootstrap {
 
 		// NC26+ no longer ships OCP\AppFramework\Db\Mapper. Create a class alias which refers to this OCP class if available
 		// or to our own ponyfill if not (created by copying the said class from NC25).
-		if (!\class_exists('OCA\Music\AppFramework\Db\CompatibleMapper')) {
-			if (\class_exists('OCP\AppFramework\Db\Mapper')) {
-				\class_alias(\OCP\AppFramework\Db\Mapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+		if (!\class_exists('\OCA\Music\AppFramework\Db\CompatibleMapper')) {
+			if (\class_exists('\OCP\AppFramework\Db\Mapper')) {
+				\class_alias(\OCP\AppFramework\Db\Mapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
 			} else {
-				\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+				\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
 			}
 		}
 
 		// Create a class alias which refers to the TimedJob either from OC or OCP namespace. The OC version is available
 		// on ownCloud and on Nextcloud versions <29. The OCP version is available on NC15+.
-		if (!\class_exists('OCA\Music\BackgroundJob\TimedJob')) {
-			if (\class_exists('OCP\BackgroundJob\TimedJob')) {
-				\class_alias(\OCP\BackgroundJob\TimedJob::class, 'OCA\Music\BackgroundJob\TimedJob');
+		if (!\class_exists('\OCA\Music\BackgroundJob\TimedJob')) {
+			if (\class_exists('\OCP\BackgroundJob\TimedJob')) {
+				\class_alias(\OCP\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
 			} else {
-				\class_alias(\OC\BackgroundJob\TimedJob::class, 'OCA\Music\BackgroundJob\TimedJob');
+				\class_alias(\OC\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
 			}
+		}
+
+		// On ownCloud, the registrations must happen already within the constructor
+		global $useOwncloudBootstrapping;
+		if ($useOwncloudBootstrapping) {
+			$this->register($this->getContainer());
 		}
 	}
 
-	public function register(IRegistrationContext $context): void {
+	// On ownCloud, the $context is actually an IAppContainer
+	public function register(/*IRegistrationContext*/ $context): void {
 		/**
 		 * Controllers
 		 */
@@ -736,11 +751,12 @@ class Application extends App implements IBootstrap {
 		});
 	}
 
-    public function boot(IBootContext $context): void {
+	// On ownCloud, the $context is actually null
+	public function boot(/*IBootContext*/ $context): void {
 		$container = $this->getContainer();
 		self::registerHooks($container);
 		self::adjustFrontEnd($container);
-    }
+	}
 
 	private static function registerHooks(IAppContainer $container) {
 		$container->query('FileHooks')->register();

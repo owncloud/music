@@ -20,7 +20,7 @@
 namespace OCA\Music\AppInfo;
 
 $app = \OC::$server->query(Application::class);
-$app->boot(null);
+$app->init();
 
 $c = $app->getContainer();
 $appName = $c->query('AppName');
@@ -45,3 +45,19 @@ $c->getServer()->getSearch()->registerProvider(
 		'OCA\Music\Search\Provider',
 		['app' => $appName, 'apps' => ['files']]
 );
+
+/**
+ * load embedded player if necessary
+ */
+$url = $app->getRequestUrl();
+if (isFilesUrl($url) || isShareUrl($url)) {
+	$app->loadEmbeddedMusicPlayer();
+}
+
+function isFilesUrl($url) {
+	return \preg_match('%/apps/files/?$%', $url) || \preg_match('%/apps/files/files(/\d*)?$%', $url);
+}
+
+function isShareUrl($url) {
+	return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
+}

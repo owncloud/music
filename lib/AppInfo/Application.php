@@ -16,8 +16,6 @@ namespace OCA\Music\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
-//use OCP\AppFramework\Bootstrap\IBootContext;
-//use OCP\AppFramework\Bootstrap\IRegistrationContext;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -124,7 +122,7 @@ class Application extends ApplicationBase {
 	}
 
 	// On ownCloud, the $context is actually an IAppContainer
-	public function register(/*IRegistrationContext*/ $context): void {
+	public function register(/*\OCP\AppFramework\Bootstrap\IRegistrationContext*/ $context): void {
 		/**
 		 * Controllers
 		 */
@@ -751,41 +749,55 @@ class Application extends ApplicationBase {
 		});
 	}
 
-	// On ownCloud, the $context is actually null
-	public function boot(/*IBootContext*/ $context): void {
-		$container = $this->getContainer();
-		self::registerHooks($container);
-		self::adjustFrontEnd($container);
+	/**
+	 * This gets called on Nextcloud but not on ownCloud
+	 */
+	public function boot(/*\OCP\AppFramework\Bootstrap\IBootContext*/ $context) : void {
+		$this->init();
+		$this->registerEmbeddedPlayer();
 	}
 
-	private static function registerHooks(IAppContainer $container) {
+	public function init() : void {
+		$this->registerHooks();
+
+		// Adjust the CSP if loading the Music app proper
+		$url = $this->getRequestUrl();
+		if (\preg_match('%/apps/music/?$%', $url)) {
+			$this->adjustCsp();
+		}
+	}
+
+	public function getRequestUrl() : string {
+		$request = $this->getContainer()->getServer()->getRequest();
+		$url = $request->server['REQUEST_URI'] ?? '';
+		$url = \explode('?', $url)[0]; // get rid of any query args
+		$url = \explode('#', $url)[0]; // get rid of any hash part
+		return $url;
+	}
+
+	private function registerHooks() {
+		$container = $this->getContainer();
 		$container->query('FileHooks')->register();
 		$container->query('ShareHooks')->register();
 		$container->query('UserHooks')->register();
 	}
 
-	private static function adjustFrontEnd(IAppContainer $container) {
-		$request = \OC::$server->getRequest();
+	private function registerEmbeddedPlayer() {
+		$loadEmbeddedMusicPlayer = function() {
+			$this->loadEmbeddedMusicPlayer();
+		};
 
-		if (isset($request->server['REQUEST_URI'])) {
-
-			$url = $request->server['REQUEST_URI'];
-			$url = \explode('?', $url)[0]; // get rid of any query args
-			$url = \explode('#', $url)[0]; // get rid of any hash part
-		
-			if (self::isFilesUrl($url) || self::isShareUrl($url)) {
-				self::adjustCsp($container);
-				self::loadEmbeddedMusicPlayer();
-			} elseif (self::isMusicUrl($url)) {
-				self::adjustCsp($container);
-			}
-		}
+		$dispatcher = $this->getContainer()->query(\OCP\EventDispatcher\IEventDispatcher::class);
+		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, $loadEmbeddedMusicPlayer);
+		$dispatcher->addListener(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::class, $loadEmbeddedMusicPlayer);
 	}
 
 	/**
 	 * Set content security policy to allow streaming media from the configured external sources
 	 */
-	private static function adjustCsp(IAppContainer $container) {
+	private function adjustCsp() {
+		$container = $this->getContainer();
+
 		/** @var \OCP\IConfig $config */
 		$config = $container->query('Config');
 		$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
@@ -813,28 +825,11 @@ class Application extends ApplicationBase {
 
 	/**
 	 * Load embedded music player for Files and Sharing apps
-	 *
-	 * The nice way to do this would be
-	 * \OC::$server->getEventDispatcher()->addListener('OCA\Files::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
-	 * \OC::$server->getEventDispatcher()->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
-	 * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
-	 * directly if the requested URL seems to be for Files or Sharing.
 	 */
-	private static function loadEmbeddedMusicPlayer() {
+	public function loadEmbeddedMusicPlayer() {
 		\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
 		\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
-	}
-
-	private static function isFilesUrl($url) {
-		return \preg_match('%/apps/files/?$%', $url) || \preg_match('%/apps/files/files(/\d*)?$%', $url);
-	}
-
-	private static function isShareUrl($url) {
-		return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
-	}
-
-	private static function isMusicUrl($url) {
-		return \preg_match('%/apps/music/?$%', $url);
+		$this->adjustCsp();
 	}
 
 }

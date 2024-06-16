@@ -81,8 +81,11 @@ use OCA\Music\Utility\LibrarySettings;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
-$useOwncloudBootstrapping = (\OCA\Music\Utility\AppInfo::getVendor() == 'owncloud');
-if ($useOwncloudBootstrapping) {
+function useOwncloudBootstrapping() {
+	return (\OCA\Music\Utility\AppInfo::getVendor() == 'owncloud');
+}
+
+if (useOwncloudBootstrapping()) {
 	class ApplicationBase extends App {}
 } else {
 	abstract class ApplicationBase extends App implements \OCP\AppFramework\Bootstrap\IBootstrap {}
@@ -115,8 +118,7 @@ class Application extends ApplicationBase {
 		}
 
 		// On ownCloud, the registrations must happen already within the constructor
-		global $useOwncloudBootstrapping;
-		if ($useOwncloudBootstrapping) {
+		if (useOwncloudBootstrapping()) {
 			$this->register($this->getContainer());
 		}
 	}

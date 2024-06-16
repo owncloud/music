@@ -148,9 +148,3 @@
 	/* in the compact mode, specifying width using a percent wouldn't work because the position is not absolute */
 	max-width: calc(100vw - 60px);
 }
-
-.view-container.single-col .album-area .track-list li > div > span {
-	white-space: normal;
-	vertical-align: top;
-	max-width: unset;
-}

@@ -66,24 +66,34 @@
 	padding-left: 2px;
 	padding-top: 6px;
 	padding-bottom: 5px;
-	text-overflow: ellipsis;
-	overflow: hidden;
 	white-space: nowrap;
 }
 
-.album-area .track-list li > div > span {
-	max-width: 200px;
+.album-area .track-list .item-info {
+	max-width: 240px;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	display: inline-block;
+}
+
+.album-area .track-list .item-info > span {
 	vertical-align: bottom;
 }
 
+.view-container.single-col .album-area .track-list .item-info {
+	max-width: unset;
+	overflow: initial;
+}
+
+.view-container.single-col .album-area .track-list .item-info > span {
+	display: inline-block;
+	white-space: normal;
+	vertical-align: top;
+}
 
 #albums.compact .album-area .track-list {
 	margin-left: 30px;
 }
 
-#albums.compact:not(.single-col) .album-area .track-list li > div > span {
-	max-width: 272px;
+#albums.compact:not(.single-col) .album-area .track-list .item-info {
+	max-width: 305px;
 }

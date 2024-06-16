@@ -769,7 +769,16 @@ class Application extends ApplicationBase {
 		}
 	}
 
-	public function getRequestUrl() : string {
+	/**
+	 * Load embedded music player for Files and Sharing apps
+	 */
+	public function loadEmbeddedMusicPlayer() {
+		\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
+		\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
+		$this->adjustCsp();
+	}
+
+	private function getRequestUrl() : string {
 		$request = $this->getContainer()->getServer()->getRequest();
 		$url = $request->server['REQUEST_URI'] ?? '';
 		$url = \explode('?', $url)[0]; // get rid of any query args
@@ -823,15 +832,6 @@ class Application extends ApplicationBase {
 		}
 
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
-	}
-
-	/**
-	 * Load embedded music player for Files and Sharing apps
-	 */
-	public function loadEmbeddedMusicPlayer() {
-		\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
-		\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
-		$this->adjustCsp();
 	}
 
 }

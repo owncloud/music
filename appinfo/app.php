@@ -13,7 +13,7 @@
  */
 
 /**
- * Bootstrapping for ownCloud. The relesea.sh script will remove this file from
+ * Bootstrapping for ownCloud. The release.sh script will remove this file from
  * the Nextcloud releases. See https://github.com/owncloud/music/issues/1043.
  */
 
@@ -23,41 +23,38 @@ $app = \OC::$server->query(Application::class);
 $app->init();
 
 $c = $app->getContainer();
+$server = $c->getServer();
 $appName = $c->query('AppName');
 
 /**
  * add navigation
  */
-\OC::$server->getNavigationManager()->add(function () use ($c, $appName) {
+$server->getNavigationManager()->add(function () use ($c, $appName) {
+	$l10n = $c->query('L10N');
+	$urlGenerator = $c->query('URLGenerator');
 	return [
 		'id' => $appName,
 		'order' => 10,
-		'name' => $c->query('L10N')->t('Music'),
-		'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
-		'icon' => \OCA\Music\Utility\HtmlUtil::getSvgPath('music')
+		'name' => $l10n->t('Music'),
+		'href' => $urlGenerator->linkToRoute('music.page.index'),
+		'icon' => $urlGenerator->imagePath($appName, 'music.svg')
 	];
 });
 
 /**
  * register search provider
  */
-$c->getServer()->getSearch()->registerProvider(
+$server->getSearch()->registerProvider(
 		'OCA\Music\Search\Provider',
 		['app' => $appName, 'apps' => ['files']]
 );
 
 /**
- * load embedded player if necessary
+ * register the embedded player for Files and Files_Sharing
  */
-$url = $app->getRequestUrl();
-if (isFilesUrl($url) || isShareUrl($url)) {
+$loadEmbeddedMusicPlayer = function() use ($app) {
 	$app->loadEmbeddedMusicPlayer();
-}
-
-function isFilesUrl($url) {
-	return \preg_match('%/apps/files/?$%', $url) || \preg_match('%/apps/files/files(/\d*)?$%', $url);
-}
-
-function isShareUrl($url) {
-	return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
-}
+};
+$dispatcher = $server->getEventDispatcher();
+$dispatcher->addListener('OCA\Files::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
+$dispatcher->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);

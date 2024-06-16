@@ -8,8 +8,8 @@
 
 ### Changed
 - Drop support for PHP versions older 7.4 (i.e. PHP 7.1 - 7.3)
-- Drop support for ownCloud versions older than 10.5.0 (i.e. OC 10.0 - 10.4)
-- Drop support for Nextcloud versions older than 18 (i.e. NC 13 - 17)
+- Drop support for ownCloud versions older than 10.5 (i.e. OC 10.0 - 10.4)
+- Drop support for Nextcloud versions older than 20 (i.e. NC 13 - 19)
 - New design including cover art on all list-like views
 - Ampache and Subsonic APIs: Check the username in case-insensitive manner
   [#1147](https://github.com/owncloud/music/issues/1147)
@@ -19,6 +19,8 @@
 
 ### Fixed
 - Playlist sorting not working if the list contains any broken track references
+- Nextcloud.log being flooded with the debug-level message "/appinfo/app.php is deprecated" on NC20+
+  [#1043](https://github.com/owncloud/music/issues/1043)
 
 ## 1.11.0 - 2024-04-21
 

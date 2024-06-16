@@ -14,9 +14,9 @@
 
 namespace OCA\Music;
 
-use OCA\Music\App\Music;
+use OCA\Music\AppInfo\Application;
 
-$app = \OC::$server->query(Music::class);
+$app = \OC::$server->query(Application::class);
 
 $app->registerRoutes($this, ['routes' => [
 	// page

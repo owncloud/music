@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-07 21:44+0300\n"
+"PO-Revision-Date: 2024-06-18 23:56+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: templates/partials/sidebar/albumdetails.php:21
-#: templates/partials/sidebar/artistdetails.php:26
+#: templates/partials/sidebar/albumdetails.php:36
+#: templates/partials/sidebar/artistdetails.php:39
 msgid "(Failed to connect Last.fm)"
 msgstr "(Yhdistäminen Last.fm-palveluun epäonnistui)"
 
-#: templates/partials/sidebar/albumdetails.php:18
-#: templates/partials/sidebar/artistdetails.php:23
+#: templates/partials/sidebar/albumdetails.php:33
+#: templates/partials/sidebar/artistdetails.php:36
 msgid "(Last.fm has not been set up)"
 msgstr "(Last.fm-palvelua ei ole otettu käyttöön)"
 
@@ -35,7 +35,7 @@ msgstr "(tiedosto ei ole musiikkikokoelmakansiossasi)"
 msgid "(library root)"
 msgstr "(kirjaston pääkansio)"
 
-#: templates/partials/sidebar/artistdetails.php:4
+#: templates/partials/sidebar/artistdetails.php:5
 msgid "(no artist image available)"
 msgstr "(esittäjän kuvaa ei ole saatavilla)"
 
@@ -43,25 +43,25 @@ msgstr "(esittäjän kuvaa ei ole saatavilla)"
 msgid "(press and hold for more)"
 msgstr "(paina pitkään saadaksesi lisää valintoja)"
 
-#: js/app/controllers/maincontroller.js:65
+#: js/app/controllers/maincontroller.js:69
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] "1 albumi"
 msgstr[1] "{{count}} albumia"
 
-#: js/app/controllers/maincontroller.js:98
+#: js/app/controllers/maincontroller.js:102
 msgid "1 channel"
 msgid_plural "{{ count }} channels"
 msgstr[0] "1 kanava"
 msgstr[1] "{{ count }} kanavaa"
 
-#: js/app/controllers/maincontroller.js:71
+#: js/app/controllers/maincontroller.js:75
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] "1 kansio"
 msgstr[1] "{{ count }} kansiota"
 
-#: js/app/controllers/maincontroller.js:80
+#: js/app/controllers/maincontroller.js:84
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] "1 genre"
@@ -73,14 +73,14 @@ msgid_plural "{{ resultCount() }} results"
 msgstr[0] "1 tulos"
 msgstr[1] "{{ resultCount() }} tulosta"
 
-#: js/app/controllers/maincontroller.js:89
+#: js/app/controllers/maincontroller.js:93
 msgid "1 station"
 msgid_plural "{{ count }} stations"
 msgstr[0] "1 asema"
 msgstr[1] "{{ count }} asemaa"
 
-#: js/app/controllers/maincontroller.js:55
-#: js/app/controllers/maincontroller.js:60
+#: js/app/controllers/maincontroller.js:59
+#: js/app/controllers/maincontroller.js:64
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] "1 kappale"
@@ -187,8 +187,8 @@ msgstr "Lisää kanava"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
 #: js/app/controllers/views/advancedsearchviewcontroller.js:252
-#: js/app/controllers/views/advancedsearchviewcontroller.js:272
-#: js/app/controllers/views/advancedsearchviewcontroller.js:299
+#: js/app/controllers/views/advancedsearchviewcontroller.js:273
+#: js/app/controllers/views/advancedsearchviewcontroller.js:300
 msgid "Add date"
 msgstr "Lisäyspäivä"
 
@@ -200,7 +200,7 @@ msgstr "Lisää RSS-syötteestä"
 msgid "Add manually"
 msgstr "Lisää manuaalisesti"
 
-#: templates/partials/views/playlistview.php:36
+#: templates/partials/views/playlistview.php:41
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr "Lisää kappaleita raahaamalla Albumeista tai muista soittolistoista"
 
@@ -208,7 +208,7 @@ msgstr "Lisää kappaleita raahaamalla Albumeista tai muista soittolistoista"
 msgid "Admin"
 msgstr "Ylläpito"
 
-#: templates/partials/sidebar/albumdetails.php:19
+#: templates/partials/sidebar/albumdetails.php:34
 msgid ""
 "Admin may set up the Last.fm API key to show album background information "
 "here. See the Settings view for details."
@@ -216,7 +216,7 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta albumien taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
-#: templates/partials/sidebar/artistdetails.php:24
+#: templates/partials/sidebar/artistdetails.php:37
 msgid ""
 "Admin may set up the Last.fm API key to show artist biography here. See the "
 "Settings view for details."
@@ -229,12 +229,12 @@ msgstr ""
 msgid "Advanced search"
 msgstr "Tarkennettu haku"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:345
+#: js/app/controllers/views/advancedsearchviewcontroller.js:346
 msgid "After"
 msgstr "Jälkeen"
 
 #: js/app/controllers/playercontroller.js:756
-#: templates/partials/sidebar/trackdetails.php:53
+#: templates/partials/sidebar/trackdetails.php:54
 msgid "Album"
 msgstr "Albumi"
 
@@ -268,8 +268,13 @@ msgstr "Albumin arvosana"
 
 #: js/app/controllers/playercontroller.js:749 templates/fake-template.php:9
 #: templates/partials/navigation.php:8
+#: templates/partials/sidebar/artistdetails.php:14
 msgid "Albums"
 msgstr "Albumit"
+
+#: templates/partials/sidebar/artistdetails.php:66
+msgid "Albums by {{artist}}"
+msgstr "Albumit esittäjältä {{artist}}"
 
 #: js/app/services/podcastservice.ts:131
 msgid "All channels were already up-to-date"
@@ -343,7 +348,7 @@ msgid "Articles to ignore on artist names"
 msgstr "Etuliitteet, joita ei huomioida esittäjän nimessä"
 
 #: js/app/controllers/playercontroller.js:757
-#: templates/partials/sidebar/trackdetails.php:50
+#: templates/partials/sidebar/trackdetails.php:51
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -365,12 +370,16 @@ msgstr "Esittäjän nimi"
 msgid "Artist rating"
 msgstr "Esittäjän arvosana"
 
-#: templates/fake-template.php:8
+#: templates/fake-template.php:8 templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
 msgid "Artists"
 msgstr "Esittäjät"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:344
+#: templates/partials/sidebar/albumdetails.php:64
+msgid "Artists featured on {{album}}"
+msgstr "Esittäjät albumilla {{album}}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:345
 msgid "Before"
 msgstr "Ennen"
 
@@ -405,7 +414,7 @@ msgstr[1] "{{ count }} kanavalle ladattiin muutoksia"
 msgid "Channel"
 msgstr "Kanava"
 
-#: js/app/controllers/sidebar/smartlistfilterscontroller.js:73
+#: js/app/controllers/sidebar/smartlistfilterscontroller.js:74
 msgid "Check the filter values"
 msgstr "Tarkista suodattimien arvot"
 
@@ -425,7 +434,7 @@ msgstr "Laajenna napsauttamalla"
 msgid "Click to rescan"
 msgstr "Napsauta skannataksesi uudestaan"
 
-#: templates/partials/views/radioview.php:36
+#: templates/partials/views/radioview.php:38
 msgid "Click to show \"Getting started\""
 msgstr "Avaa Aloitusohje napsauttamalla"
 
@@ -433,7 +442,7 @@ msgstr "Avaa Aloitusohje napsauttamalla"
 msgid "Close"
 msgstr "Sulje"
 
-#: templates/partials/sidebar/playlistdetails.php:21
+#: templates/partials/sidebar/playlistdetails.php:22
 msgid "Comment"
 msgstr "Kommentti"
 
@@ -441,7 +450,7 @@ msgstr "Kommentti"
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:317
+#: js/app/controllers/views/advancedsearchviewcontroller.js:318
 msgid "Contains"
 msgstr "Sisältää"
 
@@ -453,13 +462,13 @@ msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
 msgid "Could not update the channel \"{{ title }}\" from the source"
 msgstr "Kanavan \"{{ title }}\" päivittäminen lähteestä epäonnistui"
 
-#: templates/partials/sidebar/playlistdetails.php:15
+#: templates/partials/sidebar/playlistdetails.php:16
 #: templates/partials/sidebar/radiostationdetails.php:26
 msgid "Created"
 msgstr "Luotu"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:271
-#: js/app/controllers/views/advancedsearchviewcontroller.js:298
+#: js/app/controllers/views/advancedsearchviewcontroller.js:272
+#: js/app/controllers/views/advancedsearchviewcontroller.js:299
 msgid "Date published"
 msgstr "Julkaisupäivä"
 
@@ -476,7 +485,7 @@ msgstr ""
 "tai vähemmän <strong>ALT</strong>-näppäimellä."
 
 #: templates/partials/navigationitem.php:64
-#: templates/partials/views/radioview.php:22
+#: templates/partials/views/radioview.php:25
 msgid "Delete"
 msgstr "Poista"
 
@@ -489,33 +498,33 @@ msgstr "Kuvaus"
 msgid "Description (e.g. App name)"
 msgstr "Kuvaus (esim. sovelluksen nimi)"
 
-#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:36
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
 #: templates/partials/navigationitem.php:33
-#: templates/partials/views/playlistview.php:24
-#: templates/partials/views/radioview.php:20
+#: templates/partials/views/playlistview.php:30
+#: templates/partials/views/radioview.php:23
 msgid "Details"
 msgstr "Tiedot"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:318
+#: js/app/controllers/views/advancedsearchviewcontroller.js:319
 msgid "Does not contain"
 msgstr "Ei sisällä"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:332
+#: js/app/controllers/views/advancedsearchviewcontroller.js:333
 msgid "Does not equal"
 msgstr "Ei ole sama kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:326
+#: js/app/controllers/views/advancedsearchviewcontroller.js:327
 msgid "Does not match regular expression"
 msgstr "Ei vastaa säännöllistä lauseketta"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:324
+#: js/app/controllers/views/advancedsearchviewcontroller.js:325
 msgid "Does not sound like"
 msgstr "Ei kuulosta samalta kuin"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:150
 #: js/app/controllers/views/advancedsearchviewcontroller.js:202
-#: js/app/controllers/views/advancedsearchviewcontroller.js:265
-#: js/app/controllers/views/advancedsearchviewcontroller.js:292
+#: js/app/controllers/views/advancedsearchviewcontroller.js:266
+#: js/app/controllers/views/advancedsearchviewcontroller.js:293
 #: js/app/controllers/views/advancedsearchviewcontroller.js:93
 msgid "Duration (seconds)"
 msgstr "Kesto (sekunteina)"
@@ -536,7 +545,7 @@ msgstr ""
 "<samp>data:</samp> ja <samp>blob:</samp> lisätään CSP-otsikkoon <a "
 "href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:320
+#: js/app/controllers/views/advancedsearchviewcontroller.js:321
 msgid "Ends with"
 msgstr "Päättyy"
 
@@ -544,7 +553,7 @@ msgstr "Päättyy"
 msgid "Episode"
 msgstr "Jakso"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:331
+#: js/app/controllers/views/advancedsearchviewcontroller.js:332
 msgid "Equals"
 msgstr "On sama kuin"
 
@@ -569,7 +578,7 @@ msgstr "Vie tiedostoon"
 msgid "Failed to add the podcast channel"
 msgstr "Podcast-kanavan lisääminen epäonnistui"
 
-#: js/app/controllers/maincontroller.js:233
+#: js/app/controllers/maincontroller.js:251
 msgid ""
 "Failed to check for new audio files (error {{ code }}); check the server "
 "logs for details"
@@ -593,7 +602,7 @@ msgstr "Soittolistan tuominen tiedostosta {{ file }} epäonnistui"
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr "Radio-kanavien tuominen tiedostosta {{ file }} epäonnistui"
 
-#: js/app/controllers/maincontroller.js:188
+#: js/app/controllers/maincontroller.js:197
 msgid "Failed to load the collection:"
 msgstr "Kokoelman lataaminen epäonnistui:"
 
@@ -625,18 +634,30 @@ msgstr "Asetuksen tallentaminen epäonnistui"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:114
 #: js/app/controllers/views/advancedsearchviewcontroller.js:171
 #: js/app/controllers/views/advancedsearchviewcontroller.js:224
-#: js/app/controllers/views/advancedsearchviewcontroller.js:281
-#: js/app/controllers/views/advancedsearchviewcontroller.js:308
+#: js/app/controllers/views/advancedsearchviewcontroller.js:256
+#: js/app/controllers/views/advancedsearchviewcontroller.js:282
+#: js/app/controllers/views/advancedsearchviewcontroller.js:309
+#: templates/partials/sidebar/smartlistfilters.php:32
 msgid "Favorite"
 msgstr "Suosikki"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:115
+#: templates/partials/sidebar/smartlistfilters.php:36
 msgid "Favorite album"
 msgstr "Suosikkialbumi"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:116
+#: templates/partials/sidebar/smartlistfilters.php:37
 msgid "Favorite artist"
 msgstr "Suosikkiesittäjä"
+
+#: templates/partials/sidebar/smartlistfilters.php:35
+msgid "Favorite track"
+msgstr "Suosikkikappale"
+
+#: templates/partials/sidebar/smartlistfilters.php:38
+msgid "Favorite track, album, or artist"
+msgstr "Suosikkikappale, -albumi tai -esittäjä"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:102
 #: js/app/controllers/views/advancedsearchviewcontroller.js:159
@@ -667,7 +688,7 @@ msgstr "Kansio"
 msgid "Folders"
 msgstr "Kansiot"
 
-#: templates/partials/sidebar/sidebar.php:19
+#: templates/partials/sidebar/sidebar.php:20
 msgid "Follow playback"
 msgstr "Seuraa toistoa"
 
@@ -675,7 +696,7 @@ msgstr "Seuraa toistoa"
 msgid "GUID"
 msgstr "GUID"
 
-#: templates/partials/sidebar/trackdetails.php:8
+#: templates/partials/sidebar/trackdetails.php:9
 msgid "General"
 msgstr "Yleinen"
 
@@ -725,9 +746,9 @@ msgstr ""
 "ei voida käsitellä täysin turvallisesti. Voit luoda niin monta salasanaa "
 "kuin haluat ja peruuttaa ne koska vain."
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:269
-#: js/app/controllers/views/advancedsearchviewcontroller.js:296
-#: templates/partials/sidebar/smartlistfilters.php:32
+#: js/app/controllers/views/advancedsearchviewcontroller.js:270
+#: js/app/controllers/views/advancedsearchviewcontroller.js:297
+#: templates/partials/sidebar/smartlistfilters.php:43
 msgid "History"
 msgstr "Historia"
 
@@ -790,7 +811,12 @@ msgstr ""
 "Lisää äänenvoimakkuutta. Säädä enemmän <strong>SHIFT</strong>-näppäimellä "
 "tai vähemmän <strong>ALT</strong>-näppäimellä."
 
-#: js/app/controllers/maincontroller.js:179
+#: templates/partials/sidebar/albumdetails.php:8
+#: templates/partials/sidebar/artistdetails.php:11
+msgid "Info"
+msgstr "Tietoja"
+
+#: js/app/controllers/maincontroller.js:188
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
@@ -809,39 +835,39 @@ msgstr "Internet radio -asemat"
 msgid "Invalid RSS feed URL"
 msgstr "Epäkelpo RSS-syötteen osoite"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:321
+#: js/app/controllers/views/advancedsearchviewcontroller.js:322
 msgid "Is"
 msgstr "On"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:348
+#: js/app/controllers/views/advancedsearchviewcontroller.js:349
 msgid "Is equal to"
 msgstr "On sama kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:341
+#: js/app/controllers/views/advancedsearchviewcontroller.js:342
 msgid "Is false"
 msgstr "On epätosi"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:333
+#: js/app/controllers/views/advancedsearchviewcontroller.js:334
 msgid "Is greater than"
 msgstr "On suurempi kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:329
+#: js/app/controllers/views/advancedsearchviewcontroller.js:330
 msgid "Is greater than or equal to"
 msgstr "On suurempi tai yhtä suuri kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:334
+#: js/app/controllers/views/advancedsearchviewcontroller.js:335
 msgid "Is less than"
 msgstr "On pienempi kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:330
+#: js/app/controllers/views/advancedsearchviewcontroller.js:331
 msgid "Is less than or equal to"
 msgstr "On pienempi tai yhtä suuri kuin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:322
+#: js/app/controllers/views/advancedsearchviewcontroller.js:323
 msgid "Is not"
 msgstr "Ei ole"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:349
+#: js/app/controllers/views/advancedsearchviewcontroller.js:350
 msgid "Is not equal to"
 msgstr "Ei ole sama kuin"
 
@@ -860,7 +886,7 @@ msgstr "On soitettu albumi"
 msgid "Is played artist"
 msgstr "On soitettu esittäjä"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:340
+#: js/app/controllers/views/advancedsearchviewcontroller.js:341
 msgid "Is true"
 msgstr "On tosi"
 
@@ -894,7 +920,7 @@ msgstr ""
 msgid "Last played"
 msgstr "Viimeksi soitettu"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:337
+#: js/app/controllers/views/advancedsearchviewcontroller.js:338
 msgid "Limit"
 msgstr "Raja"
 
@@ -906,7 +932,7 @@ msgstr "Listan koko"
 msgid "Loading…"
 msgstr "Ladataan…"
 
-#: templates/partials/sidebar/trackdetails.php:11
+#: templates/partials/sidebar/trackdetails.php:12
 msgid "Lyrics"
 msgstr "Lyriikat"
 
@@ -935,11 +961,11 @@ msgstr ""
 "Musiikkisovelluksen web-käyttöliittymän monia toimintoja voidaan hallita "
 "pikanäppäimillä."
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:325
+#: js/app/controllers/views/advancedsearchviewcontroller.js:326
 msgid "Matches regular expression"
 msgstr "Vastaa säännöllistä lauseketta"
 
-#: templates/partials/sidebar/playlistdetails.php:18
+#: templates/partials/sidebar/playlistdetails.php:19
 #: templates/partials/sidebar/radiostationdetails.php:29
 msgid "Modified"
 msgstr "Muokattu"
@@ -952,9 +978,9 @@ msgstr "Musiikki"
 msgid "Music library"
 msgstr "Musiikkikirjasto"
 
-#: templates/partials/sidebar/albumdetails.php:29
-#: templates/partials/sidebar/artistdetails.php:45
-#: templates/partials/sidebar/trackdetails.php:59
+#: templates/partials/sidebar/albumdetails.php:44
+#: templates/partials/sidebar/artistdetails.php:58
+#: templates/partials/sidebar/trackdetails.php:60
 msgid "MusicBrainz"
 msgstr "MusicBrainz"
 
@@ -969,8 +995,8 @@ msgstr "Vaimenna / Poista vaimennus"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:145
 #: js/app/controllers/views/advancedsearchviewcontroller.js:199
 #: js/app/controllers/views/advancedsearchviewcontroller.js:251
-#: js/app/controllers/views/advancedsearchviewcontroller.js:263
-#: js/app/controllers/views/advancedsearchviewcontroller.js:290
+#: js/app/controllers/views/advancedsearchviewcontroller.js:264
+#: js/app/controllers/views/advancedsearchviewcontroller.js:291
 #: js/app/controllers/views/advancedsearchviewcontroller.js:87
 #: templates/partials/sidebar/radiostationdetails.php:8
 msgid "Name"
@@ -1011,11 +1037,11 @@ msgstr ""
 "Hakusanalla <strong>{{ queryString }}</strong> ei löytynyt tuloksia tästä "
 "näkymästä"
 
-#: templates/partials/views/radioview.php:35
+#: templates/partials/views/radioview.php:37
 msgid "No stations"
 msgstr "Ei asemia"
 
-#: templates/partials/views/playlistview.php:35
+#: templates/partials/views/playlistview.php:40
 msgid "No tracks"
 msgstr "Ei kappaleita"
 
@@ -1027,11 +1053,11 @@ msgstr "Suodattimia vastaavia kappaleita ei ole"
 msgid "Normal layout"
 msgstr "Normaali asettelu"
 
-#: templates/partials/sidebar/smartlistfilters.php:40
+#: templates/partials/sidebar/smartlistfilters.php:51
 msgid "Not recently added"
 msgstr "Ei lisätty lähiaikoina"
 
-#: templates/partials/sidebar/smartlistfilters.php:36
+#: templates/partials/sidebar/smartlistfilters.php:47
 msgid "Not recently played"
 msgstr "Ei soitettu lähiaikoina"
 
@@ -1047,7 +1073,7 @@ msgstr ""
 "href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache-asiakkaat</a> ja <a "
 "href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic-asiakkaat</a>."
 
-#: templates/partials/sidebar/smartlistfilters.php:31
+#: templates/partials/sidebar/smartlistfilters.php:42
 msgid ""
 "Note that this selection makes any difference only when the library has more "
 "than the requested number of matches. In the strict mode, only the best "
@@ -1073,20 +1099,20 @@ msgstr ""
 "Huomaa: päivitystahtia rajoittaa myös se, kuinka usein pilvi suorittaa "
 "taustatöitä."
 
-#: templates/partials/sidebar/artistdetails.php:12
+#: templates/partials/sidebar/artistdetails.php:25
 msgid "Number of albums"
 msgstr "Albumien määrä"
 
-#: templates/partials/sidebar/artistdetails.php:18
+#: templates/partials/sidebar/artistdetails.php:31
 msgid "Number of performed tracks"
 msgstr "Esitettyjen kappaleiden määrä"
 
-#: templates/partials/sidebar/albumdetails.php:10
-#: templates/partials/sidebar/playlistdetails.php:9
+#: templates/partials/sidebar/albumdetails.php:25
+#: templates/partials/sidebar/playlistdetails.php:10
 msgid "Number of tracks"
 msgstr "Kappaleiden määrä"
 
-#: templates/partials/sidebar/artistdetails.php:15
+#: templates/partials/sidebar/artistdetails.php:28
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
@@ -1100,7 +1126,7 @@ msgstr "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avain
 msgid "Off"
 msgstr "Pois"
 
-#: templates/partials/sidebar/smartlistfilters.php:37
+#: templates/partials/sidebar/smartlistfilters.php:48
 msgid "Often played"
 msgstr "Usein soitettu"
 
@@ -1204,7 +1230,7 @@ msgstr ""
 "Ilmoita mahdollisista virheistä ja ongelmista <a "
 "href=\"{{issueTrackerUrl}}\" target=\"_blank\">seurantaan</a>"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:264
+#: js/app/controllers/views/advancedsearchviewcontroller.js:265
 msgid "Podcast channel"
 msgstr "Podcast-kanava"
 
@@ -1212,12 +1238,12 @@ msgstr "Podcast-kanava"
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Podcast-kanava \"{{ title }}\" lisättiin"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:291
+#: js/app/controllers/views/advancedsearchviewcontroller.js:292
 msgid "Podcast episode"
 msgstr "Podcast-jakso"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:261
-#: js/app/controllers/views/advancedsearchviewcontroller.js:288
+#: js/app/controllers/views/advancedsearchviewcontroller.js:262
+#: js/app/controllers/views/advancedsearchviewcontroller.js:289
 msgid "Podcast metadata"
 msgstr "Podcastin tiedot"
 
@@ -1244,8 +1270,8 @@ msgstr ""
 msgid "Previous"
 msgstr "Edellinen"
 
-#: templates/partials/sidebar/albumdetails.php:22
-#: templates/partials/sidebar/artistdetails.php:27
+#: templates/partials/sidebar/albumdetails.php:37
+#: templates/partials/sidebar/artistdetails.php:40
 msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 "Virhe yhdistettäessä Last.fm-palveluun. API-avain saattaa olla virheellinen."
@@ -1266,7 +1292,7 @@ msgstr "Radioasemaa ei löydy"
 msgid "Radio stations exported to file {{ path }}"
 msgstr "Radioasemat vietiin tiedostoon {{ path }}"
 
-#: templates/partials/sidebar/smartlistfilters.php:38
+#: templates/partials/sidebar/smartlistfilters.php:49
 msgid "Rarely played"
 msgstr "Harvoin soitettu"
 
@@ -1276,10 +1302,10 @@ msgstr "Harvoin soitettu"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:172
 #: js/app/controllers/views/advancedsearchviewcontroller.js:222
 #: js/app/controllers/views/advancedsearchviewcontroller.js:225
-#: js/app/controllers/views/advancedsearchviewcontroller.js:279
-#: js/app/controllers/views/advancedsearchviewcontroller.js:282
-#: js/app/controllers/views/advancedsearchviewcontroller.js:306
-#: js/app/controllers/views/advancedsearchviewcontroller.js:309
+#: js/app/controllers/views/advancedsearchviewcontroller.js:280
+#: js/app/controllers/views/advancedsearchviewcontroller.js:283
+#: js/app/controllers/views/advancedsearchviewcontroller.js:307
+#: js/app/controllers/views/advancedsearchviewcontroller.js:310
 msgid "Rating"
 msgstr "Arvosana"
 
@@ -1287,16 +1313,16 @@ msgstr "Arvosana"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:164
 #: js/app/controllers/views/advancedsearchviewcontroller.js:217
 #: js/app/controllers/views/advancedsearchviewcontroller.js:254
-#: js/app/controllers/views/advancedsearchviewcontroller.js:274
-#: js/app/controllers/views/advancedsearchviewcontroller.js:301
-#: templates/partials/sidebar/smartlistfilters.php:39
+#: js/app/controllers/views/advancedsearchviewcontroller.js:275
+#: js/app/controllers/views/advancedsearchviewcontroller.js:302
+#: templates/partials/sidebar/smartlistfilters.php:50
 msgid "Recently added"
 msgstr "Lähiaikoina lisätty"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:127
 #: js/app/controllers/views/advancedsearchviewcontroller.js:182
 #: js/app/controllers/views/advancedsearchviewcontroller.js:235
-#: templates/partials/sidebar/smartlistfilters.php:35
+#: templates/partials/sidebar/smartlistfilters.php:46
 msgid "Recently played"
 msgstr "Lähiaikoina soitettu"
 
@@ -1304,8 +1330,8 @@ msgstr "Lähiaikoina soitettu"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:165
 #: js/app/controllers/views/advancedsearchviewcontroller.js:218
 #: js/app/controllers/views/advancedsearchviewcontroller.js:255
-#: js/app/controllers/views/advancedsearchviewcontroller.js:275
-#: js/app/controllers/views/advancedsearchviewcontroller.js:302
+#: js/app/controllers/views/advancedsearchviewcontroller.js:276
+#: js/app/controllers/views/advancedsearchviewcontroller.js:303
 msgid "Recently updated"
 msgstr "Lähiaikoina päivitetty"
 
@@ -1321,7 +1347,7 @@ msgstr "Päivitä"
 msgid "Reload channels"
 msgstr "Päivitä kanavat"
 
-#: templates/partials/views/playlistview.php:27
+#: templates/partials/views/playlistview.php:33
 #: templates/partials/views/settingsview.php:40
 msgid "Remove"
 msgstr "Poista"
@@ -1342,7 +1368,7 @@ msgstr "Poista soittolista"
 msgid "Remove radio station"
 msgstr "Poista radioasema"
 
-#: templates/partials/views/playlistview.php:27
+#: templates/partials/views/playlistview.php:33
 msgid "Remove track from playlist"
 msgstr "Poista kappale soittolistalta"
 
@@ -1351,11 +1377,11 @@ msgid "Rename"
 msgstr "Nimeä uudelleen"
 
 #: js/app/controllers/playercontroller.js:782
-#: templates/partials/controls.php:96
+#: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr "Kertaa"
 
-#: js/app/controllers/views/albumsviewcontroller.js:289
+#: js/app/controllers/views/albumsviewcontroller.js:275
 #: js/app/controllers/views/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr "Pyydettyä riviä ei löytynyt"
@@ -1409,11 +1435,11 @@ msgstr "Etsi"
 msgid "Search not available in this view"
 msgstr "Haku ei ole käytettävissä tässä näkymässä"
 
-#: js/app/controllers/sidebar/albumdetailscontroller.js:64
+#: js/app/controllers/sidebar/albumdetailscontroller.js:68
 msgid "See the album on Last.fm"
 msgstr "Katso albumia Last.fm-palvelussa"
 
-#: js/app/controllers/sidebar/trackdetailscontroller.js:90
+#: js/app/controllers/sidebar/trackdetailscontroller.js:89
 msgid "See the track on Last.fm"
 msgstr "Katso kappaletta Last.fm-palveussa"
 
@@ -1437,6 +1463,10 @@ msgstr ""
 msgid "Select folder"
 msgstr "Valitse kansio"
 
+#: templates/partials/favoritetoggle.php:3
+msgid "Set favorite"
+msgstr "Aseta suosikki"
+
 #: templates/partials/sidebar/radiohint.php:4
 msgid "Setting up radio stations"
 msgstr "Radio-asemien asettaminen"
@@ -1450,11 +1480,11 @@ msgstr "Asetukset"
 msgid "Show all {{ count }} episodes …"
 msgstr "Näytä kaikki {{ count }} jaksoa…"
 
-#: js/app/directives/tracklist.js:38
+#: js/app/directives/tracklist.js:53
 msgid "Show all {{ count }} songs …"
 msgstr "Näytä kaikki {{ count }} kappaletta…"
 
-#: templates/partials/sidebar/artistdetails.php:41
+#: templates/partials/sidebar/artistdetails.php:54
 #: templates/partials/views/settingsview.php:117
 msgid "Show all…"
 msgstr "Näytä kaikki…"
@@ -1467,11 +1497,11 @@ msgstr ""
 "Näytä työpöytäilmoitus, kun toistettava kappale vaihtuu. Tämän sivuston "
 "työpöytäilmoitukset on myös sallittava selaimessa."
 
-#: templates/partials/sidebar/trackdetails.php:4
+#: templates/partials/sidebar/trackdetails.php:5
 msgid "Show in Files"
 msgstr "Näytä Tiedostoissa"
 
-#: js/app/directives/tracklist.js:35
+#: js/app/directives/tracklist.js:50
 msgid "Show less …"
 msgstr "Näytä vähemmän…"
 
@@ -1484,11 +1514,11 @@ msgid "Show..."
 msgstr "Näytä…"
 
 #: js/app/controllers/playercontroller.js:776
-#: templates/partials/controls.php:94
+#: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: templates/partials/sidebar/artistdetails.php:34
+#: templates/partials/sidebar/artistdetails.php:47
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
@@ -1524,7 +1554,7 @@ msgstr "Ilmoitukset kappaleen vaihtuessa"
 msgid "Sort …"
 msgstr "Järjestä …"
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:323
+#: js/app/controllers/views/advancedsearchviewcontroller.js:324
 msgid "Sounds like"
 msgstr "Kuulostaa samalta kuin"
 
@@ -1545,7 +1575,7 @@ msgstr ""
 "huomiotta järjestettäessä taiteilijoita aakkosjärjestykseen. Etuliitteissä "
 "ei oteta huomioon isoja ja pieniä kirjaimia."
 
-#: js/app/controllers/views/advancedsearchviewcontroller.js:319
+#: js/app/controllers/views/advancedsearchviewcontroller.js:320
 msgid "Starts with"
 msgstr "Alkaa"
 
@@ -1559,17 +1589,17 @@ msgstr "Pysäytä"
 msgid "Stream URL"
 msgstr "Striimin URL"
 
-#: templates/partials/sidebar/smartlistfilters.php:42
+#: templates/partials/sidebar/smartlistfilters.php:53
 msgid "Strict"
 msgstr "Tiukka"
 
-#: templates/partials/sidebar/albumdetails.php:26
-#: templates/partials/sidebar/artistdetails.php:31
-#: templates/partials/sidebar/trackdetails.php:56
+#: templates/partials/sidebar/albumdetails.php:41
+#: templates/partials/sidebar/artistdetails.php:44
+#: templates/partials/sidebar/trackdetails.php:57
 msgid "Tags"
 msgstr "Tunnisteet"
 
-#: templates/partials/sidebar/trackdetails.php:14
+#: templates/partials/sidebar/trackdetails.php:15
 msgid "Technical"
 msgstr "Tekniset tiedot"
 
@@ -1723,7 +1753,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "Tämä asetus määrittää kansion, josta musiikkia etsitään."
 
-#: js/app/controllers/maincontroller.js:182
+#: js/app/controllers/maincontroller.js:191
 msgid "Timeout"
 msgstr "Aikaraja ylittyi"
 
@@ -1745,8 +1775,8 @@ msgstr ""
 "avaimen arvona. Lisätietoja löydät <a href=\"{{guideUrl}}\" "
 "target=\"_blank\">oppaasta</a>."
 
-#: templates/partials/sidebar/albumdetails.php:13
-#: templates/partials/sidebar/playlistdetails.php:12
+#: templates/partials/sidebar/albumdetails.php:28
+#: templates/partials/sidebar/playlistdetails.php:13
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
@@ -1788,8 +1818,18 @@ msgid "Track rating"
 msgstr "Kappaleen arvosana"
 
 #: templates/fake-template.php:10
+#: templates/partials/sidebar/albumdetails.php:11
+#: templates/partials/sidebar/artistdetails.php:17
 msgid "Tracks"
 msgstr "Kappaleet"
+
+#: templates/partials/sidebar/artistdetails.php:93
+msgid "Tracks by {{artist}}"
+msgstr "Kappaleet esittäjältä {{artist}}"
+
+#: templates/partials/sidebar/albumdetails.php:51
+msgid "Tracks on {{album}}"
+msgstr "Kappaleet albumilla {{album}}"
 
 #: templates/partials/navigationitem.php:125
 msgid "Tree layout"
@@ -1835,7 +1875,11 @@ msgstr ""
 msgid "Unmute"
 msgstr "Poista vaimennus"
 
-#: templates/partials/sidebar/smartlistfilters.php:46
+#: templates/partials/favoritetoggle.php:5
+msgid "Unset favorite"
+msgstr "Poista suosikki"
+
+#: templates/partials/sidebar/smartlistfilters.php:57
 msgid "Update"
 msgstr "Päivitä"
 
@@ -1843,12 +1887,12 @@ msgstr "Päivitä"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:163
 #: js/app/controllers/views/advancedsearchviewcontroller.js:216
 #: js/app/controllers/views/advancedsearchviewcontroller.js:253
-#: js/app/controllers/views/advancedsearchviewcontroller.js:273
-#: js/app/controllers/views/advancedsearchviewcontroller.js:300
+#: js/app/controllers/views/advancedsearchviewcontroller.js:274
+#: js/app/controllers/views/advancedsearchviewcontroller.js:301
 msgid "Update date"
 msgstr "Päivityspäivä"
 
-#: js/app/controllers/sidebar/artistdetailscontroller.js:62
+#: js/app/controllers/sidebar/artistdetailscontroller.js:68
 msgid ""
 "Upload image named \"{{name}}\" to anywhere within your library path to see "
 "it here."
@@ -1913,7 +1957,7 @@ msgstr "Käyttöliittymä"
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: templates/partials/controls.php:100 templates/partials/controls.php:104
+#: templates/partials/controls.php:102 templates/partials/controls.php:98
 msgid "Volume"
 msgstr "Äänenvoimakkuus"
 
@@ -2159,6 +2203,10 @@ msgstr "{{ count }} tiedostoa ohitettiin."
 #: templates/main.php:63
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
+
+#: templates/partials/sidebar/artistdetails.php:78
+msgid "{{artist}} appears on albums"
+msgstr "{{artist}} esiintyy albumeilla"
 
 #~ msgid "From year"
 #~ msgstr "Vuodesta"

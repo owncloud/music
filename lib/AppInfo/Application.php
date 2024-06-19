@@ -794,13 +794,21 @@ class Application extends ApplicationBase {
 	}
 
 	private function registerEmbeddedPlayer() {
-		$loadEmbeddedMusicPlayer = function() {
-			$this->loadEmbeddedMusicPlayer();
-		};
-
 		$dispatcher = $this->getContainer()->query(\OCP\EventDispatcher\IEventDispatcher::class);
-		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, $loadEmbeddedMusicPlayer);
-		$dispatcher->addListener(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::class, $loadEmbeddedMusicPlayer);
+
+		// Files app
+		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, function() {
+			$this->loadEmbeddedMusicPlayer();
+		});
+
+		// Files_Sharing app
+		$dispatcher->addListener(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::class, function(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent $event) {
+			// don't load the embedded player on the authentication page of password-protected share, and only load it for shared folders (not individual files)
+			if ($event->getScope() != \OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::SCOPE_PUBLIC_SHARE_AUTH
+					&& $event->getShare()->getNodeType() == 'folder') {
+				$this->loadEmbeddedMusicPlayer();
+			}
+		});
 	}
 
 	/**

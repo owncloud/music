@@ -48,7 +48,7 @@
 				OCA.Music.fileShareView = new OCA.Music.FileShareView(mPlayer, mAudioMimes);
 			} else {
 				// Files app or a link shared folder
-				if (OCA.Files.fileActions) {
+				if (OCA.Files?.fileActions) {
 					OCA.Music.folderView.registerToFileActions(OCA.Files.fileActions);
 				}
 				OCA.Music.initPlaylistTabView(mPlaylistMimes);

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -25,6 +25,7 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
+use OCA\Music\Http\RelayStreamResponse;
 use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
@@ -264,6 +265,17 @@ class RadioApiController extends Controller {
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function relayStreamUrl(int $id) {
+		//return new RelayStreamResponse('http://listen.radionomy.com/70-s-80-smetal');
+		return new RelayStreamResponse('http://212.47.220.188:8000/listen.mp3');
 	}
 
 	/**

@@ -271,6 +271,7 @@ class Application extends ApplicationBase {
 			return new PodcastApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('URLGenerator'),
 				$c->query('PodcastService'),
 				$c->query('UserId'),
 				$c->query('Logger')

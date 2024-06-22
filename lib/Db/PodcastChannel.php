@@ -13,6 +13,7 @@
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+use OCP\IURLGenerator;
 
 /**
  * @method string getRssUrl()
@@ -87,7 +88,7 @@ class PodcastChannel extends Entity {
 		$this->episodes = $episodes;
 	}
 
-	public function toApi() : array {
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		$result = [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
@@ -96,7 +97,7 @@ class PodcastChannel extends Entity {
 		];
 
 		if ($this->episodes !== null) {
-			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi');
+			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi', ['urlGenerator' => $urlGenerator]);
 		}
 
 		return $result;

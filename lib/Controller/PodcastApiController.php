@@ -17,23 +17,28 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\RelayStreamResponse;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
+	private IURLGenerator $urlGenerator;
 	private PodcastService $podcastService;
 	private string $userId;
 	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
+								IURLGenerator $urlGenerator,
 								PodcastService $podcastService,
 								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
+		$this->urlGenerator = $urlGenerator;
 		$this->podcastService = $podcastService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->logger = $logger;
@@ -47,7 +52,7 @@ class PodcastApiController extends Controller {
 	 */
 	public function getAll() {
 		$channels = $this->podcastService->getAllChannels($this->userId, /*$includeEpisodes=*/ true);
-		return Util::arrayMapMethod($channels, 'toApi');
+		return Util::arrayMapMethod($channels, 'toApi', ['urlGenerator' => $this->urlGenerator]);
 	}
 
 	/**
@@ -65,7 +70,7 @@ class PodcastApiController extends Controller {
 
 		switch ($result['status']) {
 			case PodcastService::STATUS_OK:
-				return $result['channel']->toApi();
+				return $result['channel']->toApi($this->urlGenerator);
 			case PodcastService::STATUS_INVALID_URL:
 				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Invalid URL $url");
 			case PodcastService::STATUS_INVALID_RSS:
@@ -106,7 +111,7 @@ class PodcastApiController extends Controller {
 		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ true);
 
 		if ($channel !== null) {
-			return $channel->toApi();
+			return $channel->toApi($this->urlGenerator);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
@@ -145,6 +150,22 @@ class PodcastApiController extends Controller {
 	}
 
 	/**
+	 * get audio stream for a podcast episode
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function episodeStream(int $id) {
+		$episode = $this->podcastService->getEpisode($id, $this->userId);
+
+		if ($episode !== null) {
+			return new RelayStreamResponse($episode->getStreamUrl());
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
 	 * check a single channel for updates
 	 * @param int $id Channel ID
 	 * @param string|null $prevHash Previous content hash known by the client. If given, the result will tell
@@ -162,7 +183,7 @@ class PodcastApiController extends Controller {
 			'updated' => $updateResult['updated']
 		];
 		if ($updateResult['updated']) {
-			$response['channel'] = $updateResult['channel']->toApi();
+			$response['channel'] = $updateResult['channel']->toApi($this->urlGenerator);
 		}
 
 		return new JSONResponse($response);

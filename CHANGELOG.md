@@ -5,7 +5,9 @@
 - Additional tabs "Tracks" and "Artists" to the album details pane
 - Favorite toggle to the details pane of the tracks, albums, artists, playlists, and podcasts
 - New filter "Favorite" for the smart list
-- Subsonic API: OpenSubsonic extension method `getLyricsBySongId`
+- OpenSubsonic extensions to the Subsonic API: 
+  * Method `getLyricsBySongId`
+  * Property `sortName` to all artist, album, and song responses
 
 ### Changed
 - Drop support for PHP versions older 7.4 (i.e. PHP 7.1 - 7.3)

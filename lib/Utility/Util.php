@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -252,6 +252,28 @@ class Util {
 	 */
 	public static function isNonEmptyString(/*mixed*/ $item) : bool {
 		return \is_string($item) && \trim($item) !== '';
+	}
+
+	/**
+	 * Split given string to a prefix and a basename (=the remaining part after the prefix), considering the possible
+	 * prefixes given as an array. If none of the prefixes match, the returned basename will be the original string
+	 * and the prefix will be null.
+	 * @param string[] $potentialPrefixes
+	 */
+	public static function splitPrefixAndBasename(?string $name, array $potentialPrefixes) : array {
+		$parts = ['prefix' => null, 'basename' => $name];
+
+		if ($name !== null) {
+			foreach ($potentialPrefixes as $prefix) {
+				if (Util::startsWith($name, $prefix . ' ', /*ignoreCase=*/true)) {
+					$parts['prefix'] = $prefix;
+					$parts['basename'] = \substr($name, \strlen($prefix) + 1);
+					break;
+				}
+			}
+		}
+
+		return $parts;
 	}
 
 	/**

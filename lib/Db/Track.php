@@ -263,7 +263,7 @@ class Track extends Entity {
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. The $track entity must have the Album reference injected prior to calling this.
 	 */
-	public function toSubsonicApi(IL10N $l10n) : array {
+	public function toSubsonicApi(IL10N $l10n, array $ignoredArticles) : array {
 		$albumId = $this->getAlbumId();
 		$album = $this->getAlbum();
 		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
@@ -295,6 +295,7 @@ class Track extends Entity {
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId,
 			'playCount' => $this->getPlayCount(),
+			'sortName' => Util::splitPrefixAndBasename($this->getTitle(), $ignoredArticles)['basename'], // OpenSubsonic
 		];
 	}
 

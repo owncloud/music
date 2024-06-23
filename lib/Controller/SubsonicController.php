@@ -88,6 +88,7 @@ class SubsonicController extends Controller {
 	private $random;
 	private $logger;
 	private $userId;
+	private $ignoredArticles;
 	private $format;
 	private $callback;
 
@@ -151,6 +152,7 @@ class SubsonicController extends Controller {
 	 */
 	public function setAuthenticatedUser(string $userId) {
 		$this->userId = $userId;
+		$this->ignoredArticles = $this->librarySettings->getIgnoredArticles($userId);
 	}
 
 	/**
@@ -363,7 +365,7 @@ class SubsonicController extends Controller {
 		$albumNode = $this->albumToNewApi($album);
 		$albumNode['song'] = \array_map(function ($track) use ($album) {
 			$track->setAlbum($album);
-			return $track->toSubsonicApi($this->l10n);
+			return $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
 		}, $tracks);
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
@@ -376,7 +378,7 @@ class SubsonicController extends Controller {
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 
-		return $this->subsonicResponse(['song' => $track->toSubsonicApi($this->l10n)]);
+		return $this->subsonicResponse(['song' => $track->toSubsonicApi($this->l10n, $this->ignoredArticles)]);
 	}
 
 	/**
@@ -978,7 +980,7 @@ class SubsonicController extends Controller {
 				if ($type === Bookmark::TYPE_TRACK) {
 					$track = $this->trackBusinessLayer->find($entryId, $this->userId);
 					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
-					$node['entry'] = $track->toSubsonicApi($this->l10n);
+					$node['entry'] = $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
 					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
 				} else {
@@ -1139,13 +1141,8 @@ class SubsonicController extends Controller {
 		return $nodes[0];
 	}
 
-	private static function nameWithoutArticle(?string $name, array $ignoredArticles) : ?string {
-		foreach ($ignoredArticles as $article) {
-			if (!empty($name) && Util::startsWith($name, $article . ' ', /*ignore_case=*/true)) {
-				return \substr($name, \strlen($article) + 1);
-			}
-		}
-		return $name;
+	private function nameWithoutArticle(?string $name) : ?string {
+		return Util::splitPrefixAndBasename($name, $this->ignoredArticles)['basename'];
 	}
 
 	private static function getIndexingChar(?string $name) {
@@ -1175,14 +1172,13 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForFolders() {
-		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$rootFolder = $this->librarySettings->getFolder($this->userId);
 
 		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
 
 		$indexes = [];
 		foreach ($subFolders as $folder) {
-			$sortName = self::nameWithoutArticle($folder->getName(), $ignoredArticles);
+			$sortName = $this->nameWithoutArticle($folder->getName());
 			$indexes[self::getIndexingChar($sortName)][] = [
 				'sortName' => $sortName,
 				'artist' => [
@@ -1200,7 +1196,7 @@ class SubsonicController extends Controller {
 		}
 
 		return $this->subsonicResponse(['indexes' => [
-			'ignoredArticles' => \implode(' ', $ignoredArticles),
+			'ignoredArticles' => \implode(' ', $this->ignoredArticles),
 			'index' => $folders,
 			'child' => $this->tracksToApi($tracks)
 		]]);
@@ -1240,12 +1236,11 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
-		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
 
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$sortName = self::nameWithoutArticle($artist->getName(), $ignoredArticles);
+			$sortName = $this->nameWithoutArticle($artist->getName());
 			$indexes[self::getIndexingChar($sortName)][] = ['sortName' => $sortName, 'artist' => $this->artistToApi($artist)];
 		}
 		\ksort($indexes, SORT_LOCALE_STRING);
@@ -1257,7 +1252,7 @@ class SubsonicController extends Controller {
 		}
 
 		return $this->subsonicResponse([$rootElementName => [
-			'ignoredArticles' => \implode(' ', $ignoredArticles),
+			'ignoredArticles' => \implode(' ', $this->ignoredArticles),
 			'index' => $result
 		]]);
 	}
@@ -1291,7 +1286,7 @@ class SubsonicController extends Controller {
 				'name' => $albumName,
 				'child' => \array_map(function ($track) use ($album) {
 					$track->setAlbum($album);
-					return $track->toSubsonicApi($this->l10n);
+					return $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
 				}, $tracks)
 			]
 		]);
@@ -1339,6 +1334,7 @@ class SubsonicController extends Controller {
 			'starred' => Util::formatZuluDateTime($artist->getStarred()),
 			'userRating' => $artist->getRating() ?: null,
 			'averageRating' => $artist->getRating() ?: null,
+			'sortName' => $this->nameWithoutArticle($artist->getName()) ?? '', // OpenSubsonic
 		];
 
 		if (!empty($artist->getCoverFileId())) {
@@ -1390,7 +1386,8 @@ class SubsonicController extends Controller {
 			'userRating' => $album->getRating() ?: null,
 			'averageRating' => $album->getRating() ?: null,
 			'year' => $album->yearToAPI(),
-			'genre' => $genreString ?: null
+			'genre' => $genreString ?: null,
+			'sortName' => $this->nameWithoutArticle($album->getName()) ?? '', // OpenSubsonic
 		];
 	}
 
@@ -1400,7 +1397,7 @@ class SubsonicController extends Controller {
 	 */
 	private function tracksToApi(array $tracks) : array {
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
-		return Util::arrayMapMethod($tracks, 'toSubsonicApi', [$this->l10n]);
+		return Util::arrayMapMethod($tracks, 'toSubsonicApi', [$this->l10n, $this->ignoredArticles]);
 	}
 
 	/**

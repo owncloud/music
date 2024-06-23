@@ -1862,19 +1862,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function prefixAndBaseName(?string $name) : array {
-		$parts = ['prefix' => null, 'basename' => $name];
-
-		if ($name !== null) {
-			foreach ($this->namePrefixes as $prefix) {
-				if (Util::startsWith($name, $prefix . ' ', /*ignoreCase=*/true)) {
-					$parts['prefix'] = $prefix;
-					$parts['basename'] = \substr($name, \strlen($prefix) + 1);
-					break;
-				}
-			}
-		}
-
-		return $parts;
+		return Util::splitPrefixAndBasename($name, $this->namePrefixes);
 	}
 
 	private function renderAlbumOrArtistRef(int $id, string $name) : array {

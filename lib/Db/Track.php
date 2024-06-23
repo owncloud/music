@@ -295,6 +295,7 @@ class Track extends Entity {
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId,
 			'playCount' => $this->getPlayCount(),
+			'played' => Util::formatZuluDateTime($this->getLastPlayed()) ?? '', // OpenSubsonic
 			'sortName' => Util::splitPrefixAndBasename($this->getTitle(), $ignoredArticles)['basename'], // OpenSubsonic
 		];
 	}

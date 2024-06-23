@@ -454,7 +454,7 @@ class SubsonicController extends Controller {
 
 			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
 			$rootFolder = $this->librarySettings->getFolder($this->userId);
-			$lyrics = $this->detailsHelper->getLyrics($track->getFileId(), $rootFolder);
+			$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
 
 			return $this->subsonicResponse(['lyrics' => [
 					'artist' => $artistObj->getNameString($this->l10n),
@@ -462,6 +462,38 @@ class SubsonicController extends Controller {
 					'value' => $lyrics
 			]]);
 		}
+	}
+
+	/**
+	 * OpenSubsonic extension
+	 * @SubsonicAPI
+	 */
+	protected function getLyricsBySongId(string $id) {
+		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
+		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+		$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+		$rootFolder = $this->librarySettings->getFolder($this->userId);
+		$allLyrics = $this->detailsHelper->getLyricsAsStructured($track->getFileId(), $rootFolder);
+
+		return $this->subsonicResponse(['lyricsList' => [
+			'structuredLyrics' => \array_map(function ($lyrics) use ($track, $artist) {
+				$isSynced = $lyrics['synced'];
+				return [
+					'displayArtist' => $artist->getNameString($this->l10n),
+					'displayTitle' => $track->getTitle(),
+					'lang' => 'xxx',
+					'offset' => 0,
+					'synced' => $isSynced,
+					'line' => \array_map(function($lineVal, $lineKey) use ($isSynced) {
+						$line = ['value' => \trim($lineVal)];
+						if ($isSynced) {
+							$line['start'] = $lineKey;
+						};
+						return $line;
+					}, $lyrics['lines'], \array_keys($lyrics['lines']))
+				];
+			}, $allLyrics) 
+		]]);
 	}
 
 	/**
@@ -1021,7 +1053,8 @@ class SubsonicController extends Controller {
 	 */
 	protected function getOpenSubsonicExtensions() {
 		return $this->subsonicResponse(['openSubsonicExtensions' => [
-			[ 'name' => 'formPost', 'versions' => [1] ]
+			[ 'name' => 'formPost', 'versions' => [1] ],
+			[ 'name' => 'songLyrics', 'versions' => [1] ]
 		]]);
 	}
 

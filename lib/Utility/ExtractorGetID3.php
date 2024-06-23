@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -151,4 +151,20 @@ class ExtractorGetID3 implements Extractor {
 		}
 		return $defaultValue;
 	}
+
+	/**
+	 * Given an array of tag names, return an associative array of those
+	 * tag names and values which can be found.
+	 */
+	public static function getTags(array $fileInfo, array $tags) : array {
+		$result = [];
+		foreach ($tags as $tag) {
+			$value = self::getTag($fileInfo, $tag);
+			if ($value !== null && $value !== '') {
+				$result[$tag] = $value;
+			}
+		}
+		return $result;
+	}
 }
+

@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.0.0 - 2024-06-23
 
 ### Added
 - Additional tabs "Albums" and "Tracks" to the artist details pane

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-10 13:41+0200\n"
+"PO-Revision-Date: 2024-07-10 14:02+0200\n"
 "Last-Translator: Rémy J. <remy-transifex@remyj.fr>\n"
 "Language-Team: French (http://www.transifex.com/owncloud-org/owncloud/"
 "language/fr/)\n"
@@ -445,7 +445,7 @@ msgstr "Cliquez pour rebalayer"
 
 #: templates/partials/views/radioview.php:38
 msgid "Click to show \"Getting started\""
-msgstr ""
+msgstr "Cliquez pour voir \"Comment commencer\""
 
 #: templates/fake-template.php:14 templates/partials/sidebar/sidebar.php:2
 msgid "Close"
@@ -663,11 +663,11 @@ msgstr "Artiste favori"
 
 #: templates/partials/sidebar/smartlistfilters.php:35
 msgid "Favorite track"
-msgstr ""
+msgstr "Piste favorite"
 
 #: templates/partials/sidebar/smartlistfilters.php:38
 msgid "Favorite track, album, or artist"
-msgstr ""
+msgstr "Piste, album ou artiste favori"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:102
 #: js/app/controllers/views/advancedsearchviewcontroller.js:159
@@ -721,28 +721,28 @@ msgstr ""
 #: js/app/controllers/playercontroller.js:759
 #: templates/partials/sidebar/radiostationdetails.php:41
 msgid "Genre"
-msgstr ""
+msgstr "Genre"
 
 #: js/app/controllers/playercontroller.js:751
 #: templates/partials/navigation.php:12
 #: templates/partials/sidebar/smartlistfilters.php:18
 msgid "Genres"
-msgstr ""
+msgstr "Genres"
 
 #: templates/partials/navigationitem.php:76
 msgid "Getting started"
-msgstr ""
+msgstr "Comment commencer"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:155
 #: js/app/controllers/views/advancedsearchviewcontroller.js:208
 msgid "Has image"
-msgstr ""
+msgstr "A une image"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:154
 #: js/app/controllers/views/advancedsearchviewcontroller.js:207
 #: js/app/controllers/views/advancedsearchviewcontroller.js:98
 msgid "Has no genre"
-msgstr ""
+msgstr "N'a pas de genre"
 
 #: templates/partials/views/settingsview.php:153
 msgid ""
@@ -756,38 +756,42 @@ msgstr ""
 #: js/app/controllers/views/advancedsearchviewcontroller.js:297
 #: templates/partials/sidebar/smartlistfilters.php:43
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 #: templates/partials/views/settingsview.php:146
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
+"Si cette URL ne fonctionne pas, essayez d'ajouter '/server/xml.server.php'."
 
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
-msgstr ""
+msgstr "Importer depuis un fichier"
 
 #: js/app/services/playlistfileservice.ts:166
 msgid "Import playlist contents from the selected file"
-msgstr ""
+msgstr "Importer le contenu de la playlist à partir du fichier sélectionné"
 
 #: js/app/services/playlistfileservice.ts:219
 msgid "Import radio stations from the selected file"
-msgstr ""
+msgstr "Importer des stations de radio à partir du fichier sélectionné"
 
 #: js/app/services/playlistfileservice.ts:199
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr ""
+"Importation de {{ count }} stations de radio à partir du fichier {{ file }}."
 
 #: js/app/services/playlistfileservice.ts:145
 msgid "Imported {{ count }} tracks from the file {{ file }}."
-msgstr ""
+msgstr "Importation de {{ count }} pistes depuis le fichier {{ file }}."
 
 #: templates/partials/views/settingsview.php:108
 msgid ""
 "In addition to the web interface, this setting is respected in the Subsonic "
 "interface although not necessarily by all clients."
 msgstr ""
+"En plus de l'interface web, ce paramètre est respecté dans l'interface "
+"Subsonic mais pas forcément par tous les clients."
 
 #: templates/partials/sidebar/radiohint.php:9
 msgid ""
@@ -799,7 +803,7 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:131
 msgid "Increase playback speed"
-msgstr ""
+msgstr "Augmenter la vitesse de lecture"
 
 #: templates/partials/views/settingsview.php:129
 msgid ""
@@ -814,58 +818,58 @@ msgstr ""
 
 #: js/app/controllers/maincontroller.js:188
 msgid "Internal server error"
-msgstr ""
+msgstr "Erreur interne du serveur"
 
 #: js/app/controllers/playercontroller.js:732
 #: js/app/controllers/playercontroller.js:754
 #: js/app/services/playlistfileservice.ts:109
 #: templates/partials/navigation.php:17
 msgid "Internet radio"
-msgstr ""
+msgstr "Webradio"
 
 #: templates/partials/views/radioview.php:4
 msgid "Internet radio stations"
-msgstr ""
+msgstr "Station de webradio"
 
 #: js/app/services/podcastservice.ts:68
 msgid "Invalid RSS feed URL"
-msgstr ""
+msgstr "URL de flux RSS invalide"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:322
 msgid "Is"
-msgstr ""
+msgstr "Est"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:349
 msgid "Is equal to"
-msgstr ""
+msgstr "Est égal à"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:342
 msgid "Is false"
-msgstr ""
+msgstr "Est faux"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:334
 msgid "Is greater than"
-msgstr ""
+msgstr "Est plus grand que"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:330
 msgid "Is greater than or equal to"
-msgstr ""
+msgstr "Est plus grand ou égal à"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:335
 msgid "Is less than"
-msgstr ""
+msgstr "Est plus petit que"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:331
 msgid "Is less than or equal to"
-msgstr ""
+msgstr "Est plus petit ou égal à"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:323
 msgid "Is not"
-msgstr ""
+msgstr "N'est pas"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:350
 msgid "Is not equal to"
-msgstr ""
+msgstr "N'est pas égal à"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:128
 #: js/app/controllers/views/advancedsearchviewcontroller.js:183
@@ -888,15 +892,15 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:126
 msgid "Jump to the next track"
-msgstr ""
+msgstr "Sauter à la piste suivante"
 
 #: templates/partials/views/settingsview.php:125
 msgid "Jump to the previous track"
-msgstr ""
+msgstr "Sauter à la piste précédente"
 
 #: templates/partials/views/settingsview.php:112
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Raccourcis clavier"
 
 #: templates/partials/views/settingsview.php:199
 msgid ""

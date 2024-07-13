@@ -1,3 +1,4 @@
+# Cloned from ../l10n\de\music.po by duplicate-lang.py
 #
 # Translators:
 # cmeh <github@christianhoffmann.com>, 2015
@@ -39,39 +40,39 @@ msgid "(no artist image available)"
 msgstr "(kein Künstlerbild verfügbar)"
 
 #: ../js/app/controllers/maincontroller.js:54
-msgid "1 album"
+msgid "{{ count }} album"
 msgid_plural "{{ count }} albums"
-msgstr[0] "1 Album"
+msgstr[0] "{{ count }} Album"
 msgstr[1] "{{ count }} Alben"
 
 #: ../js/app/controllers/maincontroller.js:87
-msgid "1 channel"
+msgid "{{ count }} channel"
 msgid_plural "{{ count }} channels"
-msgstr[0] "1 Kanal"
+msgstr[0] "{{ count }} Kanal"
 msgstr[1] "{{ count }} Kanäle"
 
 #: ../js/app/controllers/maincontroller.js:60
-msgid "1 folder"
+msgid "{{ count }} folder"
 msgid_plural "{{ count }} folders"
-msgstr[0] "1 Ordner"
+msgstr[0] "{{ count }} Ordner"
 msgstr[1] "{{ count }} Ordner"
 
 #: ../js/app/controllers/maincontroller.js:69
-msgid "1 genre"
+msgid "{{ count }} genre"
 msgid_plural "{{ count }} genres"
-msgstr[0] "1 Genre"
+msgstr[0] "{{ count }} Genre"
 msgstr[1] "{{ count }} Genre"
 
 #: ../js/app/controllers/maincontroller.js:78
-msgid "1 station"
+msgid "{{ count }} station"
 msgid_plural "{{ count }} stations"
-msgstr[0] "1 Station"
+msgstr[0] "{{ count }} Station"
 msgstr[1] "{{ count }} Stationen"
 
 #: ../js/app/controllers/maincontroller.js:49
-msgid "1 track"
+msgid "{{ count }} track"
 msgid_plural "{{ count }} tracks"
-msgstr[0] "1 Titel"
+msgstr[0] "{{ count }} Titel"
 msgstr[1] "{{ count }} Titel"
 
 #: ../templates/partials/settingsview.php:30

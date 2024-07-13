@@ -65,7 +65,7 @@
 	<div ng-if="results" class="flat-list-view playlist-area">
 		<h2 ui-draggable="true" drag="getHeaderDraggable()">
 			<span ng-class="{ clickable: resultCount() }" ng-click="onHeaderClick()">
-				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">1 result</span>
+				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">{{ resultCount() }} result</span>
 				<img ng-if="resultCount()" class="play svg" alt="{{ 'Play' | translate }}"
 					src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
 			</span>

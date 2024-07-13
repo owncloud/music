@@ -56,23 +56,23 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.trackCountText = function(playlist) {
 		let trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
-		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+		return gettextCatalog.getPlural(trackCount, '{{ count }} track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.smartListTrackCountText = function() {
 		var trackCount = libraryService.getSmartListTrackCount();
-		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+		return gettextCatalog.getPlural(trackCount, '{{ count }} track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.albumCountText = function() {
 		let albumCount = libraryService.getAlbumCount();
-		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
+		return gettextCatalog.getPlural(albumCount, '{{ count }} album', '{{ count }} albums', { count: albumCount });
 	};
 
 	$scope.folderCountText = function() {
 		if (libraryService.foldersLoaded()) {
 			let folderCount = libraryService.getAllFoldersWithTracks().length;
-			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+			return gettextCatalog.getPlural(folderCount, '{{ count }} folder', '{{ count }} folders', { count: folderCount });
 		} else {
 			return '';
 		}
@@ -81,7 +81,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.genresCountText = function() {
 		if (libraryService.genresLoaded()) {
 			let genreCount = libraryService.getAllGenres().length;
-			return gettextCatalog.getPlural(genreCount, '1 genre', '{{ count }} genres', { count: genreCount });
+			return gettextCatalog.getPlural(genreCount, '{{ count }} genre', '{{ count }} genres', { count: genreCount });
 		} else {
 			return '';
 		}
@@ -90,7 +90,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.radioCountText = function() {
 		if (libraryService.radioStationsLoaded()) {
 			let stationCount = libraryService.getAllRadioStations().length;
-			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
+			return gettextCatalog.getPlural(stationCount, '{{ count }} station', '{{ count }} stations', { count: stationCount });
 		} else {
 			return '';
 		}
@@ -99,7 +99,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.podcastsCountText = function() {
 		if (libraryService.podcastsLoaded()) {
 			let channelsCount = libraryService.getPodcastChannelsCount();
-			return gettextCatalog.getPlural(channelsCount, '1 channel', '{{ count }} channels', { count: channelsCount });
+			return gettextCatalog.getPlural(channelsCount, '{{ count }} channel', '{{ count }} channels', { count: channelsCount });
 		} else {
 			return '';
 		}

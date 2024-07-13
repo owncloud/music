@@ -30,49 +30,6 @@ msgstr ""
 msgid "(press and hold for more)"
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:69
-msgid "1 album"
-msgid_plural "{{ count }} albums"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./js/app/controllers/maincontroller.js:102
-msgid "1 channel"
-msgid_plural "{{ count }} channels"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./js/app/controllers/maincontroller.js:75
-msgid "1 folder"
-msgid_plural "{{ count }} folders"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./js/app/controllers/maincontroller.js:84
-msgid "1 genre"
-msgid_plural "{{ count }} genres"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./templates/partials/views/advancedsearchview.php:68
-msgid "1 result"
-msgid_plural "{{ resultCount() }} results"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./js/app/controllers/maincontroller.js:93
-msgid "1 station"
-msgid_plural "{{ count }} stations"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ./js/app/controllers/maincontroller.js:59
-#: ./js/app/controllers/maincontroller.js:64
-msgid "1 track"
-msgid_plural "{{ count }} tracks"
-msgstr[0] ""
-msgstr[1] ""
-
 #: ./templates/partials/views/advancedsearchview.php:26
 msgid "10 matches"
 msgstr ""
@@ -1893,6 +1850,18 @@ msgstr ""
 msgid "website"
 msgstr ""
 
+#: ./js/app/controllers/maincontroller.js:69
+msgid "{{ count }} album"
+msgid_plural "{{ count }} albums"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ./js/app/controllers/maincontroller.js:102
+msgid "{{ count }} channel"
+msgid_plural "{{ count }} channels"
+msgstr[0] ""
+msgstr[1] ""
+
 #: ./js/app/controllers/navigationcontroller.js:159
 msgid "{{ count }} duplicate track was removed"
 msgid_plural "{{ count }} duplicate tracks were removed"
@@ -1906,6 +1875,37 @@ msgstr ""
 #: ./js/app/services/playlistfileservice.ts:148
 msgid "{{ count }} files were skipped."
 msgstr ""
+
+#: ./js/app/controllers/maincontroller.js:75
+msgid "{{ count }} folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ./js/app/controllers/maincontroller.js:84
+msgid "{{ count }} genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ./js/app/controllers/maincontroller.js:93
+msgid "{{ count }} station"
+msgid_plural "{{ count }} stations"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ./js/app/controllers/maincontroller.js:59
+#: ./js/app/controllers/maincontroller.js:64
+msgid "{{ count }} track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ./templates/partials/views/advancedsearchview.php:68
+msgid "{{ resultCount() }} result"
+msgid_plural "{{ resultCount() }} results"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ./templates/main.php:63
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"

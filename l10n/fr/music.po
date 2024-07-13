@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-13 15:11+0200\n"
-"Last-Translator: Rémy J. <remy-transifex@remyj.fr>\n"
+"PO-Revision-Date: 2024-07-13 18:17+0200\n"
+"Last-Translator: Fabien LOISON <https://flozz.fr/>\n"
 "Language-Team: French (http://www.transifex.com/owncloud-org/owncloud/"
 "language/fr/)\n"
 "Language: fr\n"
@@ -182,12 +182,18 @@ msgid ""
 "Admin may set up the Last.fm API key to show album background information "
 "here. See the Settings view for details."
 msgstr ""
+"L'administrateur peut configurer la clé d'API de Last.fm pour afficher ici "
+"les informations de l'album. Voir les paramètres de l'application pour plus "
+"de détails."
 
 #: templates/partials/sidebar/artistdetails.php:37
 msgid ""
 "Admin may set up the Last.fm API key to show artist biography here. See the "
 "Settings view for details."
 msgstr ""
+"L'administrateur peut configurer la clé d'API de Last.fm pour afficher ici "
+"la biographie de l'artiste. Voir les paramètres de l'application pour plus "
+"de détails."
 
 #: templates/partials/navigation.php:67
 #: templates/partials/views/advancedsearchview.php:2
@@ -766,11 +772,13 @@ msgid ""
 "Increase volume. Adjust more with <strong>SHIFT</strong> or less with "
 "<strong>ALT</strong>."
 msgstr ""
+"Augmenter le volume. Ajustez davantage avec <strong>SHIFT</strong> ou moins "
+"avec <strong>ALT</strong>."
 
 #: templates/partials/sidebar/albumdetails.php:8
 #: templates/partials/sidebar/artistdetails.php:11
 msgid "Info"
-msgstr ""
+msgstr "Informations"
 
 #: js/app/controllers/maincontroller.js:188
 msgid "Internal server error"
@@ -982,6 +990,8 @@ msgstr "Aucune musique trouvée"
 #: templates/main.php:78
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
+"Aucun résultat de recherche dans cette vue pour <strong>{{ queryString }}</"
+"strong>"
 
 #: templates/partials/views/radioview.php:37
 msgid "No stations"
@@ -1014,6 +1024,11 @@ msgid ""
 "target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" "
 "target=\"_blank\">Subsonic clients</a>."
 msgstr ""
+"Notez que Musique peut ne pas être compatible avec tous les clients Ampache/"
+"Subsonic. Vérifiez les <a href=\"{{ampacheClientsUrl}}\" "
+"target=\"_blank\">clients Ampache</a> et les <a "
+"href=\"{{subsonicClientsUrl}}\" target=\"_blank\">clients Subsonic</a> "
+"Compatibles."
 
 #: templates/partials/sidebar/smartlistfilters.php:42
 msgid ""
@@ -1093,6 +1108,9 @@ msgid ""
 "Paths with a leading '/' character are resolved relative to the user home "
 "directory and others relative to the music library base path."
 msgstr ""
+"Les chemins commençant par le caractère « / » sont résolus depuis la racine "
+"du répertoire personnel de l'utilisateur et les autres relativement à la "
+"racine de la bibliothèque musicale."
 
 #: templates/fake-template.php:26
 msgid "Pause"
@@ -1121,17 +1139,18 @@ msgstr "Historique de lecture"
 
 #: templates/partials/controls.php:46
 msgid "Playback rate"
-msgstr ""
+msgstr "Vitesse de lecture"
 
 #: js/app/controllers/playercontroller.js:370
 msgid "Playback speed not adjustible for the current song"
 msgstr ""
+"La vitesse de lecture n'est pas ajustable pour la musique en cours de lecture"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:125
 #: js/app/controllers/views/advancedsearchviewcontroller.js:180
 #: js/app/controllers/views/advancedsearchviewcontroller.js:233
 msgid "Played times"
-msgstr ""
+msgstr "Nombre de lectures"
 
 #: js/app/controllers/playercontroller.js:760
 #: js/app/controllers/views/advancedsearchviewcontroller.js:134
@@ -1141,49 +1160,51 @@ msgstr ""
 #: js/app/controllers/views/advancedsearchviewcontroller.js:240
 #: js/app/controllers/views/advancedsearchviewcontroller.js:242
 msgid "Playlist"
-msgstr ""
+msgstr "Liste de lecture"
 
 #: js/app/services/playlistfileservice.ts:89
 msgid "Playlist exported to file {{ path }}"
-msgstr ""
+msgstr "Liste de lecture exportée dans le fichier {{ path }}"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:137
 #: js/app/controllers/views/advancedsearchviewcontroller.js:191
 #: js/app/controllers/views/advancedsearchviewcontroller.js:243
 msgid "Playlist name"
-msgstr ""
+msgstr "Nom de la liste de lecture"
 
 #: js/app/services/playlistfileservice.ts:53
 msgid "Playlist or folder not found"
-msgstr ""
+msgstr "Liste de lecture ou dossier non trouvé"
 
 #: templates/partials/views/settingsview.php:256
 msgid ""
 "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
 "target=\"_blank\">issue tracker</a>"
 msgstr ""
+"Signalez tout bug ou problème sur <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">l'outil de suivi des tickets</a>."
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:265
 msgid "Podcast channel"
-msgstr ""
+msgstr "Chaîne de podcast"
 
 #: js/app/services/podcastservice.ts:59
 msgid "Podcast channel \"{{ title }}\" added"
-msgstr ""
+msgstr "La chaîne de podcast « {{ title }} » a été ajoutée"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:292
 msgid "Podcast episode"
-msgstr ""
+msgstr "Épisode du podcast"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:262
 #: js/app/controllers/views/advancedsearchviewcontroller.js:289
 msgid "Podcast metadata"
-msgstr ""
+msgstr "Métadonnées du podcast"
 
 #: js/app/controllers/playercontroller.js:755
 #: templates/partials/navigation.php:19
 msgid "Podcasts"
-msgstr ""
+msgstr "Podcasts"
 
 #: templates/partials/sidebar/radiohint.php:13
 msgid ""
@@ -1193,6 +1214,12 @@ msgid ""
 "radio\" link. When it disappears, the importing is done and the channels "
 "should become available in the view."
 msgstr ""
+"Cliquez sur le symbole … à côté de l'élément « Webradio » du menu de "
+"navigation et sélectionnez « Importer depuis un fichier ». Recherchez le "
+"fichier PLS précédemment téléchargé puis cliquez sur « Choisir ». Une icône "
+"de chargement s'affichera pendant un moment à côté de l'élément « Webradio » "
+"dans le menu. Il disparaîtra lorsque l'importation sera terminée et les "
+"chaînes devraient alors être disponibles."
 
 #: templates/partials/controls.php:37 templates/partials/controls.php:5
 #: templates/partials/controls.php:6
@@ -1202,27 +1229,27 @@ msgstr "Précédent"
 #: templates/partials/sidebar/albumdetails.php:37
 #: templates/partials/sidebar/artistdetails.php:40
 msgid "Problem connecting Last.fm. The API key may be invalid."
-msgstr ""
+msgstr "Problème de connexion à Last.fm. La clé d'API est peut être invalide."
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:94
 msgid "RSS URL"
-msgstr ""
+msgstr "URL du RSS"
 
 #: templates/partials/sidebar/radiostationdetails.php:4
 msgid "Radio station"
-msgstr ""
+msgstr "Station de radio"
 
 #: js/app/controllers/playercontroller.js:292
 msgid "Radio station not found"
-msgstr ""
+msgstr "Station de radio non trouvée"
 
 #: js/app/services/playlistfileservice.ts:117
 msgid "Radio stations exported to file {{ path }}"
-msgstr ""
+msgstr "Stations de radio exportées dans le fichier {{ path }}"
 
 #: templates/partials/sidebar/smartlistfilters.php:49
 msgid "Rarely played"
-msgstr ""
+msgstr "Joué rarement"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:112
 #: js/app/controllers/views/advancedsearchviewcontroller.js:117
@@ -1265,7 +1292,7 @@ msgstr "Mis à jour récemment"
 
 #: templates/partials/views/smartlistview.php:25
 msgid "Refine the filters defined for the smart playlist"
-msgstr ""
+msgstr "Affinez les filtres définis pour la playlist intelligente"
 
 #: templates/fake-template.php:18 templates/partials/navigationitem.php:139
 msgid "Reload"
@@ -1286,19 +1313,19 @@ msgstr "Supprimer la chaîne"
 
 #: templates/partials/navigationitem.php:61
 msgid "Remove duplicates"
-msgstr ""
+msgstr "Supprimer les doublons"
 
 #: js/app/controllers/navigationcontroller.js:174
 msgid "Remove playlist"
-msgstr ""
+msgstr "Supprimer la liste de lecture"
 
 #: js/app/controllers/views/radioviewcontroller.js:39
 msgid "Remove radio station"
-msgstr ""
+msgstr "Supprimer une station de radio"
 
 #: templates/partials/views/playlistview.php:33
 msgid "Remove track from playlist"
-msgstr ""
+msgstr "Supprimer une piste de la liste de lecture"
 
 #: templates/partials/navigationitem.php:36
 msgid "Rename"
@@ -1312,7 +1339,7 @@ msgstr "Répéter"
 #: js/app/controllers/views/albumsviewcontroller.js:275
 #: js/app/controllers/views/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
-msgstr ""
+msgstr "L'entrée demandée n'a pas été trouvée"
 
 #: templates/partials/views/settingsview.php:61
 msgid "Reset"
@@ -1321,17 +1348,17 @@ msgstr "Remettre à zéro"
 #: js/app/controllers/views/settingsviewcontroller.js:194
 #: templates/partials/views/settingsview.php:74
 msgid "Reset internet radio stations"
-msgstr ""
+msgstr "Réinitialiser les stations de radio"
 
 #: js/app/controllers/views/settingsviewcontroller.js:151
 #: templates/partials/views/settingsview.php:64
 msgid "Reset music collection"
-msgstr ""
+msgstr "Réinitialiser la collection musicale"
 
 #: js/app/controllers/views/settingsviewcontroller.js:224
 #: templates/partials/views/settingsview.php:83
 msgid "Reset podcast channels"
-msgstr ""
+msgstr "Réinitialiser les chaînes de podcast"
 
 #: templates/partials/views/settingsview.php:159
 msgid "Revoke API password"
@@ -1418,6 +1445,9 @@ msgid ""
 "Show desktop notification when the playing song changes. You also need to "
 "have the desktop notifications allowed in your browser for this site."
 msgstr ""
+"Afficher une notification sur le bureau lorsque la chanson en cours de "
+"lecture change. Vous devez autoriser les notifications dans votre navigateur "
+"pour ce site."
 
 #: templates/partials/sidebar/trackdetails.php:5
 msgid "Show in Files"
@@ -1465,10 +1495,12 @@ msgstr "Certains résultats de recherche ont été omis"
 #: templates/partials/views/genresview.php:34
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
+"Certains morceaux de votre bibliothèque doivent être rebalayés pour afficher "
+"le genre"
 
 #: templates/partials/views/settingsview.php:94
 msgid "Song change notifications"
-msgstr ""
+msgstr "Notification de changement de chanson"
 
 #: templates/partials/navigationitem.php:45
 msgid "Sort …"
@@ -1527,12 +1559,16 @@ msgid ""
 "The Ampache API major version to use in case the client doesn't specify any "
 "version. The default is {{defaultVer}}."
 msgstr ""
+"La version majeure de l'API Ampache à utiliser dans le cas où le client ne "
+"la spécifie pas. La valeur par défaut est {{defaultVer}}."
 
 #: templates/partials/views/settingsview.php:235
 msgid ""
 "The Ampache session expiry time in seconds. The default is {{defaultExpiry}} "
 "and the maximum is {{maxExpiry}}."
 msgstr ""
+"Délai d'expiration de la session Ampache en secondes. La valeur par défaut "
+"est {{defaultExpiry}} et la valeur maximale est {{maxExpiry}}."
 
 #: templates/partials/sidebar/radiohint.php:15
 msgid ""
@@ -1636,7 +1672,7 @@ msgstr ""
 
 #: js/app/controllers/maincontroller.js:191
 msgid "Timeout"
-msgstr ""
+msgstr "Temps d'attente écoulé"
 
 #: templates/partials/views/settingsview.php:190
 msgid ""
@@ -1652,7 +1688,7 @@ msgstr ""
 #: templates/partials/sidebar/albumdetails.php:28
 #: templates/partials/sidebar/playlistdetails.php:13
 msgid "Total length"
-msgstr "Taille totale"
+msgstr "Durée totale"
 
 #: js/app/controllers/playercontroller.js:789
 msgid "Track"
@@ -1769,6 +1805,8 @@ msgid ""
 "Upload image named \"{{name}}\" to anywhere within your library path to see "
 "it here."
 msgstr ""
+"Téléversez une image nommée « {{name}} » n'importe où dans le dossier de "
+"votre bibliothèque musicale pour qu'elle apparaisse ici."
 
 #: templates/main.php:47
 msgid "Upload music in the files app to listen to it here"
@@ -1779,6 +1817,8 @@ msgstr ""
 msgid ""
 "Upload the previously obtained PLS file to your cloud using the Files app."
 msgstr ""
+"Téléversez le fichier PLS précédemment obtenu sur votre cloud à l'aide de "
+"l'application Fichiers."
 
 #: templates/partials/sidebar/radiohint.php:7
 msgid ""
@@ -1792,22 +1832,28 @@ msgstr ""
 msgid ""
 "Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
+"Utilisez les informations d'identification suivantes pour vous connecter à "
+"cette instance Ampache/Subsonic."
 
 #: templates/partials/views/settingsview.php:151
 msgid ""
 "Use this address to browse your music collection from a Subsonic compatible "
 "player."
 msgstr ""
+"Utilisez cette adresse pour parcourir votre collection musicale à partir "
+"d'un lecteur compatible Subsonic."
 
 #: templates/partials/views/settingsview.php:146
 msgid ""
 "Use this address to browse your music collection from an Ampache compatible "
 "player."
 msgstr ""
+"Utilisez cette adresse pour parcourir votre collection musicale à partir "
+"d'un lecteur compatible Ampache."
 
 #: js/app/controllers/navigationcontroller.js:258
 msgid "Used filters: {{ params }}"
-msgstr ""
+msgstr "Filtres utilisés: {{ params }}"
 
 #: templates/partials/views/settingsview.php:91
 msgid "User interface"
@@ -1876,7 +1922,7 @@ msgstr "débit binaire"
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:100
 msgid "build date"
-msgstr ""
+msgstr "date de construction"
 
 #: templates/partials/navigationitem.php:55
 msgid "by album"
@@ -1988,7 +2034,7 @@ msgstr "chaînes de podcast"
 
 #: templates/partials/views/advancedsearchview.php:12
 msgid "podcast episodes"
-msgstr "épisode de podcast"
+msgstr "épisodes du podcast"
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:99
 msgid "published"
@@ -2029,7 +2075,7 @@ msgstr "illimité"
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:101
 msgid "updates checked"
-msgstr ""
+msgstr "Vérification de mises à jour"
 
 #: templates/partials/views/settingsview.php:254
 msgid "version history"

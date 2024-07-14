@@ -719,7 +719,8 @@ class Application extends ApplicationBase {
 				$c->query('Config'),
 				$c->query('AmpacheSessionMapper'),
 				$c->query('AmpacheUserMapper'),
-				$c->query('Logger')
+				$c->query('Logger'),
+				$c->query('UserId')
 			);
 		});
 		$context->registerMiddleWare('AmpacheMiddleware');

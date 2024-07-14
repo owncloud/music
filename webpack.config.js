@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2020 - 2023 Pauli Järvinen
+ * @copyright 2020 - 2024 Pauli Järvinen
  *
  */
 
@@ -21,6 +21,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     app: './js/index.app.js',
+	dashboard_music_widget: './js/index.dashboard.js',
     files_music_player: './js/index.embedded.js'
   },
   output: {

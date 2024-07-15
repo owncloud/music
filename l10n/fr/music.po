@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-13 18:17+0200\n"
+"PO-Revision-Date: 2024-07-15 20:24+0200\n"
 "Last-Translator: Fabien LOISON <https://flozz.fr/>\n"
 "Language-Team: French (http://www.transifex.com/owncloud-org/owncloud/"
 "language/fr/)\n"
@@ -314,6 +314,13 @@ msgid ""
 "headers <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a> and <a "
 "href=\"{{imgSrcUrl}}\" target=\"_blank\">img-src</a>."
 msgstr ""
+"Tableau contenant la liste des sources autorisées pour le streaming des "
+"radios et des podcasts. Les flux de type HLS ne sont pas concernés. La "
+"valeur par défaut est ['http://*:*', 'https://*:*'], permettant ainsi la "
+"diffusion à partir de n'importe quelle URL distante. Les URL données seront "
+"ajoutées aux en-têtes Content-Security-Policy <a href=\"{{mediaSrcUrl}}\" "
+"target=\"_blank\">media-src</a> et <a href=\"{{imgSrcUrl}}\" "
+"target=\"_blank\">img-src</a>."
 
 #: templates/partials/views/settingsview.php:102
 msgid "Articles to ignore on artist names"
@@ -512,6 +519,11 @@ msgid ""
 "samp> and <samp>blob:</samp> will be added to the CSP header <a "
 "href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 msgstr ""
+"Activer le streaming depuis des stations de type HLS en les relayant via le "
+"serveur cloud. La valeur par défaut est <samp>true</samp>. Lorsque cette "
+"option est activée, les sources <samp>data:</samp> et <samp>blob:</samp> "
+"sont ajoutées à l'en-tête CSP <a href=\"{{mediaSrcUrl}}\" "
+"target=\"_blank\">media- src</a>."
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:321
 msgid "Ends with"
@@ -712,6 +724,12 @@ msgid ""
 "way due to the design of the APIs. You can generate as many passwords as you "
 "want and revoke them at anytime."
 msgstr ""
+"Ici, vous pouvez générer des mots de passe à utiliser avec l'API Ampache ou "
+"Subsonic. Des mots de passe distincts de celui de votre compte utilisateur "
+"sont utilisés car ils ne peuvent pas être stockés de manière vraiment "
+"sécurisée pour des raisons techniques liées à la conception des API. Vous "
+"pouvez générer autant de mots de passe que vous le souhaitez et les révoquer "
+"à tout moment."
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:270
 #: js/app/controllers/views/advancedsearchviewcontroller.js:297
@@ -762,6 +780,11 @@ msgid ""
 "the link \"Save current list as playlist for your media player: PLS\" on top "
 "of the view to get all the matching stations."
 msgstr ""
+"Sur la page des résultats de recherche, cliquez sur l'icône « disquette » de "
+"l'une des stations pour la télécharger sous la forme d'un fichier PLS. Vous "
+"pouvez également appuyer sur le lien « Save current list as playlist for "
+"your media player: PLS » en haut de la page pour obtenir toutes les stations "
+"en un seul fichier."
 
 #: templates/partials/views/settingsview.php:131
 msgid "Increase playback speed"
@@ -873,6 +896,11 @@ msgid ""
 "images are not up-scaled. The default size is 380 pixels. The value should "
 "be given as a single integer."
 msgstr ""
+"Les grandes images de couverture d'album sont réduites à cette taille sur le "
+"serveur avant d'être servies aux navigateurs Web ou au clients Subsonic/"
+"Ampache. Les images plus petites ne sont pas mises à l'échelle. La taille "
+"par défaut est de 380 pixels. La valeur doit être donnée sous la forme d'un "
+"unique nombre entier."
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:126
 #: js/app/controllers/views/advancedsearchviewcontroller.js:181
@@ -907,6 +935,12 @@ msgid ""
 "using extrenal storage. When disabled, the library structure is built based "
 "on the file and folder names only."
 msgstr ""
+"De nombreuses fonctionnalités de l'application Musique sont basées sur les "
+"métadonnées stockées dans les fichiers audio. Cependant, l'analyse de ces "
+"données peut prendre beaucoup de temps sur certains systèmes utilisant un "
+"stockage externe. Lorsqu'elle est désactivée, la structure de la "
+"bibliothèque est construite uniquement sur la base des noms de fichiers et "
+"de dossiers."
 
 #: templates/partials/views/settingsview.php:116
 msgid ""
@@ -1028,7 +1062,7 @@ msgstr ""
 "Subsonic. Vérifiez les <a href=\"{{ampacheClientsUrl}}\" "
 "target=\"_blank\">clients Ampache</a> et les <a "
 "href=\"{{subsonicClientsUrl}}\" target=\"_blank\">clients Subsonic</a> "
-"Compatibles."
+"compatibles."
 
 #: templates/partials/sidebar/smartlistfilters.php:42
 msgid ""
@@ -1036,18 +1070,27 @@ msgid ""
 "than the requested number of matches. In the strict mode, only the best "
 "matching songs are included with no element of randomness."
 msgstr ""
+"Notez que cette option n'est utile que lorsque la bibliothèque contient plus "
+"de musiques correspondantes que le nombre demandé. En mode strict, seuls les "
+"titres les mieux adaptés sont inclus, sans qu'aucun élément aléatoire ne "
+"soit ajouté."
 
 #: templates/partials/views/settingsview.php:14
 msgid ""
 "Note: When the path is changed, any previously scanned files outside the new "
 "path are removed from the collection and any playlists."
 msgstr ""
+"Note : Lorsque le chemin est modifié, tous les fichiers précédemment "
+"analysés en dehors du nouveau chemin sont supprimés de la collection et des "
+"listes de lecture."
 
 #: templates/partials/views/settingsview.php:224
 msgid ""
 "Note: the update rate is limited also by the execution rate of your cloud "
 "background task."
 msgstr ""
+"Note : la fréquence de mise à jour est aussi limitée par la fréquence "
+"d'exécution des tâches en arrière-plan de votre cloud."
 
 #: templates/partials/sidebar/artistdetails.php:25
 msgid "Number of albums"
@@ -1182,7 +1225,7 @@ msgid ""
 "target=\"_blank\">issue tracker</a>"
 msgstr ""
 "Signalez tout bug ou problème sur <a href=\"{{issueTrackerUrl}}\" "
-"target=\"_blank\">l'outil de suivi des tickets</a>."
+"target=\"_blank\">l'outil de suivi des tickets</a>"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:265
 msgid "Podcast channel"
@@ -1343,7 +1386,7 @@ msgstr "L'entrée demandée n'a pas été trouvée"
 
 #: templates/partials/views/settingsview.php:61
 msgid "Reset"
-msgstr "Remettre à zéro"
+msgstr "Remise à zéro"
 
 #: js/app/controllers/views/settingsviewcontroller.js:194
 #: templates/partials/views/settingsview.php:74
@@ -1403,12 +1446,16 @@ msgid ""
 "Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
 "<strong>ALT</strong>."
 msgstr ""
+"Reculer. Reculez plus rapidement avec <strong>SHIFT</strong> ou plus "
+"doucement avec <strong>ALT</strong>."
 
 #: templates/partials/views/settingsview.php:124
 msgid ""
 "Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
 "<strong>ALT</strong>."
 msgstr ""
+"Avancer. Avancez plus rapidement avec <strong>SHIFT</strong> ou plus "
+"doucement avec <strong>ALT</strong>."
 
 #: templates/partials/views/settingsview.php:39
 msgid "Select folder"
@@ -1500,7 +1547,7 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:94
 msgid "Song change notifications"
-msgstr "Notification de changement de chanson"
+msgstr "Notification lors du changement de chanson"
 
 #: templates/partials/navigationitem.php:45
 msgid "Sort …"
@@ -1515,12 +1562,17 @@ msgid ""
 "Specify folders within your music collection path which shall be excluded "
 "from the scanning."
 msgstr ""
+"Définis les dossiers à l'intérieur de votre collection musicale qui doivent "
+"être exclus du balayage."
 
 #: templates/partials/views/settingsview.php:107
 msgid ""
 "Specify space-delimited list of articles which should be ignored when "
 "ordering the artists alphabetically. The articles are case-insensitive."
 msgstr ""
+"Spécifiez une liste d'articles délimités par des espaces qui doivent être "
+"ignorés lors du classement alphabétique des artistes. Les articles ne sont "
+"pas sensibles à la casse."
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:320
 msgid "Starts with"
@@ -1576,6 +1628,10 @@ msgid ""
 "will. You might want to keep it, though, because it is also possible to play "
 "the radio stations directly within the Files app by opening the PLS file."
 msgstr ""
+"Le fichier PLS n'est plus nécessaire après l'importation et vous pouvez donc "
+"le supprimer. Toutefois, vous souhaiterez peut-être le conserver, car il est "
+"également possible d'écouter les stations de radio directement dans "
+"l'application Fichiers en ouvrant le fichier PLS."
 
 #: js/app/services/podcastservice.ts:104
 msgid "The channel was already up-to-date"
@@ -1591,6 +1647,9 @@ msgid ""
 "overwrite it. Select \"No\" to export the list with another name. Close the "
 "dialog to cancel."
 msgstr ""
+"Le dossier contient déjà un fichier nommé « {{ filename }} ». Sélectionnez "
+"« Oui » pour l'écraser. Sélectionnez « Non » pour exporter la liste sous un "
+"autre nom. Fermez la boîte de dialogue pour annuler."
 
 #: templates/partials/views/settingsview.php:223
 msgid ""
@@ -1598,12 +1657,18 @@ msgid ""
 "be used for sub-hour resolution. Negative value will disable automatic "
 "updating. The default value is 24 hours."
 msgstr ""
+"L'intervalle de mise à jour automatique des podcasts, exprimé en heures. Un "
+"nombre décimal peut être utilisé pour une granularité plus fine. Un nombre "
+"négatif désactivera la mise à jour automatique. La valeur par défaut est de "
+"24 heures."
 
 #: js/app/services/playlistfileservice.ts:173
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
 "after the existing contents. Proceed?"
 msgstr ""
+"La liste de lecture contient déjà quelques pistes. Les pistes importées "
+"seront ajoutées après le contenu existant. Continuer ?"
 
 #: templates/partials/sidebar/radiohint.php:29
 msgid ""
@@ -1613,24 +1678,35 @@ msgid ""
 "browser is being used, but still, there are numerous stations which will not "
 "work."
 msgstr ""
+"Le flux est cassé d'une manière ne permettant pas à l'application Musique ou "
+"à votre navigateur de le lire. La plupart des stations de radio trouvées sur "
+"Community Radio Browser devraient fonctionner avec l'application Musique "
+"lorsqu'elle est utilisée via un navigateur grand public, mais il existe "
+"néanmoins un certain nombre de stations qui ne fonctionneront pas."
 
 #: templates/partials/sidebar/radiohint.php:25
 msgid ""
 "The stream is of HLS type and the administrator of your cloud has disabled "
 "support for such streams."
 msgstr ""
+"Le flux est de type HLS et l'administrateur de votre cloud en a désactivé la "
+"prise en charge."
 
 #: templates/partials/sidebar/radiohint.php:27
 msgid ""
 "The stream is of non-HLS type and the administrator of your cloud has "
 "enabled streaming only from some specific sources."
 msgstr ""
+"Le flux n'est pas de type HLS mais l'administrateur de votre cloud a "
+"autorisé le streaming uniquement depuis certaines sources spécifiques."
 
 #: templates/partials/sidebar/radiohint.php:20
 msgid ""
 "There are a couple of typical reasons why a configured radio station might "
 "not play on your browser:"
 msgstr ""
+"Il existe plusieurs raisons typiques pour lesquelles une station de radio ne "
+"peut pas être  dans votre navigateur :"
 
 #: templates/partials/views/settingsview.php:185
 msgid ""
@@ -1638,25 +1714,34 @@ msgid ""
 "some settings are available by adding specific key-value pairs to the file "
 "<samp>{{filename}}</samp>. The available keys are described below."
 msgstr ""
+"Il n'existe pas d'interface utilisateur pour les configurations globales de "
+"l'application Musique, mais certains paramètres sont disponibles en ajoutant "
+"des paires clé/valeur spécifiques au fichier <samp>{{filename}}</samp>. Les "
+"clés disponibles sont décrites ci-dessous."
 
 #: templates/partials/views/settingsview.php:88
 msgid "This action erases all the channels shown in the \"Podcasts\" view."
 msgstr ""
+"Cette action efface toutes les chaînes affichées dans la vue « Podcasts »."
 
 #: templates/partials/views/settingsview.php:79
 msgid ""
 "This action erases all the stations shown in the \"Internet radio\" view."
 msgstr ""
+"Cette action efface toutes les stations affichées dans la vue « Webradio »."
 
 #: templates/partials/views/settingsview.php:69
 msgid ""
 "This action resets all the scanned tracks and all the user-created "
 "playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
+"Cette action remet à zéro toutes les pistes analysées et toutes les listes "
+"de lecture créées par l'utilisateur. La collection pourra ensuite être "
+"balayée de nouveau à partir de zéro."
 
 #: js/app/services/podcastservice.ts:70
 msgid "This channel is already subscribed"
-msgstr ""
+msgstr "Déjà abonné à cette chaîne"
 
 #: templates/partials/views/settingsview.php:70
 msgid ""
@@ -1664,6 +1749,11 @@ msgid ""
 "would somehow get corrupted. If the latter happens, please report a bug to "
 "the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
 msgstr ""
+"Cela peut être nécessaire après avoir modifié les chemins exclus ou si la "
+"base de données se retrouve corrompue d'une manière ou d'une autre. Si ce "
+"dernier cas se produit, veuillez signaler un bug via <a "
+"href=\"{{issueTrackerUrl}}\" target=\"_blank\">l'outil de suivi des "
+"problèmes</a>."
 
 #: templates/partials/views/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
@@ -1684,6 +1774,14 @@ msgid ""
 "key. For more details, see the <a href=\"{{guideUrl}}\" "
 "target=\"_blank\">tutorial</a>."
 msgstr ""
+"Pour voir la biographie de l'artiste et d'autres informations de Last.fm "
+"dans la vue détaillée, vous devez créer un compte API chez Last.fm. Pour "
+"cela, utilisez le <a href=\"{{lastfmUrl}}\" target=\"_blank\">formulaire sur "
+"le site de Last.fm</a>. Seuls les champs « Contact email » et « Application "
+"name » sont obligatoires dans le formulaire. Vous recevez ensuite une clé "
+"API qui doit être utilisée comme valeur pour cette option. Pour plus de "
+"détails, consultez le <a href=\"{{guideUrl}}\" target=\"_blank\">tutoriel</"
+"a>."
 
 #: templates/partials/sidebar/albumdetails.php:28
 #: templates/partials/sidebar/playlistdetails.php:13
@@ -1778,6 +1876,8 @@ msgid ""
 "Unlike the other settings, this switch is stored per browser and not per "
 "user account."
 msgstr ""
+"Contrairement aux autres paramètres, ce paramètre est stocké par navigateur "
+"et non par compte utilisateur."
 
 #: templates/fake-template.php:29
 msgid "Unmute"
@@ -1827,6 +1927,9 @@ msgid ""
 "of using the search, you may also browse the channels in Community Radio "
 "Browser by category or popularity."
 msgstr ""
+"Utilisez la <a href=\"{{url}}\" target=\"_blank\">recherche</a> de Community "
+"Radio Browser pour trouver des stations de radio qui vous intéressent. Vous "
+"pouvez également parcourir les chaînes par catégorie ou par popularité."
 
 #: templates/partials/views/settingsview.php:172
 msgid ""
@@ -1889,6 +1992,8 @@ msgid ""
 "You can browse and play your music collection from external applications "
 "which support either Ampache or Subsonic API."
 msgstr ""
+"Vous pouvez parcourir et lire votre collection musicale à partir "
+"d'applications externes prenant en charge l'API Ampache ou Subsonic."
 
 #: templates/partials/views/settingsview.php:26
 msgid "You can use the wild cards '?', '*', and '**':"
@@ -1903,6 +2008,12 @@ msgid ""
 "page. On the desktop browsers, such settings can usually be found by "
 "clicking the icon right next to the address bar on its left side."
 msgstr ""
+"Votre cloud utilise le protocole HTTPS alors que l'URL diffusée utilise le "
+"protocole HTTP. Par défaut, votre navigateur peut bloquer cet accès. Pour "
+"contourner ce problème, il peut-être possible de configurer votre navigateur "
+"pour autoriser les contenus non sécurisés sur cette page. Sur les "
+"navigateurs de bureau, ce paramètre est généralement accessible via une "
+"petite icône située sur le côté gauche de la barre d'adresse."
 
 #: templates/partials/views/advancedsearchview.php:9
 msgid "albums"
@@ -2075,7 +2186,7 @@ msgstr "illimité"
 
 #: js/app/controllers/sidebar/podcastdetailscontroller.js:101
 msgid "updates checked"
-msgstr "Vérification de mises à jour"
+msgstr "vérification de mises à jour"
 
 #: templates/partials/views/settingsview.php:254
 msgid "version history"

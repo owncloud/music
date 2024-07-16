@@ -98,7 +98,7 @@ class DetailsHelper {
 			self::sanitizeString($lyrics);
 
 			if ($lyrics === null) {
-				// no unsynchronized lyrics, try to get and convert the potentially syncronized lyrics
+				// no unsynchronized lyrics, try to get and convert the potentially synchronized lyrics
 				$lyrics = ExtractorGetID3::getFirstOfTags($data, ['LYRICS', 'lyrics']);
 				self::sanitizeString($lyrics);
 				$parsed = LyricsParser::parseSyncedLyrics($lyrics);

@@ -25,6 +25,7 @@
 * [Christoph Wurst](https://github.com/ChristophWurst)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)
+* [Fabien Loison](https://github.com/flozz)
 * [Felix Böhm](https://github.com/felixboehm)
 * [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
 * [Gavin E](https://github.com/gavine99)

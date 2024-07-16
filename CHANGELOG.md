@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+- French translation
+  [#1157](https://github.com/owncloud/music/pull/1157) @flozz
+
+### Changed
+
+### Fixed
+
 ## 2.0.0 - 2024-06-23
 
 ### Added

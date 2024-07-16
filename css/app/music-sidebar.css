@@ -238,6 +238,11 @@
 	margin-left: 6px;
 }
 
+#app-sidebar #favorite-toggle {
+	position: absolute;
+	z-index: 10;
+}
+
 #app-sidebar h1 {
 	font-size: 24px;
 	text-align: center;

@@ -7,6 +7,7 @@
 ### Changed
 
 ### Fixed
+- Favorite toggle button not working on artists with no image available
 
 ## 2.0.0 - 2024-06-23
 

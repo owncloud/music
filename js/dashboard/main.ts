@@ -10,6 +10,21 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 	OCA.Dashboard.register('music', (el : HTMLElement) => {
-		el.innerHTML = 'This is content for the Music widget';
+		loadArtists(el);
 	});
 });
+
+function loadArtists(container : HTMLElement) {
+	let url = OC.generateUrl('apps/music/ampache/server/json.server.php');
+	$.get(url, {action: 'list', type: 'artist', auth: 'internal'}, (result : any) => {
+		let $select = $('<select>').appendTo($(container));
+		//let $options = $.map(result.list, (artist : any) => $('<option/>', {text: artist.name}));
+		//$select.html($options);
+
+		$(result.list).each(function() {
+			$select.append($("<option/>").attr('value', this.id).text(this.name));
+		});
+	}).fail((error) => {
+		console.error(error)
+	});
+}

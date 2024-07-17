@@ -5,6 +5,7 @@
   [#1157](https://github.com/owncloud/music/pull/1157) @flozz
 
 ### Changed
+- Subsonic API: For radio stations without user-supplied name, use the stream URL as a name
 
 ### Fixed
 - Favorite toggle button not working on artists with no image available

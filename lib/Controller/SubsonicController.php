@@ -679,7 +679,7 @@ class SubsonicController extends Controller {
 				['internetRadioStation' => \array_map(function($station) {
 					return [
 						'id' => $station->getId(),
-						'name' => $station->getName(),
+						'name' => $station->getName() ?: $station->getStreamUrl(),
 						'streamUrl' => $station->getStreamUrl(),
 						'homePageUrl' => $station->getHomeUrl()
 					];

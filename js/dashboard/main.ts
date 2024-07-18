@@ -8,23 +8,12 @@
  * @copyright Pauli Järvinen 2024
  */
 
+import { MusicWidget } from './musicwidget';
+
 document.addEventListener('DOMContentLoaded', () => {
 	OCA.Dashboard.register('music', (el : HTMLElement) => {
-		loadArtists(el);
+		const $container = $(el);
+		$container.addClass('music-widget');
+		const widget = new MusicWidget($container);
 	});
 });
-
-function loadArtists(container : HTMLElement) {
-	let url = OC.generateUrl('apps/music/ampache/server/json.server.php');
-	$.get(url, {action: 'list', type: 'artist', auth: 'internal'}, (result : any) => {
-		let $select = $('<select>').appendTo($(container));
-		//let $options = $.map(result.list, (artist : any) => $('<option/>', {text: artist.name}));
-		//$select.html($options);
-
-		$(result.list).each(function() {
-			$select.append($("<option/>").attr('value', this.id).text(this.name));
-		});
-	}).fail((error) => {
-		console.error(error)
-	});
-}

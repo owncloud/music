@@ -8,3 +8,46 @@
  * @copyright Pauli Järvinen 2024
  */
 
+.music-widget {
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+}
+
+.music-widget .select-container {
+	flex: 0 1 auto;
+}
+
+.music-widget .tracks-container {
+	flex: 1 1 auto;
+	overflow-y: scroll;
+}
+
+.music-widget select {
+	width: 100%;
+}
+
+.music-widget select:invalid {
+	color: var(--color-text-lighter);
+}
+
+.music-widget select option {
+	color: var(--color-main-text);
+}
+
+.music-widget li {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-left: 12px;
+	padding-right: 12px;
+	line-height: 28px;
+	border-radius: var(--border-radius-large);
+	cursor: pointer;
+}
+
+.music-widget li:hover,
+.music-widget li.current {
+	transition: background-color 0.3s ease;
+	background-color: var(--color-background-hover);
+}

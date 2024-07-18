@@ -55,14 +55,14 @@ export class MusicWidget {
 			this.#parent1Select.on('change', () => {
 				this.#parent2Select?.remove();
 				this.#trackList?.remove();
-				const artistId = this.#parent1Select.val();
+				const artistId = this.#parent1Select.val() as string;
 				ampacheApiAction('artist_albums', { filter: artistId }, (result: any) => {
 					this.#parent2Select = createSelect(result.album, t('music', 'Select album')).appendTo(this.#selectContainer);
 					this.#parent2Select.on('change', () => {
 						this.#trackList?.remove();
 						const albumId = this.#parent2Select.val();
 						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => {
-							this.#trackList = createTrackList(result.song).appendTo(this.#trackListContainer);
+							this.#trackList = createTrackList(result.song, artistId).appendTo(this.#trackListContainer);
 						})
 					});
 				});
@@ -71,7 +71,9 @@ export class MusicWidget {
 	}
 
 	#showAllTracks() {
-		//TODO
+		ampacheApiAction('get_indexes', { type: 'song' }, (result: any) => {
+			this.#trackList = createTrackList(result.song, null).appendTo(this.#trackListContainer);
+		});
 	}
 }
 
@@ -88,10 +90,14 @@ function createSelect(items: any[], placeholder: string|null = null) : JQuery<HT
 	return $select;
 }
 
-function createTrackList(tracks: any[]) : JQuery<HTMLUListElement> {
+function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLUListElement> {
 	const $ul = $('<ul/>') as JQuery<HTMLUListElement>;
 	$(tracks).each(function() {
-		$ul.append($("<li/>").attr('data-id', this.id).text(this.name));
+		let liContent = this.name;
+		if (this.artist.id != parentId) {
+			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
+		}
+		$ul.append($(`<li data-id=${this.id}>${liContent}</li>`));
 	});
 
 	return $ul;

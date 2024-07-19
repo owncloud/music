@@ -8,18 +8,24 @@
  * @copyright Pauli Järvinen 2024
  */
 
+import { PlayerWrapper } from "../shared/playerwrapper";
+
 declare function t(module : string, text : string) : string;
+
+const AMPACHE_API_URL = 'apps/music/ampache/server/json.server.php';
 
 export class MusicWidget {
 
-	#selectContainer: JQuery<HTMLElement> = null;
-	#modeSelect: JQuery<HTMLSelectElement> = null;
-	#parent1Select: JQuery<HTMLSelectElement> = null;
-	#parent2Select: JQuery<HTMLSelectElement> = null;
-	#trackListContainer: JQuery<HTMLElement> = null;
-	#trackList: JQuery<HTMLUListElement> = null;
+	#player: PlayerWrapper;
+	#selectContainer: JQuery<HTMLElement>;
+	#modeSelect: JQuery<HTMLSelectElement>;
+	#parent1Select: JQuery<HTMLSelectElement>;
+	#parent2Select: JQuery<HTMLSelectElement>;
+	#trackListContainer: JQuery<HTMLElement>;
+	#trackList: JQuery<HTMLUListElement>;
 
-	constructor($container: JQuery<HTMLElement>) {
+	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper) {
+		this.#player = player;
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 
@@ -31,7 +37,7 @@ export class MusicWidget {
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
 	}
 
-	#onModeSelect() {
+	#onModeSelect() : void {
 		// remove the previous selections first
 		this.#parent1Select?.remove();
 		this.#parent2Select?.remove();
@@ -49,7 +55,7 @@ export class MusicWidget {
 		}
 	}
 
-	#showAlbumArtists() {
+	#showAlbumArtists() : void {
 		ampacheApiAction('list', { type: 'album_artist' }, (result: any) => {
 			this.#parent1Select = createSelect(result.list, t('music', 'Select artist')).appendTo(this.#selectContainer);
 			this.#parent1Select.on('change', () => {
@@ -61,27 +67,44 @@ export class MusicWidget {
 					this.#parent2Select.on('change', () => {
 						this.#trackList?.remove();
 						const albumId = this.#parent2Select.val();
-						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => {
-							this.#trackList = createTrackList(result.song, artistId).appendTo(this.#trackListContainer);
-						})
+						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => this.#createTrackList(result.song, artistId));
 					});
 				});
 			});
 		});
 	}
 
-	#showAllTracks() {
-		ampacheApiAction('get_indexes', { type: 'song' }, (result: any) => {
-			this.#trackList = createTrackList(result.song, null).appendTo(this.#trackListContainer);
+	#showAllTracks() : void {
+		ampacheApiAction('songs', {}, (result: any) => this.#createTrackList(result.song, null));
+	}
+
+	#createTrackList(tracks: any[], parentId: string|null) : void {
+		const player = this.#player;
+		this.#trackList = createTrackList(tracks, parentId).appendTo(this.#trackListContainer);
+		
+		this.#trackList.on('click', 'li', function(_event) {
+			const $el = $(this);
+			const url = $el.data('url');
+			if (url == player.getUrl()) {
+				if (player.isPlaying()) {
+					player.pause();
+				} else {
+					player.play();
+				}
+			}
+			else {
+				player.fromUrl(url, $el.data('stream_mime'));
+				player.play();
+			}
 		});
 	}
 }
 
 function createSelect(items: any[], placeholder: string|null = null) : JQuery<HTMLSelectElement> {
-	const $select = $('<select/>').attr('required', '') as JQuery<HTMLSelectElement>;
+	const $select = $('<select required/>') as JQuery<HTMLSelectElement>;
 
 	if (placeholder !== null) {
-		$select.append($("<option/>").attr('value', '').text(placeholder).attr('selected', '').attr('disabled', '').attr('hidden', ''));
+		$select.append($('<option selected disabled hidden/>').attr('value', '').text(placeholder));
 	}
 
 	$(items).each(function() {
@@ -97,14 +120,14 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 		if (this.artist.id != parentId) {
 			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
 		}
-		$ul.append($(`<li data-id=${this.id}>${liContent}</li>`));
+		$(`<li>${liContent}</li>`).data(this).appendTo($ul); // each item stores a `data` reference to the original song object
 	});
 
 	return $ul;
 }
 
 function ampacheApiAction(action: string, args: JQuery.PlainObject, callback: JQuery.jqXHR.DoneCallback) {
-	const url = OC.generateUrl('apps/music/ampache/server/json.server.php');
+	const url = OC.generateUrl(AMPACHE_API_URL);
 	args['action'] = action;
 	args['auth'] = 'internal';
 

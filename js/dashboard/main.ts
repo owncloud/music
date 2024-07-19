@@ -9,11 +9,13 @@
  */
 
 import { MusicWidget } from './musicwidget';
+import { PlayerWrapper } from '../shared/playerwrapper';
 
 document.addEventListener('DOMContentLoaded', () => {
 	OCA.Dashboard.register('music', (el : HTMLElement) => {
 		const $container = $(el);
 		$container.addClass('music-widget');
-		const widget = new MusicWidget($container);
+		const player = new PlayerWrapper();
+		const widget = new MusicWidget($container, player);
 	});
 });

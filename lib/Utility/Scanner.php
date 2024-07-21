@@ -722,7 +722,7 @@ class Scanner extends PublicEmitter {
 		$year = null;
 		$matches = null;
 
-		if (\ctype_digit($date)) {
+		if (\is_numeric($date)) {
 			$year = (int)$date; // the date is a valid year as-is
 		} elseif (\is_string($date) && \preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
 			$year = (int)$matches[1]; // year from ISO-formatted date yyyy-mm-dd

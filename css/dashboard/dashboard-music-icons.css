@@ -1,0 +1,30 @@
+
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2024
+ */
+
+.music-widget .icon-play {
+	background-image: url(../../img/play-big.svg);
+}
+
+.music-widget .icon-pause {
+	background-image: url(../../img/pause-big.svg);
+}
+
+.music-widget .icon-stop {
+	background-image: url(../../img/stop.svg);
+}
+
+.music-widget .icon-skip-prev {
+	background-image: url(../../img/skip-previous.svg);
+}
+
+.music-widget .icon-skip-next {
+	background-image: url(../../img/skip-next.svg);
+}

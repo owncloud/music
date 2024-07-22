@@ -21,6 +21,36 @@
 .music-widget .tracks-container {
 	flex: 1 1 auto;
 	overflow-y: scroll;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.music-widget .player-controls {
+	flex: 0 0 60px;
+	display: flex;
+	flex-flow: row;
+}
+
+.music-widget .player-controls .albumart {
+	width: 50px;
+	height: 50px;
+	border: 1px solid var(--color-text-lighter);
+	margin-left: 8px;
+	margin-right: 16px;
+}
+
+.music-widget .player-controls .control {
+	width: 32px;
+	height: 32px;
+	margin: 9px;
+	background-size: contain;
+	cursor: pointer;
+	opacity: .5;
+	filter: var(--background-invert-if-dark);
+}
+
+.music-widget .player-controls .control:hover {
+	opacity: 1;
 }
 
 .music-widget select {
@@ -43,6 +73,10 @@
 	padding-right: 12px;
 	line-height: 28px;
 	border-radius: var(--border-radius-large);
+	cursor: pointer;
+}
+
+.music-widget li * {
 	cursor: pointer;
 }
 

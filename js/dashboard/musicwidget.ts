@@ -23,6 +23,7 @@ export class MusicWidget {
 	#parent2Select: JQuery<HTMLSelectElement>;
 	#trackListContainer: JQuery<HTMLElement>;
 	#trackList: JQuery<HTMLUListElement>;
+	#controls: JQuery<HTMLElement>;
 
 	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper) {
 		this.#player = player;
@@ -35,6 +36,11 @@ export class MusicWidget {
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
+		this.#controls = createControls(
+			() => this.#player.togglePlay(),
+			() => this.#jumpToPrev(),
+			() => this.#jumpToNext()
+		).appendTo($container);
 	}
 
 	#onModeSelect() : void {
@@ -86,17 +92,24 @@ export class MusicWidget {
 			const $el = $(this);
 			const url = $el.data('url');
 			if (url == player.getUrl()) {
-				if (player.isPlaying()) {
-					player.pause();
-				} else {
-					player.play();
-				}
+				player.togglePlay();
 			}
 			else {
 				player.fromUrl(url, $el.data('stream_mime'));
 				player.play();
+
+				$el.parent().find('.current').removeClass('current');
+				$el.addClass('current');
 			}
 		});
+	}
+
+	#jumpToNext() {
+		// TODO
+	}
+
+	#jumpToPrev() {
+		// TODO
 	}
 }
 
@@ -124,6 +137,15 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	});
 
 	return $ul;
+}
+
+function createControls(onPlayPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction) : JQuery<HTMLElement> {
+	const $container = $('<div class="player-controls"/>');
+	const $albumArt = $('<div class="albumart icon-music"/>').appendTo($container);
+	const $prev = $('<div class="control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
+	const $play = $('<div class="control icon-play"/>').appendTo($container).on('click', () => onPlayPause());
+	const $next = $('<div class="control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
+	return $container;
 }
 
 function ampacheApiAction(action: string, args: JQuery.PlainObject, callback: JQuery.jqXHR.DoneCallback) {

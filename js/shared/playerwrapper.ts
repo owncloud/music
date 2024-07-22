@@ -7,7 +7,7 @@
  * @author Pellaeon Lin <pellaeon@cnmc.tw>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Pellaeon Lin 2015
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 const Hls = require('node_modules/hls.js/dist/hls.light.js');
@@ -230,6 +230,14 @@ export class PlayerWrapper {
 				}
 				this.#onPaused(); // Aurora has no callback => fire event synchronously
 				break;
+		}
+	}
+
+	togglePlay() : void {
+		if (this.isPlaying()) {
+			this.pause();
+		} else {
+			this.play();
 		}
 	}
 

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022, 2023
+ * @copyright Pauli Järvinen 2022 - 2024
  */
 
 import * as _ from 'lodash';
@@ -47,6 +47,10 @@ class GaplessPlayer {
 
 	pause() : void {
 		this.#currentPlayer.pause();
+	}
+
+	togglePlay() : void {
+		this.#currentPlayer.togglePlay();
 	}
 
 	stop() : void {

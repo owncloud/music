@@ -34,12 +34,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, listEntry) {
+	playlistService.subscribe('trackChanged', function(listEntry) {
 		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
-	playlistService.subscribe('play', function(e, playingView) {
+	playlistService.subscribe('play', function(playingView) {
 		// assume that the play started from current view if no other view given
 		$rootScope.playingView = playingView || $rootScope.currentView;
 	});
@@ -311,7 +311,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		filesToScan = null;
 		filesToScanIterator = 0;
 		previouslyScannedCount = 0;
-		// Genre and artist IDs have got invalidated while resetting the libarary, drop any related filters
+		// Genre and artist IDs have got invalidated while resetting the library, drop any related filters
 		if ($scope.smartListParams !== null) {
 			$scope.smartListParams.genres = [];
 			$scope.smartListParams.artists = [];

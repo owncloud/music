@@ -123,15 +123,15 @@ angular.module('Music').controller('GenresViewController', [
 			return 'genre-' + $scope.genres[index].id;
 		};
 
-		subscribe('playlistEnded', function() {
+		playlistService.subscribe('playlistEnded', function() {
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		playlistService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
 				let elementId = 'track-' + trackId;
 				// If the track element is hidden (collapsed), scroll to the genre
@@ -145,8 +145,9 @@ angular.module('Music').controller('GenresViewController', [
 			}
 		});
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playlistService.unsubscribeAll(this);
 		});
 
 		// Init happens either immediately (after making the loading animation visible)
@@ -174,7 +175,7 @@ angular.module('Music').controller('GenresViewController', [
 		}
 
 		/**
-		 * Increase number of shown genres aynchronously step-by-step until
+		 * Increase number of shown genres asynchronously step-by-step until
 		 * they are all visible. This is to avoid script hanging up for too
 		 * long on huge collections.
 		 */

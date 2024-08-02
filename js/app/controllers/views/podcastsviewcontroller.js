@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 angular.module('Music').controller('PodcastsViewController', [
@@ -14,15 +14,16 @@ angular.module('Music').controller('PodcastsViewController', [
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playlistService.unsubscribeAll(this);
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
@@ -113,14 +114,13 @@ angular.module('Music').controller('PodcastsViewController', [
 			return gettextCatalog.getString('Show all {{ count }} episodes …', { count: count });
 		};
 
-		// emited on end of playlist by playerController
-		subscribe('playlistEnded', function() {
+		playlistService.subscribe('playlistEnded', function() {
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(_event, playlistId) {
+		playlistService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
 		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime = 500) {
 			let episode = libraryService.getPodcastEpisode(episodeId);

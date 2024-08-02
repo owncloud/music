@@ -7,17 +7,16 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 import * as ng from "angular";
 import * as _ from "lodash";
-import { MusicRootScope } from "app/config/musicrootscope";
 
 interface PlaylistEntry {
 };
 
-ng.module('Music').service('playlistService', ['$rootScope', function($rootScope : MusicRootScope) {
+ng.module('Music').service('playlistService', [function() {
 	let playlist : PlaylistEntry[]|null = null;
 	let playlistId : string|null = null;
 	let playOrder : number[] = [];
@@ -26,6 +25,7 @@ ng.module('Music').service('playlistService', ['$rootScope', function($rootScope
 	let shuffle = false;
 	let repeat = false;
 	let prevShuffleState = false;
+	let eventDispatcher = _.clone(OC.Backbone.Events);
 
 	function shuffledIndices() : number[] {
 		let indices = _.range(playlist.length);
@@ -210,10 +210,14 @@ ng.module('Music').service('playlistService', ['$rootScope', function($rootScope
 			}
 		},
 		publish(name : string, ...args : any[]) : void {
-			$rootScope.$emit(name, ...args);
+			eventDispatcher.trigger(name, ...args);
 		},
-		subscribe(name : string, listener : (event: ng.IAngularEvent, ...args: any[]) => any) : () => void {
-			return $rootScope.$on(name, listener);
+		subscribe(name : string, listener : (...args: any[]) => any, context : any) : void {
+			// the context must be supplied if there is ever a need to unsubscribe
+			eventDispatcher.on(name, listener, context);
+		},
+		unsubscribeAll(context : any) {
+			eventDispatcher.off(null, null, context);
 		}
 	};
 }]);

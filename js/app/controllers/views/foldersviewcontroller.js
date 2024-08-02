@@ -125,15 +125,15 @@ angular.module('Music').controller('FoldersViewController', [
 			return 'folder-' + $scope.folders[index].id;
 		};
 
-		subscribe('playlistEnded', function() {
+		playlistService.subscribe('playlistEnded', function() {
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		playlistService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
 				let elementId = 'track-' + trackId;
 				// If the track element is hidden (collapsed), scroll to the folder
@@ -147,8 +147,9 @@ angular.module('Music').controller('FoldersViewController', [
 			}
 		});
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playlistService.unsubscribeAll(this);
 		});
 
 		// Init happens either immediately (after making the loading animation visible)

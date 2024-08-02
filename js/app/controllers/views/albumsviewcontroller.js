@@ -34,8 +34,9 @@ angular.module('Music').controller('AlbumsViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playlistService.unsubscribeAll(this);
 		});
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
@@ -173,25 +174,24 @@ angular.module('Music').controller('AlbumsViewController', [
 			return att;
 		}
 
-		// emitted on end of playlist by playerController
-		subscribe('playlistEnded', function() {
+		playlistService.subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		playlistService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
-		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
+		subscribe('scrollToTrack', function(_event, trackId, animationTime /* optional */) {
 			scrollToAlbumOfTrack(trackId, animationTime);
 		});
 
-		subscribe('scrollToAlbum', function(event, albumId, animationTime /* optional */) {
+		subscribe('scrollToAlbum', function(_event, albumId, animationTime /* optional */) {
 			$scope.$parent.scrollToItem('album-' + albumId, animationTime);
 		});
 
-		subscribe('scrollToArtist', function(event, artistId, animationTime /* optional */) {
+		subscribe('scrollToArtist', function(_event, artistId, animationTime /* optional */) {
 			const elemId = 'artist-' + artistId;
 			if ($('#' + elemId).length) {
 				$scope.$parent.scrollToItem(elemId, animationTime);

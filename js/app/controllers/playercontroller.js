@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
@@ -498,7 +498,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
 	};
-	// Show context menu on right click of play/pause button, surpress the browser context menu
+	// Show context menu on right click of play/pause button, suppress the browser context menu
 	$scope.playbackBtnContextMenu = function($event) {
 		$event.preventDefault();
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
@@ -612,7 +612,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(_event, _playingView = null, startOffset = 0) {
+	playlistService.subscribe('play', function(_playingView = null, startOffset = 0) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 

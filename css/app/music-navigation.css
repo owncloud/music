@@ -25,12 +25,14 @@
 }
 
 #app-navigation > ul > li {
-	/* The NC server uses --border-radius-pill for this purpose but we don't because that variable is
-	   available also at least on NC17-24 where the overall layout is not a good fit for rounded highlight.
-	   The border-radius-rounded has slightly larger value but that doesn't cause any visual difference
-	   here because the radius already maxes out for line of height 44px with border-radius-pill.
+	/* The NC server 25-29 uses --border-radius-pill for the nav item highlight but we don't because that 
+	   variable is available also at least on NC17-24 where the overall layout is not a good fit for the
+	   rounded highlight. The --border-radius-rounded has slightly larger value but that doesn't cause 
+	   any visual difference here because the radius already maxes out for line of height 44px with the
+	   --border-radius-pill. NC30 introduced the new variable --border-radius-element for this purpose,
+	   with somewhat lower value for the refreshed look-and-feel.
 	*/
-	border-radius: var(--border-radius-rounded);
+	border-radius: var(--border-radius-element, var(--border-radius-rounded));
 	margin-bottom: var(--default-grid-baseline);
 	transition: background-color .2s ease-in-out;
 }

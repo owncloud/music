@@ -308,10 +308,11 @@ class AlbumMapper extends BaseMapper {
 
 		$updated = false;
 		if ($result->rowCount()) {
+			$albumIds = $result->fetchAll(\PDO::FETCH_COLUMN);
 			$sql = 'UPDATE `*PREFIX*music_albums`
 					SET `cover_file_id` = ?
-					WHERE `cover_file_id` IS NULL AND `id` IN (?)';
-			$params = [$coverFileId, \join(",", $result->fetchAll(\PDO::FETCH_COLUMN))];
+					WHERE `cover_file_id` IS NULL AND `id` IN '. $this->questionMarks(\count($albumIds));
+			$params = \array_merge([$coverFileId], $albumIds);
 			$result = $this->execute($sql, $params);
 			$updated = $result->rowCount() > 0;
 		}

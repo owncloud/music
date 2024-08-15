@@ -10,6 +10,8 @@
 
 ### Fixed
 - Favorite toggle button not working on artists with no image available
+- Cover art image not used automatically upon the image file upload in some cases when PostgreSQL used
+  [#1164](https://github.com/owncloud/music/issues/1164)
 
 ## 2.0.0 - 2024-06-23
 

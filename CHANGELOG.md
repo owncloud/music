@@ -3,6 +3,7 @@
 ### Added
 - French translation
   [#1157](https://github.com/owncloud/music/pull/1157) @flozz
+- Support for Nextcloud 30
 
 ### Changed
 - Subsonic API: For radio stations without user-supplied name, use the stream URL as a name

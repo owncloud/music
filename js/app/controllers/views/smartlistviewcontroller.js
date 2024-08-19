@@ -5,19 +5,19 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
 
 angular.module('Music').controller('SmartListViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', 'playQueueService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playQueueService, libraryService, $timeout) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		$scope.tracks = null;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let _unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -29,18 +29,18 @@ angular.module('Music').controller('SmartListViewController', [
 		});
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('smartlist', $scope.tracks, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist('smartlist', $scope.tracks, startIndex);
+			playQueueService.publish('play');
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = play;
 
 		// Play the list, starting from a specific track
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {

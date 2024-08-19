@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('ArtistDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService', 'playlistService',
-	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService, playlistService) {
+	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService', 'playQueueService',
+	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService, playQueueService) {
 
 		function resetContents() {
 			$scope.artist = null;
@@ -140,7 +140,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack?.id === trackId && currentTrack?.type == 'song') {
 				// play/pause if currently playing list item clicked
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			} else {
 				// on any other list item, start playing the list from this item
 				playTracks('artist-tracks-' + $scope.artist.id, $scope.artistTracks, index);
@@ -151,8 +151,8 @@ angular.module('Music').controller('ArtistDetailsController', [
 			let playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
-			playlistService.setPlaylist(listId, playlist, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist, startIndex);
+			playQueueService.publish('play');
 		}
 
 		$scope.onShowAllSimilar = function() {

@@ -7,14 +7,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 
 angular.module('Music').controller('PlaylistViewController', [
-	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
+	'$rootScope', '$scope', '$routeParams', 'playQueueService', 'libraryService',
 	'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
+	function ($rootScope, $scope, $routeParams, playQueueService, libraryService,
 			gettextCatalog, Restangular, $timeout) {
 
 		const INCREMENTAL_LOAD_STEP = 1000;
@@ -22,7 +22,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		$scope.tracks = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -50,7 +50,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				if (trackIndex <= playingIndex) {
 					--playingIndex;
 				}
-				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+				playQueueService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
 			Restangular.one('playlists', listId).all('remove').post({indices: trackIndex}).then(function (result) {
@@ -60,11 +60,11 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		function play(startIndex = null) {
 			let id = 'playlist-' + $scope.playlist.id;
-			playlistService.setPlaylist(id, $scope.tracks, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(id, $scope.tracks, startIndex);
+			playQueueService.publish('play');
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
 			play();
 		};
@@ -73,7 +73,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		$scope.onTrackClick = function(trackIndex) {
 			// play/pause if currently playing list item clicked
 			if ($scope.getCurrentTrackIndex() === trackIndex) {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
@@ -109,7 +109,7 @@ angular.module('Music').controller('PlaylistViewController', [
 						++playingIndex;
 					}
 				}
-				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+				playQueueService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
 			Restangular.one('playlists', listId).all('reorder').post({fromIndex: srcIndex, toIndex: dstIndex}).then(function (result) {

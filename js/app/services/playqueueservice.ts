@@ -17,8 +17,8 @@ interface PlayQueueEntry {
 };
 
 class PlayQueueService {
-	#playlist : PlayQueueEntry[]|null = null;
-	#playlistId : string|null = null;
+	#list : PlayQueueEntry[]|null = null;
+	#listId : string|null = null;
 	#playOrder : number[] = [];
 	#playOrderIter = -1;
 	#startFromIndex : number|null = null;
@@ -33,12 +33,12 @@ class PlayQueueService {
 	 */
 
 	#shuffledIndices() : number[] {
-		let indices = _.range(this.#playlist.length);
+		let indices = _.range(this.#list.length);
 		return _.shuffle(indices);
 	}
 
 	#shuffledIndicesExcluding(toExclude : number) : number[] {
-		let indices = _.range(this.#playlist.length);
+		let indices = _.range(this.#list.length);
 		indices.splice(toExclude, 1);
 		return _.shuffle(indices);
 	}
@@ -64,12 +64,12 @@ class PlayQueueService {
 			}
 			// if the next index ended up to be tha same as the pervious one, flip
 			// it to the end of the order
-			if (this.#playlist.length > 1 && _.last(this.#playOrder) == _.first(nextIndices)) {
+			if (this.#list.length > 1 && _.last(this.#playOrder) == _.first(nextIndices)) {
 				nextIndices = this.#wrapIndexToStart(nextIndices, 1);
 			}
 		}
 		else {
-			nextIndices = _.range(this.#playlist.length);
+			nextIndices = _.range(this.#list.length);
 			if (this.#startFromIndex !== null) {
 				nextIndices = this.#wrapIndexToStart(nextIndices, this.#startFromIndex);
 			}
@@ -106,17 +106,17 @@ class PlayQueueService {
 	}
 
 	getCurrentPlaylistId() : string|null {
-		return this.#playlistId;
+		return this.#listId;
 	}
 
 	getCurrentPlaylist() : PlayQueueEntry[]|null {
-		return this.#playlist;
+		return this.#list;
 	}
 
 	jumpToPrevTrack() : PlayQueueEntry|null {
-		if (this.#playlist && this.#playOrderIter > 0) {
+		if (this.#list && this.#playOrderIter > 0) {
 			--this.#playOrderIter;
-			let track = this.#playlist[this.getCurrentIndex()];
+			let track = this.#list[this.getCurrentIndex()];
 			this.publish('trackChanged', track);
 			return track;
 		}
@@ -124,7 +124,7 @@ class PlayQueueService {
 	}
 
 	jumpToNextTrack() : PlayQueueEntry|null {
-		if (this.#playlist === null || this.#playOrder === null) {
+		if (this.#list === null || this.#playOrder === null) {
 			return null;
 		}
 
@@ -148,7 +148,7 @@ class PlayQueueService {
 			}
 		}
 
-		let track = this.#playlist[this.getCurrentIndex()];
+		let track = this.#list[this.getCurrentIndex()];
 		this.publish('trackChanged', track);
 		return track;
 	}
@@ -156,42 +156,42 @@ class PlayQueueService {
 	peekNextTrack() : PlayQueueEntry|null {
 		// The next track may be peeked only when there are forthcoming tracks already enqueued, not when jumping
 		// to the next track would start a new round in the Repeat mode
-		if (this.#playlist === null || this.#playOrder === null || this.#playOrderIter < 0 || this.#playOrderIter >= this.#playOrder.length - 1) {
+		if (this.#list === null || this.#playOrder === null || this.#playOrderIter < 0 || this.#playOrderIter >= this.#playOrder.length - 1) {
 			return null;
 		} else {
-			return this.#playlist[this.#playOrder[this.#playOrderIter + 1]];
+			return this.#list[this.#playOrder[this.#playOrderIter + 1]];
 		}
 	}
 
 	setPlaylist(listId : string, pl : PlayQueueEntry[], startIndex : number|null = null) : void {
-		this.#playlist = pl.slice(); // copy
+		this.#list = pl.slice(); // copy
 		this.#startFromIndex = startIndex;
-		if (listId === this.#playlistId) {
+		if (listId === this.#listId) {
 			// preserve the history if list wasn't actually changed
 			this.#dropFuturePlayOrder();
 		} else {
 			// drop the history if list changed
 			this.#playOrder = [];
 			this.#playOrderIter = -1; // jumpToNextTrack will move this to first valid index
-			this.#playlistId = listId;
-			this.publish('playlistChanged', this.#playlistId);
+			this.#listId = listId;
+			this.publish('playlistChanged', this.#listId);
 		}
 		this.#enqueueIndices();
 	}
 
 	clearPlaylist() : void {
 		this.#playOrderIter = -1;
-		this.#playlist = null;
-		this.#playlistId = null;
+		this.#list = null;
+		this.#listId = null;
 		this.publish('playlistEnded');
 	}
 
 	onPlaylistModified(pl : PlayQueueEntry[], currentIndex : number) : void {
-		let currentTrack = this.#playlist[this.getCurrentIndex()];
+		let currentTrack = this.#list[this.getCurrentIndex()];
 		// check if the track being played is still available in the list
 		if (pl[currentIndex] === currentTrack) {
 			// re-init the play-order, erasing any history data
-			this.#playlist = pl.slice(); // copy
+			this.#list = pl.slice(); // copy
 			this.#startFromIndex = currentIndex;
 			this.#playOrder = [];
 			this.#enqueueIndices();
@@ -199,8 +199,8 @@ class PlayQueueService {
 		}
 		// if not, then we no longer have a valid list position
 		else {
-			this.#playlist = null;
-			this.#playlistId = null;
+			this.#list = null;
+			this.#listId = null;
 			this.#playOrder = null;
 			this.#playOrderIter = -1;
 		}
@@ -208,9 +208,9 @@ class PlayQueueService {
 	}
 
 	onTracksAdded(newTracks : PlayQueueEntry[]) : void {
-		let prevListSize = this.#playlist.length;
-		this.#playlist = this.#playlist.concat(newTracks);
-		let newIndices = _.range(prevListSize, this.#playlist.length);
+		let prevListSize = this.#list.length;
+		this.#list = this.#list.concat(newTracks);
+		let newIndices = _.range(prevListSize, this.#list.length);
 		if (this.#prevShuffleState) {
 			// Shuffle the new tracks with the remaining tracks on the list
 			let remaining = _.drop(this.#playOrder, this.#playOrderIter+1);
@@ -244,4 +244,4 @@ class PlayQueueService {
 	}
 }
 
-ng.module('Music').service('playlistService', [PlayQueueService]);
+ng.module('Music').service('playQueueService', [PlayQueueService]);

@@ -11,9 +11,9 @@
  */
 
 angular.module('Music').controller('AlbumsViewController', [
-	'$scope', '$rootScope', 'playlistService', 'libraryService',
+	'$scope', '$rootScope', 'playQueueService', 'libraryService',
 	'Restangular', '$document', '$route', '$location', '$timeout', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, libraryService,
+	function ($scope, $rootScope, playQueueService, libraryService,
 			Restangular, $document, $route, $location, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
@@ -36,7 +36,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
-			playlistService.unsubscribeAll(this);
+			playQueueService.unsubscribeAll(this);
 		});
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
@@ -54,8 +54,8 @@ angular.module('Music').controller('AlbumsViewController', [
 			let playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
-			playlistService.setPlaylist(listId, playlist, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist, startIndex);
+			playQueueService.publish('play');
 		}
 
 		function playPlaylistFromTrack(listId, playlist, track) {
@@ -63,10 +63,10 @@ angular.module('Music').controller('AlbumsViewController', [
 			window.location.hash = '#/track/' + track.id;
 
 			let index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
-			playlistService.setPlaylist(listId, playlist, index);
+			playQueueService.setPlaylist(listId, playlist, index);
 
 			let startOffset = $location.search().offset || null;
-			playlistService.publish('play', null, startOffset);
+			playQueueService.publish('play', null, startOffset);
 			$location.search('offset', null); // the offset parameter has been used up
 		}
 
@@ -76,15 +76,15 @@ angular.module('Music').controller('AlbumsViewController', [
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && track.id === currentTrack.id && currentTrack.type == 'song') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			else {
-				let currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playQueueService.getCurrentPlaylistId();
 
 				// start playing the album/artist from this track if the clicked track belongs
 				// to album/artist which is the current play scope
 				if (currentListId === 'album-' + track.album.id || currentListId === 'artist-' + track.album.artist.id) {
-					playPlaylistFromTrack(currentListId, playlistService.getCurrentPlaylist(), track);
+					playPlaylistFromTrack(currentListId, playQueueService.getCurrentPlaylist(), track);
 				}
 				// on any other track, start playing the collection from this track
 				else {
@@ -174,12 +174,12 @@ angular.module('Music').controller('AlbumsViewController', [
 			return att;
 		}
 
-		playlistService.subscribe('playlistEnded', function() {
+		playQueueService.subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
 			updateHighlight(null);
 		}, this);
 
-		playlistService.subscribe('playlistChanged', function(playlistId) {
+		playQueueService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
 		}, this);
 
@@ -277,7 +277,7 @@ angular.module('Music').controller('AlbumsViewController', [
 				}
 			}
 
-			updateHighlight(playlistService.getCurrentPlaylistId());
+			updateHighlight(playQueueService.getCurrentPlaylistId());
 		}
 
 		/**
@@ -300,7 +300,7 @@ angular.module('Music').controller('AlbumsViewController', [
 					if (!isPlaying()) {
 						$timeout(initializePlayerStateFromURL);
 					} else {
-						updateHighlight(playlistService.getCurrentPlaylistId());
+						updateHighlight(playQueueService.getCurrentPlaylistId());
 					}
 
 					$timeout(() => $rootScope.$emit('viewActivated'));

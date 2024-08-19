@@ -12,9 +12,9 @@
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory', 
-'playlistService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
+'playQueueService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $timeout, $window, ArtistFactory, 
-		playlistService, libraryService, inViewService, gettextCatalog, Restangular) {
+		playQueueService, libraryService, inViewService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -34,17 +34,17 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(listEntry) {
+	playQueueService.subscribe('trackChanged', function(listEntry) {
 		$scope.currentTrack = listEntry.track;
-		$scope.currentTrackIndex = playlistService.getCurrentIndex();
+		$scope.currentTrackIndex = playQueueService.getCurrentIndex();
 	});
 
-	playlistService.subscribe('play', function(playingView) {
+	playQueueService.subscribe('play', function(playingView) {
 		// assume that the play started from current view if no other view given
 		$rootScope.playingView = playingView || $rootScope.currentView;
 	});
 
-	playlistService.subscribe('playlistEnded', function() {
+	playQueueService.subscribe('playlistEnded', function() {
 		$rootScope.playingView = null;
 		$scope.currentTrack = null;
 		$scope.currentTrackIndex = -1;

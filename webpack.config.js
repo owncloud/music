@@ -21,7 +21,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     app: './js/index.app.js',
-	dashboard_music_widget: './js/index.dashboard.js',
+    dashboard_music_widget: './js/index.dashboard.js',
     files_music_player: './js/index.embedded.js'
   },
   output: {
@@ -32,6 +32,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'node_modules': path.resolve(__dirname, 'node_modules'),
+      'shared': path.resolve(__dirname, 'js/shared'),
       'vendor': path.resolve(__dirname, 'js/vendor'),
       'angular': path.resolve('node_modules', 'angular'),
       'lodash': path.resolve('node_modules', 'lodash'),

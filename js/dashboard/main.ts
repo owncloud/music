@@ -9,7 +9,7 @@
  */
 
 import { MusicWidget } from './musicwidget';
-import { PlayerWrapper } from '../shared/playerwrapper';
+import { PlayerWrapper } from 'shared/playerwrapper';
 
 document.addEventListener('DOMContentLoaded', () => {
 	OCA.Dashboard.register('music', (el : HTMLElement) => {

@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.0.1 - 2024-09-08
 
 ### Added
 - French translation

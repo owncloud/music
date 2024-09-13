@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 .app-music #app .popovermenu {
@@ -28,6 +28,7 @@
 .app-music #app .popovermenu ul li a {
 	padding-left: 0;
 	padding-right: 12px;
+	line-height: 44px;
 	background-position: 10px center;
 	background-size: 16px;
 	width: 100%;

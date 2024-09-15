@@ -233,7 +233,7 @@ export class PlayQueue {
 		this.#eventDispatcher.trigger(name, ...args);
 	}
 
-	subscribe(name : string, listener : (...args: any[]) => any, context : any) : void {
+	subscribe(name : string, listener : (...args: any[]) => any, context : any = null) : void {
 		// the context must be supplied if there is ever a need to unsubscribe
 		this.#eventDispatcher.on(name, listener, context);
 	}

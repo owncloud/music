@@ -8,7 +8,8 @@
  * @copyright Pauli Järvinen 2024
  */
 
-import { PlayerWrapper } from "../shared/playerwrapper";
+import { PlayerWrapper } from "shared/playerwrapper";
+import { PlayQueue } from "shared/playqueue";
 
 declare function t(module : string, text : string) : string;
 
@@ -17,6 +18,7 @@ const AMPACHE_API_URL = 'apps/music/ampache/server/json.server.php';
 export class MusicWidget {
 
 	#player: PlayerWrapper;
+	#queue: PlayQueue;
 	#selectContainer: JQuery<HTMLElement>;
 	#modeSelect: JQuery<HTMLSelectElement>;
 	#parent1Select: JQuery<HTMLSelectElement>;
@@ -25,8 +27,9 @@ export class MusicWidget {
 	#trackList: JQuery<HTMLUListElement>;
 	#controls: JQuery<HTMLElement>;
 
-	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper) {
+	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper, queue: PlayQueue) {
 		this.#player = player;
+		this.#queue = queue;
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 
@@ -41,6 +44,18 @@ export class MusicWidget {
 			() => this.#jumpToPrev(),
 			() => this.#jumpToNext()
 		).appendTo($container);
+
+		this.#queue.subscribe('trackChanged', (track) => {
+			player.fromUrl(track.url, track.stream_mime);
+			player.play();
+
+			this.#trackList.find('.current').removeClass('current');
+			this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
+		});
+
+		this.#queue.subscribe('playlistEnded', () => {
+			player.stop();
+		});
 	}
 
 	#onModeSelect() : void {
@@ -73,7 +88,7 @@ export class MusicWidget {
 					this.#parent2Select.on('change', () => {
 						this.#trackList?.remove();
 						const albumId = this.#parent2Select.val();
-						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => this.#createTrackList(result.song, artistId));
+						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => this.#listTracks('album-' + albumId, result.song, artistId));
 					});
 				});
 			});
@@ -81,35 +96,34 @@ export class MusicWidget {
 	}
 
 	#showAllTracks() : void {
-		ampacheApiAction('songs', {}, (result: any) => this.#createTrackList(result.song, null));
+		ampacheApiAction('songs', {}, (result: any) => this.#listTracks('all-tracks', result.song, null));
 	}
 
-	#createTrackList(tracks: any[], parentId: string|null) : void {
+	#listTracks(listId: string, tracks: any[], parentId: string|null) : void {
 		const player = this.#player;
+		const queue = this.#queue;
+
 		this.#trackList = createTrackList(tracks, parentId).appendTo(this.#trackListContainer);
 		
 		this.#trackList.on('click', 'li', function(_event) {
 			const $el = $(this);
-			const url = $el.data('url');
-			if (url == player.getUrl()) {
+			const index = $el.data('index');
+			if (listId == queue.getCurrentPlaylistId() && index == queue.getCurrentIndex()) {
 				player.togglePlay();
 			}
 			else {
-				player.fromUrl(url, $el.data('stream_mime'));
-				player.play();
-
-				$el.parent().find('.current').removeClass('current');
-				$el.addClass('current');
+				queue.setPlaylist(listId, tracks, index);
+				queue.jumpToNextTrack();
 			}
 		});
 	}
 
 	#jumpToNext() {
-		// TODO
+		this.#queue.jumpToNextTrack();
 	}
 
 	#jumpToPrev() {
-		// TODO
+		this.#queue.jumpToPrevTrack();
 	}
 }
 
@@ -128,12 +142,14 @@ function createSelect(items: any[], placeholder: string|null = null) : JQuery<HT
 
 function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLUListElement> {
 	const $ul = $('<ul/>') as JQuery<HTMLUListElement>;
-	$(tracks).each(function() {
+	$(tracks).each(function(index: number) {
 		let liContent = this.name;
+		let tooltip = this.name;
 		if (this.artist.id != parentId) {
 			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
+			tooltip += ` (${this.artist.name})`
 		}
-		$(`<li>${liContent}</li>`).data(this).appendTo($ul); // each item stores a `data` reference to the original song object
+		$(`<li title="${tooltip}">${liContent}</li>`).data('index', index).appendTo($ul); // each item stores a `data` reference to its index
 	});
 
 	return $ul;

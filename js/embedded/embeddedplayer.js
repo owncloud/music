@@ -12,10 +12,9 @@ import playIconPath from '../../img/play-big.svg';
 import pauseIconPath from '../../img/pause-big.svg';
 import skipPreviousIconPath from '../../img/skip-previous.svg';
 import skipNextIconPath from '../../img/skip-next.svg';
-import soundOffIconPath from '../../img/sound-off.svg';
-import soundIconPath from '../../img/sound.svg';
 import closeIconPath from '../../img/close.svg';
 import radioIconPath from '../../img/radio-file.svg';
+import { VolumeControl } from 'shared/volumecontrol';
 
 
 OCA.Music = OCA.Music || {};
@@ -23,6 +22,7 @@ OCA.Music = OCA.Music || {};
 OCA.Music.EmbeddedPlayer = function() {
 
 	let player = new OCA.Music.PlayerWrapper();
+	let volumeControl = new VolumeControl(player);
 
 	// callbacks
 	let onClose = null;
@@ -33,9 +33,6 @@ OCA.Music.EmbeddedPlayer = function() {
 	let onImportList = null;
 	let onImportRadio = null;
 
-	let volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
-	player.setVolume(volume);
-	let lastVolume = null;
 	let nextPrevEnabled = false;
 	let playDelayTimer = null;
 	let currentFileId = null;
@@ -445,58 +442,6 @@ OCA.Music.EmbeddedPlayer = function() {
 		return infoProgressContainer;
 	}
 
-	function createVolumeControl() {
-		let volumeControl = $(document.createElement('div'))
-			.attr('class', 'volume-control');
-
-		let volumeIcon = $(document.createElement('img'))
-			.attr('id', 'volume-icon')
-			.attr('class', 'control small svg')
-			.attr('src', soundIconPath)
-			.on('click', function() {
-				const setVolume = function(value) {
-					volumeSlider.val(value);
-					volumeSlider.trigger('input');
-				};
-
-				if (lastVolume) {
-					setVolume(lastVolume);
-					lastVolume = null;
-				}
-				else {
-					lastVolume = volume;
-					setVolume('0');
-				}
-			});
-
-		let volumeSlider = $(document.createElement('input'))
-			.attr('id', 'volume-slider')
-			.attr('min', '0')
-			.attr('max', '100')
-			.attr('type', 'range')
-			.attr('value', volume)
-			.on('input change', function() {
-				const value = $(this).val();
-
-				// Reset last known volume, if a new value is selected via the slider
-				if (value && lastVolume && lastVolume !== volume) {
-					lastVolume = null;
-				}
-
-				volume = value;
-				player.setVolume(volume);
-				OCA.Music.Storage.set('volume', volume);
-				
-				// Show correct icon if muted 
-				volumeIcon.attr('src', volume == 0 ? soundOffIconPath : soundIconPath);
-			});
-
-		volumeControl.append(volumeIcon);
-		volumeControl.append(volumeSlider);
-
-		return volumeControl;
-	}
-
 	function createCloseButton() {
 		return $(document.createElement('img'))
 			.attr('id', 'close')
@@ -522,7 +467,7 @@ OCA.Music.EmbeddedPlayer = function() {
 		musicControls.append(nextButton);
 		musicControls.append(coverImageContainer);
 		musicControls.append(createInfoProgressContainer());
-		musicControls.append(createVolumeControl());
+		volumeControl.addToContainer(musicControls);
 		musicControls.append(createCloseButton());
 
 		// Round also the bottom left corner on NC25 on the share page. The bottom right corner is rounded by default.

@@ -5,25 +5,16 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
-#music-controls .volume-control {
-	position: absolute;
-	right: 120px;
-}
-
-.ie.lte9 #music-controls .volume-control {
-	display: none;
-}
-
-#music-controls #volume-icon {
+.music-volume-control .volume-icon {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-#music-controls .volume-control input[type=range] {
+.music-volume-control .volume-slider {
 	position: absolute;
 	width: 58px;
 	height: 3px;
@@ -36,14 +27,15 @@
 	transform: rotate(270deg);
 }
 
-.ie #music-controls .volume-control input[type=range] {
+
+.ie .music-volume-control .volume-slider {
 	height:auto;
 	top: 3px;
 	left: 26px;
 	background-color: transparent;
 }
 
-::-webkit-slider-thumb {
+.music-volume-control .volume-slider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background-color: #666;
 	border-radius: 100%;
@@ -51,11 +43,11 @@
 	height: 10px;
 }
 
-:hover::-webkit-slider-thumb {
+.music-volume-control .volume-slider:hover::-webkit-slider-thumb {
 	cursor: pointer;
 }
 
-::-moz-range-thumb {
+.music-volume-control .volume-slider::-moz-range-thumb {
 	-moz-appearance: none;
 	background-color: #666;
 	border-radius: 100%;
@@ -63,6 +55,6 @@
 	height: 10px;
 }
 
-:hover::-moz-range-thumb {
+.music-volume-control .volume-slider:hover::-moz-range-thumb {
 	cursor: pointer;
 }

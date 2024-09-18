@@ -43,7 +43,8 @@ export class MusicWidget {
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
 		this.#controls = createControls(
-			() => this.#player.togglePlay(),
+			() => this.#player.play(),
+			() => this.#player.pause(),
 			() => this.#jumpToPrev(),
 			() => this.#jumpToNext(),
 			this.#volumeControl
@@ -62,6 +63,16 @@ export class MusicWidget {
 
 		this.#queue.subscribe('playlistEnded', () => {
 			player.stop();
+		});
+
+		this.#player.on('play', () => {
+			this.#controls.find('.icon-play').hide();
+			this.#controls.find('.icon-pause').show();
+		});
+
+		this.#player.on('pause', () => {
+			this.#controls.find('.icon-play').show();
+			this.#controls.find('.icon-pause').hide();
 		});
 	}
 
@@ -162,11 +173,12 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	return $ul;
 }
 
-function createControls(onPlayPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
+function createControls(onPlay : CallableFunction, onPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
 	const $albumArt = $('<div class="albumart icon-music"/>').appendTo($container);
 	const $prev = $('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
-	const $play = $('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlayPause());
+	const $play = $('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlay());
+	const $pause = $('<div class="playback control icon-pause"/>').appendTo($container).on('click', () => onPause()).hide();
 	const $next = $('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
 	volumeControl.addToContainer($container);
 	return $container;

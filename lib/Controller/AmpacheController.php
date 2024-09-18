@@ -1846,13 +1846,19 @@ class AmpacheController extends Controller {
 			throw new AmpacheException('unexpected entity type for cover image', 500);
 		}
 
-		// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
-		if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
-			$id = $entity->getId();
-			$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
-			return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
-		} else {
-			return '';
+		if ($this->session->getToken() == 'internal') {
+			// For internal clients, we don't need to create URLs with permanent but API-key-specific tokens
+			return $this->createAmpacheActionUrl('get_art', $entity->getId(), $type);
+		}
+		else {
+			// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
+			if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
+				$id = $entity->getId();
+				$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
+				return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
+			} else {
+				return '';
+			}
 		}
 	}
 

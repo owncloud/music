@@ -55,6 +55,9 @@ export class MusicWidget {
 
 			this.#trackList.find('.current').removeClass('current');
 			this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
+
+			this.#controls.find('.albumart').css('background-image', `url(${track.art})`)
+				.prop('title', `${track.name} (${track.artist.name})`);
 		});
 
 		this.#queue.subscribe('playlistEnded', () => {

@@ -10,6 +10,7 @@
 
 import { PlayerWrapper } from "shared/playerwrapper";
 import { PlayQueue } from "shared/playqueue";
+import { VolumeControl } from "shared/volumecontrol";
 
 declare function t(module : string, text : string) : string;
 
@@ -19,6 +20,7 @@ export class MusicWidget {
 
 	#player: PlayerWrapper;
 	#queue: PlayQueue;
+	#volumeControl: VolumeControl;
 	#selectContainer: JQuery<HTMLElement>;
 	#modeSelect: JQuery<HTMLSelectElement>;
 	#parent1Select: JQuery<HTMLSelectElement>;
@@ -30,6 +32,7 @@ export class MusicWidget {
 	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper, queue: PlayQueue) {
 		this.#player = player;
 		this.#queue = queue;
+		this.#volumeControl = new VolumeControl(player);
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 
@@ -42,7 +45,8 @@ export class MusicWidget {
 		this.#controls = createControls(
 			() => this.#player.togglePlay(),
 			() => this.#jumpToPrev(),
-			() => this.#jumpToNext()
+			() => this.#jumpToNext(),
+			this.#volumeControl
 		).appendTo($container);
 
 		this.#queue.subscribe('trackChanged', (track) => {
@@ -155,12 +159,13 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	return $ul;
 }
 
-function createControls(onPlayPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction) : JQuery<HTMLElement> {
+function createControls(onPlayPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
 	const $albumArt = $('<div class="albumart icon-music"/>').appendTo($container);
-	const $prev = $('<div class="control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
-	const $play = $('<div class="control icon-play"/>').appendTo($container).on('click', () => onPlayPause());
-	const $next = $('<div class="control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
+	const $prev = $('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
+	const $play = $('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlayPause());
+	const $next = $('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
+	volumeControl.addToContainer($container);
 	return $container;
 }
 

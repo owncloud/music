@@ -26,7 +26,7 @@
 }
 
 .music-widget .player-controls {
-	flex: 0 0 60px;
+	flex: 0 0 50px;
 	display: flex;
 	flex-flow: row;
 }
@@ -40,8 +40,6 @@
 }
 
 .music-widget .player-controls .control {
-	width: 32px;
-	height: 32px;
 	margin: 9px;
 	background-size: contain;
 	cursor: pointer;
@@ -49,8 +47,28 @@
 	filter: var(--background-invert-if-dark);
 }
 
+.music-widget .player-controls .playback.control {
+	width: 32px;
+	height: 32px;
+}
+
 .music-widget .player-controls .control:hover {
 	opacity: 1;
+}
+
+.music-widget .player-controls .music-volume-control {
+	position: relative;
+}
+
+.music-widget .player-controls .music-volume-control .volume-icon {
+	left: 10px;
+	top: 4px;
+}
+
+.music-widget .player-controls .music-volume-control .volume-slider {
+	width: 50px;
+	top: 24px;
+	left: 30px
 }
 
 .music-widget select {

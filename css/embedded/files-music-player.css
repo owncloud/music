@@ -182,48 +182,9 @@
 	line-height: 29px;
 }
 
-#music-controls .progress-info {
+#music-controls .music-progress-info {
 	width: 45%;
-	text-align: center;
 	margin: 0 auto 25px auto;
-	overflow: hidden;
-}
-
-#music-controls .progress-info span {
-	line-height: 30px;
-}
-
-#music-controls .seek-bar {
-	width: 100%;
-	height: 15px;
-	margin: 0 auto 0 auto;
-	position: relative;
-	background-color: #eee;
-}
-
-#music-controls .seek-bar, #music-controls .play-bar, #music-controls .buffer-bar {
-	display: block;
-}
-
-#music-controls .play-bar, #music-controls .buffer-bar {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 15px;
-	width: 0%;
-	background-color: var(--color-primary, #1d2d44);
-}
-
-.ie #music-controls .play-bar, #music-controls .buffer-bar {
-	background-color: #1d2d44;
-}
-
-#music-controls .translucent {
-	opacity: 0.75;
-}
-
-#music-controls .buffer-bar {
-	opacity: 0.1;
 }
 
 #music-controls .music-volume-control {

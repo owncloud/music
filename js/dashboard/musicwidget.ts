@@ -29,6 +29,7 @@ export class MusicWidget {
 	#parent2Select: JQuery<HTMLSelectElement>;
 	#trackListContainer: JQuery<HTMLElement>;
 	#trackList: JQuery<HTMLUListElement>;
+	#progressAndOrder: JQuery<HTMLElement>;
 	#controls: JQuery<HTMLElement>;
 
 	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper, queue: PlayQueue) {
@@ -45,8 +46,11 @@ export class MusicWidget {
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
-		this.#progressInfo.hide();
-		this.#progressInfo.addToContainer($container);
+		this.#progressAndOrder = createProgressAndOrder(
+			this.#progressInfo,
+			() => this.#setShuffle(!this.#queue.getShuffle()),
+			() => this.#setRepeat(!this.#queue.getRepeat())
+		).hide().appendTo($container);
 		this.#controls = createControls(
 			() => this.#player.play(),
 			() => this.#player.pause(),
@@ -54,6 +58,9 @@ export class MusicWidget {
 			() => this.#jumpToNext(),
 			this.#volumeControl
 		).hide().appendTo($container);
+
+		this.#setShuffle(OCA.Music.Storage.get('shuffle') === 'true');
+		this.#setRepeat(OCA.Music.Storage.get('repeat') === 'true');
 
 		this.#queue.subscribe('trackChanged', (track) => {
 			player.fromUrl(track.url, track.stream_mime);
@@ -65,13 +72,13 @@ export class MusicWidget {
 			this.#controls.find('.albumart').css('background-image', `url(${track.art})`)
 				.prop('title', `${track.name} (${track.artist.name})`);
 			
-			this.#progressInfo.show();
+			this.#progressAndOrder.show();
 			this.#controls.show();
 		});
 
 		this.#queue.subscribe('playlistEnded', () => {
 			player.stop();
-			this.#progressInfo.hide();
+			this.#progressAndOrder.hide();
 			this.#controls.hide();
 		});
 
@@ -146,12 +153,32 @@ export class MusicWidget {
 		});
 	}
 
-	#jumpToNext() {
+	#jumpToNext() : void {
 		this.#queue.jumpToNextTrack();
 	}
 
-	#jumpToPrev() {
+	#jumpToPrev() : void {
 		this.#queue.jumpToPrevTrack();
+	}
+
+	#setShuffle(active : boolean) : void {
+		if (active) {
+			this.#progressAndOrder.find('.icon-shuffle').addClass('active');
+		} else {
+			this.#progressAndOrder.find('.icon-shuffle').removeClass('active');
+		}
+		this.#queue.setShuffle(active);
+		OCA.Music.Storage.set('shuffle', active.toString());
+	}
+
+	#setRepeat(active : boolean) : void {
+		if (active) {
+			this.#progressAndOrder.find('.icon-repeat').addClass('active');
+		} else {
+			this.#progressAndOrder.find('.icon-repeat').removeClass('active');
+		}
+		this.#queue.setRepeat(active);
+		OCA.Music.Storage.set('repeat', active.toString());
 	}
 }
 
@@ -183,13 +210,22 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	return $ul;
 }
 
+function createProgressAndOrder(progress : ProgressInfo, onShuffleBtn : CallableFunction, onRepeatBtn : CallableFunction) : JQuery<HTMLElement>
+{
+	const $container = $('<div class="progress-and-order"/>');
+	$('<div class="control toggle icon-shuffle"/>').appendTo($container).on('click', () => onShuffleBtn());
+	progress.addToContainer($container);
+	$('<div class="control toggle icon-repeat"/>').appendTo($container).on('click', () => onRepeatBtn());
+	return $container;
+}
+
 function createControls(onPlay : CallableFunction, onPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
-	const $albumArt = $('<div class="albumart"/>').appendTo($container);
-	const $prev = $('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
-	const $play = $('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlay());
-	const $pause = $('<div class="playback control icon-pause"/>').appendTo($container).on('click', () => onPause()).hide();
-	const $next = $('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
+	$('<div class="albumart"/>').appendTo($container);
+	$('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
+	$('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlay());
+	$('<div class="playback control icon-pause"/>').appendTo($container).on('click', () => onPause()).hide();
+	$('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
 	volumeControl.addToContainer($container);
 	return $container;
 }

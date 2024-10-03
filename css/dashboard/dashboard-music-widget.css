@@ -25,16 +25,27 @@
 	margin-bottom: 8px;
 }
 
-.music-widget .music-progress-info {
-	position: relative;
+.music-widget .progress-and-order {
 	flex: 0 0 25px;
+	display: flex;
+	flex-flow: row;
 }
 
-.music-widget .music-progress-info span {
+.music-widget .progress-and-order .control {
+	flex: 0 0 40px;
+	margin-top: -10px;
+}
+
+.music-widget .progress-and-order .music-progress-info {
+	flex: 1 1 auto;
+	position: relative;
+}
+
+.music-widget .progress-and-order .music-progress-info span {
 	line-height: unset;
 }
 
-.music-widget .music-progress-info .progress-text {
+.music-widget .progress-and-order .music-progress-info .progress-text {
 	line-height: 100%;
 	position: absolute;
 	color: black;
@@ -62,20 +73,13 @@
 }
 
 .music-widget .player-controls .control {
-	margin: 9px;
 	background-size: contain;
-	cursor: pointer;
-	opacity: .5;
-	filter: var(--background-invert-if-dark);
+	margin: 9px;
 }
 
 .music-widget .player-controls .playback.control {
 	width: 32px;
 	height: 32px;
-}
-
-.music-widget .player-controls .control:hover {
-	opacity: 1;
 }
 
 .music-widget .player-controls .music-volume-control {
@@ -128,4 +132,15 @@
 
 .music-widget .dimmed {
 	opacity: .5;
+}
+
+.music-widget .control {
+	cursor: pointer;
+	opacity: .5;
+	filter: var(--background-invert-if-dark);
+}
+
+.music-widget .control:hover,
+.music-widget .control.toggle.active {
+	opacity: 1;
 }

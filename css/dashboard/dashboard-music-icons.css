@@ -28,3 +28,11 @@
 .music-widget .icon-skip-next {
 	background-image: url(../../img/skip-next.svg);
 }
+
+.music-widget .icon-shuffle {
+	background-image: url(../../img/shuffle.svg);
+}
+
+.music-widget .icon-repeat {
+	background-image: url(../../img/repeat.svg);
+}

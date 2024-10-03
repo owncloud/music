@@ -92,8 +92,16 @@ export class PlayQueue {
 	 * -------------------------------
 	 */
 
+	getShuffle() : boolean {
+		return this.#shuffle;
+	}
+
 	setShuffle(state : boolean) : void {
 		this.#shuffle = state;
+	}
+
+	getRepeat() : boolean {
+		return this.#repeat;
 	}
 
 	setRepeat(state : boolean) : void {

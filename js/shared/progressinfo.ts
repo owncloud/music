@@ -29,8 +29,16 @@ export class ProgressInfo {
 		this.#connectPointerEvents();
     }
 
-	addToContainer(container : JQuery<HTMLElement>) {
+	addToContainer(container : JQuery<HTMLElement>) : void {
 		container.append(this.#elem);
+	}
+
+	hide() : void {
+		this.#elem.hide();
+	}
+
+	show() : void {
+		this.#elem.show();
 	}
 
 	#createHtml() : JQuery<HTMLElement> {

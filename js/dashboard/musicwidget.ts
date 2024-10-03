@@ -45,6 +45,7 @@ export class MusicWidget {
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
+		this.#progressInfo.hide();
 		this.#progressInfo.addToContainer($container);
 		this.#controls = createControls(
 			() => this.#player.play(),
@@ -52,7 +53,7 @@ export class MusicWidget {
 			() => this.#jumpToPrev(),
 			() => this.#jumpToNext(),
 			this.#volumeControl
-		).appendTo($container);
+		).hide().appendTo($container);
 
 		this.#queue.subscribe('trackChanged', (track) => {
 			player.fromUrl(track.url, track.stream_mime);
@@ -63,10 +64,15 @@ export class MusicWidget {
 
 			this.#controls.find('.albumart').css('background-image', `url(${track.art})`)
 				.prop('title', `${track.name} (${track.artist.name})`);
+			
+			this.#progressInfo.show();
+			this.#controls.show();
 		});
 
 		this.#queue.subscribe('playlistEnded', () => {
 			player.stop();
+			this.#progressInfo.hide();
+			this.#controls.hide();
 		});
 
 		this.#player.on('play', () => {
@@ -179,7 +185,7 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 
 function createControls(onPlay : CallableFunction, onPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
-	const $albumArt = $('<div class="albumart icon-music"/>').appendTo($container);
+	const $albumArt = $('<div class="albumart"/>').appendTo($container);
 	const $prev = $('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
 	const $play = $('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlay());
 	const $pause = $('<div class="playback control icon-pause"/>').appendTo($container).on('click', () => onPause()).hide();

@@ -10,6 +10,7 @@
 
 import { PlayerWrapper } from "shared/playerwrapper";
 import { PlayQueue } from "shared/playqueue";
+import { ProgressInfo } from "shared/progressinfo";
 import { VolumeControl } from "shared/volumecontrol";
 
 declare function t(module : string, text : string) : string;
@@ -21,6 +22,7 @@ export class MusicWidget {
 	#player: PlayerWrapper;
 	#queue: PlayQueue;
 	#volumeControl: VolumeControl;
+	#progressInfo: ProgressInfo;
 	#selectContainer: JQuery<HTMLElement>;
 	#modeSelect: JQuery<HTMLSelectElement>;
 	#parent1Select: JQuery<HTMLSelectElement>;
@@ -33,6 +35,7 @@ export class MusicWidget {
 		this.#player = player;
 		this.#queue = queue;
 		this.#volumeControl = new VolumeControl(player);
+		this.#progressInfo = new ProgressInfo(player);
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 
@@ -42,6 +45,7 @@ export class MusicWidget {
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
+		this.#progressInfo.addToContainer($container);
 		this.#controls = createControls(
 			() => this.#player.play(),
 			() => this.#player.pause(),

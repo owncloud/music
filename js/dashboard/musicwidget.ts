@@ -12,6 +12,7 @@ import { PlayerWrapper } from "shared/playerwrapper";
 import { PlayQueue } from "shared/playqueue";
 import { ProgressInfo } from "shared/progressinfo";
 import { VolumeControl } from "shared/volumecontrol";
+import * as _ from 'lodash';
 
 declare function t(module : string, text : string) : string;
 
@@ -31,6 +32,7 @@ export class MusicWidget {
 	#trackList: JQuery<HTMLUListElement>;
 	#progressAndOrder: JQuery<HTMLElement>;
 	#controls: JQuery<HTMLElement>;
+	#debouncedPlayCurrent: CallableFunction;
 
 	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper, queue: PlayQueue) {
 		this.#player = player;
@@ -62,15 +64,27 @@ export class MusicWidget {
 		this.#setShuffle(OCA.Music.Storage.get('shuffle') === 'true');
 		this.#setRepeat(OCA.Music.Storage.get('repeat') === 'true');
 
+		this.#debouncedPlayCurrent = _.debounce(() => {
+			const track = this.#queue.getCurrentTrack() as any;
+			if (track !== null) {
+				this.#controls.find('.albumart')
+					.removeClass('icon-loading')
+					.css('background-image', `url(${track.art})`)
+					.prop('title', `${track.name} (${track.artist.name})`);
+
+				this.#player.fromUrl(track.url, track.stream_mime);
+				this.#player.play();
+			}
+		}, 300);
+
 		this.#queue.subscribe('trackChanged', (track) => {
-			player.fromUrl(track.url, track.stream_mime);
-			player.play();
+			this.#player.stop();
+			this.#debouncedPlayCurrent();
 
 			this.#trackList.find('.current').removeClass('current');
 			this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
 
-			this.#controls.find('.albumart').css('background-image', `url(${track.art})`)
-				.prop('title', `${track.name} (${track.artist.name})`);
+			this.#controls.find('.albumart').css('background-image', '').addClass('icon-loading');
 			
 			this.#progressAndOrder.show();
 			this.#controls.show();

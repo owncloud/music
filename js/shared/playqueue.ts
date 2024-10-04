@@ -112,6 +112,11 @@ export class PlayQueue {
 		return (this.#playOrderIter >= 0) ? this.#playOrder[this.#playOrderIter] : null;
 	}
 
+	getCurrentTrack() : PlayQueueEntry|null {
+		const index = this.getCurrentIndex();
+		return (index === null) ? null : this.#list[index];
+	}
+
 	getCurrentPlaylistId() : string|null {
 		return this.#listId;
 	}

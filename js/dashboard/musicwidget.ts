@@ -206,7 +206,9 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
 			tooltip += ` (${this.artist.name})`
 		}
-		$(`<li title="${tooltip}">${liContent}</li>`).data('index', index).appendTo($ul); // each item stores a `data` reference to its index
+		// Each item stores a `data` reference to its index. This is done using the jQuery .attr() instead of .data() because
+		// the latter doesn't store the reference to the DOM itself, making finding the element by the attribute impossible.
+		$(`<li title="${tooltip}">${liContent}</li>`).attr('data-index', index).appendTo($ul);
 	});
 
 	return $ul;

@@ -91,6 +91,8 @@ export class MusicWidget {
 			this.#controls.find('.icon-play').show();
 			this.#controls.find('.icon-pause').hide();
 		});
+
+		this.#player.on('end', () => this.#jumpToNext());
 	}
 
 	#onModeSelect() : void {

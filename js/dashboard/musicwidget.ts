@@ -67,10 +67,9 @@ export class MusicWidget {
 		this.#debouncedPlayCurrent = _.debounce(() => {
 			const track = this.#queue.getCurrentTrack() as any;
 			if (track !== null) {
-				this.#controls.find('.albumart')
-					.removeClass('icon-loading')
-					.css('background-image', `url(${track.art})`)
-					.prop('title', `${track.name} (${track.artist.name})`);
+				const $albumArt = this.#controls.find('.albumart');
+				this.#loadBackgroundImage($albumArt, track.art);
+				$albumArt.prop('title', `${track.name} (${track.artist.name})`);
 
 				this.#player.fromUrl(track.url, track.stream_mime);
 				this.#player.play();
@@ -107,6 +106,16 @@ export class MusicWidget {
 		});
 
 		this.#player.on('end', () => this.#jumpToNext());
+	}
+
+	#loadBackgroundImage($albumArt: JQuery<HTMLElement>, url: string) {
+		/* Load the image first using an out-of-DOM <img> element and then use the same image
+		   as the background for the element. This is needed because loading the bacground-image
+		   doesn't fire the onload event, making it impossible to timely remove the loading icon. */
+		$('<img/>').attr('src', url).on('load', function() {
+			$(this).remove(); // prevent memory leaks
+			$albumArt.css('background-image', `url(${url})`).removeClass('icon-loading');
+		 });
 	}
 
 	#onModeSelect() : void {

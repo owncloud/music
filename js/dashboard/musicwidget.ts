@@ -148,7 +148,7 @@ export class MusicWidget {
 					this.#parent2Select.on('change', () => {
 						this.#trackList?.remove();
 						const albumId = this.#parent2Select.val();
-						ampacheApiAction('album_songs', { filter: albumId }, (result: any) => this.#listTracks('album-' + albumId, result.song, artistId));
+						this.#ampacheLoadAndShowTracks('album_songs', { filter: albumId }, 'album-' + albumId, artistId);
 					});
 				});
 			});
@@ -156,7 +156,15 @@ export class MusicWidget {
 	}
 
 	#showAllTracks() : void {
-		ampacheApiAction('songs', {}, (result: any) => this.#listTracks('all-tracks', result.song, null));
+		this.#ampacheLoadAndShowTracks('songs', {}, 'all-tracks', null);
+	}
+
+	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, listId: string, parentId: string|null) {
+		this.#trackListContainer.addClass('icon-loading');
+		ampacheApiAction(action, args, (result: any) => {
+			this.#listTracks(listId, result.song, parentId);
+			this.#trackListContainer.removeClass('icon-loading');
+		});
 	}
 
 	#listTracks(listId: string, tracks: any[], parentId: string|null) : void {

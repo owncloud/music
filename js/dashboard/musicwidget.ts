@@ -49,6 +49,7 @@ export class MusicWidget {
 			{ id: 'genres',			name: t('music', 'Genres') },
 			{ id: 'all_tracks',		name: t('music', 'All tracks') },
 			{ id: 'playlists',		name: t('music', 'Playlists') },
+			{ id: 'podcasts',		name: t('music', 'Podcasts') },
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
@@ -73,9 +74,14 @@ export class MusicWidget {
 			if (track !== null) {
 				const $albumArt = this.#controls.find('.albumart');
 				this.#loadBackgroundImage($albumArt, track.art);
-				$albumArt.prop('title', `${track.name} (${track.artist.name})`);
+				if ('artist' in track) {
+					$albumArt.prop('title', `${track.name} (${track.artist.name})`);
+					this.#player.fromUrl(track.url, track.stream_mime);
+				} else {
+					$albumArt.prop('title', track.name);
+					this.#player.fromExtUrl(track.url, false);
+				}
 
-				this.#player.fromUrl(track.url, track.stream_mime);
 				this.#player.play();
 			}
 		}, 300);
@@ -146,6 +152,9 @@ export class MusicWidget {
 				break;
 			case 'playlists':
 				this.#showPlaylists();
+				break;
+			case 'podcasts':
+				this.#showPodcasts();
 				break;
 			default:
 				console.error('unexpected mode selection:', this.#modeSelect.val());
@@ -246,6 +255,26 @@ export class MusicWidget {
 		});
 	}
 
+	#showPodcasts() : void {
+		ampacheApiAction('list', { type: 'podcast' }, (result: any) => {
+			this.#parent1Select = createSelect(
+				result.list,
+				t('music', 'Select channel')
+			).appendTo(this.#selectContainer);
+
+			this.#parent1Select.on('change', () => {
+				this.#trackList?.remove();
+				const channelId = this.#parent1Select.val() as string;
+
+				this.#trackListContainer.addClass('icon-loading');
+				ampacheApiAction('podcast_episodes', {filter: channelId}, (result: any) => {
+					this.#listTracks('podcast-' + channelId, result.podcast_episode, channelId);
+					this.#trackListContainer.removeClass('icon-loading');
+				});
+			});
+		});
+	}
+
 	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, listId: string, parentId: string|null) {
 		this.#trackListContainer.addClass('icon-loading');
 		ampacheApiAction(action, args, (result: any) => {
@@ -324,7 +353,7 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	$(tracks).each(function(index: number) {
 		let liContent = this.name;
 		let tooltip = this.name;
-		if (this.artist.id != parentId) {
+		if ('artist' in this && this.artist.id != parentId) {
 			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
 			tooltip += ` (${this.artist.name})`
 		}

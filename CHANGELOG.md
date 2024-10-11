@@ -3,7 +3,9 @@
 ### Added
 
 ### Changed
-- Ampache API: Action `get_indexes` supports also `type=song_artist`
+- Ampache API:
+  * Action `get_indexes` supports also `type=song_artist`
+  * Added fields `art` and `has_art` to the `podcast_episode` result type
 
 ### Fixed
 

@@ -2067,8 +2067,12 @@ class AmpacheController extends Controller {
 	 * @param PodcastEpisode[] $episodes
 	 */
 	private function renderPodcastEpisodes(array $episodes) : array {
+		$createImageUrl = function(PodcastEpisode $episode) : string {
+			return $this->createAmpacheActionUrl('get_art', $episode->getChannelId(), 'podcast');
+		};
+
 		return [
-			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi')
+			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi', [$createImageUrl])
 		];
 	}
 

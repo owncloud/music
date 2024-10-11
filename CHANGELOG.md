@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+- Ampache API: Action `get_indexes` supports also `type=song_artist`
+
+### Fixed
+
 ## 2.0.1 - 2024-09-08
 
 ### Added

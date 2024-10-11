@@ -44,6 +44,7 @@ export class MusicWidget {
 
 		const types = [
 			{ id: 'album_artists',	name: t('music', 'Album artists') },
+			{ id: 'track_artists',	name: t('music', 'Track artists') },
 			{ id: 'albums',			name: t('music', 'Albums') },
 			{ id: 'genres',			name: t('music', 'Genres') },
 			{ id: 'all_tracks',		name: t('music', 'All tracks') },
@@ -131,6 +132,9 @@ export class MusicWidget {
 			case 'album_artists':
 				this.#showAlbumArtists();
 				break;
+			case 'track_artists':
+				this.#showTrackArtists();
+				break;
 			case 'albums':
 				this.#showAlbums();
 				break;
@@ -175,6 +179,21 @@ export class MusicWidget {
 				});
 			});
 		});
+	}
+
+	#showTrackArtists() : void {
+		ampacheApiAction('get_indexes', { type: 'song_artist' }, (result: any) => {
+			this.#parent1Select = createSelect(
+				result.artist,
+				t('music', 'Select artist')
+			).appendTo(this.#selectContainer);
+
+			this.#parent1Select.on('change', () => {
+				this.#trackList?.remove();
+				const artistId = this.#parent1Select.val() as string;
+				this.#ampacheLoadAndShowTracks('artist_songs', { filter: artistId }, 'artist-' + artistId, artistId);
+			});
+		});		
 	}
 
 	#showAlbums() : void {

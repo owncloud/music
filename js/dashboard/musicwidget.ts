@@ -45,7 +45,8 @@ export class MusicWidget {
 		const types = [
 			{ id: 'album_artists',	name: t('music', 'Album artists') },
 			{ id: 'albums',			name: t('music', 'Albums') },
-			{ id: 'all_tracks',		name: t('music', 'All tracks') }
+			{ id: 'all_tracks',		name: t('music', 'All tracks') },
+			{ id: 'playlists',		name: t('music', 'Playlists') },
 		];
 		const placeholder = t('music', 'Select mode');
 		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
@@ -135,6 +136,9 @@ export class MusicWidget {
 			case 'all_tracks':
 				this.#showAllTracks();
 				break;
+			case 'playlists':
+				this.#showPlaylists();
+				break;
 			default:
 				console.error('unexpected mode selection:', this.#modeSelect.val());
 		}
@@ -177,6 +181,21 @@ export class MusicWidget {
 
 	#showAllTracks() : void {
 		this.#ampacheLoadAndShowTracks('songs', {}, 'all-tracks', null);
+	}
+
+	#showPlaylists() : void {
+		ampacheApiAction('list', { type: 'playlist' }, (result: any) => {
+			this.#parent1Select = createSelect(
+				result.list,
+				t('music', 'Select playlist')
+			).appendTo(this.#selectContainer);
+
+			this.#parent1Select.on('change', () => {
+				this.#trackList?.remove();
+				const plId = this.#parent1Select.val();
+				this.#ampacheLoadAndShowTracks('playlist_songs', { filter: plId }, 'playlist-' + plId, null);
+			});
+		});
 	}
 
 	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, listId: string, parentId: string|null) {

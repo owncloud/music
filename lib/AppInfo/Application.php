@@ -774,9 +774,9 @@ class Application extends ApplicationBase {
 	public function init() : void {
 		$this->registerHooks();
 
-		// Adjust the CSP if loading the Music app proper
+		// Adjust the CSP if loading the Music app proper or the NC dashboard
 		$url = $this->getRequestUrl();
-		if (\preg_match('%/apps/music/?$%', $url)) {
+		if (\preg_match('%/apps/music/?$%', $url) || \preg_match('%/apps/dashboard/?$%', $url)) {
 			$this->adjustCsp();
 		}
 	}

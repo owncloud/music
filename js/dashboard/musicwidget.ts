@@ -44,6 +44,7 @@ export class MusicWidget {
 
 		const types = [
 			{ id: 'album_artists',	name: t('music', 'Album artists') },
+			{ id: 'albums',			name: t('music', 'Albums') },
 			{ id: 'all_tracks',		name: t('music', 'All tracks') }
 		];
 		const placeholder = t('music', 'Select mode');
@@ -128,6 +129,9 @@ export class MusicWidget {
 			case 'album_artists':
 				this.#showAlbumArtists();
 				break;
+			case 'albums':
+				this.#showAlbums();
+				break;
 			case 'all_tracks':
 				this.#showAllTracks();
 				break;
@@ -151,6 +155,22 @@ export class MusicWidget {
 						this.#ampacheLoadAndShowTracks('album_songs', { filter: albumId }, 'album-' + albumId, artistId);
 					});
 				});
+			});
+		});
+	}
+
+	#showAlbums() : void {
+		ampacheApiAction('get_indexes', { type: 'album' }, (result: any) => {
+			this.#parent1Select = createSelect(
+				result.album,
+				t('music', 'Select album'),
+				(album: any) => `${album.name} (${album.artist.name})`
+			).appendTo(this.#selectContainer);
+
+			this.#parent1Select.on('change', () => {
+				this.#trackList?.remove();
+				const album = this.#parent1Select.find(":selected").data('item');
+				this.#ampacheLoadAndShowTracks('album_songs', { filter: album.id }, 'album-' + album.id, album.artist.id);
 			});
 		});
 	}
@@ -215,15 +235,19 @@ export class MusicWidget {
 	}
 }
 
-function createSelect(items: any[], placeholder: string|null = null) : JQuery<HTMLSelectElement> {
+function createSelect(items: any[], placeholder: string|null = null, fmtTitle: (item: any) => string = null) : JQuery<HTMLSelectElement> {
 	const $select = $('<select required/>') as JQuery<HTMLSelectElement>;
 
 	if (placeholder !== null) {
 		$select.append($('<option selected disabled hidden/>').attr('value', '').text(placeholder));
 	}
 
+	if (fmtTitle === null) {
+		fmtTitle = (item: any) => item.name;
+	}
+
 	$(items).each(function() {
-		$select.append($("<option/>").attr('value', this.id).text(this.name));
+		$("<option/>").attr('value', this.id).text(fmtTitle(this)).data('item', this).appendTo($select);
 	});
 	return $select;
 }

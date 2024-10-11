@@ -1692,7 +1692,7 @@ class AmpacheController extends Controller {
 		];
 		// boolean but no support planned: 'smartplaylist', 'possible_duplicate', 'possible_duplicate_album'
 
-		$booleanNumericRules = ['playlist'];
+		$booleanNumericRules = ['playlist', 'album_artist_id' /* own extension */];
 		// boolean numeric but no support planned: 'license', 'state', 'catalog'
 
 		if (\in_array($rule, $textRules)) {

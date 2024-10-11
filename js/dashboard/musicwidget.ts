@@ -151,12 +151,22 @@ export class MusicWidget {
 				this.#parent2Select?.remove();
 				this.#trackList?.remove();
 				const artistId = this.#parent1Select.val() as string;
-				ampacheApiAction('artist_albums', { filter: artistId }, (result: any) => {
-					this.#parent2Select = createSelect(result.album, t('music', 'Select album')).appendTo(this.#selectContainer);
+				ampacheApiAction('browse', { type: 'artist', filter: artistId }, (result: any) => {
+					// Append the "(All albums)" option after the albums
+					const albumOptions = result.browse.concat([{id: 'all', name: t('music', '(All albums)')}]);
+
+					this.#parent2Select = createSelect(albumOptions, t('music', 'Select album')).appendTo(this.#selectContainer);
 					this.#parent2Select.on('change', () => {
 						this.#trackList?.remove();
 						const albumId = this.#parent2Select.val();
-						this.#ampacheLoadAndShowTracks('album_songs', { filter: albumId }, 'album-' + albumId, artistId);
+						if (albumId === 'all') {
+							this.#ampacheLoadAndShowTracks(
+								'search',
+								{ type: 'song', rule_1: 'album_artist_id', rule_1_operator: 0, rule_1_input: artistId },
+								'albums-by-artist-' + artistId, artistId);
+						} else {
+							this.#ampacheLoadAndShowTracks('album_songs', { filter: albumId }, 'album-' + albumId, artistId);
+						}
 					});
 				});
 			});

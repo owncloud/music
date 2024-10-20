@@ -26,8 +26,7 @@ export class MusicWidget {
 	#progressInfo: ProgressInfo;
 	#selectContainer: JQuery<HTMLElement>;
 	#modeSelect: JQuery<HTMLSelectElement>;
-	#parent1Select: JQuery<HTMLSelectElement>;
-	#parent2Select: JQuery<HTMLSelectElement>;
+	#filterSelects: JQuery<HTMLSelectElement>[];
 	#trackListContainer: JQuery<HTMLElement>;
 	#trackList: JQuery<HTMLUListElement>;
 	#progressAndOrder: JQuery<HTMLElement>;
@@ -40,6 +39,7 @@ export class MusicWidget {
 		this.#volumeControl = new VolumeControl(player);
 		this.#progressInfo = new ProgressInfo(player);
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
+		this.#filterSelects = [];
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 
 		const types = [
@@ -125,14 +125,15 @@ export class MusicWidget {
 		$('<img/>').attr('src', url).on('load', function() {
 			$(this).remove(); // prevent memory leaks
 			$albumArt.css('background-image', `url(${url})`).removeClass('icon-loading');
-		 });
+		});
 	}
 
 	#onModeSelect() : void {
 		// remove the previous selections first
-		this.#parent1Select?.remove();
-		this.#parent2Select?.remove();
+		this.#filterSelects.forEach((select) => select.remove());
+		this.#filterSelects = [];
 		this.#trackList?.remove();
+		this.#trackList = null;
 
 		switch (this.#modeSelect.val()) {
 			case 'album_artists':
@@ -163,26 +164,22 @@ export class MusicWidget {
 
 	#showAlbumArtists() : void {
 		ampacheApiAction('list', { type: 'album_artist' }, (result: any) => {
-			this.#parent1Select = createSelect(result.list, t('music', 'Select artist')).appendTo(this.#selectContainer);
-			this.#parent1Select.on('change', () => {
-				this.#parent2Select?.remove();
+			this.#addFilterSelect(result.list, t('music', 'Select artist'), (artist) => {
+				if (this.#filterSelects.length > 1) {
+					this.#filterSelects.pop().remove();
+				}
 				this.#trackList?.remove();
-				const artistId = this.#parent1Select.val() as string;
-				ampacheApiAction('browse', { type: 'artist', filter: artistId }, (result: any) => {
+
+				ampacheApiAction('browse', { type: 'artist', filter: artist.id }, (result: any) => {
 					// Append the "(All albums)" option after the albums
 					const albumOptions = result.browse.concat([{id: 'all', name: t('music', '(All albums)')}]);
 
-					this.#parent2Select = createSelect(albumOptions, t('music', 'Select album')).appendTo(this.#selectContainer);
-					this.#parent2Select.on('change', () => {
-						this.#trackList?.remove();
-						const albumId = this.#parent2Select.val();
-						if (albumId === 'all') {
-							this.#ampacheLoadAndShowTracks(
-								'search',
-								{ type: 'song', rule_1: 'album_artist_id', rule_1_operator: 0, rule_1_input: artistId },
-								'albums-by-artist-' + artistId, artistId);
+					this.#addFilterSelect(albumOptions, t('music', 'Select album'), (album) => {
+						if (album.id === 'all') {
+							const searchArgs = { type: 'song', rule_1: 'album_artist_id', rule_1_operator: 0, rule_1_input: artist.id };
+							this.#ampacheLoadAndShowTracks('search', searchArgs, artist.id);
 						} else {
-							this.#ampacheLoadAndShowTracks('album_songs', { filter: albumId }, 'album-' + albumId, artistId);
+							this.#ampacheLoadAndShowTracks('album_songs', { filter: album.id }, artist.id);
 						}
 					});
 				});
@@ -192,94 +189,93 @@ export class MusicWidget {
 
 	#showTrackArtists() : void {
 		ampacheApiAction('get_indexes', { type: 'song_artist' }, (result: any) => {
-			this.#parent1Select = createSelect(
+			this.#addFilterSelect(
 				result.artist,
-				t('music', 'Select artist')
-			).appendTo(this.#selectContainer);
-
-			this.#parent1Select.on('change', () => {
-				this.#trackList?.remove();
-				const artistId = this.#parent1Select.val() as string;
-				this.#ampacheLoadAndShowTracks('artist_songs', { filter: artistId }, 'artist-' + artistId, artistId);
-			});
-		});		
+				t('music', 'Select artist'),
+				(artist) => {
+					this.#ampacheLoadAndShowTracks('artist_songs', { filter: artist.id }, artist.id);
+				}
+			);
+		});
 	}
 
 	#showAlbums() : void {
 		ampacheApiAction('get_indexes', { type: 'album' }, (result: any) => {
-			this.#parent1Select = createSelect(
+			this.#addFilterSelect(
 				result.album,
 				t('music', 'Select album'),
-				(album: any) => `${album.name} (${album.artist.name})`
-			).appendTo(this.#selectContainer);
-
-			this.#parent1Select.on('change', () => {
-				this.#trackList?.remove();
-				const album = this.#parent1Select.find(":selected").data('item');
-				this.#ampacheLoadAndShowTracks('album_songs', { filter: album.id }, 'album-' + album.id, album.artist.id);
-			});
+				(album) => {
+					this.#ampacheLoadAndShowTracks('album_songs', { filter: album.id }, album.artist.id);
+				},
+				(album) => `${album.name} (${album.artist.name})`
+			);
 		});
 	}
 
 	#showGenres() : void {
 		ampacheApiAction('list', { type: 'genre' }, (result: any) => {
-			this.#parent1Select = createSelect(
+			this.#addFilterSelect(
 				result.list,
-				t('music', 'Select genre')
-			).appendTo(this.#selectContainer);
-
-			this.#parent1Select.on('change', () => {
-				this.#trackList?.remove();
-				const genreId = this.#parent1Select.val();
-				this.#ampacheLoadAndShowTracks('genre_songs', { filter: genreId }, 'genre-' + genreId, null);
-			});
-		});		
+				t('music', 'Select genre'),
+				(genre) => {
+					this.#ampacheLoadAndShowTracks('genre_songs', { filter: genre.id }, null);
+				}
+			);
+		});
 	}
 
 	#showAllTracks() : void {
-		this.#ampacheLoadAndShowTracks('songs', {}, 'all-tracks', null);
+		this.#ampacheLoadAndShowTracks('songs', {}, null);
 	}
 
 	#showPlaylists() : void {
 		ampacheApiAction('list', { type: 'playlist' }, (result: any) => {
-			this.#parent1Select = createSelect(
+			this.#addFilterSelect(
 				result.list,
-				t('music', 'Select playlist')
-			).appendTo(this.#selectContainer);
-
-			this.#parent1Select.on('change', () => {
-				this.#trackList?.remove();
-				const plId = this.#parent1Select.val();
-				this.#ampacheLoadAndShowTracks('playlist_songs', { filter: plId }, 'playlist-' + plId, null);
-			});
+				t('music', 'Select playlist'),
+				(playlist) => {
+					this.#ampacheLoadAndShowTracks('playlist_songs', { filter: playlist.id }, null);
+				}
+			);
 		});
 	}
 
 	#showPodcasts() : void {
 		ampacheApiAction('list', { type: 'podcast' }, (result: any) => {
-			this.#parent1Select = createSelect(
+			this.#addFilterSelect(
 				result.list,
-				t('music', 'Select channel')
-			).appendTo(this.#selectContainer);
-
-			this.#parent1Select.on('change', () => {
-				this.#trackList?.remove();
-				const channelId = this.#parent1Select.val() as string;
-
-				this.#trackListContainer.addClass('icon-loading');
-				ampacheApiAction('podcast_episodes', {filter: channelId}, (result: any) => {
-					this.#listTracks('podcast-' + channelId, result.podcast_episode, channelId);
-					this.#trackListContainer.removeClass('icon-loading');
-				});
-			});
+				t('music', 'Select channel'),
+				(channel) => {
+					this.#ampacheLoadAndShowTracks('podcast_episodes', { filter: channel.id }, channel.id);
+				}
+			);
 		});
 	}
 
-	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, listId: string, parentId: string|null) {
+	#addFilterSelect(options: any[], placeholder: string, onChange: (selectedItem: any) => void, fmtTitle: (item: any) => string = null) {
+		const filter = createSelect(options, placeholder, fmtTitle).appendTo(this.#selectContainer);
+
+		filter.on('change', () => {
+			const selItem = filter.find(":selected").data('item');
+			onChange(selItem);
+		});
+
+		this.#filterSelects.push(filter);
+	}
+
+	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, parentId: string|null) {
+		this.#trackList?.remove();
 		this.#trackListContainer.addClass('icon-loading');
+
+		const listId = this.#getSelectedListId();
 		ampacheApiAction(action, args, (result: any) => {
-			this.#listTracks(listId, result.song, parentId);
+			this.#listTracks(listId, result.song ?? result.podcast_episode, parentId);
 			this.#trackListContainer.removeClass('icon-loading');
+
+			// highlight the current song if the currently playing list was re-entered
+			if (this.#queue.getCurrentPlaylistId() == listId) {
+				this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
+			}
 		});
 	}
 
@@ -328,6 +324,16 @@ export class MusicWidget {
 		}
 		this.#queue.setRepeat(active);
 		OCA.Music.Storage.set('repeat', active.toString());
+	}
+
+	#getSelectedListId() : string {
+		let listId = this.#modeSelect.val().toString();
+
+		this.#filterSelects.forEach((filter) => {
+			listId += '/' + filter.val();
+		});
+
+		return listId;
 	}
 }
 
@@ -385,7 +391,7 @@ function createControls(onPlay : CallableFunction, onPause : CallableFunction, o
 	return $container;
 }
 
-function ampacheApiAction(action: string, args: JQuery.PlainObject, callback: JQuery.jqXHR.DoneCallback) {
+function ampacheApiAction(action: string, args: JQuery.PlainObject, callback: JQuery.jqXHR.DoneCallback) : void {
 	const url = OC.generateUrl(AMPACHE_API_URL);
 	args['action'] = action;
 	args['auth'] = 'internal';

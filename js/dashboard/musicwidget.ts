@@ -31,7 +31,8 @@ export class MusicWidget {
 	#trackList: JQuery<HTMLUListElement>;
 	#progressAndOrder: JQuery<HTMLElement>;
 	#controls: JQuery<HTMLElement>;
-	#debouncedPlayCurrent: CallableFunction;
+	#events: typeof OC.Backbone.Events;
+	#debouncedPlayCurrent: () => void;
 
 	constructor($container: JQuery<HTMLElement>, player: PlayerWrapper, queue: PlayQueue) {
 		this.#player = player;
@@ -41,6 +42,7 @@ export class MusicWidget {
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#filterSelects = [];
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
+		this.#events = _.clone(OC.Backbone.Events);
 
 		const types = [
 			{ id: 'album_artists',	name: t('music', 'Album artists') },
@@ -63,6 +65,7 @@ export class MusicWidget {
 			() => this.#player.pause(),
 			() => this.#jumpToPrev(),
 			() => this.#jumpToNext(),
+			() => this.#scrollToCurrentTrack(),
 			this.#volumeControl
 		).hide().appendTo($container);
 
@@ -261,6 +264,7 @@ export class MusicWidget {
 		});
 
 		this.#filterSelects.push(filter);
+		this.#events.trigger('filterPopulated', filter);
 	}
 
 	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, parentId: string|null) {
@@ -276,6 +280,8 @@ export class MusicWidget {
 			if (this.#queue.getCurrentPlaylistId() == listId) {
 				this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
 			}
+
+			this.#events.trigger('tracksPopulated');
 		});
 	}
 
@@ -335,6 +341,39 @@ export class MusicWidget {
 
 		return listId;
 	}
+
+	#selectListWithId(listId : string, onReady : () => void) : void {
+		const parts = listId.split('/');
+
+		const mode = parts.shift();
+		this.#modeSelect.val(mode).trigger('change');
+
+		const handleSelection = () => {
+			if (parts.length > 0) {
+				const filterVal = parts.shift();
+				this.#events.once('filterPopulated', (filter: JQuery<HTMLSelectElement>) => {
+					filter.val(filterVal).trigger('change');
+					handleSelection();
+				});
+			}
+			else {
+				this.#events.once('tracksPopulated', onReady);
+			}
+		}
+		handleSelection();
+	}
+
+	#scrollToCurrentTrack() : void {
+		const current = this.#trackList?.find('.current');
+		if (current?.length) {
+			current[0].scrollIntoView({
+				behavior: "smooth"
+			});
+		}
+		else {
+			this.#selectListWithId(this.#queue.getCurrentPlaylistId(), () => this.#scrollToCurrentTrack());
+		}
+	}
 }
 
 function createSelect(items: any[], placeholder: string|null = null, fmtTitle: (item: any) => string = null) : JQuery<HTMLSelectElement> {
@@ -371,22 +410,28 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 	return $ul;
 }
 
-function createProgressAndOrder(progress : ProgressInfo, onShuffleBtn : CallableFunction, onRepeatBtn : CallableFunction) : JQuery<HTMLElement>
+function createProgressAndOrder(progress : ProgressInfo, onShuffleBtn : () => void, onRepeatBtn : () => void) : JQuery<HTMLElement>
 {
 	const $container = $('<div class="progress-and-order"/>');
-	$('<div class="control toggle icon-shuffle"/>').appendTo($container).on('click', () => onShuffleBtn());
+	$('<div class="control toggle icon-shuffle"/>').appendTo($container).on('click', onShuffleBtn);
 	progress.addToContainer($container);
-	$('<div class="control toggle icon-repeat"/>').appendTo($container).on('click', () => onRepeatBtn());
+	$('<div class="control toggle icon-repeat"/>').appendTo($container).on('click', onRepeatBtn);
 	return $container;
 }
 
-function createControls(onPlay : CallableFunction, onPause : CallableFunction, onPrev : CallableFunction, onNext : CallableFunction, volumeControl : VolumeControl) : JQuery<HTMLElement> {
+function createControls(
+		onPlay : () => void,
+		onPause : () => void,
+		onPrev : () => void,
+		onNext : () => void,
+		onCoverClick : () => void,
+		volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
-	$('<div class="albumart"/>').appendTo($container);
-	$('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', () => onPrev());
-	$('<div class="playback control icon-play"/>').appendTo($container).on('click', () => onPlay());
-	$('<div class="playback control icon-pause"/>').appendTo($container).on('click', () => onPause()).hide();
-	$('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', () => onNext());
+	$('<div class="albumart"/>').appendTo($container).on('click', onCoverClick);
+	$('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', onPrev);
+	$('<div class="playback control icon-play"/>').appendTo($container).on('click', onPlay);
+	$('<div class="playback control icon-pause"/>').appendTo($container).on('click', onPause).hide();
+	$('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', onNext);
 	volumeControl.addToContainer($container);
 	return $container;
 }

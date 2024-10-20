@@ -70,6 +70,7 @@
 	margin-left: 8px;
 	margin-right: 16px;
 	background-size: contain;
+	cursor: pointer;
 }
 
 .music-widget .player-controls .control {

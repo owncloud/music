@@ -5,7 +5,7 @@
 ### Changed
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`
-  * Added fields `art` and `has_art` to the `podcast_episode` result type
+  * Added fields `art` and `has_art` to the `podcast_episode` and `live_stream` result types
 
 ### Fixed
 

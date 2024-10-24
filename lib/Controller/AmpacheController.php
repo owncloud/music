@@ -1519,7 +1519,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_art(string $type, int $id) : Response {
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -2080,8 +2080,12 @@ class AmpacheController extends Controller {
 	 * @param RadioStation[] $stations
 	 */
 	private function renderLiveStreams(array $stations) : array {
+		$createImageUrl = function(RadioStation $station) : string {
+			return $this->createAmpacheActionUrl('get_art', $station->getId(), 'live_stream');
+		};
+
 		return [
-			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi')
+			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi', [$createImageUrl])
 		];
 	}
 

@@ -51,6 +51,7 @@ export class MusicWidget {
 			{ id: 'genres',			name: t('music', 'Genres') },
 			{ id: 'all_tracks',		name: t('music', 'All tracks') },
 			{ id: 'playlists',		name: t('music', 'Playlists') },
+			{ id: 'radio',			name: t('music', 'Internet radio') },
 			{ id: 'podcasts',		name: t('music', 'Podcasts') },
 		];
 		const placeholder = t('music', 'Select mode');
@@ -78,14 +79,24 @@ export class MusicWidget {
 				const $albumArt = this.#controls.find('.albumart');
 				this.#loadBackgroundImage($albumArt, track.art);
 				if ('artist' in track) {
+					// local song
 					$albumArt.prop('title', `${track.name} (${track.artist.name})`);
 					this.#player.fromUrl(track.url, track.stream_mime);
+					this.#player.play();
 				} else {
 					$albumArt.prop('title', track.name);
-					this.#player.fromExtUrl(track.url, false);
+					if ('filesize' in track) {
+						// podcast
+						this.#player.fromExtUrl(track.url, false);
+						this.#player.play();
+					} else {
+						// radio stream needs resolving for HLS and playlist-type URLs
+						$.get(OC.generateUrl('apps/music/api/radio/{id}/streamurl', {id: track.id}), {}, (resolvedStream) => {
+							this.#player.fromExtUrl(resolvedStream.url, resolvedStream.hls);
+							this.#player.play();
+						});
+					}
 				}
-
-				this.#player.play();
 			}
 		}, 300);
 
@@ -156,6 +167,9 @@ export class MusicWidget {
 				break;
 			case 'playlists':
 				this.#showPlaylists();
+				break;
+			case 'radio':
+				this.#showRadioStations();
 				break;
 			case 'podcasts':
 				this.#showPodcasts();
@@ -243,6 +257,10 @@ export class MusicWidget {
 		});
 	}
 
+	#showRadioStations() : void {
+		this.#ampacheLoadAndShowTracks('live_streams', {}, null);
+	}
+
 	#showPodcasts() : void {
 		ampacheApiAction('list', { type: 'podcast' }, (result: any) => {
 			this.#addFilterSelect(
@@ -273,7 +291,7 @@ export class MusicWidget {
 
 		const listId = this.#getSelectedListId();
 		ampacheApiAction(action, args, (result: any) => {
-			this.#listTracks(listId, result.song ?? result.podcast_episode, parentId);
+			this.#listTracks(listId, result.song ?? result.podcast_episode ?? result.live_stream, parentId);
 			this.#trackListContainer.removeClass('icon-loading');
 
 			// highlight the current song if the currently playing list was re-entered

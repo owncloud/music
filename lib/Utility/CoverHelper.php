@@ -20,6 +20,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\Cache;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\Playlist;
+use OCA\Music\Db\RadioStation;
 
 use OCP\Files\Folder;
 use OCP\Files\File;
@@ -75,6 +76,8 @@ class CoverHelper {
 			$trackIds = $entity->getTrackIdsAsArray();
 			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
 			$result = $this->getCoverMosaic($albums, $userId, $rootFolder);
+		} elseif ($entity instanceof RadioStation) {
+			$result = null; // only placeholders supported for radio
 		} elseif ($size !== null) {
 			// Skip using cache in case the cover is requested in specific size
 			$result = $this->readCover($entity, $rootFolder, $size);

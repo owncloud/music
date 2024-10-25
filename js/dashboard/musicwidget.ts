@@ -180,14 +180,14 @@ export class MusicWidget {
 	}
 
 	#showAlbumArtists() : void {
-		ampacheApiAction('list', { type: 'album_artist' }, (result: any) => {
+		this.#ampacheLoadContent('list', { type: 'album_artist' }, (result: any) => {
 			this.#addFilterSelect(result.list, t('music', 'Select artist'), (artist) => {
 				if (this.#filterSelects.length > 1) {
 					this.#filterSelects.pop().remove();
 				}
 				this.#trackList?.remove();
 
-				ampacheApiAction('browse', { type: 'artist', filter: artist.id }, (result: any) => {
+				this.#ampacheLoadContent('browse', { type: 'artist', filter: artist.id }, (result: any) => {
 					// Append the "(All albums)" option after the albums
 					const albumOptions = result.browse.concat([{id: 'all', name: t('music', '(All albums)')}]);
 
@@ -205,7 +205,7 @@ export class MusicWidget {
 	}
 
 	#showTrackArtists() : void {
-		ampacheApiAction('get_indexes', { type: 'song_artist' }, (result: any) => {
+		this.#ampacheLoadContent('get_indexes', { type: 'song_artist' }, (result: any) => {
 			this.#addFilterSelect(
 				result.artist,
 				t('music', 'Select artist'),
@@ -217,7 +217,7 @@ export class MusicWidget {
 	}
 
 	#showAlbums() : void {
-		ampacheApiAction('get_indexes', { type: 'album' }, (result: any) => {
+		this.#ampacheLoadContent('get_indexes', { type: 'album' }, (result: any) => {
 			this.#addFilterSelect(
 				result.album,
 				t('music', 'Select album'),
@@ -230,7 +230,7 @@ export class MusicWidget {
 	}
 
 	#showGenres() : void {
-		ampacheApiAction('list', { type: 'genre' }, (result: any) => {
+		this.#ampacheLoadContent('list', { type: 'genre' }, (result: any) => {
 			this.#addFilterSelect(
 				result.list,
 				t('music', 'Select genre'),
@@ -246,7 +246,7 @@ export class MusicWidget {
 	}
 
 	#showPlaylists() : void {
-		ampacheApiAction('list', { type: 'playlist' }, (result: any) => {
+		this.#ampacheLoadContent('list', { type: 'playlist' }, (result: any) => {
 			this.#addFilterSelect(
 				result.list,
 				t('music', 'Select playlist'),
@@ -262,7 +262,7 @@ export class MusicWidget {
 	}
 
 	#showPodcasts() : void {
-		ampacheApiAction('list', { type: 'podcast' }, (result: any) => {
+		this.#ampacheLoadContent('list', { type: 'podcast' }, (result: any) => {
 			this.#addFilterSelect(
 				result.list,
 				t('music', 'Select channel'),
@@ -287,12 +287,10 @@ export class MusicWidget {
 
 	#ampacheLoadAndShowTracks(action: string, args: JQuery.PlainObject, parentId: string|null) {
 		this.#trackList?.remove();
-		this.#trackListContainer.addClass('icon-loading');
 
 		const listId = this.#getSelectedListId();
-		ampacheApiAction(action, args, (result: any) => {
+		this.#ampacheLoadContent(action, args, (result: any) => {
 			this.#listTracks(listId, result.song ?? result.podcast_episode ?? result.live_stream, parentId);
-			this.#trackListContainer.removeClass('icon-loading');
 
 			// highlight the current song if the currently playing list was re-entered
 			if (this.#queue.getCurrentPlaylistId() == listId) {
@@ -300,6 +298,14 @@ export class MusicWidget {
 			}
 
 			this.#events.trigger('tracksPopulated');
+		});
+	}
+
+	#ampacheLoadContent(action: string, args: JQuery.PlainObject, callback: (result: any) => void) : void {
+		this.#trackListContainer.addClass('icon-loading');
+		ampacheApiAction(action, args, (result: any) => {
+			callback(result);
+			this.#trackListContainer.removeClass('icon-loading');
 		});
 	}
 

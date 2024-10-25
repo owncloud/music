@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -39,7 +39,7 @@ class RadioStation extends Entity {
 	public function toAmpacheApi(callable $createImageUrl) : array {
 		return [
 			'id' => $this->getId(),
-			'name' => $this->getName(),
+			'name' => $this->getName() ?? $this->getStreamUrl(),
 			'url' => $this->getStreamUrl(),
 			'site_url' => $this->getHomeUrl(),
 			'art' => $createImageUrl($this),

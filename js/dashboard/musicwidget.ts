@@ -30,6 +30,7 @@ export class MusicWidget {
 	#trackListContainer: JQuery<HTMLElement>;
 	#trackList: JQuery<HTMLUListElement>;
 	#progressAndOrder: JQuery<HTMLElement>;
+	#currentSongLabel: JQuery<HTMLElement>;
 	#controls: JQuery<HTMLElement>;
 	#events: typeof OC.Backbone.Events;
 	#debouncedPlayCurrent: () => void;
@@ -70,6 +71,7 @@ export class MusicWidget {
 			() => this.#setShuffle(!this.#queue.getShuffle()),
 			() => this.#setRepeat(!this.#queue.getRepeat())
 		).hide().appendTo($container);
+		this.#currentSongLabel = $('<div class="current-song-label" />').hide().appendTo($container);
 		this.#controls = createControls(
 			() => this.#player.play(),
 			() => this.#player.pause(),
@@ -89,22 +91,18 @@ export class MusicWidget {
 				this.#loadBackgroundImage($albumArt, track.art);
 				if ('artist' in track) {
 					// local song
-					$albumArt.prop('title', `${track.name} (${track.artist.name})`);
 					this.#player.fromUrl(track.url, track.stream_mime);
 					this.#player.play();
+				} else if ('filesize' in track) {
+					// podcast
+					this.#player.fromExtUrl(track.url, false);
+					this.#player.play();
 				} else {
-					$albumArt.prop('title', track.name);
-					if ('filesize' in track) {
-						// podcast
-						this.#player.fromExtUrl(track.url, false);
+					// radio stream needs resolving for HLS and playlist-type URLs
+					$.get(OC.generateUrl('apps/music/api/radio/{id}/streamurl', {id: track.id}), {}, (resolvedStream) => {
+						this.#player.fromExtUrl(resolvedStream.url, resolvedStream.hls);
 						this.#player.play();
-					} else {
-						// radio stream needs resolving for HLS and playlist-type URLs
-						$.get(OC.generateUrl('apps/music/api/radio/{id}/streamurl', {id: track.id}), {}, (resolvedStream) => {
-							this.#player.fromExtUrl(resolvedStream.url, resolvedStream.hls);
-							this.#player.play();
-						});
-					}
+					});
 				}
 			}
 		}, 300);
@@ -117,7 +115,10 @@ export class MusicWidget {
 			this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
 
 			this.#controls.find('.albumart').css('background-image', '').addClass('icon-loading');
-			
+
+			const title = trackTitle(track);
+			this.#currentSongLabel.html(title.asHtml).attr('title', title.asPlain).show();
+
 			this.#progressAndOrder.show();
 			this.#controls.show();
 		});
@@ -125,6 +126,7 @@ export class MusicWidget {
 		this.#queue.subscribe('playlistEnded', () => {
 			player.stop();
 			this.#progressAndOrder.hide();
+			this.#currentSongLabel.hide();
 			this.#controls.hide();
 			this.#trackList.find('.current').removeClass('current');
 		});
@@ -403,18 +405,22 @@ function createSelect(items: any[], placeholder: string|null, onChange: (selecte
 	return $select;
 }
 
+function trackTitle(track: any, parentId: string|null = null) : {asHtml: string, asPlain: string} {
+	const result = { asHtml: track.name, asPlain: track.name };
+	if ('artist' in track && track.artist.id != parentId) {
+		result.asHtml += ` <span class="dimmed">(${track.artist.name})</span>`;
+		result.asPlain += ` (${track.artist.name})`
+	}
+	return result;
+}
+
 function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLUListElement> {
 	const $ul = $('<ul/>') as JQuery<HTMLUListElement>;
 	$(tracks).each(function(index: number) {
-		let liContent = this.name;
-		let tooltip = this.name;
-		if ('artist' in this && this.artist.id != parentId) {
-			liContent += ` <span class="dimmed">(${this.artist.name})</span>`;
-			tooltip += ` (${this.artist.name})`
-		}
+		const title = trackTitle(this, parentId);
 		// Each item stores a `data` reference to its index. This is done using the jQuery .attr() instead of .data() because
 		// the latter doesn't store the reference to the DOM itself, making finding the element by the attribute impossible.
-		$(`<li title="${tooltip}">${liContent}</li>`).attr('data-index', index).appendTo($ul);
+		$(`<li title="${title.asPlain}">${title.asHtml}</li>`).attr('data-index', index).appendTo($ul);
 	});
 
 	return $ul;

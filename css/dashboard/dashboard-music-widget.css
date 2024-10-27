@@ -58,6 +58,18 @@
 	pointer-events: none;
 }
 
+.music-widget .current-song-label {
+	flex: 0 0 25px;
+	margin-left: 8px;
+	margin-right: 8px;
+	margin-top: -5px;
+	text-align: center;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .music-widget .player-controls {
 	flex: 0 0 50px;
 	display: flex;

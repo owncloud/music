@@ -63,7 +63,7 @@ class CoverHelper {
 	 * Get cover image of an album, an artist, a podcast, or a playlist.
 	 * Returns a generated placeholder in case there's no art set.
 	 *
-	 * @param Album|Artist|PodcastChannel|Playlist $entity
+	 * @param Album|Artist|Playlist|PodcastChannel|RadioStation $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int|null $size Desired (max) image size, null to use the default.

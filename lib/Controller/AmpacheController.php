@@ -332,7 +332,6 @@ class AmpacheController extends Controller {
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
 		if ($type === 'album_artist' || $type === 'song_artist') {
-			$type = 'artist';
 			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			if ($type === 'album_artist') {
 				$entities = $this->artistBusinessLayer->findAllHavingAlbums(
@@ -341,6 +340,7 @@ class AmpacheController extends Controller {
 				$entities = $this->artistBusinessLayer->findAllHavingTracks(
 					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring, $addMin, $addMax, $updateMin, $updateMax);
 			}
+			$type = 'artist';
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);

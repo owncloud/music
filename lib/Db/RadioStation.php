@@ -13,8 +13,8 @@
 namespace OCA\Music\Db;
 
 /**
- * @method string getName()
- * @method void setName(string $name)
+ * @method ?string getName()
+ * @method void setName(?string $name)
  * @method string getStreamUrl()
  * @method setStreamUrl(string $url)
  * @method string getHomeUrl()

@@ -126,6 +126,7 @@ export class MusicWidget {
 			player.stop();
 			this.#progressAndOrder.hide();
 			this.#controls.hide();
+			this.#trackList.find('.current').removeClass('current');
 		});
 
 		this.#player.on('play', () => {

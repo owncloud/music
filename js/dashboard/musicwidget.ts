@@ -75,8 +75,8 @@ export class MusicWidget {
 		this.#controls = createControls(
 			() => this.#player.play(),
 			() => this.#player.pause(),
-			() => this.#jumpToPrev(),
-			() => this.#jumpToNext(),
+			() => this.#onPrevButton(),
+			() => this.#onNextButton(),
 			() => this.#scrollToCurrentTrack(),
 			this.#volumeControl
 		).hide().appendTo($container);
@@ -141,7 +141,7 @@ export class MusicWidget {
 			this.#controls.find('.icon-pause').hide();
 		});
 
-		this.#player.on('end', () => this.#jumpToNext());
+		this.#player.on('end', () => this.#onNextButton());
 	}
 
 	#loadBackgroundImage($albumArt: JQuery<HTMLElement>, url: string) {
@@ -310,12 +310,19 @@ export class MusicWidget {
 		});
 	}
 
-	#jumpToNext() : void {
+	#onNextButton() : void {
 		this.#queue.jumpToNextTrack();
 	}
 
-	#jumpToPrev() : void {
-		this.#queue.jumpToPrevTrack();
+	#onPrevButton() : void {
+		// When not playing a radio stream, jump to the beginning of the current track if it has
+		// already played more than 2 secs. Jump to the beginning also in case there is no
+		// previous track to jump to.
+		if (this.#playingRadio()) {
+			this.#queue.jumpToPrevTrack()
+		} else if (this.#player.playPosition() > 2000 || !this.#queue.jumpToPrevTrack()) {
+			this.#player.seek(0);
+		}
 	}
 
 	#setShuffle(active : boolean) : void {
@@ -336,6 +343,10 @@ export class MusicWidget {
 		}
 		this.#queue.setRepeat(active);
 		OCA.Music.Storage.set('repeat', active.toString());
+	}
+
+	#playingRadio() : boolean {
+		return this.#queue.getCurrentPlaylistId()?.startsWith('radio');
 	}
 
 	#getSelectedListId() : string {

@@ -21,6 +21,7 @@
 .music-widget .tracks-container {
 	flex: 1 1 auto;
 	overflow-y: scroll;
+	scrollbar-width: thin;
 	margin-top: 8px;
 	margin-bottom: 8px;
 }

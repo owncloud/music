@@ -9,6 +9,8 @@
   * For radio stations without user-supplied name, use the stream URL as a name
 
 ### Fixed
+- Ampache API:
+  * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
 
 ## 2.0.1 - 2024-09-08
 

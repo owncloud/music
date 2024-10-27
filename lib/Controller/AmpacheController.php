@@ -2061,7 +2061,7 @@ class AmpacheController extends Controller {
 		};
 		$createImageUrl = function(Track $track) : string {
 			$album = $track->getAlbum();
-			return ($album !== null) ? $this->createCoverUrl($album) : '';
+			return ($album !== null && $album->getId() !== null) ? $this->createCoverUrl($album) : '';
 		};
 		$renderRef = function(int $id, string $name) : array {
 			return $this->renderAlbumOrArtistRef($id, $name);

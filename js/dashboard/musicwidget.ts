@@ -48,6 +48,7 @@ export class MusicWidget {
 			{ id: 'album_artists',	name: t('music', 'Album artists') },
 			{ id: 'track_artists',	name: t('music', 'Track artists') },
 			{ id: 'albums',			name: t('music', 'Albums') },
+			{ id: 'folders',		name: t('music', 'Folders') },
 			{ id: 'genres',			name: t('music', 'Genres') },
 			{ id: 'all_tracks',		name: t('music', 'All tracks') },
 			{ id: 'playlists',		name: t('music', 'Playlists') },
@@ -159,6 +160,9 @@ export class MusicWidget {
 			case 'albums':
 				this.#showAlbums();
 				break;
+			case 'folders':
+				this.#showFolders();
+				break;
 			case 'genres':
 				this.#showGenres();
 				break;
@@ -225,6 +229,19 @@ export class MusicWidget {
 					this.#ampacheLoadAndShowTracks('album_songs', { filter: album.id }, album.artist.id);
 				},
 				(album) => `${album.name} (${album.artist.name})`
+			);
+		});
+	}
+
+	#showFolders() : void {
+		this.#ampacheLoadContent('folders', {}, (result: any) => {
+			this.#addFilterSelect(
+				result.folder,
+				t('music', 'Select folder'),
+				(folder) => {
+					this.#ampacheLoadAndShowTracks('folder_songs', { filter: folder.id }, null);
+				},
+				(folder) => folder.name || t('music', '(library root)')
 			);
 		});
 	}

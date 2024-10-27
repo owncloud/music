@@ -682,6 +682,45 @@ class AmpacheController extends Controller {
 
 	/**
 	 * @AmpacheAPI
+	 *
+	 * This is a proprietary extension to the API
+	 */
+	protected function folders(int $limit, int $offset=0) : array {
+		$userId = $this->session->getUserId();
+		$musicFolder = $this->librarySettings->getFolder($userId);
+		$folders = $this->trackBusinessLayer->findAllFolders($userId, $musicFolder);
+
+		// disregard any (parent) folders without any direct track children
+		$folders = \array_filter($folders, function($folder) {
+			return \count($folder['trackIds']) > 0;
+		});
+
+		Util::arraySortByColumn($folders, 'name');
+		$folders = \array_slice($folders, $offset, $limit);
+
+		return [
+			'folder' => \array_map(function ($folder) {
+				return [
+					'id' => (string)$folder['id'],
+					'name' => $folder['name'],
+				];
+			}, $folders)
+		];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 *
+	 * This is a proprietary extension to the API
+	 */
+	protected function folder_songs(int $filter, int $limit, int $offset=0) : array {
+		$userId = $this->session->getUserId();
+		$tracks = $this->trackBusinessLayer->findAllByFolder($filter, $userId, $limit, $offset);
+		return $this->renderSongs($tracks);
+	}
+
+	/**
+	 * @AmpacheAPI
 	 */
 	protected function get_similar(string $type, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->session->getUserId();

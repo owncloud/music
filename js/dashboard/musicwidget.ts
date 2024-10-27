@@ -111,8 +111,8 @@ export class MusicWidget {
 			this.#player.stop();
 			this.#debouncedPlayCurrent();
 
-			this.#trackList.find('.current').removeClass('current');
-			this.#trackList.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
+			this.#trackList?.find('.current').removeClass('current');
+			this.#trackList?.find(`[data-index='${this.#queue.getCurrentIndex()}']`).addClass('current');
 
 			this.#controls.find('.albumart').css('background-image', '').addClass('icon-loading');
 

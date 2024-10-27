@@ -44,19 +44,27 @@ export class MusicWidget {
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
 		this.#events = _.clone(OC.Backbone.Events);
 
-		const types = [
-			{ id: 'album_artists',	name: t('music', 'Album artists') },
-			{ id: 'track_artists',	name: t('music', 'Track artists') },
-			{ id: 'albums',			name: t('music', 'Albums') },
-			{ id: 'folders',		name: t('music', 'Folders') },
-			{ id: 'genres',			name: t('music', 'Genres') },
-			{ id: 'all_tracks',		name: t('music', 'All tracks') },
-			{ id: 'playlists',		name: t('music', 'Playlists') },
-			{ id: 'radio',			name: t('music', 'Internet radio') },
-			{ id: 'podcasts',		name: t('music', 'Podcasts') },
+		const modes = [
+			{ id: 'album_artists',	name: t('music', 'Album artists'),	onSelect: () => this.#showAlbumArtists() },
+			{ id: 'track_artists',	name: t('music', 'Track artists'),	onSelect: () => this.#showTrackArtists() },
+			{ id: 'albums',			name: t('music', 'Albums'),			onSelect: () => this.#showAlbums() },
+			{ id: 'folders',		name: t('music', 'Folders'),		onSelect: () => this.#showFolders() },
+			{ id: 'genres',			name: t('music', 'Genres'),			onSelect: () => this.#showGenres() },
+			{ id: 'all_tracks',		name: t('music', 'All tracks'),		onSelect: () => this.#showAllTracks() },
+			{ id: 'playlists',		name: t('music', 'Playlists'),		onSelect: () => this.#showPlaylists() },
+			{ id: 'radio',			name: t('music', 'Internet radio'),	onSelect: () => this.#showRadioStations() },
+			{ id: 'podcasts',		name: t('music', 'Podcasts'),		onSelect: () => this.#showPodcasts() },
 		];
-		const placeholder = t('music', 'Select mode');
-		this.#modeSelect = createSelect(types, placeholder).appendTo(this.#selectContainer).on('change', () => this.#onModeSelect());
+		this.#modeSelect = createSelect(modes, t('music', 'Select mode'), (mode) => {
+			// clear the previous selections first
+			this.#filterSelects.forEach((select) => select.remove());
+			this.#filterSelects = [];
+			this.#trackList?.remove();
+			this.#trackList = null;
+
+			mode.onSelect();
+		}).appendTo(this.#selectContainer);
+
 		this.#progressAndOrder = createProgressAndOrder(
 			this.#progressInfo,
 			() => this.#setShuffle(!this.#queue.getShuffle()),
@@ -141,46 +149,6 @@ export class MusicWidget {
 			$(this).remove(); // prevent memory leaks
 			$albumArt.css('background-image', `url(${url})`).removeClass('icon-loading');
 		});
-	}
-
-	#onModeSelect() : void {
-		// remove the previous selections first
-		this.#filterSelects.forEach((select) => select.remove());
-		this.#filterSelects = [];
-		this.#trackList?.remove();
-		this.#trackList = null;
-
-		switch (this.#modeSelect.val()) {
-			case 'album_artists':
-				this.#showAlbumArtists();
-				break;
-			case 'track_artists':
-				this.#showTrackArtists();
-				break;
-			case 'albums':
-				this.#showAlbums();
-				break;
-			case 'folders':
-				this.#showFolders();
-				break;
-			case 'genres':
-				this.#showGenres();
-				break;
-			case 'all_tracks':
-				this.#showAllTracks();
-				break;
-			case 'playlists':
-				this.#showPlaylists();
-				break;
-			case 'radio':
-				this.#showRadioStations();
-				break;
-			case 'podcasts':
-				this.#showPodcasts();
-				break;
-			default:
-				console.error('unexpected mode selection:', this.#modeSelect.val());
-		}
 	}
 
 	#showAlbumArtists() : void {
@@ -291,13 +259,7 @@ export class MusicWidget {
 	}
 
 	#addFilterSelect(options: any[], placeholder: string, onChange: (selectedItem: any) => void, fmtTitle: (item: any) => string = null) {
-		const filter = createSelect(options, placeholder, fmtTitle).appendTo(this.#selectContainer);
-
-		filter.on('change', () => {
-			const selItem = filter.find(":selected").data('item');
-			onChange(selItem);
-		});
-
+		const filter = createSelect(options, placeholder, onChange, fmtTitle).appendTo(this.#selectContainer);
 		this.#filterSelects.push(filter);
 		this.#events.trigger('filterPopulated', filter);
 	}
@@ -417,7 +379,7 @@ export class MusicWidget {
 	}
 }
 
-function createSelect(items: any[], placeholder: string|null = null, fmtTitle: (item: any) => string = null) : JQuery<HTMLSelectElement> {
+function createSelect(items: any[], placeholder: string|null, onChange: (selectedItem: any) => void, fmtTitle: (item: any) => string = null) : JQuery<HTMLSelectElement> {
 	const $select = $('<select required/>') as JQuery<HTMLSelectElement>;
 
 	if (placeholder !== null) {
@@ -431,6 +393,12 @@ function createSelect(items: any[], placeholder: string|null = null, fmtTitle: (
 	$(items).each(function() {
 		$("<option/>").attr('value', this.id).text(fmtTitle(this)).data('item', this).appendTo($select);
 	});
+
+	$select.on('change', () => {
+		const selItem = $select.find(":selected").data('item');
+		onChange(selItem);
+	});
+
 	return $select;
 }
 

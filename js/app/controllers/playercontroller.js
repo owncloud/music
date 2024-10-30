@@ -11,6 +11,7 @@
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
+import { BrowserMediaSession } from 'shared/browsermediasession';
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playQueueService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$q', '$document', '$location',
@@ -40,6 +41,7 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	let scrobblePending = false;
 	let scheduledRadioTitleFetch = null;
 	let abortRadioTitleFetch = null;
+	let browserMediaSession = new BrowserMediaSession($scope.player);
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
 	const RADIO_INFO_POLL_PERIOD_MS = 30000;
 	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
@@ -807,66 +809,42 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	});
 
 	/**
-	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
-	 * version 83. In Firefox, the API is enabled by default at least in the version 83, although at least
-	 * partial support has been available already starting from the version 74 via the advanced settings.
-	 *
-	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
-	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
+	 * Media session API
 	 */
-	if ('mediaSession' in navigator) {
-		let registerMediaControlHandler = function(action, handler) {
-			try {
-				navigator.mediaSession.setActionHandler(action, function() { $scope.$apply((_scope) => handler()); });
-			} catch (error) {
-				console.log('The media control "' + action + '"" is not supported by the browser');
-			}
-		};
+	browserMediaSession.registerControls({
+		play: () => $scope.play(),
+		pause: () => $scope.pause(),
+		stop: () => $scope.stop(),
+		seekBackward: () => $scope.seekBackward(),
+		seekForward: () => $scope.seekForward(),
+		previousTrack: () => $scope.prev(),
+		nextTrack: () => $scope.next()
+	});
 
-		registerMediaControlHandler('play', $scope.play);
-		registerMediaControlHandler('pause', $scope.pause);
-		registerMediaControlHandler('stop', $scope.stop);
-		registerMediaControlHandler('seekbackward', $scope.seekBackward);
-		registerMediaControlHandler('seekforward', $scope.seekForward);
-		registerMediaControlHandler('previoustrack', $scope.prev);
-		registerMediaControlHandler('nexttrack', $scope.next);
-
-		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
-			const track = newValues[0];
-			if (track) {
-				if (track.type === 'radio') {
-					navigator.mediaSession.metadata = new MediaMetadata({
-						title: $scope.primaryTitle(),
-						artist: $scope.secondaryTitle(),
-						artwork: [{
-							sizes: '190x190',
-							src: radioIconPath,
-							type: 'image/svg+xml'
-						}]
-					});
-				}
-				else {
-					navigator.mediaSession.metadata = new MediaMetadata({
-						title: track.title,
-						artist: track?.artist?.name,
-						album: track?.album?.name ?? track?.channel?.title,
-						artwork: [{
-							sizes: '190x190',
-							src: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
-							type: ''
-						}]
-					});
-				}
+	$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
+		const track = newValues[0];
+		if (track) {
+			if (track.type === 'radio') {
+				browserMediaSession.showInfo({
+					title: $scope.primaryTitle(),
+					artist: $scope.secondaryTitle(),
+					cover: radioIconPath,
+					coverMime: 'image/svg+xml'
+				});
 			}
 			else {
-				navigator.mediaSession.metadata = null;
+				browserMediaSession.showInfo({
+					title: track.title,
+					artist: track?.artist?.name,
+					album: track?.album?.name ?? track?.channel?.title,
+					cover: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+				});
 			}
-		});
-
-		$rootScope.$watch('playing', function(isPlaying) {
-			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-		});
-	}
+		}
+		else {
+			browserMediaSession.clearInfo();
+		}
+	});
 
 	/**
 	 * Desktop notifications

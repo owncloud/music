@@ -16,6 +16,7 @@ import closeIconPath from '../../img/close.svg';
 import radioIconPath from '../../img/radio-file.svg';
 import { VolumeControl } from 'shared/volumecontrol';
 import { ProgressInfo } from 'shared/progressinfo';
+import { BrowserMediaSession } from 'shared/browsermediasession';
 
 
 OCA.Music = OCA.Music || {};
@@ -25,6 +26,7 @@ OCA.Music.EmbeddedPlayer = function() {
 	let player = new OCA.Music.PlayerWrapper();
 	let volumeControl = new VolumeControl(player);
 	let progressInfo = new ProgressInfo(player);
+	let browserMediaSession = new BrowserMediaSession(player);
 
 	// callbacks
 	let onClose = null;
@@ -324,15 +326,10 @@ OCA.Music.EmbeddedPlayer = function() {
 		player.on('play', () => {
 			playButton.css('display', 'none');
 			pauseButton.css('display', 'inline-block');
-			setMediaSessionStatePlaying(true);
 		});
 		player.on('pause', () => {
 			playButton.css('display', 'inline-block');
 			pauseButton.css('display', 'none');
-			setMediaSessionStatePlaying(false);
-		});
-		player.on('stop', () => {
-			setMediaSessionStatePlaying(false);
 		});
 
 		if (onNext) {
@@ -351,7 +348,7 @@ OCA.Music.EmbeddedPlayer = function() {
 		let cover = data.cover || OC.imagePath('core', 'filetypes/audio');
 		coverImageContainer.find(':first-child').css('background-image', 'url("' + cover + '")');
 
-		updateMediaSession(data);
+		browserMediaSession.showInfo(data);
 	}
 
 	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback = null) {
@@ -435,52 +432,15 @@ OCA.Music.EmbeddedPlayer = function() {
 		}
 	}
 
-	/**
-	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
-	 * version 83. In Firefox, it is still disabled in the version 77, but a partially working support can
-	 * be enabled via the advanced settings.
-	 *
-	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
-	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
-	 */
-	if ('mediaSession' in navigator) {
-		let registerMediaControlHandler = function(action, handler) {
-			try {
-				navigator.mediaSession.setActionHandler(action, handler);
-			} catch (error) {
-				console.log('The media control "' + action + '" is not supported by the browser');
-			}
-		};
-
-		registerMediaControlHandler('play', play);
-		registerMediaControlHandler('pause', pause);
-		registerMediaControlHandler('stop', close);
-		registerMediaControlHandler('seekbackward', seekBackward);
-		registerMediaControlHandler('seekforward', seekForward);
-		registerMediaControlHandler('previoustrack', previous);
-		registerMediaControlHandler('nexttrack', next);
-	}
-
-	function updateMediaSession(data) {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.metadata = new MediaMetadata({
-				title: data.title,
-				artist: data.artist,
-				album: '',
-				artwork: [{
-					sizes: '200x200',
-					src: data.cover,
-					type: ''
-				}]
-			});
-		}
-	}
-
-	function setMediaSessionStatePlaying(isPlaying) {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-		}
-	}
+	browserMediaSession.registerControls({
+		play: play,
+		pause: pause,
+		stop: close,
+		seekBackward: seekBackward,
+		seekForward: seekForward,
+		previousTrack: previous,
+		nextTrack: next
+	});
 
 	/**
 	 * PUBLIC INTERFACE

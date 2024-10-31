@@ -8,6 +8,7 @@
  * @copyright Pauli Järvinen 2024
  */
 
+import { BrowserMediaSession } from "shared/browsermediasession";
 import { PlayerWrapper } from "shared/playerwrapper";
 import { PlayQueue } from "shared/playqueue";
 import { ProgressInfo } from "shared/progressinfo";
@@ -24,6 +25,7 @@ export class MusicWidget {
 	#queue: PlayQueue;
 	#volumeControl: VolumeControl;
 	#progressInfo: ProgressInfo;
+	#browserMediaSession: BrowserMediaSession;
 	#selectContainer: JQuery<HTMLElement>;
 	#modeSelect: JQuery<HTMLSelectElement>;
 	#filterSelects: JQuery<HTMLSelectElement>[];
@@ -40,6 +42,7 @@ export class MusicWidget {
 		this.#queue = queue;
 		this.#volumeControl = new VolumeControl(player);
 		this.#progressInfo = new ProgressInfo(player);
+		this.#browserMediaSession = new BrowserMediaSession(player);
 		this.#selectContainer = $('<div class="select-container" />').appendTo($container);
 		this.#filterSelects = [];
 		this.#trackListContainer = $('<div class="tracks-container" />').appendTo($container);
@@ -108,7 +111,7 @@ export class MusicWidget {
 		}, 300);
 
 		this.#queue.subscribe('trackChanged', (track) => {
-			this.#player.stop();
+			this.#player.pause();
 			this.#debouncedPlayCurrent();
 
 			this.#trackList?.find('.current').removeClass('current');
@@ -121,14 +124,17 @@ export class MusicWidget {
 
 			this.#progressAndOrder.show();
 			this.#controls.show();
+
+			this.#browserMediaSession.showInfo({
+				title: track.name,
+				album: track.album?.name ?? track.channel?.name,
+				artist: track.artist?.name,
+				cover: track.art
+			});
 		});
 
 		this.#queue.subscribe('playlistEnded', () => {
 			player.stop();
-			this.#progressAndOrder.hide();
-			this.#currentSongLabel.hide();
-			this.#controls.hide();
-			this.#trackList.find('.current').removeClass('current');
 		});
 
 		this.#player.on('play', () => {
@@ -141,7 +147,24 @@ export class MusicWidget {
 			this.#controls.find('.icon-pause').hide();
 		});
 
+		this.#player.on('stop', () => {
+			this.#progressAndOrder.hide();
+			this.#currentSongLabel.hide();
+			this.#controls.hide();
+			this.#trackList.find('.current').removeClass('current');
+		});
+
 		this.#player.on('end', () => this.#onNextButton());
+
+		this.#browserMediaSession.registerControls({
+			play: () => this.#player.play(),
+			pause: () => this.#player.pause(),
+			stop: () => this.#player.stop(),
+			seekBackward: () => this.#player.seekBackward(),
+			seekForward: () => this.#player.seekForward(),
+			previousTrack: () => this.#onPrevButton(),
+			nextTrack: () => this.#onNextButton()
+		});
 	}
 
 	#loadBackgroundImage($albumArt: JQuery<HTMLElement>, url: string) {

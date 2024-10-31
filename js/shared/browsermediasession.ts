@@ -39,15 +39,28 @@ interface BrowserMediaSessionControls {
 export class BrowserMediaSession {
 
 	constructor(player : PlayerWrapper) {
-		player.on('play', () => {
-			this.#setPlayingState(true);
-		});
-		player.on('pause', () => {
-			this.#setPlayingState(false);
-		});
-		player.on('stop', () => {
-			this.#setPlayingState(false);
-		});
+		if ('mediaSession' in navigator) {
+			player.on('play', () => {
+				navigator.mediaSession.playbackState = 'playing';
+			});
+			player.on('pause', () => {
+				navigator.mediaSession.playbackState = 'paused';
+			});
+			player.on('stop', () => {
+				navigator.mediaSession.playbackState = 'none';
+			});
+			if ('setPositionState' in navigator.mediaSession) {
+				player.on('progress', (position : number) => {
+					const duration = player.getDuration();
+					if (Number.isFinite(duration)) {
+						navigator.mediaSession.setPositionState({
+							duration: duration / 1000,
+							position: position / 1000
+						});
+					}
+				})
+			}
+		}
 	}
 
 	registerControls(controls : BrowserMediaSessionControls) : void {
@@ -87,12 +100,6 @@ export class BrowserMediaSession {
 	clearInfo() : void {
 		if ('mediaSession' in navigator) {
 			navigator.mediaSession.metadata = null;
-		}
-	}
-
-	#setPlayingState(playing : boolean) : void {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
 		}
 	}
 }

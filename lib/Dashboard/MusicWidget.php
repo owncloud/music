@@ -58,7 +58,7 @@ class MusicWidget implements IWidget
 	 */
 	public function getIconClass() : string
 	{
-		return 'icon-music';
+		return 'icon-music-app';
 	}
 
 	/**

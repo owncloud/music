@@ -9,6 +9,11 @@
  * @copyright Pauli Järvinen 2024
  */
 
+.icon-music-app {
+	background-image: url(../../img/music-dark.svg);
+	filter: var(--background-invert-if-dark);
+}
+
 .music-widget .icon-play {
 	background-image: url(../../img/play-big.svg);
 }

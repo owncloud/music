@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 ### Added
+- Dashboard widget for Nextcloud
+  [#1172](https://github.com/owncloud/music/pull/1172)
 
 ### Changed
 - Ampache API:

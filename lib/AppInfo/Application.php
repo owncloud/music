@@ -124,8 +124,8 @@ class Application extends ApplicationBase {
 	}
 
 	/**
-	 * @param $context On Nextlcoud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
-	 *                 On ownCloud, this is \OCP\AppFramework\IAppContainer.
+	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
+	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
 	 */
 	private function registerServices($context) : void {
 		/**

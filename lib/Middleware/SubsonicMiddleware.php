@@ -87,27 +87,31 @@ class SubsonicMiddleware extends Middleware {
 	 * @throws SubsonicException
 	 */
 	private function checkAuthentication(SubsonicController $controller) {
+		if ($this->request->getParam('t') !== null) {
+			throw new SubsonicException('Token-based authentication not supported', 41);
+		}
+
 		$user = $this->request->getParam('u');
-		$pass = $this->request->getParam('p');
 
-		if ($user === null || $pass === null) {
-			if ($this->request->getParam('t') !== null) {
-				throw new SubsonicException('Token-based authentication not supported', 41);
-			} else {
-				throw new SubsonicException('Required credentials missing', 10);
+		// Not passing any user is allowed since some parts of the API are allowed without authentication.
+		// SubsonicController::hanldeRequest needs to check that there is an authenticated user if needed.
+		if ($user !== null) {
+			$pass = $this->request->getParam('p');
+			if ($pass === null) {
+				throw new SubsonicException('Password argument `p` missing', 10);
 			}
-		}
 
-		// The password may be given in hexadecimal format
-		if (Util::startsWith($pass, 'enc:')) {
-			$pass = \hex2bin(\substr($pass, \strlen('enc:')));
-		}
+			// The password may be given in hexadecimal format
+			if (Util::startsWith($pass, 'enc:')) {
+				$pass = \hex2bin(\substr($pass, \strlen('enc:')));
+			}
 
-		$user = $this->userMapper->getProperUserId($user);
-		if ($user !== null && $this->credentialsAreValid($user, $pass)) {
-			$controller->setAuthenticatedUser($user);
-		} else {
-			throw new SubsonicException('Invalid Login', 40);
+			$user = $this->userMapper->getProperUserId($user);
+			if ($user !== null && $this->credentialsAreValid($user, $pass)) {
+				$controller->setAuthenticatedUser($user);
+			} else {
+				throw new SubsonicException('Invalid Login', 40);
+			}
 		}
 	}
 

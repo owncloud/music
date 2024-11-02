@@ -169,6 +169,11 @@ class SubsonicController extends Controller {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
 
+		// There's only one method allowed wihout a logged-in user
+		if ($method !== 'getOpenSubsonicExtensions' && $this->userId === null) {
+			throw new SubsonicException('User authentication required', 10);
+		}
+
 		// Allow calling any functions annotated to be part of the API
 		if (\method_exists($this, $method)) {
 			$annotationReader = new MethodAnnotationReader($this, $method);

@@ -194,7 +194,8 @@ class SubsonicController extends Controller {
 
 	/* -------------------------------------------------------------------------
 	 * REST API methods
-	 *------------------------------------------------------------------------*/
+	 * -------------------------------------------------------------------------
+	 */
 
 	/**
 	 * @SubsonicAPI
@@ -724,14 +725,16 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getUser(string $username) {
-		if ($username != $this->userId) {
+		if (\mb_strtolower($username) != \mb_strtolower($this->userId)) {
 			throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
 		}
 
+		$user = $this->userManager->get($this->userId);
+
 		return $this->subsonicResponse([
 			'user' => [
-				'username' => $username,
-				'email' => '',
+				'username' => $this->userId,
+				'email' => $user->getEMailAddress(),
 				'scrobblingEnabled' => true,
 				'adminRole' => false,
 				'settingsRole' => false,
@@ -761,11 +764,11 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getAvatar(string $username) {
-		if ($username != $this->userId) {
+		if (\mb_strtolower($username) != \mb_strtolower($this->userId)) {
 			throw new SubsonicException("{$this->userId} is not authorized to get avatar for other users.", 50);
 		}
 
-		$image = $this->userManager->get($username)->getAvatarImage(150);
+		$image = $this->userManager->get($this->userId)->getAvatarImage(150);
 
 		if ($image !== null) {
 			return new FileResponse(['content' => $image->data(), 'mimetype' => $image->mimeType()]);
@@ -1067,7 +1070,8 @@ class SubsonicController extends Controller {
 
 	/* -------------------------------------------------------------------------
 	 * Helper methods
-	 *------------------------------------------------------------------------*/
+	 * -------------------------------------------------------------------------
+	 */
 
 	private static function ensureParamHasValue(string $paramName, /*mixed*/ $paramValue) {
 		if ($paramValue === null || $paramValue === '') {

@@ -13,9 +13,9 @@
 
 angular.module('Music').controller('NavigationController', [
 	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', '$location',
-	'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
+	'playQueueService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
 	function ($rootScope, $scope, $document, Restangular, $timeout, $location,
-			playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
+			playQueueService, playlistFileService, podcastService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
@@ -176,7 +176,7 @@ angular.module('Music').controller('NavigationController', [
 						if (confirmed) {
 							Restangular.one('playlists', playlist.id).remove();
 
-							// remove the elemnt also from the AngularJS list
+							// remove the element also from the AngularJS list
 							libraryService.removePlaylist(playlist);
 						}
 					},
@@ -262,13 +262,13 @@ angular.module('Music').controller('NavigationController', [
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {
 			if ($rootScope.playingView == destination) {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			else {
 				let play = function(id, tracks) {
 					if (tracks && tracks.length) {
-						playlistService.setPlaylist(id, tracks);
-						playlistService.publish('play', destination);
+						playQueueService.setPlaylist(id, tracks);
+						playQueueService.publish('play', destination);
 					}
 				};
 
@@ -442,7 +442,7 @@ angular.module('Music').controller('NavigationController', [
 					let newTracks = _.map(trackIds, function(trackId) {
 						return { track: libraryService.getTrack(trackId) };
 					});
-					playlistService.onTracksAdded(newTracks);
+					playQueueService.onTracksAdded(newTracks);
 				}
 
 				Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
@@ -455,7 +455,7 @@ angular.module('Music').controller('NavigationController', [
 			// Update the currently playing list if necessary
 			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
 				let playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
-				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
+				playQueueService.onPlaylistModified(playlist.tracks, playingIndex);
 			}
 
 			let trackIds = _.map(playlist.tracks, 'track.id');

@@ -7,14 +7,15 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
+import { BrowserMediaSession } from 'shared/browsermediasession';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$q', '$document', '$location',
-function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $q, $document, $location) {
+'$scope', '$rootScope', 'playQueueService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$q', '$document', '$location',
+function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangular, $timeout, $q, $document, $location) {
 
 	$scope.loading = false;
 	$scope.shiftHeldDown = false;
@@ -40,6 +41,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	let scrobblePending = false;
 	let scheduledRadioTitleFetch = null;
 	let abortRadioTitleFetch = null;
+	let browserMediaSession = new BrowserMediaSession($scope.player);
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
 	const RADIO_INFO_POLL_PERIOD_MS = 30000;
 	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
@@ -62,8 +64,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.repeat = val;
 	}
 
-	playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
-	playlistService.setShuffle($scope.shuffle);
+	playQueueService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
+	playQueueService.setShuffle($scope.shuffle);
 
 	// Player events may fire synchronously or asynchronously. Utilize $timeout
 	// to always handle them asynchronously to run the handler within digest loop
@@ -84,7 +86,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
-			let entry = playlistService.peekNextTrack();
+			let entry = playQueueService.peekNextTrack();
 			if (entry?.track?.id !== undefined) {
 				const {mime, url} = getPlayableFileUrl(entry.track) || [null, null];
 				if (mime !== null && url !== null) {
@@ -110,7 +112,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
 				let timeLeft = $scope.position.total*1000 - currentTime;
 				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
-					let nextTrackId = playlistService.peekNextTrack()?.track?.id;
+					let nextTrackId = playQueueService.peekNextTrack()?.track?.id;
 					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
 						onEnd();
 					}
@@ -150,7 +152,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	function onEnd() {
-		// Srcrobble now if it hasn't happened before reaching the end of the track
+		// Scrobble now if it hasn't happened before reaching the end of the track
 		if (scrobblePending) {
 			scrobbleCurrentTrack();
 		}
@@ -270,7 +272,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			$scope.stop();
 		}
 
-		// After restoring the previous session upon brwoser restart, at least Firefox sometimes leaves
+		// After restoring the previous session upon browser restart, at least Firefox sometimes leaves
 		// the shift state as "held". To work around this, reset the state whenever the current track changes.
 		$scope.shiftHeldDown = false;
 	}
@@ -396,7 +398,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
-		playlistService.setShuffle($scope.shuffle);
+		playQueueService.setShuffle($scope.shuffle);
 		OCA.Music.Storage.set('shuffle', $scope.shuffle.toString());
 	};
 
@@ -407,7 +409,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			'one'	: 'false'
 		};
 		$scope.repeat = nextState[$scope.repeat];
-		playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
+		playQueueService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
 		OCA.Music.Storage.set('repeat', $scope.repeat);
 	};
 
@@ -451,7 +453,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.currentTrack = null;
 		$rootScope.playing = false;
 		$rootScope.started = false;
-		playlistService.clearPlaylist();
+		playQueueService.clearPlaylist();
 	};
 
 	$scope.stepPlaybackRate = function($event, decrease, rollover) {
@@ -498,7 +500,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
 	};
-	// Show context menu on right click of play/pause button, surpress the browser context menu
+	// Show context menu on right click of play/pause button, suppress the browser context menu
 	$scope.playbackBtnContextMenu = function($event) {
 		$event.preventDefault();
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
@@ -509,7 +511,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	$scope.next = function(startOffset = 0, gapless = false) {
-		let entry = playlistService.jumpToNextTrack();
+		let entry = playQueueService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
 		// For external streams, we don't know the MIME type, and we just assume that they can be played.
@@ -521,7 +523,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			while (entry !== null && !getPlayableFileUrl(entry.track)) {
 				tracksSkipped = true;
 				startOffset = null; // offset is not meaningful if we couldn't play the requested track
-				entry = playlistService.jumpToNextTrack();
+				entry = playQueueService.jumpToNextTrack();
 			}
 			if (tracksSkipped) {
 				OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
@@ -533,13 +535,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs.
-		// This is disalbed for radio streams where jumping to the beginning often does not work.
+		// This is disabled for radio streams where jumping to the beginning often does not work.
 		if ($scope.position.current > 2.0 && $scope.currentTrack?.type !== 'radio') {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
 		else {
-			let track = playlistService.jumpToPrevTrack();
+			let track = playQueueService.jumpToPrevTrack();
 			if (track !== null) {
 				setCurrentTrack(track);
 			}
@@ -612,11 +614,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(_event, _playingView = null, startOffset = 0) {
+	playQueueService.subscribe('play', function(_playingView = null, startOffset = 0) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 
-	playlistService.subscribe('togglePlayback', $scope.togglePlayback);
+	playQueueService.subscribe('togglePlayback', $scope.togglePlayback);
 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
@@ -763,7 +765,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	function playScopeName() {
-		let listId = playlistService.getCurrentPlaylistId();
+		let listId = playQueueService.getCurrentPlaylistId();
 		if (listId !== null) {
 			let key = listId.split('-').slice(0, -1).join('-') || listId;
 			return playScopeNames[key];
@@ -807,66 +809,42 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	/**
-	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
-	 * version 83. In Firefox, the API is enabled by default at least in the version 83, although at least
-	 * partial support has been available already starting from the version 74 via the advanced settings.
-	 *
-	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
-	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
+	 * Media session API
 	 */
-	if ('mediaSession' in navigator) {
-		let registerMediaControlHandler = function(action, handler) {
-			try {
-				navigator.mediaSession.setActionHandler(action, function() { $scope.$apply((_scope) => handler()); });
-			} catch (error) {
-				console.log('The media control "' + action + '"" is not supported by the browser');
-			}
-		};
+	browserMediaSession.registerControls({
+		play: () => $scope.play(),
+		pause: () => $scope.pause(),
+		stop: () => $scope.stop(),
+		seekBackward: () => $scope.seekBackward(),
+		seekForward: () => $scope.seekForward(),
+		previousTrack: () => $scope.prev(),
+		nextTrack: () => $scope.next()
+	});
 
-		registerMediaControlHandler('play', $scope.play);
-		registerMediaControlHandler('pause', $scope.pause);
-		registerMediaControlHandler('stop', $scope.stop);
-		registerMediaControlHandler('seekbackward', $scope.seekBackward);
-		registerMediaControlHandler('seekforward', $scope.seekForward);
-		registerMediaControlHandler('previoustrack', $scope.prev);
-		registerMediaControlHandler('nexttrack', $scope.next);
-
-		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
-			const track = newValues[0];
-			if (track) {
-				if (track.type === 'radio') {
-					navigator.mediaSession.metadata = new MediaMetadata({
-						title: $scope.primaryTitle(),
-						artist: $scope.secondaryTitle(),
-						artwork: [{
-							sizes: '190x190',
-							src: radioIconPath,
-							type: 'image/svg+xml'
-						}]
-					});
-				}
-				else {
-					navigator.mediaSession.metadata = new MediaMetadata({
-						title: track.title,
-						artist: track?.artist?.name,
-						album: track?.album?.name ?? track?.channel?.title,
-						artwork: [{
-							sizes: '190x190',
-							src: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
-							type: ''
-						}]
-					});
-				}
+	$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
+		const track = newValues[0];
+		if (track) {
+			if (track.type === 'radio') {
+				browserMediaSession.showInfo({
+					title: $scope.primaryTitle(),
+					artist: $scope.secondaryTitle(),
+					cover: radioIconPath,
+					coverMime: 'image/svg+xml'
+				});
 			}
 			else {
-				navigator.mediaSession.metadata = null;
+				browserMediaSession.showInfo({
+					title: track.title,
+					artist: track?.artist?.name,
+					album: track?.album?.name ?? track?.channel?.title,
+					cover: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+				});
 			}
-		});
-
-		$rootScope.$watch('playing', function(isPlaying) {
-			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-		});
-	}
+		}
+		else {
+			browserMediaSession.clearInfo();
+		}
+	});
 
 	/**
 	 * Desktop notifications

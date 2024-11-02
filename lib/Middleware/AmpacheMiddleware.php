@@ -40,14 +40,21 @@ class AmpacheMiddleware extends Middleware {
 	private $ampacheSessionMapper;
 	private $ampacheUserMapper;
 	private $logger;
+	private $loggedInUser;
 	private $sessionExpiryTime;
 
 	public function __construct(
-			IRequest $request, IConfig $config, AmpacheSessionMapper $ampacheSessionMapper, AmpacheUserMapper $ampacheUserMapper, Logger $logger) {
+			IRequest $request,
+			IConfig $config,
+			AmpacheSessionMapper $ampacheSessionMapper,
+			AmpacheUserMapper $ampacheUserMapper,
+			Logger $logger,
+			?string $userId) {
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->logger = $logger;
+		$this->loggedInUser = $userId;
 
 		$this->sessionExpiryTime = $config->getSystemValue('music.ampache_session_expiry_time', 6000);
 		$this->sessionExpiryTime = \min($this->sessionExpiryTime, 365*24*60*60); // limit to one year
@@ -158,11 +165,19 @@ class AmpacheMiddleware extends Middleware {
 			return;
 		}
 
-		$session = $this->getExistingSession($token);
+		if ($token === 'internal') {
+			$session = $this->getInternalSession();
+		} else {
+			$session = $this->getExistingSession($token);
+		}
 		$controller->setSession($session);
 
 		if ($action === 'goodbye') {
-			$this->ampacheSessionMapper->delete($session);
+			if ($token === 'internal') {
+				throw new AmpacheException('Internal session cannot be terminated', 401);
+			} else {
+				$this->ampacheSessionMapper->delete($session);
+			}
 		}
 
 		if ($action === null) {
@@ -181,6 +196,26 @@ class AmpacheMiddleware extends Middleware {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Internal session may be used to utilize the Ampache API within the Nextcloud/ownCloud server while in
+	 * a valid user session, without needing to create an API key for this. That is, this session type is never
+	 * used by the external client applications.
+	 */
+	private function getInternalSession() : AmpacheSession {
+		if ($this->loggedInUser === null) {
+			throw new AmpacheException('Internal session requires a logged-in cloud user', 401);
+		}
+
+		$session = new AmpacheSession();
+		$session->userId = $this->loggedInUser;
+		$session->token = 'internal';
+		$session->expiry = 0;
+		$session->apiVersion = AmpacheController::API6_VERSION;
+		$session->ampacheUserId = 0;
+
+		return $session;
 	}
 
 	private function getExistingSession(?string $token) : AmpacheSession {

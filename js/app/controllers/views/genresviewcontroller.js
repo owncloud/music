@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('GenresViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', 'playQueueService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playQueueService, libraryService, $timeout) {
 
 		$scope.genres = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();
@@ -39,8 +39,8 @@ angular.module('Music').controller('GenresViewController', [
 			if (startFromTrackId !== undefined) {
 				startIndex = _.findIndex(tracks, (i) => i.track.id == startFromTrackId);
 			}
-			playlistService.setPlaylist(listId, tracks, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, tracks, startIndex);
+			playQueueService.publish('play');
 		}
 
 		$scope.onGenreTitleClick = function(genre) {
@@ -51,11 +51,11 @@ angular.module('Music').controller('GenresViewController', [
 			// play/pause if currently playing item clicked
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the genre or whole library from this item
 			else {
-				let currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playQueueService.getCurrentPlaylistId();
 				let genre = libraryService.getTrack(trackId).genre;
 
 				// start playing the genre from this track if the clicked track belongs
@@ -123,15 +123,15 @@ angular.module('Music').controller('GenresViewController', [
 			return 'genre-' + $scope.genres[index].id;
 		};
 
-		subscribe('playlistEnded', function() {
+		playQueueService.subscribe('playlistEnded', function() {
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		playQueueService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(_event, trackId) {
 			if ($scope.$parent) {
 				let elementId = 'track-' + trackId;
 				// If the track element is hidden (collapsed), scroll to the genre
@@ -145,8 +145,9 @@ angular.module('Music').controller('GenresViewController', [
 			}
 		});
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playQueueService.unsubscribeAll(this);
 		});
 
 		// Init happens either immediately (after making the loading animation visible)
@@ -174,7 +175,7 @@ angular.module('Music').controller('GenresViewController', [
 		}
 
 		/**
-		 * Increase number of shown genres aynchronously step-by-step until
+		 * Increase number of shown genres asynchronously step-by-step until
 		 * they are all visible. This is to avoid script hanging up for too
 		 * long on huge collections.
 		 */
@@ -186,7 +187,7 @@ angular.module('Music').controller('GenresViewController', [
 					$timeout(showMore);
 				} else {
 					$rootScope.loading = false;
-					updateHighlight(playlistService.getCurrentPlaylistId());
+					updateHighlight(playQueueService.getCurrentPlaylistId());
 					$rootScope.$emit('viewActivated');
 				}
 			}

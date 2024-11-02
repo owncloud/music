@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('AllTracksViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
+	'$rootScope', '$scope', 'playQueueService', 'libraryService', 'alphabetIndexingService', '$timeout',
+	function ($rootScope, $scope, playQueueService, libraryService, alphabetIndexingService, $timeout) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
@@ -24,7 +24,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		const BUCKET_MAX_SIZE = 100;
 		$scope.trackBuckets = null;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let _unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -36,11 +36,11 @@ angular.module('Music').controller('AllTracksViewController', [
 		});
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('alltracks', _tracks, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist('alltracks', _tracks, startIndex);
+			playQueueService.publish('play');
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
 			play();
 		};
@@ -50,7 +50,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			// play/pause if currently playing list item clicked
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {

@@ -331,11 +331,16 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
-		if ($type === 'album_artist') {
-			$type = 'artist';
+		if ($type === 'album_artist' || $type === 'song_artist') {
 			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
-			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
-				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring, $addMin, $addMax, $updateMin, $updateMax);
+			if ($type === 'album_artist') {
+				$entities = $this->artistBusinessLayer->findAllHavingAlbums(
+					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring, $addMin, $addMax, $updateMin, $updateMax);
+			} else {
+				$entities = $this->artistBusinessLayer->findAllHavingTracks(
+					$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring, $addMin, $addMax, $updateMin, $updateMax);
+			}
+			$type = 'artist';
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
@@ -673,6 +678,45 @@ class AmpacheController extends Controller {
 		}
 
 		return $this->renderAlbums($albums);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 *
+	 * This is a proprietary extension to the API
+	 */
+	protected function folders(int $limit, int $offset=0) : array {
+		$userId = $this->session->getUserId();
+		$musicFolder = $this->librarySettings->getFolder($userId);
+		$folders = $this->trackBusinessLayer->findAllFolders($userId, $musicFolder);
+
+		// disregard any (parent) folders without any direct track children
+		$folders = \array_filter($folders, function($folder) {
+			return \count($folder['trackIds']) > 0;
+		});
+
+		Util::arraySortByColumn($folders, 'name');
+		$folders = \array_slice($folders, $offset, $limit);
+
+		return [
+			'folder' => \array_map(function ($folder) {
+				return [
+					'id' => (string)$folder['id'],
+					'name' => $folder['name'],
+				];
+			}, $folders)
+		];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 *
+	 * This is a proprietary extension to the API
+	 */
+	protected function folder_songs(int $filter, int $limit, int $offset=0) : array {
+		$userId = $this->session->getUserId();
+		$tracks = $this->trackBusinessLayer->findAllByFolder($filter, $userId, $limit, $offset);
+		return $this->renderSongs($tracks);
 	}
 
 	/**
@@ -1514,7 +1558,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_art(string $type, int $id) : Response {
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -1692,7 +1736,7 @@ class AmpacheController extends Controller {
 		];
 		// boolean but no support planned: 'smartplaylist', 'possible_duplicate', 'possible_duplicate_album'
 
-		$booleanNumericRules = ['playlist'];
+		$booleanNumericRules = ['playlist', 'album_artist_id' /* own extension */];
 		// boolean numeric but no support planned: 'license', 'state', 'catalog'
 
 		if (\in_array($rule, $textRules)) {
@@ -1846,13 +1890,19 @@ class AmpacheController extends Controller {
 			throw new AmpacheException('unexpected entity type for cover image', 500);
 		}
 
-		// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
-		if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
-			$id = $entity->getId();
-			$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
-			return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
-		} else {
-			return '';
+		if ($this->session->getToken() == 'internal') {
+			// For internal clients, we don't need to create URLs with permanent but API-key-specific tokens
+			return $this->createAmpacheActionUrl('get_art', $entity->getId(), $type);
+		}
+		else {
+			// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
+			if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
+				$id = $entity->getId();
+				$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
+				return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
+			} else {
+				return '';
+			}
 		}
 	}
 
@@ -2011,7 +2061,7 @@ class AmpacheController extends Controller {
 		};
 		$createImageUrl = function(Track $track) : string {
 			$album = $track->getAlbum();
-			return ($album !== null) ? $this->createCoverUrl($album) : '';
+			return ($album !== null && $album->getId() !== null) ? $this->createCoverUrl($album) : '';
 		};
 		$renderRef = function(int $id, string $name) : array {
 			return $this->renderAlbumOrArtistRef($id, $name);
@@ -2056,8 +2106,12 @@ class AmpacheController extends Controller {
 	 * @param PodcastEpisode[] $episodes
 	 */
 	private function renderPodcastEpisodes(array $episodes) : array {
+		$createImageUrl = function(PodcastEpisode $episode) : string {
+			return $this->createAmpacheActionUrl('get_art', $episode->getChannelId(), 'podcast');
+		};
+
 		return [
-			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi')
+			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi', [$createImageUrl])
 		];
 	}
 
@@ -2065,8 +2119,12 @@ class AmpacheController extends Controller {
 	 * @param RadioStation[] $stations
 	 */
 	private function renderLiveStreams(array $stations) : array {
+		$createImageUrl = function(RadioStation $station) : string {
+			return $this->createAmpacheActionUrl('get_art', $station->getId(), 'live_stream');
+		};
+
 		return [
-			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi')
+			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi', [$createImageUrl])
 		];
 	}
 

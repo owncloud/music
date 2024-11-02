@@ -38,7 +38,7 @@
 	left: 160px;
 	right: 50px;
 }
-#music-controls.mobile .volume-control {
+#music-controls.mobile .music-volume-control {
 	display: none;
 }
 
@@ -46,7 +46,7 @@
 #music-controls.extra-narrow #song-info {
 	width: 100%;
 }
-#music-controls.extra-narrow .progress-info {
+#music-controls.extra-narrow .music-progress-info {
 	display: none;
 }
 

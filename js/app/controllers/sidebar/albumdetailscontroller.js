@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('AlbumDetailsController', [
-	'$rootScope', '$scope', '$timeout', 'Restangular', 'gettextCatalog', 'libraryService', 'playlistService',
-	function ($rootScope, $scope, $timeout, Restangular, gettextCatalog, libraryService, playlistService) {
+	'$rootScope', '$scope', '$timeout', 'Restangular', 'gettextCatalog', 'libraryService', 'playQueueService',
+	function ($rootScope, $scope, $timeout, Restangular, gettextCatalog, libraryService, playQueueService) {
 
 		function resetContents() {
 			$scope.album = null;
@@ -112,7 +112,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack?.id === trackId && currentTrack?.type == 'song') {
 				// play/pause if currently playing list item clicked
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			} else {
 				// on any other list item, start playing the list from this item
 				playTracks('album-' + $scope.album.id, $scope.album.tracks, index);
@@ -142,8 +142,8 @@ angular.module('Music').controller('AlbumDetailsController', [
 			let playlist = _.map(tracks, (track) => {
 				return { track: track };
 			});
-			playlistService.setPlaylist(listId, playlist, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist, startIndex);
+			playQueueService.publish('play');
 		}
 
 		$scope.$watch('contentId', function(newId) {

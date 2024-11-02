@@ -112,7 +112,8 @@ class PodcastEpisode extends Entity {
 		];
 	}
 
-	public function toAmpacheApi() : array {
+	public function toAmpacheApi(callable $createImageUrl) : array {
+		$imageUrl = $createImageUrl($this);
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getTitle(),
@@ -131,6 +132,8 @@ class PodcastEpisode extends Entity {
 			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
 			'url' => $this->getStreamUrl(),
+			'art' => $imageUrl,
+			'has_art' => !empty($imageUrl),
 			'flag' => !empty($this->getStarred()),
 			'rating' => $this->getRating() ?? 0,
 			'preciserating' => $this->getRating() ?? 0,

@@ -484,6 +484,7 @@ class TrackMapper extends BaseMapper {
 			case 'album':			return "$conv(`album`.`name`) $sqlOp $conv(?)";
 			case 'artist':			return "$conv(`artist`.`name`) $sqlOp $conv(?)";
 			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))";
+			case 'album_artist_id':	return "$sqlOp `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?)"; // our own API extension
 			case 'track':			return "`number` $sqlOp ?";
 			case 'year':			return "`year` $sqlOp ?";
 			case 'albumrating':		return "`album`.`rating` $sqlOp ?";

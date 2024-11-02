@@ -5,20 +5,20 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 
 angular.module('Music').controller('RadioViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', 'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, gettextCatalog, Restangular, $timeout) {
+	'$rootScope', '$scope', 'playQueueService', 'libraryService', 'gettextCatalog', 'Restangular', '$timeout',
+	function ($rootScope, $scope, playQueueService, libraryService, gettextCatalog, Restangular, $timeout) {
 
 		const INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.stations = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -59,7 +59,7 @@ angular.module('Music').controller('RadioViewController', [
 						if (removedIndex <= playingIndex) {
 							--playingIndex;
 						}
-						playlistService.onPlaylistModified($scope.stations, playingIndex);
+						playQueueService.onPlaylistModified($scope.stations, playingIndex);
 					}
 					// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
 					// to ensure that the alphabet navigation has up-to-date item count available when it handles the event.
@@ -76,11 +76,11 @@ angular.module('Music').controller('RadioViewController', [
 		}
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('radio', $scope.stations, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist('radio', $scope.stations, startIndex);
+			playQueueService.publish('play');
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
 			play();
 		};
@@ -89,7 +89,7 @@ angular.module('Music').controller('RadioViewController', [
 		$scope.onStationClick = function(stationIndex) {
 			// play/pause if currently playing list item clicked
 			if ($scope.getCurrentStationIndex() === stationIndex) {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
@@ -112,7 +112,7 @@ angular.module('Music').controller('RadioViewController', [
 
 				if (listIsPlaying()) {
 					let playingIndex = _.findIndex($scope.stations, { track: $scope.$parent.currentTrack });
-					playlistService.onPlaylistModified($scope.stations, playingIndex);
+					playQueueService.onPlaylistModified($scope.stations, playingIndex);
 				}
 
 				// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
@@ -155,7 +155,7 @@ angular.module('Music').controller('RadioViewController', [
 		}
 
 		/**
-		 * Increase number of shown stations aynchronously step-by-step until
+		 * Increase number of shown stations asynchronously step-by-step until
 		 * they are all visible. This is to avoid script hanging up for too
 		 * long on huge collections.
 		 */

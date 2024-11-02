@@ -1,0 +1,160 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2024
+ */
+
+.music-widget {
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+}
+
+.music-widget .select-container {
+	flex: 0 1 auto;
+}
+
+.music-widget .tracks-container {
+	flex: 1 1 auto;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.music-widget .progress-and-order {
+	flex: 0 0 25px;
+	display: flex;
+	flex-flow: row;
+}
+
+.music-widget .progress-and-order .control {
+	flex: 0 0 40px;
+	margin-top: -10px;
+}
+
+.music-widget .progress-and-order .music-progress-info {
+	flex: 1 1 auto;
+	position: relative;
+}
+
+.music-widget .progress-and-order .music-progress-info span {
+	line-height: unset;
+}
+
+.music-widget .progress-and-order .music-progress-info .progress-text {
+	line-height: 100%;
+	position: absolute;
+	color: black;
+	top: 0;
+	bottom: auto;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.music-widget .current-song-label {
+	flex: 0 0 25px;
+	margin-left: 8px;
+	margin-right: 8px;
+	margin-top: -5px;
+	text-align: center;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.music-widget .player-controls {
+	flex: 0 0 50px;
+	display: flex;
+	flex-flow: row;
+}
+
+.music-widget .player-controls .albumart {
+	width: 50px;
+	height: 50px;
+	border: 1px solid var(--color-text-lighter);
+	margin-left: 8px;
+	margin-right: 16px;
+	background-size: contain;
+	cursor: pointer;
+}
+
+.music-widget .player-controls .control {
+	background-size: contain;
+	margin: 9px;
+}
+
+.music-widget .player-controls .playback.control {
+	width: 32px;
+	height: 32px;
+}
+
+.music-widget .player-controls .music-volume-control {
+	position: relative;
+}
+
+.music-widget .player-controls .music-volume-control .volume-icon {
+	left: 10px;
+	top: 4px;
+}
+
+.music-widget .player-controls .music-volume-control .volume-slider {
+	width: 50px;
+	top: 24px;
+	left: 30px
+}
+
+.music-widget select {
+	width: 100%;
+}
+
+.music-widget select:invalid {
+	color: var(--color-text-lighter);
+}
+
+.music-widget select option {
+	color: var(--color-main-text);
+}
+
+.music-widget li {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-left: 12px;
+	padding-right: 12px;
+	line-height: 28px;
+	border-radius: var(--border-radius-large);
+	cursor: pointer;
+}
+
+.music-widget li * {
+	cursor: pointer;
+}
+
+.music-widget li:hover,
+.music-widget li.current {
+	transition: background-color 0.3s ease;
+	background-color: var(--color-background-hover);
+}
+
+.music-widget .dimmed {
+	opacity: .5;
+}
+
+.music-widget .control {
+	cursor: pointer;
+	opacity: .5;
+	filter: var(--background-invert-if-dark);
+}
+
+.music-widget .control:hover,
+.music-widget .control.toggle.active {
+	opacity: 1;
+}

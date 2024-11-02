@@ -1,3 +1,20 @@
+## [Unreleased]
+
+### Added
+- Dashboard widget for Nextcloud
+  [#1172](https://github.com/owncloud/music/pull/1172)
+
+### Changed
+- Ampache API:
+  * Action `get_indexes` supports also `type=song_artist`
+  * Added fields `art` and `has_art` to the `podcast_episode` and `live_stream` result types
+  * For radio stations without user-supplied name, use the stream URL as a name
+
+### Fixed
+- Ampache API:
+  * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
+- Song progress shown incorrectly in the media session integration of Chrome when playing (exotic file types) with the fallback Aurora.js player
+
 ## 2.0.1 - 2024-09-08
 
 ### Added

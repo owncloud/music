@@ -81,7 +81,7 @@ use OCA\Music\Utility\LibrarySettings;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
-function useOwncloudBootstrapping() {
+function useOwncloudBootstrapping() : bool {
 	return (\OCA\Music\Utility\AppInfo::getVendor() == 'owncloud');
 }
 
@@ -119,12 +119,15 @@ class Application extends ApplicationBase {
 
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
-			$this->register($this->getContainer());
+			$this->registerServices($this->getContainer());
 		}
 	}
 
-	// On ownCloud, the $context is actually an IAppContainer
-	public function register(/*\OCP\AppFramework\Bootstrap\IRegistrationContext*/ $context): void {
+	/**
+	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
+	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
+	 */
+	private function registerServices($context) : void {
 		/**
 		 * Controllers
 		 */
@@ -716,7 +719,8 @@ class Application extends ApplicationBase {
 				$c->query('Config'),
 				$c->query('AmpacheSessionMapper'),
 				$c->query('AmpacheUserMapper'),
-				$c->query('Logger')
+				$c->query('Logger'),
+				$c->query('UserId')
 			);
 		});
 		$context->registerMiddleWare('AmpacheMiddleware');
@@ -754,6 +758,14 @@ class Application extends ApplicationBase {
 	/**
 	 * This gets called on Nextcloud but not on ownCloud
 	 */
+	public function register(/*\OCP\AppFramework\Bootstrap\IRegistrationContext*/ $context) : void {
+		$this->registerServices($context);
+		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
+	}
+
+	/**
+	 * This gets called on Nextcloud but not on ownCloud
+	 */
 	public function boot(/*\OCP\AppFramework\Bootstrap\IBootContext*/ $context) : void {
 		$this->init();
 		$this->registerEmbeddedPlayer();
@@ -762,9 +774,9 @@ class Application extends ApplicationBase {
 	public function init() : void {
 		$this->registerHooks();
 
-		// Adjust the CSP if loading the Music app proper
+		// Adjust the CSP if loading the Music app proper or the NC dashboard
 		$url = $this->getRequestUrl();
-		if (\preg_match('%/apps/music/?$%', $url)) {
+		if (\preg_match('%/apps/music/?$%', $url) || \preg_match('%/apps/dashboard/?$%', $url)) {
 			$this->adjustCsp();
 		}
 	}
@@ -772,7 +784,7 @@ class Application extends ApplicationBase {
 	/**
 	 * Load embedded music player for Files and Sharing apps
 	 */
-	public function loadEmbeddedMusicPlayer() {
+	public function loadEmbeddedMusicPlayer() : void {
 		\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
 		\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
 		$this->adjustCsp();
@@ -786,14 +798,14 @@ class Application extends ApplicationBase {
 		return $url;
 	}
 
-	private function registerHooks() {
+	private function registerHooks() : void {
 		$container = $this->getContainer();
 		$container->query('FileHooks')->register();
 		$container->query('ShareHooks')->register();
 		$container->query('UserHooks')->register();
 	}
 
-	private function registerEmbeddedPlayer() {
+	private function registerEmbeddedPlayer() : void {
 		$dispatcher = $this->getContainer()->query(\OCP\EventDispatcher\IEventDispatcher::class);
 
 		// Files app
@@ -814,7 +826,7 @@ class Application extends ApplicationBase {
 	/**
 	 * Set content security policy to allow streaming media from the configured external sources
 	 */
-	private function adjustCsp() {
+	private function adjustCsp() : void {
 		$container = $this->getContainer();
 
 		/** @var \OCP\IConfig $config */

@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('AdvancedSearchViewController', [
-	'$rootScope', '$scope', 'libraryService', 'playlistService', '$timeout', 'Restangular', 'gettextCatalog',
-	function ($rootScope, $scope, libraryService, playlistService, $timeout, Restangular, gettextCatalog) {
+	'$rootScope', '$scope', 'libraryService', 'playQueueService', '$timeout', 'Restangular', 'gettextCatalog',
+	function ($rootScope, $scope, libraryService, playQueueService, $timeout, Restangular, gettextCatalog) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
@@ -428,8 +428,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				return { track: track };
 			});
 
-			playlistService.setPlaylist('adv_search_results' + $scope.results.id, playlist, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist('adv_search_results' + $scope.results.id, playlist, startIndex);
+			playQueueService.publish('play');
 		}
 
 		function getTracksFromResult() {
@@ -442,7 +442,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults, episodesFromChannels);
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
 			play(getTracksFromResult());
 		};
@@ -462,7 +462,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			// play/pause if currently playing list item clicked
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
@@ -535,8 +535,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		$scope.onPlaylistClick = function(playlistId) {
 			// TODO: play/pause if currently playing playlist clicked?
-			playlistService.setPlaylist('playlist-' + playlistId, libraryService.getPlaylist(playlistId).tracks);
-			playlistService.publish('play', '#/playlist/' + playlistId);
+			playQueueService.setPlaylist('playlist-' + playlistId, libraryService.getPlaylist(playlistId).tracks);
+			playQueueService.publish('play', '#/playlist/' + playlistId);
 		};
 
 		$scope.getPlaylistData = function(listItem, index, _scope) {
@@ -557,7 +557,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.onPodcastEpisodeClick = function(episodeId) {
 			const currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack && currentTrack.id === episodeId && currentTrack.type == 'podcast') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {

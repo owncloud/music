@@ -59,6 +59,23 @@ class AmpacheUserMapper {
 	}
 
 	/**
+	 * @param string $hash Password hash
+	 * @return ?string User ID matching the $hash or null if not found
+	 */
+	public function getUserByPasswordHash(string $hash) : ?string {
+		$sql = 'SELECT `user_id` FROM `*PREFIX*music_ampache_users` WHERE `hash` = ?';
+		$params = [$hash];
+		$result = $this->db->executeQuery($sql, $params);
+		$row = $result->fetch();
+
+		if ($row === false) {
+			return null;
+		}
+
+		return $row['user_id'];
+	}
+
+	/**
 	 * @param string $user Username, case-insensitive
 	 * @return ?string Case-sensitively correct username, if the user has any API key(s)
 	 */

@@ -778,6 +778,17 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * OpenSubsonic extension
+	 * @SubsonicAPI
+	 */
+	protected function tokenInfo() {
+		// This method is intended to be used when API key is used for authentication and the user name is not
+		// directly available for the client. But it shouldn't hurt to allow calling this regardless of the
+		// authentication method.
+		return $this->subsonicResponse(['tokenInfo' => ['username' => $this->userId]]);
+	}
+
+	/**
 	 * @SubsonicAPI
 	 */
 	protected function scrobble(array $id, array $time) {
@@ -1063,8 +1074,9 @@ class SubsonicController extends Controller {
 	 */
 	protected function getOpenSubsonicExtensions() {
 		return $this->subsonicResponse(['openSubsonicExtensions' => [
+			[ 'name' => 'apiKeyAuthentication', 'versions' => [1] ],
 			[ 'name' => 'formPost', 'versions' => [1] ],
-			[ 'name' => 'songLyrics', 'versions' => [1] ]
+			[ 'name' => 'songLyrics', 'versions' => [1] ],
 		]]);
 	}
 

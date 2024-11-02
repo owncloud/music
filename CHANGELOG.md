@@ -3,6 +3,8 @@
 ### Added
 - Dashboard widget for Nextcloud
   [#1172](https://github.com/owncloud/music/pull/1172)
+- Subsonic API:
+  * OpenSubsonic extension [`apiKeyAuthentication`](https://opensubsonic.netlify.app/docs/extensions/apikeyauth/), including support for arg `apiKey` and the new method `tokenInfo`
 
 ### Changed
 - Ampache API:

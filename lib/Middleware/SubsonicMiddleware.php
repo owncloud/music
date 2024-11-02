@@ -92,10 +92,20 @@ class SubsonicMiddleware extends Middleware {
 		}
 
 		$user = $this->request->getParam('u');
+		$apiKey = $this->request->getParam('apiKey');
 
-		// Not passing any user is allowed since some parts of the API are allowed without authentication.
-		// SubsonicController::hanldeRequest needs to check that there is an authenticated user if needed.
-		if ($user !== null) {
+		if ($user !== null && $apiKey !== null) {
+			throw new SubsonicException('Multiple conflicting authentication mechanisms provided', 43);
+		}
+		else if ($apiKey !== null) {
+			$user = $this->userForPass($apiKey);
+			if ($user !== null) {
+				$controller->setAuthenticatedUser($user);
+			} else {
+				throw new SubsonicException('Invalid API key', 44);
+			}
+		}
+		else if ($user !== null) {
 			$pass = $this->request->getParam('p');
 			if ($pass === null) {
 				throw new SubsonicException('Password argument `p` missing', 10);
@@ -107,29 +117,25 @@ class SubsonicMiddleware extends Middleware {
 			}
 
 			$user = $this->userMapper->getProperUserId($user);
-			if ($user !== null && $this->credentialsAreValid($user, $pass)) {
+			if ($user !== null && $this->userForPass($pass) == $user) {
 				$controller->setAuthenticatedUser($user);
 			} else {
-				throw new SubsonicException('Invalid Login', 40);
+				throw new SubsonicException('Wrong username or password', 40);
 			}
+		}
+		else {
+			// Not passing any credentials is allowed since some parts of the API are allowed without authentication.
+			// SubsonicController::hanldeRequest needs to check that there is an authenticated user if needed.
 		}
 	}
 
 	/**
-	 * @param string $user Username
-	 * @param string $pass Password
-	 * @return boolean
+	 * @param string $pass Password aka API key
+	 * @return string User ID or null if the $pass was not valid
 	 */
-	private function credentialsAreValid(string $user, string $pass) : bool {
-		$hashes = $this->userMapper->getPasswordHashes($user);
-
-		foreach ($hashes as $hash) {
-			if ($hash === \hash('sha256', $pass)) {
-				return true;
-			}
-		}
-
-		return false;
+	private function userForPass(string $pass) : ?string {
+		$hash = \hash('sha256', $pass);
+		return $this->userMapper->getUserByPasswordHash($hash);
 	}
 
 	/**

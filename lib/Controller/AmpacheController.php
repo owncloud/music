@@ -1814,6 +1814,8 @@ class AmpacheController extends Controller {
 		$pl->name = $this->l10n->t('All tracks');
 		$pl->userId = $this->session->getUserId();
 		$pl->trackCount = $this->trackBusinessLayer->count($this->session->getUserId());
+		$pl->updated = $this->library->latestUpdateTime($pl->userId)->format('c');
+		$pl->setReadOnly(true);
 
 		return $pl;
 	}

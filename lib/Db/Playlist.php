@@ -38,6 +38,7 @@ class Playlist extends Entity {
 
 	// injected separately when needed
 	private $duration;
+	private $readOnly;
 
 	public function __construct() {
 		$this->addType('rating', 'int');
@@ -49,6 +50,14 @@ class Playlist extends Entity {
 
 	public function setDuration(?int $duration) : void {
 		$this->duration = $duration;
+	}
+
+	public function getReadOnly() : bool {
+		return $this->readOnly ?? false;
+	}
+
+	public function setReadOnly(bool $readOnly) : void {
+		$this->readOnly = $readOnly;
 	}
 
 	public function getTrackCount() : int {
@@ -96,7 +105,10 @@ class Playlist extends Entity {
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
 			'rating' => $this->getRating() ?? 0,
-			'type' => 'Private'
+			'type' => 'Private',
+			'has_access' => !$this->getReadOnly(),
+			'has_collaborate' => !$this->getReadOnly(),
+			'last_update' => \strtotime($this->getUpdated())
 		];
 		$result['has_art'] = !empty($result['art']);
 		return $result;

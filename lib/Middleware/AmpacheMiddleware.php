@@ -94,13 +94,11 @@ class AmpacheMiddleware extends Middleware {
 		$auth = $this->request->getParam('auth');
 		$version = $this->request->getParam('version');
 
-		$currentTime = \time();
-		$expiryDate = $currentTime + $this->sessionExpiryTime;
+		$expiryDate = \time() + $this->sessionExpiryTime;
 		// TODO: The expiry timestamp is currently saved in the database as an unsigned integer.
 		// For PostgreSQL, this has the maximum value of 2^31 which will become a problem in the
 		// year 2038 (or already in 2037 if the admin has configured close to the maximum expiry time).
 
-		$this->checkHandshakeTimestamp($timestamp, $currentTime);
 		$credentials = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
 		$session = $this->startNewSession($credentials['user'], $expiryDate, $version, $credentials['apiKeyId']);
 		$controller->setSession($session);
@@ -121,10 +119,45 @@ class AmpacheMiddleware extends Middleware {
 	}
 
 	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : array {
-		if ($user === null || $auth === null) {
+		if ($auth === null) {
 			throw new AmpacheException('Invalid Login - required credentials missing', 401);
 		}
 
+		// The username is not passed by the client when the "API key" authentication is used
+		if ($user === null) {
+			$credentials = $this->credentialsForApiKey($auth);
+		} else {
+			$this->checkHandshakeTimestamp($timestamp, \time());
+			$credentials = $this->credentialsForUsernameAndPassword($user, $timestamp, $auth);
+		}
+
+		if ($credentials === null) {
+			throw new AmpacheException('Invalid Login - passphrase does not match', 401);
+		}
+
+		return $credentials;
+	}
+
+	private function credentialsForApiKey($auth) : ?array {
+		$usersAndHashes = $this->ampacheUserMapper->getUsersAndPasswordHashes();
+
+		foreach ($usersAndHashes as $keyId => $row) {
+			// It's a bit vague in the API documentation, but looking at the Ampache source codes,
+			// there are two valid options for passing the API key: either it is passed in plaintext,
+			// or it's passed hashed together with the username like sha256(username . sha256(apiKey)).
+			// On the other hand, our DB contains hashed keys sha256(apiKey).
+			$valid1 = ($row['hash'] == \hash('sha256', $auth));
+			$valid2 = ($auth == \hash('sha256', $row['user_id'] . $row['hash']));
+
+			if ($valid1 || $valid2) {
+				return ['user' => $row['user_id'], 'apiKeyId' => (int)$keyId];
+			}
+		}
+
+		return null;
+	}
+
+	private function credentialsForUsernameAndPassword(string $user, int $timestamp, string $auth) : ?array {
 		$user = $this->ampacheUserMapper->getProperUserId($user);
 
 		if ($user !== null) {
@@ -139,7 +172,7 @@ class AmpacheMiddleware extends Middleware {
 			}
 		}
 
-		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
+		return null;
 	}
 
 	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion, int $apiKeyId) : AmpacheSession {

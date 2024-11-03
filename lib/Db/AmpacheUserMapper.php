@@ -14,6 +14,8 @@
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\Util;
+
 use OCP\IDBConnection;
 
 /**
@@ -37,12 +39,7 @@ class AmpacheUserMapper {
 		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();
 
-		$hashes = [];
-		foreach ($rows as $value) {
-			$hashes[$value['id']] = $value['hash'];
-		}
-
-		return $hashes;
+		return \array_column($rows, 'hash', 'id');
 	}
 
 	public function getPasswordHash(int $id) : ?string {
@@ -73,6 +70,17 @@ class AmpacheUserMapper {
 		}
 
 		return $row['user_id'];
+	}
+
+	/**
+	 * @return array of rows like ['user_id' => string, 'hash' => string] with row IDs as keys
+	 */
+	public function getUsersAndPasswordHashes() : array {
+		$sql = 'SELECT `id`, `user_id`, `hash` FROM `*PREFIX*music_ampache_users`';
+		$result = $this->db->executeQuery($sql);
+		$rows = $result->fetchAll();
+
+		return Util::arrayColumns($rows, ['user_id', 'hash'], 'id');
 	}
 
 	/**

@@ -95,14 +95,33 @@ class Util {
 	}
 
 	/**
-	 * Get multiple items from @a $array, as indicated by a second array @a $indices.
+	 * Get multiple items from @a $array, as indicated by a second array @a $keys.
+	 * If @a $preserveKeys is given as true, the result will have the original keys, otherwise
+	 * the result is re-indexed with keys 0, 1, 2, ...
 	 */
-	public static function arrayMultiGet(array $array, array $indices) : array {
+	public static function arrayMultiGet(array $array, array $keys, bool $preserveKeys=false) : array {
 		$result = [];
-		foreach ($indices as $index) {
-			$result[] = $array[$index];
+		foreach ($keys as $key) {
+			if ($preserveKeys) {
+				$result[$key] = $array[$key];
+			} else {
+				$result[] = $array[$key];
+			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Get multiple columns from the multidimensional @a $array. This is similar to the built-in
+	 * function \array_column except that this can return multiple columns and not just one.
+	 * @param int|string|null $indexColumn
+	 */
+	public static function arrayColumns(array $array, array $columns, $indexColumn=null) : array {
+		if ($indexColumn !== null) {
+			$array = \array_column($array, null, $indexColumn);
+		}
+
+		return \array_map(fn($row) => self::arrayMultiGet($row, $columns, true), $array);
 	}
 
 	/**

@@ -14,7 +14,7 @@ declare function t(module : string, text : string) : string;
 
 export class ProgressInfo {
 
-    #player : PlayerWrapper;
+	#player : PlayerWrapper;
 	#elem : JQuery<HTMLElement>;
 	#songLength_s : number;
 	#playTime_s : number;
@@ -22,12 +22,12 @@ export class ProgressInfo {
 	#playTimePreview_ts : number; // Activation time stamp (epoch time)
 	#playTimePreview_s : number; 
 
-    constructor(player : PlayerWrapper) {
-        this.#player = player;
+	constructor(player : PlayerWrapper) {
+		this.#player = player;
 		this.#elem = this.#createHtml();
 		this.#connectPlayerEvents();
 		this.#connectPointerEvents();
-    }
+	}
 
 	addToContainer(container : JQuery<HTMLElement>) : void {
 		container.append(this.#elem);

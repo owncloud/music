@@ -296,7 +296,8 @@ class AmpacheController extends Controller {
 			'catalogs' => 0,
 			'shares' => 0,
 			'licenses' => 0,
-			'labels' => 0
+			'labels' => 0,
+			'username' => $user
 		];
 	}
 

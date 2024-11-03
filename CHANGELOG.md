@@ -12,6 +12,7 @@
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`
   * Added fields `art` and `has_art` to the `podcast_episode` and `live_stream` result types
+  * Added field `username` to the responses of `handshake` and `ping`
   * For radio stations without user-supplied name, use the stream URL as a name
 - Subsonic API:
   * Allow method `getOpenSubsonicExtensions` without any user authentication

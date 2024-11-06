@@ -84,6 +84,10 @@ class Playlist extends Entity {
 		$this->setTrackIds('|' . \implode('|', $trackIds) . '|');
 	}
 
+	public function getTrackIdsHash() : ?string {
+		return $this->isEmpty() ? null : \md5($this->getTrackIds());
+	}
+
 	public function toAPI(IURLGenerator $urlGenerator) : array {
 		return [
 			'name' => $this->getName(),
@@ -108,7 +112,8 @@ class Playlist extends Entity {
 			'type' => 'Private',
 			'has_access' => !$this->getReadOnly(),
 			'has_collaborate' => !$this->getReadOnly(),
-			'last_update' => \strtotime($this->getUpdated())
+			'last_update' => \strtotime($this->getUpdated()),
+			'md5' => $this->getTrackIdsHash()
 		];
 		$result['has_art'] = !empty($result['art']);
 		return $result;

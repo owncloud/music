@@ -105,7 +105,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
-	const API6_VERSION = '630000';
+	const API6_VERSION = '660000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -785,6 +785,19 @@ class AmpacheController extends Controller {
 			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
 		}
 		return $this->renderPlaylists([$playlist]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function playlist_hash(int $filter) : array {
+		$userId = $this->session->getUserId();
+		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
+			$playlist = $this->getAllTracksPlaylist();
+		} else {
+			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
+		}
+		return [ 'md5' => $playlist->getTrackIdsHash() ];
 	}
 
 	/**
@@ -1813,8 +1826,9 @@ class AmpacheController extends Controller {
 		$pl->id = self::ALL_TRACKS_PLAYLIST_ID;
 		$pl->name = $this->l10n->t('All tracks');
 		$pl->userId = $this->session->getUserId();
-		$pl->trackCount = $this->trackBusinessLayer->count($this->session->getUserId());
 		$pl->updated = $this->library->latestUpdateTime($pl->userId)->format('c');
+		$pl->trackCount = $this->trackBusinessLayer->count($this->session->getUserId());
+		$pl->setTrackIdsFromArray($this->trackBusinessLayer->findAllIds($pl->userId));
 		$pl->setReadOnly(true);
 
 		return $pl;

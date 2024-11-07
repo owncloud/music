@@ -740,8 +740,8 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function playlists(
-			?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false, int $hide_search=0) : array {
+			?string $filter, ?string $add, ?string $update, int $limit, int $offset=0,
+			bool $exact=false, bool $hide_search=false, bool $include=false) : array {
 
 		$userId = $this->session->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
@@ -753,7 +753,7 @@ class AmpacheController extends Controller {
 			$playlists[] = $this->getAllTracksPlaylist();
 		}
 
-		return $this->renderPlaylists($playlists);
+		return $this->renderPlaylists($playlists, $include);
 	}
 
 	/**
@@ -762,7 +762,7 @@ class AmpacheController extends Controller {
 	protected function user_playlists(
 			?string $filter, ?string $add, ?string $update,	int $limit, int $offset=0, bool $exact=false) : array {
 		// alias for playlists without smart lists
-		return $this->playlists($filter, $add, $update, $limit, $offset, $exact, 1);
+		return $this->playlists($filter, $add, $update, $limit, $offset, $exact, true);
 	}
 
 	/**
@@ -777,14 +777,14 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist(int $filter) : array {
+	protected function playlist(int $filter, bool $include=false) : array {
 		$userId = $this->session->getUserId();
 		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlist = $this->getAllTracksPlaylist();
 		} else {
 			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
 		}
-		return $this->renderPlaylists([$playlist]);
+		return $this->renderPlaylists([$playlist], $include);
 	}
 
 	/**
@@ -2096,7 +2096,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @param Playlist[] $playlists
 	 */
-	private function renderPlaylists(array $playlists) : array {
+	private function renderPlaylists(array $playlists, bool $includeTracks=false) : array {
 		$createImageUrl = function(Playlist $playlist) : string {
 			if ($playlist->getId() === self::ALL_TRACKS_PLAYLIST_ID) {
 				return '';
@@ -2105,9 +2105,18 @@ class AmpacheController extends Controller {
 			}
 		};
 
-		return [
-			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi', [$createImageUrl])
+		$result = [
+			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi', [$createImageUrl, $includeTracks])
 		];
+
+		// annoyingly, the structure of the included tracks is quite different in JSON compared to XML
+		if ($includeTracks && $this->jsonMode) {
+			foreach ($result['playlist'] as &$apiPlaylist) {
+				$apiPlaylist['items'] = Util::convertArrayKeys($apiPlaylist['items']['playlisttrack'], ['text' => 'playlisttrack']);
+			}
+		}
+
+		return $result;
 	}
 
 	/**

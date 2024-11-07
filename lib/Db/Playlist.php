@@ -100,12 +100,11 @@ class Playlist extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(callable $createImageUrl) : array {
+	public function toAmpacheApi(callable $createImageUrl, bool $includeTracks) : array {
 		$result = [
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
-			'items' => $this->getTrackCount(),
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
 			'rating' => $this->getRating() ?? 0,
@@ -116,6 +115,17 @@ class Playlist extends Entity {
 			'md5' => $this->getTrackIdsHash()
 		];
 		$result['has_art'] = !empty($result['art']);
+
+		if ($includeTracks) {
+			$ids = $this->getTrackIdsAsArray();
+			$result['items'] = ['playlisttrack' => \array_map(fn(int $trackId, int $index) => [
+				'id' => (string)$trackId,
+				'text' => $index + 1
+			], $ids, \array_keys($ids))];
+		} else {
+			$result['items'] = $this->getTrackCount();
+		}
+
 		return $result;
 	}
 

@@ -169,7 +169,7 @@ export class MusicWidget {
 
 	#loadBackgroundImage($albumArt: JQuery<HTMLElement>, url: string) {
 		/* Load the image first using an out-of-DOM <img> element and then use the same image
-		   as the background for the element. This is needed because loading the bacground-image
+		   as the background for the element. This is needed because loading the background-image
 		   doesn't fire the onload event, making it impossible to timely remove the loading icon. */
 		$('<img/>').attr('src', url).on('load', function() {
 			$(this).remove(); // prevent memory leaks

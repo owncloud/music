@@ -380,6 +380,17 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
+	 * Get the largest entity ID of the user
+	 */
+	public function maxId(string $userId) : ?int {
+		$sql = "SELECT MAX(`id`) AS max_id FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+		$row = $result->fetch();
+		$max = $row['max_id'];
+		return $max === null ? null : (int)$max;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see CompatibleMapper::insert()
 	 * @phpstan-param EntityType $entity

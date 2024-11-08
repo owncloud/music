@@ -105,7 +105,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
-	const API6_VERSION = '660000';
+	const API6_VERSION = '661000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -297,6 +297,12 @@ class AmpacheController extends Controller {
 			'shares' => 0,
 			'licenses' => 0,
 			'labels' => 0,
+			'max_song' => $this->trackBusinessLayer->maxId($user),
+			'max_album' => $this->albumBusinessLayer->maxId($user),
+			'max_artist' => $this->artistBusinessLayer->maxId($user),
+			'max_video' => null,
+			'max_podcast' => $this->podcastChannelBusinessLayer->maxId($user),
+			'max_podcast_episode' => $this->podcastEpisodeBusinessLayer->maxId($user),
 			'username' => $user
 		];
 	}

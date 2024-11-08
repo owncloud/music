@@ -14,7 +14,7 @@
   * Action `get_indexes` supports also `type=song_artist`
   * Actions `playlists` and `playlist` support argument `include`
   * Added fields `art` and `has_art` to the `podcast_episode` and `live_stream` result types
-  * Added field `username` to the responses of `handshake` and `ping`
+  * Added fields `username`, `max_song`, `max_album`, `max_artist`, `max_video`, `max_podcast`, `max_podcast_episode` to the responses of `handshake` and `ping`
   * Added fields `md5`, `has_access`, `has_collaborate`, and `last_update` to the `playlist` results
   * For radio stations without user-supplied name, use the stream URL as a name
 - Subsonic API:

@@ -336,9 +336,6 @@ abstract class BusinessLayer {
 
 	/**
 	 * Tests if entity with given ID and user ID exists in the database
-	 * @param int $id
-	 * @param string $userId
-	 * @return bool
 	 */
 	public function exists(int $id, string $userId) : bool {
 		return $this->mapper->exists($id, $userId);
@@ -346,10 +343,16 @@ abstract class BusinessLayer {
 
 	/**
 	 * Get the number of entities
-	 * @param string $userId
 	 */
 	public function count(string $userId) : int {
 		return $this->mapper->count($userId);
+	}
+
+	/**
+	 * Get the largest entity ID of the user
+	 */
+	public function maxId(string $userId) : ?int {
+		return $this->mapper->maxId($userId);
 	}
 
 	/**

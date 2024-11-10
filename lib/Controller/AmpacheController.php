@@ -103,9 +103,9 @@ class AmpacheController extends Controller {
 	private $namePrefixes;
 
 	const ALL_TRACKS_PLAYLIST_ID = -1;
-	const API4_VERSION = '440000';
-	const API5_VERSION = '560000';
-	const API6_VERSION = '661000';
+	const API4_VERSION = '4.4.0';
+	const API5_VERSION = '5.6.0';
+	const API6_VERSION = '6.6.1';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -322,7 +322,7 @@ class AmpacheController extends Controller {
 	protected function ping() : array {
 		$response = [
 			'server' => AppInfo::getFullName() . ' ' . AppInfo::getVersion(),
-			'version' => self::API6_VERSION,
+			'version' => $this->apiVersionString(),
 			'compatible' => self::API_MIN_COMPATIBLE_VERSION
 		];
 
@@ -2438,11 +2438,15 @@ class AmpacheController extends Controller {
 		return ($this->apiMajorVersion() > 4) ? 'genre' : 'tag';
 	}
 
-	private function apiMajorVersion() : int {
+	private function requestedApiVersion() : ?string {
 		// During the handshake, we don't yet have a session but the requested version may be in the request args
-		$verString = ($this->session !== null) 
+		return ($this->session !== null) 
 			? $this->session->getApiVersion()
 			: $this->request->getParam('version');
+	} 
+
+	private function apiMajorVersion() : int {
+		$verString = $this->requestedApiVersion();
 		
 		if (\is_string($verString) && \strlen($verString)) {
 			$ver = (int)$verString[0];
@@ -2458,11 +2462,23 @@ class AmpacheController extends Controller {
 
 	private function apiVersionString() : string {
 		switch ($this->apiMajorVersion()) {
-			case 4:		return self::API4_VERSION;
-			case 5:		return self::API5_VERSION;
-			case 6:		return self::API6_VERSION;
+			case 4:		$ver = self::API4_VERSION; break;
+			case 5:		$ver = self::API5_VERSION; break;
+			case 6:		$ver = self::API6_VERSION; break;
 			default:	throw new AmpacheException('Unexpected api major version', 500);
 		}
+
+		// Convert the version to the 6-digit legacy format if the client request used this format or there
+		// was no version defined by the client but the default version is 4 (Ampache introduced the new
+		// version number format in version 5).
+		$reqVersion = $this->requestedApiVersion();
+		if (($reqVersion !== null && \preg_match('/^\d\d\d\d\d\d$/', $reqVersion) === 1)
+			|| ($reqVersion === null && $ver === self::API4_VERSION))
+		{
+			$ver = \str_replace('.', '', $ver) . '000';
+		}
+	
+		return $ver;
 	}
 
 	private function mapApiV4ErrorToV5(int $code) : int {

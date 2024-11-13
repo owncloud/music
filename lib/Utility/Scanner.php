@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -83,25 +83,71 @@ class Scanner extends PublicEmitter {
 	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
 	 */
 	public function update(File $file, string $userId, string $filePath) : void {
-		// debug logging
-		$this->logger->log("update - $filePath", 'debug');
+		$mimetype = $file->getMimeType();
+		$this->logger->log("update - $filePath - $mimetype", 'debug');
 
-		// skip files that aren't inside the user specified path
 		if (!$this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
-			return;
 		}
-
-		$mimetype = $file->getMimeType();
-
-		// debug logging
-		$this->logger->log("update - mimetype $mimetype", 'debug');
-
-		if (Util::startsWith($mimetype, 'image')) {
+		elseif (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+		}
+		elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
 			$libraryRoot = $this->librarySettings->getFolder($userId);
 			$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
+		}
+	}
+
+	public function fileMoved(File $file, string $userId) : void {
+		$mimetype = $file->getMimeType();
+		$this->logger->log('fileMoved - '. $file->getPath() . " - $mimetype", 'debug');
+
+		if (Util::startsWith($mimetype, 'image')) {
+			// we don't need to track the identity of images and moving a file can be handled as it was 
+			// a file deletion followed by a file addition
+			$this->deleteImage([$file->getId()], [$userId]);
+			$this->updateImage($file, $userId);
+		}
+		elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+			if ($this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
+				// In the new path, the file (now or still) belongs to the library. Even if it was already in the lib,
+				// the new path may have an influence on the album or artist name (in case of incomplete metadata).
+				$libraryRoot = $this->librarySettings->getFolder($userId);
+				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $mimetype, /*partOfScan=*/false);
+			} else {
+				// In the new path, the file doesn't (still or any longer) belong to the library. Remove it if
+				// it happened to be in the library.
+				$this->deleteAudio([$file->getId()], [$userId]);
+			}
+		}
+	}
+
+	public function folderMoved(Folder $folder, string $userId) : void {
+		$this->logger->log('folderMoved - '. $folder->getPath(), 'debug');
+
+		$audioFiles = $folder->searchByMime('audio');
+
+		if (\count($audioFiles) > 0) {
+			if ($this->librarySettings->pathBelongsToMusicLibrary($folder->getPath(), $userId)) {
+				// The new path of the folder belongs to the library but this doesn't necessarily mean
+				// that all the file paths below belong to the library, because of the path exclusions.
+				// Each file needs to be checked and updated separately but this may take too much time
+				// if there is extensive number of files.
+				if (\count($audioFiles) <= 30) {
+					foreach ($audioFiles as $file) {
+						$this->fileMoved($file, $userId);
+					}
+				} else {
+					// Remove the scanned files to get them rescanned when the Music app is opened.
+					// TODO: Better handling e.g. by marking the files as dirty.
+					$this->deleteAudio(Util::extractIds($audioFiles), [$userId]);	
+				}
+			}
+			else {
+				// The new path of the folder doesn't belong to the library so neither does any of the
+				// contained files. Remove audio files from the lib if found.
+				$this->deleteAudio(Util::extractIds($audioFiles), [$userId]);
+			}
 		}
 	}
 
@@ -172,7 +218,6 @@ class Scanner extends PublicEmitter {
 			$this->cache->remove($userId, 'collection');
 		}
 
-		// debug logging
 		$this->logger->log('imported entities - ' .
 				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
 				'debug');

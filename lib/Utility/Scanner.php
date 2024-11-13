@@ -135,6 +135,7 @@ class Scanner extends PublicEmitter {
 				// if there is extensive number of files.
 				if (\count($audioFiles) <= 30) {
 					foreach ($audioFiles as $file) {
+						\assert($file instanceof File); // a clue for PHPStan
 						$this->fileMoved($file, $userId);
 					}
 				} else {

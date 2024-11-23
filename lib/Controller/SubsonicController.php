@@ -211,7 +211,7 @@ class SubsonicController extends Controller {
 	protected function getLicense() {
 		return $this->subsonicResponse([
 			'license' => [
-				'valid' => 'true'
+				'valid' => true
 			]
 		]);
 	}

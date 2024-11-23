@@ -13,7 +13,7 @@
  * @copyright Thomas Müller 2013
  * @copyright Bart Visscher 2013
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Command;
@@ -75,9 +75,7 @@ class Scan extends BaseCommand {
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if (!$input->getOption('debug')) {
-			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function ($path) use ($output) {
-				$output->writeln("Scanning <info>$path</info>");
-			});
+			$this->scanner->listen(Scanner::class, 'update', fn($path) => $output->writeln("Scanning <info>$path</info>"));
 		}
 
 		if ($input->getOption('rescan') && $input->getOption('rescan-modified')) {

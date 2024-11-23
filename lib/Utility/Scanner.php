@@ -172,7 +172,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan) : void {
-		$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
+		$this->emit(self::class, 'update', [$filePath]);
 
 		$analysisEnabled = $this->librarySettings->getScanMetadataEnabled($userId);
 		$meta = $this->extractMetadata($file, $libraryRoot, $filePath, $analysisEnabled);
@@ -349,7 +349,6 @@ class Scanner extends PublicEmitter {
 	 */
 	private function deleteAudio(array $fileIds, array $userIds=null) : bool {
 		$this->logger->log('deleteAudio - '. \implode(', ', $fileIds), 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'delete', [$fileIds, $userIds]);
 
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userIds);
 
@@ -372,6 +371,7 @@ class Scanner extends PublicEmitter {
 					$result['affectedUsers'], $result['obsoleteAlbums'], $result['obsoleteArtists']);
 
 			$this->logger->log('removed entities - ' . \json_encode($result), 'debug');
+			$this->emit(self::class, 'delete', [$result['deletedTracks'], $result['affectedUsers']]);
 		}
 
 		return $result !== false;

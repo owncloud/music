@@ -170,7 +170,7 @@ class SubsonicController extends Controller {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
 
-		// There's only one method allowed wihout a logged-in user
+		// There's only one method allowed without a logged-in user
 		if ($method !== 'getOpenSubsonicExtensions' && $this->userId === null) {
 			throw new SubsonicException('User authentication required', 10);
 		}
@@ -299,8 +299,8 @@ class SubsonicController extends Controller {
 	protected function getArtist(string $id) {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+		$artist = $this->artistBusinessLayer->find($artistId, $this->user());
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->user());
 
 		$artistNode = $this->artistToApi($artist);
 		$artistNode['album'] = \array_map([$this, 'albumToNewApi'], $albums);
@@ -354,7 +354,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getTopSongs(string $artist, int $count=50) {
-		$tracks = $this->lastfmService->getTopTracks($artist, $this->userId, $count);
+		$tracks = $this->lastfmService->getTopTracks($artist, $this->user(), $count);
 		return $this->subsonicResponse(['topSongs' =>
 			['song' => $this->tracksToApi($tracks)]
 		]);
@@ -366,8 +366,8 @@ class SubsonicController extends Controller {
 	protected function getAlbum(string $id) {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+		$album = $this->albumBusinessLayer->find($albumId, $this->user());
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->user());
 
 		$albumNode = $this->albumToNewApi($album);
 		$albumNode['song'] = \array_map(function ($track) use ($album) {
@@ -382,8 +382,8 @@ class SubsonicController extends Controller {
 	 */
 	protected function getSong(string $id) {
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
-		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
+		$track = $this->trackBusinessLayer->find($trackId, $this->user());
+		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->user()));
 
 		return $this->subsonicResponse(['song' => $track->toSubsonicApi($this->l10n, $this->ignoredArticles)]);
 	}
@@ -397,7 +397,7 @@ class SubsonicController extends Controller {
 		if ($genre !== null) {
 			$trackPool = $this->findTracksByGenre($genre);
 		} else {
-			$trackPool = $this->trackBusinessLayer->findAll($this->userId);
+			$trackPool = $this->trackBusinessLayer->findAll($this->user());
 		}
 
 		if ($fromYear !== null) {
@@ -424,20 +424,21 @@ class SubsonicController extends Controller {
 	 */
 	protected function getCoverArt(string $id, ?int $size) {
 		list($type, $entityId) = self::parseEntityId($id);
+		$userId = $this->user();
 
 		if ($type == 'album') {
-			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
+			$entity = $this->albumBusinessLayer->find($entityId, $userId);
 		} elseif ($type == 'artist') {
-			$entity = $this->artistBusinessLayer->find($entityId, $this->userId);
+			$entity = $this->artistBusinessLayer->find($entityId, $userId);
 		} elseif ($type == 'podcast_channel') {
-			$entity = $this->podcastService->getChannel($entityId, $this->userId, /*$includeEpisodes=*/ false);
+			$entity = $this->podcastService->getChannel($entityId, $userId, /*$includeEpisodes=*/ false);
 		} elseif ($type == 'pl') {
-			$entity = $this->playlistBusinessLayer->find($entityId, $this->userId);
+			$entity = $this->playlistBusinessLayer->find($entityId, $userId);
 		}
 
 		if (!empty($entity)) {
-			$rootFolder = $this->librarySettings->getFolder($this->userId);
-			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
+			$rootFolder = $this->librarySettings->getFolder($userId);
+			$coverData = $this->coverHelper->getCover($entity, $userId, $rootFolder, $size);
 			return new FileResponse($coverData);
 		}
 
@@ -448,7 +449,8 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getLyrics(?string $artist, ?string $title) {
-		$matches = $this->trackBusinessLayer->findAllByNameArtistOrAlbum($title, $artist, null, $this->userId);
+		$userId = $this->user();
+		$matches = $this->trackBusinessLayer->findAllByNameArtistOrAlbum($title, $artist, null, $userId);
 		$matchingCount = \count($matches);
 
 		if ($matchingCount === 0) {
@@ -461,8 +463,8 @@ class SubsonicController extends Controller {
 			}
 			$track = $matches[0];
 
-			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-			$rootFolder = $this->librarySettings->getFolder($this->userId);
+			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+			$rootFolder = $this->librarySettings->getFolder($userId);
 			$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
 
 			return $this->subsonicResponse(['lyrics' => [
@@ -478,10 +480,11 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getLyricsBySongId(string $id) {
+		$userId = $this->user();
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
-		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-		$rootFolder = $this->librarySettings->getFolder($this->userId);
+		$track = $this->trackBusinessLayer->find($trackId, $userId);
+		$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+		$rootFolder = $this->librarySettings->getFolder($userId);
 		$allLyrics = $this->detailsHelper->getLyricsAsStructured($track->getFileId(), $rootFolder);
 
 		return $this->subsonicResponse(['lyricsList' => [
@@ -520,7 +523,7 @@ class SubsonicController extends Controller {
 		list($type, $entityId) = self::parseEntityId($id);
 
 		if ($type === 'track') {
-			$track = $this->trackBusinessLayer->find($entityId, $this->userId);
+			$track = $this->trackBusinessLayer->find($entityId, $this->user());
 			$file = $this->getFilesystemNode($track->getFileId());
 
 			if ($file instanceof File) {
@@ -529,7 +532,7 @@ class SubsonicController extends Controller {
 				return $this->subsonicErrorResponse(70, 'file not found');
 			}
 		} elseif ($type === 'podcast_episode') {
-			$episode = $this->podcastService->getEpisode($entityId, $this->userId);
+			$episode = $this->podcastService->getEpisode($entityId, $this->user());
 			if ($episode instanceof PodcastEpisode) {
 				return new RedirectResponse($episode->getStreamUrl());
 			} else {
@@ -562,7 +565,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getGenres() {
-		$genres = $this->genreBusinessLayer->findAll($this->userId, SortBy::Name);
+		$genres = $this->genreBusinessLayer->findAll($this->user(), SortBy::Name);
 
 		return $this->subsonicResponse(['genres' =>
 			[
@@ -593,10 +596,11 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getPlaylists() {
-		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
+		$userId = $this->user();
+		$playlists = $this->playlistBusinessLayer->findAll($userId);
 
 		foreach ($playlists as &$playlist) {
-			$playlist->setDuration($this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId));
+			$playlist->setDuration($this->playlistBusinessLayer->getDuration($playlist->getId(), $userId));
 		}
 
 		return $this->subsonicResponse(['playlists' =>
@@ -608,8 +612,9 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getPlaylist(int $id) {
-		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
+		$userId = $this->user();
+		$playlist = $this->playlistBusinessLayer->find($id, $userId);
+		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$playlist->setDuration(\array_reduce($tracks, function (?int $accuDuration, Track $track) : int {
 			return (int)$accuDuration + (int)$track->getLength();
 		}));
@@ -629,9 +634,9 @@ class SubsonicController extends Controller {
 		// If playlist ID has been passed, then this method actually updates an existing list instead of creating a new one.
 		// The updating can't be used to rename the list, even if both ID and name are given (this is how the real Subsonic works, too).
 		if (!empty($playlistId)) {
-			$playlist = $this->playlistBusinessLayer->find((int)$playlistId, $this->userId);
+			$playlist = $this->playlistBusinessLayer->find((int)$playlistId, $this->user());
 		} elseif (!empty($name)) {
-			$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
+			$playlist = $this->playlistBusinessLayer->create($name, $this->user());
 		} else {
 			throw new SubsonicException('Playlist ID or name must be specified.', 10);
 		}
@@ -648,21 +653,22 @@ class SubsonicController extends Controller {
 	protected function updatePlaylist(int $playlistId, ?string $name, ?string $comment, array $songIdToAdd, array $songIndexToRemove) {
 		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdToAdd);
 		$songIndicesToRemove = \array_map('intval', $songIndexToRemove);
+		$userId = $this->user();
 
 		if (!empty($name)) {
-			$this->playlistBusinessLayer->rename($name, $playlistId, $this->userId);
+			$this->playlistBusinessLayer->rename($name, $playlistId, $userId);
 		}
 
 		if ($comment !== null) {
-			$this->playlistBusinessLayer->setComment($comment, $playlistId, $this->userId);
+			$this->playlistBusinessLayer->setComment($comment, $playlistId, $userId);
 		}
 
 		if (!empty($songIndicesToRemove)) {
-			$this->playlistBusinessLayer->removeTracks($songIndicesToRemove, $playlistId, $this->userId);
+			$this->playlistBusinessLayer->removeTracks($songIndicesToRemove, $playlistId, $userId);
 		}
 
 		if (!empty($songIdsToAdd)) {
-			$this->playlistBusinessLayer->addTracks($songIdsToAdd, $playlistId, $this->userId);
+			$this->playlistBusinessLayer->addTracks($songIdsToAdd, $playlistId, $userId);
 		}
 
 		return $this->subsonicResponse([]);
@@ -672,7 +678,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function deletePlaylist(int $id) {
-		$this->playlistBusinessLayer->delete($id, $this->userId);
+		$this->playlistBusinessLayer->delete($id, $this->user());
 		return $this->subsonicResponse([]);
 	}
 
@@ -680,7 +686,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getInternetRadioStations() {
-		$stations = $this->radioStationBusinessLayer->findAll($this->userId);
+		$stations = $this->radioStationBusinessLayer->findAll($this->user());
 
 		return $this->subsonicResponse(['internetRadioStations' =>
 				['internetRadioStation' => \array_map(function($station) {
@@ -698,7 +704,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function createInternetRadioStation(string $streamUrl, string $name, ?string $homepageUrl) {
-		$this->radioStationBusinessLayer->create($this->userId, $name, $streamUrl, $homepageUrl);
+		$this->radioStationBusinessLayer->create($this->user(), $name, $streamUrl, $homepageUrl);
 		return $this->subsonicResponse([]);
 	}
 
@@ -706,7 +712,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function updateInternetRadioStation(int $id, string $streamUrl, string $name, ?string $homepageUrl) {
-		$station = $this->radioStationBusinessLayer->find($id, $this->userId);
+		$station = $this->radioStationBusinessLayer->find($id, $this->user());
 		$station->setStreamUrl($streamUrl);
 		$station->setName($name);
 		$station->setHomeUrl($homepageUrl);
@@ -718,7 +724,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function deleteInternetRadioStation(int $id) {
-		$this->radioStationBusinessLayer->delete($id, $this->userId);
+		$this->radioStationBusinessLayer->delete($id, $this->user());
 		return $this->subsonicResponse([]);
 	}
 
@@ -726,15 +732,16 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getUser(string $username) {
-		if (\mb_strtolower($username) != \mb_strtolower($this->userId)) {
-			throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
+		$userId = $this->user();
+		if (\mb_strtolower($username) != \mb_strtolower($userId)) {
+			throw new SubsonicException("$userId is not authorized to get details for other users.", 50);
 		}
 
-		$user = $this->userManager->get($this->userId);
+		$user = $this->userManager->get($userId);
 
 		return $this->subsonicResponse([
 			'user' => [
-				'username' => $this->userId,
+				'username' => $userId,
 				'email' => $user->getEMailAddress(),
 				'scrobblingEnabled' => true,
 				'adminRole' => false,
@@ -758,18 +765,19 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getUsers() {
-		throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
+		throw new SubsonicException("{$this->user()} is not authorized to get details for other users.", 50);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
 	protected function getAvatar(string $username) {
-		if (\mb_strtolower($username) != \mb_strtolower($this->userId)) {
-			throw new SubsonicException("{$this->userId} is not authorized to get avatar for other users.", 50);
+		$userId = $this->user();
+		if (\mb_strtolower($username) != \mb_strtolower($userId)) {
+			throw new SubsonicException("$userId is not authorized to get avatar for other users.", 50);
 		}
 
-		$image = $this->userManager->get($this->userId)->getAvatarImage(150);
+		$image = $this->userManager->get($userId)->getAvatarImage(150);
 
 		if ($image !== null) {
 			return new FileResponse(['content' => $image->data(), 'mimetype' => $image->mimeType()]);
@@ -786,7 +794,7 @@ class SubsonicController extends Controller {
 		// This method is intended to be used when API key is used for authentication and the user name is not
 		// directly available for the client. But it shouldn't hurt to allow calling this regardless of the
 		// authentication method.
-		return $this->subsonicResponse(['tokenInfo' => ['username' => $this->userId]]);
+		return $this->subsonicResponse(['tokenInfo' => ['username' => $this->user()]]);
 	}
 
 	/**
@@ -797,6 +805,7 @@ class SubsonicController extends Controller {
 			throw new SubsonicException("Required parameter 'id' missing", 10);
 		}
 
+		$userId = $this->user();
 		foreach ($id as $index => $aId) {
 			list($type, $trackId) = self::parseEntityId($aId);
 			if ($type === 'track') {
@@ -806,7 +815,7 @@ class SubsonicController extends Controller {
 				} else {
 					$timeOfPlay = null;
 				}
-				$this->trackBusinessLayer->recordTrackPlayed((int)$trackId, $this->userId, $timeOfPlay);
+				$this->trackBusinessLayer->recordTrackPlayed((int)$trackId, $userId, $timeOfPlay);
 			}
 		}
 
@@ -818,12 +827,13 @@ class SubsonicController extends Controller {
 	 */
 	protected function star(array $id, array $albumId, array $artistId) {
 		$targetIds = self::parseStarringParameters($id, $albumId, $artistId);
+		$userId = $this->user();
 
-		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $this->userId);
-		$this->albumBusinessLayer->setStarred($targetIds['albums'], $this->userId);
-		$this->artistBusinessLayer->setStarred($targetIds['artists'], $this->userId);
-		$this->podcastChannelBusinessLayer->setStarred($targetIds['podcast_channels'], $this->userId);
-		$this->podcastEpisodeBusinessLayer->setStarred($targetIds['podcast_episodes'], $this->userId);
+		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $userId);
+		$this->albumBusinessLayer->setStarred($targetIds['albums'], $userId);
+		$this->artistBusinessLayer->setStarred($targetIds['artists'], $userId);
+		$this->podcastChannelBusinessLayer->setStarred($targetIds['podcast_channels'], $userId);
+		$this->podcastEpisodeBusinessLayer->setStarred($targetIds['podcast_episodes'], $userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -833,12 +843,13 @@ class SubsonicController extends Controller {
 	 */
 	protected function unstar(array $id, array $albumId, array $artistId) {
 		$targetIds = self::parseStarringParameters($id, $albumId, $artistId);
+		$userId = $this->user();
 
-		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $this->userId);
-		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $this->userId);
-		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $this->userId);
-		$this->podcastChannelBusinessLayer->unsetStarred($targetIds['podcast_channels'], $this->userId);
-		$this->podcastEpisodeBusinessLayer->unsetStarred($targetIds['podcast_episodes'], $this->userId);
+		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $userId);
+		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $userId);
+		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $userId);
+		$this->podcastChannelBusinessLayer->unsetStarred($targetIds['podcast_channels'], $userId);
+		$this->podcastEpisodeBusinessLayer->unsetStarred($targetIds['podcast_episodes'], $userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -869,7 +880,7 @@ class SubsonicController extends Controller {
 				throw new SubsonicException("Unexpected ID format: $id", 0);
 		}
 
-		$entity = $bLayer->find($entityId, $this->userId);
+		$entity = $bLayer->find($entityId, $this->user());
 		$entity->setRating($rating);
 		$bLayer->update($entity);
 
@@ -910,13 +921,13 @@ class SubsonicController extends Controller {
 	protected function getPodcasts(?string $id, bool $includeEpisodes = true) {
 		if ($id !== null) {
 			$id = self::ripIdPrefix($id);
-			$channel = $this->podcastService->getChannel($id, $this->userId, $includeEpisodes);
+			$channel = $this->podcastService->getChannel($id, $this->user(), $includeEpisodes);
 			if ($channel === null) {
 				throw new SubsonicException('Requested channel not found', 70);
 			}
 			$channels = [$channel];
 		} else {
-			$channels = $this->podcastService->getAllChannels($this->userId, $includeEpisodes);
+			$channels = $this->podcastService->getAllChannels($this->user(), $includeEpisodes);
 		}
 
 		return $this->subsonicResponse([
@@ -930,7 +941,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getNewestPodcasts(int $count=20) {
-		$episodes = $this->podcastService->getLatestEpisodes($this->userId, $count);
+		$episodes = $this->podcastService->getLatestEpisodes($this->user(), $count);
 
 		return $this->subsonicResponse([
 			'newestPodcasts' => [
@@ -943,7 +954,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function refreshPodcasts() {
-		$this->podcastService->updateAllChannels($this->userId);
+		$this->podcastService->updateAllChannels($this->user());
 		return $this->subsonicResponse([]);
 	}
 
@@ -951,7 +962,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function createPodcastChannel(string $url) {
-		$result = $this->podcastService->subscribe($url, $this->userId);
+		$result = $this->podcastService->subscribe($url, $this->user());
 
 		switch ($result['status']) {
 			case PodcastService::STATUS_OK:
@@ -972,7 +983,7 @@ class SubsonicController extends Controller {
 	 */
 	protected function deletePodcastChannel(string $id) {
 		$id = self::ripIdPrefix($id);
-		$status = $this->podcastService->unsubscribe($id, $this->userId);
+		$status = $this->podcastService->unsubscribe($id, $this->user());
 
 		switch ($status) {
 			case PodcastService::STATUS_OK:
@@ -988,8 +999,9 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getBookmarks() {
+		$userId = $this->user();
 		$bookmarkNodes = [];
-		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
+		$bookmarks = $this->bookmarkBusinessLayer->findAll($userId);
 
 		foreach ($bookmarks as $bookmark) {
 			$node = $bookmark->toSubsonicApi();
@@ -998,11 +1010,11 @@ class SubsonicController extends Controller {
 
 			try {
 				if ($type === Bookmark::TYPE_TRACK) {
-					$track = $this->trackBusinessLayer->find($entryId, $this->userId);
-					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
+					$track = $this->trackBusinessLayer->find($entryId, $userId);
+					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $userId));
 					$node['entry'] = $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
-					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
+					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $userId)->toSubsonicApi();
 				} else {
 					$this->logger->log("Bookmark {$bookmark->getId()} had unexpected entry type $type", 'warn');
 				}
@@ -1020,7 +1032,7 @@ class SubsonicController extends Controller {
 	 */
 	protected function createBookmark(string $id, int $position, ?string $comment) {
 		list($type, $entityId) = self::parseBookmarkIdParam($id);
-		$this->bookmarkBusinessLayer->addOrUpdate($this->userId, $type, $entityId, $position, $comment);
+		$this->bookmarkBusinessLayer->addOrUpdate($this->user(), $type, $entityId, $position, $comment);
 		return $this->subsonicResponse([]);
 	}
 
@@ -1030,8 +1042,8 @@ class SubsonicController extends Controller {
 	protected function deleteBookmark(string $id) {
 		list($type, $entityId) = self::parseBookmarkIdParam($id);
 
-		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $entityId, $this->userId);
-		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $entityId, $this->user());
+		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->user());
 
 		return $this->subsonicResponse([]);
 	}
@@ -1058,7 +1070,7 @@ class SubsonicController extends Controller {
 	protected function getScanStatus() {
 		return $this->subsonicResponse(['scanStatus' => [
 				'scanning' => false,
-				'count' => $this->trackBusinessLayer->count($this->userId)
+				'count' => $this->trackBusinessLayer->count($this->user())
 		]]);
 	}
 
@@ -1152,8 +1164,15 @@ class SubsonicController extends Controller {
 		];
 	}
 
+	private function user() : string {
+		if ($this->userId === null) {
+			throw new SubsonicException('User authentication required', 10);
+		}
+		return $this->userId;
+	}
+
 	private function getFilesystemNode($id) {
-		$rootFolder = $this->librarySettings->getFolder($this->userId);
+		$rootFolder = $this->librarySettings->getFolder($this->user());
 		$nodes = $rootFolder->getById($id);
 
 		if (\count($nodes) != 1) {
@@ -1185,16 +1204,16 @@ class SubsonicController extends Controller {
 	private function getSubfoldersAndTracks(Folder $folder) : array {
 		$nodes = $folder->getDirectoryListing();
 		$subFolders = \array_filter($nodes, function ($n) {
-			return ($n instanceof Folder) && $this->librarySettings->pathBelongsToMusicLibrary($n->getPath(), $this->userId);
+			return ($n instanceof Folder) && $this->librarySettings->pathBelongsToMusicLibrary($n->getPath(), $this->user());
 		});
 
-		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->userId);
+		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->user());
 
 		return [$subFolders, $tracks];
 	}
 
 	private function getIndexesForFolders() {
-		$rootFolder = $this->librarySettings->getFolder($this->userId);
+		$rootFolder = $this->librarySettings->getFolder($this->user());
 
 		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
 
@@ -1248,7 +1267,7 @@ class SubsonicController extends Controller {
 		];
 
 		// Parent folder ID is included if and only if the parent folder is not the top level
-		$rootFolderId = $this->librarySettings->getFolder($this->userId)->getId();
+		$rootFolderId = $this->librarySettings->getFolder($this->user())->getId();
 		$parentFolderId = $folder->getParent()->getId();
 		if ($rootFolderId != $parentFolderId) {
 			$content['parent'] = 'folder-' . $parentFolderId;
@@ -1258,7 +1277,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
-		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
+		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->user(), SortBy::Name);
 
 		$indexes = [];
 		foreach ($artists as $artist) {
@@ -1282,8 +1301,8 @@ class SubsonicController extends Controller {
 	private function getMusicDirectoryForArtist($id) {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+		$artist = $this->artistBusinessLayer->find($artistId, $this->user());
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->user());
 
 		return $this->subsonicResponse([
 			'directory' => [
@@ -1297,9 +1316,9 @@ class SubsonicController extends Controller {
 	private function getMusicDirectoryForAlbum($id) {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$album = $this->albumBusinessLayer->find($albumId, $this->user());
 		$albumName = $album->getNameString($this->l10n);
-		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->user());
 
 		return $this->subsonicResponse([
 			'directory' => [
@@ -1316,7 +1335,7 @@ class SubsonicController extends Controller {
 
 	private function getMusicDirectoryForPodcastChannel($id) {
 		$channelId = self::ripIdPrefix($id); // get rid of 'podcast_channel-' prefix
-		$channel = $this->podcastService->getChannel($channelId, $this->userId, /*$includeEpisodes=*/ true);
+		$channel = $this->podcastService->getChannel($channelId, $this->user(), /*$includeEpisodes=*/ true);
 
 		if ($channel === null) {
 			throw new SubsonicException("Podcast channel $channelId not found", 0);
@@ -1418,7 +1437,7 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function tracksToApi(array $tracks) : array {
-		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->user());
 		return Util::arrayMapMethod($tracks, 'toSubsonicApi', [$this->l10n, $this->ignoredArticles]);
 	}
 
@@ -1429,23 +1448,24 @@ class SubsonicController extends Controller {
 	private function albumsForGetAlbumList(
 			string $type, ?string $genre, ?int $fromYear, ?int $toYear, int $size, int $offset) : array {
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
+		$userId = $this->user();
 
 		$albums = [];
 
 		switch ($type) {
 			case 'random':
-				$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-				$indices = $this->random->getIndices(\count($allAlbums), $offset, $size, $this->userId, 'subsonic_albums');
+				$allAlbums = $this->albumBusinessLayer->findAll($userId);
+				$indices = $this->random->getIndices(\count($allAlbums), $offset, $size, $userId, 'subsonic_albums');
 				$albums = Util::arrayMultiGet($allAlbums, $indices);
 				break;
 			case 'starred':
-				$albums = $this->albumBusinessLayer->findAllStarred($this->userId, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAllStarred($userId, $size, $offset);
 				break;
 			case 'alphabeticalByName':
-				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Name, $size, $offset);
 				break;
 			case 'alphabeticalByArtist':
-				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Parent, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Parent, $size, $offset);
 				break;
 			case 'byGenre':
 				self::ensureParamHasValue('genre', $genre);
@@ -1454,19 +1474,19 @@ class SubsonicController extends Controller {
 			case 'byYear':
 				self::ensureParamHasValue('fromYear', $fromYear);
 				self::ensureParamHasValue('toYear', $toYear);
-				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $userId, $size, $offset);
 				break;
 			case 'newest':
-				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Newest, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Newest, $size, $offset);
 				break;
 			case 'frequent':
-				$albums = $this->albumBusinessLayer->findFrequentPlay($this->userId, $size, $offset);
+				$albums = $this->albumBusinessLayer->findFrequentPlay($userId, $size, $offset);
 				break;
 			case 'recent':
-				$albums = $this->albumBusinessLayer->findRecentPlay($this->userId, $size, $offset);
+				$albums = $this->albumBusinessLayer->findRecentPlay($userId, $size, $offset);
 				break;
 			case 'highest':
-				$albums = $this->albumBusinessLayer->findAllRated($this->userId, $size, $offset);
+				$albums = $this->albumBusinessLayer->findAllRated($userId, $size, $offset);
 				break;
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
@@ -1483,18 +1503,19 @@ class SubsonicController extends Controller {
 	 */
 	private function getArtistIdFromEntityId(string $entityId) : ?int {
 		list($type, $id) = self::parseEntityId($entityId);
+		$userId = $this->user();
 
 		switch ($type) {
 			case 'artist':
 				return $id;
 			case 'album':
-				return $this->albumBusinessLayer->find($id, $this->userId)->getAlbumArtistId();
+				return $this->albumBusinessLayer->find($id, $userId)->getAlbumArtistId();
 			case 'track':
-				return $this->trackBusinessLayer->find($id, $this->userId)->getArtistId();
+				return $this->trackBusinessLayer->find($id, $userId)->getArtistId();
 			case 'folder':
-				$folder = $this->librarySettings->getFolder($this->userId)->getById($id)[0] ?? null;
+				$folder = $this->librarySettings->getFolder($userId)->getById($id)[0] ?? null;
 				if ($folder !== null) {
-					$artist = $this->artistBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
+					$artist = $this->artistBusinessLayer->findAllByName($folder->getName(), $userId)[0] ?? null;
 					if ($artist !== null) {
 						return $artist->getId();
 					}
@@ -1511,9 +1532,10 @@ class SubsonicController extends Controller {
 	private function doGetArtistInfo(string $rootName, string $id, bool $includeNotPresent) {
 		$content = [];
 
+		$userId = $this->user();
 		$artistId = $this->getArtistIdFromEntityId($id);
 		if ($artistId !== null) {
-			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
+			$info = $this->lastfmService->getArtistInfo($artistId, $userId);
 
 			if (isset($info['artist'])) {
 				$content = [
@@ -1522,11 +1544,11 @@ class SubsonicController extends Controller {
 					'musicBrainzId' => $info['artist']['mbid'] ?? null
 				];
 
-				$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);
+				$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $userId, $includeNotPresent);
 				$content['similarArtist'] = \array_map([$this, 'artistToApi'], $similarArtists);
 			}
 
-			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			if ($artist->getCoverFileId() !== null) {
 				$content['largeImageUrl'] = [$this->artistImageUrl('artist-' . $artistId)];
 			}
@@ -1546,16 +1568,17 @@ class SubsonicController extends Controller {
 	 */
 	private function getAlbumIdFromEntityId(string $entityId) : ?int {
 		list($type, $id) = self::parseEntityId($entityId);
+		$userId = $this->user();
 
 		switch ($type) {
 			case 'album':
 				return $id;
 			case 'track':
-				return $this->trackBusinessLayer->find($id, $this->userId)->getAlbumId();
+				return $this->trackBusinessLayer->find($id, $userId)->getAlbumId();
 			case 'folder':
-				$folder = $this->librarySettings->getFolder($this->userId)->getById($id)[0] ?? null;
+				$folder = $this->librarySettings->getFolder($userId)->getById($id)[0] ?? null;
 				if ($folder !== null) {
-					$album = $this->albumBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
+					$album = $this->albumBusinessLayer->findAllByName($folder->getName(), $userId)[0] ?? null;
 					if ($album !== null) {
 						return $album->getId();
 					}
@@ -1574,7 +1597,7 @@ class SubsonicController extends Controller {
 
 		$albumId = $this->getAlbumIdFromEntityId($id);
 		if ($albumId !== null) {
-			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
+			$info = $this->lastfmService->getAlbumInfo($albumId, $this->user());
 
 			if (isset($info['album'])) {
 				$content = [
@@ -1599,25 +1622,27 @@ class SubsonicController extends Controller {
 	 * Common logic for getSimilarSongs and getSimilarSongs2
 	 */
 	private function doGetSimilarSongs(string $rootName, string $id, int $count) {
+		$userId = $this->user();
+
 		if (Util::startsWith($id, 'artist')) {
 			$artistId = self::ripIdPrefix($id);
 		} elseif (Util::startsWith($id, 'album')) {
 			$albumId = self::ripIdPrefix($id);
-			$artistId = $this->albumBusinessLayer->find($albumId, $this->userId)->getAlbumArtistId();
+			$artistId = $this->albumBusinessLayer->find($albumId, $userId)->getAlbumArtistId();
 		} elseif (Util::startsWith($id, 'track')) {
 			$trackId = self::ripIdPrefix($id);
-			$artistId = $this->trackBusinessLayer->find($trackId, $this->userId)->getArtistId();
+			$artistId = $this->trackBusinessLayer->find($trackId, $userId)->getArtistId();
 		} else {
 			throw new SubsonicException("Id $id has a type not supported on getSimilarSongs", 0);
 		}
 
-		$artists = $this->lastfmService->getSimilarArtists($artistId, $this->userId);
-		$artists[] = $this->artistBusinessLayer->find($artistId, $this->userId);
+		$artists = $this->lastfmService->getSimilarArtists($artistId, $userId);
+		$artists[] = $this->artistBusinessLayer->find($artistId, $userId);
 
 		// Get all songs by the found artists
 		$songs = [];
 		foreach ($artists as $artist) {
-			$songs = \array_merge($songs, $this->trackBusinessLayer->findAllByArtist($artist->getId(), $this->userId));
+			$songs = \array_merge($songs, $this->trackBusinessLayer->findAllByArtist($artist->getId(), $userId));
 		}
 
 		// Randomly select the desired number of songs
@@ -1635,13 +1660,15 @@ class SubsonicController extends Controller {
 	private function doSearch(string $query, int $artistCount, int $artistOffset,
 			int $albumCount, int $albumOffset, int $songCount, int $songOffset) : array {
 
+		$userId = $this->user();
+
 		// The searches support '*' as a wildcard. Convert those to the SQL wildcard '%' as that's what the business layer searches support.
 		$query = \str_replace('*', '%', $query);
 
 		return [
-			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $artistCount, $artistOffset),
-			'albums' => $this->albumBusinessLayer->findAllByNameRecursive($query, $this->userId, $albumCount, $albumOffset),
-			'tracks' => $this->trackBusinessLayer->findAllByNameRecursive($query, $this->userId, $songCount, $songOffset)
+			'artists' => $this->artistBusinessLayer->findAllByName($query, $userId, MatchMode::Substring, $artistCount, $artistOffset),
+			'albums' => $this->albumBusinessLayer->findAllByNameRecursive($query, $userId, $albumCount, $albumOffset),
+			'tracks' => $this->trackBusinessLayer->findAllByNameRecursive($query, $userId, $songCount, $songOffset)
 		];
 	}
 
@@ -1650,10 +1677,11 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function doGetStarred() {
+		$userId = $this->user();
 		return [
-			'artists' => $this->artistBusinessLayer->findAllStarred($this->userId),
-			'albums' => $this->albumBusinessLayer->findAllStarred($this->userId),
-			'tracks' => $this->trackBusinessLayer->findAllStarred($this->userId)
+			'artists' => $this->artistBusinessLayer->findAllStarred($userId),
+			'albums' => $this->albumBusinessLayer->findAllStarred($userId),
+			'tracks' => $this->trackBusinessLayer->findAllStarred($userId)
 		];
 	}
 
@@ -1686,7 +1714,7 @@ class SubsonicController extends Controller {
 		$genre = $this->findGenreByName($genreName);
 
 		if ($genre) {
-			return $this->trackBusinessLayer->findAllByGenre($genre->getId(), $this->userId, $limit, $offset);
+			return $this->trackBusinessLayer->findAllByGenre($genre->getId(), $this->user(), $limit, $offset);
 		} else {
 			return [];
 		}
@@ -1703,16 +1731,16 @@ class SubsonicController extends Controller {
 		$genre = $this->findGenreByName($genreName);
 
 		if ($genre) {
-			return $this->albumBusinessLayer->findAllByGenre($genre->getId(), $this->userId, $limit, $offset);
+			return $this->albumBusinessLayer->findAllByGenre($genre->getId(), $this->user(), $limit, $offset);
 		} else {
 			return [];
 		}
 	}
 
 	private function findGenreByName($name) {
-		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->userId);
+		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->user());
 		if (\count($genreArr) == 0 && $name == Genre::unknownNameString($this->l10n)) {
-			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
+			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->user());
 		}
 		return \count($genreArr) ? $genreArr[0] : null;
 	}

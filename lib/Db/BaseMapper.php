@@ -26,15 +26,16 @@ use OCA\Music\Utility\Util;
  * @phpstan-template EntityType of Entity
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
+ * @phpstan-method EntityType delete(EntityType $entity)
  */
 abstract class BaseMapper extends CompatibleMapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
-	protected $nameColumn;
-	protected $parentIdColumn;
+	protected string $nameColumn;
+	protected ?string $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
-	protected $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
+	protected string $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass

@@ -68,29 +68,29 @@ class SubsonicController extends Controller {
 	const FOLDER_ID_ARTISTS = -1;
 	const FOLDER_ID_FOLDERS = -2;
 
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $bookmarkBusinessLayer;
-	private $genreBusinessLayer;
-	private $playlistBusinessLayer;
-	private $podcastChannelBusinessLayer;
-	private $podcastEpisodeBusinessLayer;
-	private $radioStationBusinessLayer;
-	private $trackBusinessLayer;
-	private $urlGenerator;
-	private $userManager;
-	private $librarySettings;
-	private $l10n;
-	private $coverHelper;
-	private $detailsHelper;
-	private $lastfmService;
-	private $podcastService;
-	private $random;
-	private $logger;
-	private $userId;
-	private $ignoredArticles;
-	private $format;
-	private $callback;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private BookmarkBusinessLayer $bookmarkBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
+	private PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer;
+	private RadioStationBusinessLayer $radioStationBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private IURLGenerator $urlGenerator;
+	private IUserManager $userManager;
+	private LibrarySettings $librarySettings;
+	private IL10N $l10n;
+	private CoverHelper $coverHelper;
+	private DetailsHelper $detailsHelper;
+	private LastfmService $lastfmService;
+	private PodcastService $podcastService;
+	private Random $random;
+	private Logger $logger;
+	private ?string $userId;
+	private ?array $ignoredArticles;
+	private string $format;
+	private ?string $callback;
 
 	public function __construct(string $appname,
 								IRequest $request,
@@ -134,6 +134,7 @@ class SubsonicController extends Controller {
 		$this->podcastService = $podcastService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->format = 'xml'; // default, should be immediately overridden by SubsonicMiddleware
 	}
 
 	/**

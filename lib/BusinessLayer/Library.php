@@ -22,13 +22,13 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 
 class Library {
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $trackBusinessLayer;
-	private $coverHelper;
-	private $urlGenerator;
-	private $l10n;
-	private $logger;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private CoverHelper $coverHelper;
+	private IURLGenerator $urlGenerator;
+	private IL10N $l10n;
+	private Logger $logger;
 
 	public function __construct(
 			AlbumBusinessLayer $albumBusinessLayer,

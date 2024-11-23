@@ -37,18 +37,18 @@ use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
-	private $urlGenerator;
-	private $playlistBusinessLayer;
-	private $artistBusinessLayer;
-	private $albumBusinessLayer;
-	private $trackBusinessLayer;
-	private $genreBusinessLayer;
-	private $coverHelper;
-	private $playlistFileService;
-	private $userId;
-	private $userFolder;
-	private $configManager;
-	private $logger;
+	private IURLGenerator $urlGenerator;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private CoverHelper $coverHelper;
+	private PlaylistFileService $playlistFileService;
+	private string $userId;
+	private Folder $userFolder;
+	private IConfig $configManager;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

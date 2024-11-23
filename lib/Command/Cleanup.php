@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Command;
@@ -19,8 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Cleanup extends Command {
 
-	/** @var Maintenance */
-	private $maintenance;
+	private Maintenance $maintenance;
 
 	public function __construct($maintenance) {
 		$this->maintenance = $maintenance;

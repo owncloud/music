@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Migration;
@@ -19,11 +19,8 @@ use OCP\Migration\IRepairStep;
 
 class TimestampInit implements IRepairStep {
 
-	/** @var IDBConnection */
-	private $db;
-
-	/** @var IConfig */
-	private $config;
+	private IDBConnection $db;
+	private IConfig $config;
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;

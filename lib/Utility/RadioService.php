@@ -9,7 +9,7 @@
  * @author Moahmed-Ismail MEJRI <imejri@hotmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Moahmed-Ismail MEJRI 2022
- * @copyright Pauli Järvinen 2022, 2023
+ * @copyright Pauli Järvinen 2022 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -22,8 +22,8 @@ use OCP\IURLGenerator;
  */
 class RadioService {
 
-	private $urlGenerator;
-	private $logger;
+	private IURLGenerator $urlGenerator;
+	private Logger $logger;
 
 	public function __construct(IURLGenerator $urlGenerator, Logger $logger) {
 		$this->urlGenerator = $urlGenerator;

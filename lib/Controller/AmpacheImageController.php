@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
 namespace OCA\Music\Controller;
@@ -30,13 +30,13 @@ use OCP\AppFramework\Http\Response;
 use OCP\IRequest;
 
 class AmpacheImageController extends Controller {
-	private $service;
-	private $coverHelper;
-	private $librarySettings;
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $playlistBusinessLayer;
-	private $logger;
+	private AmpacheImageService $service;
+	private CoverHelper $coverHelper;
+	private LibrarySettings $librarySettings;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private Logger $logger;
 
 	public function __construct(
 			string $appname,

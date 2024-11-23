@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -17,6 +17,7 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\Files\Folder;
 use OCP\IRequest;
+use OCP\Share\IManager;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
@@ -29,21 +30,17 @@ use OCA\Music\Utility\Scanner;
  */
 class ShareController extends Controller {
 
-	/** @var \OCP\Share\IManager */
-	private $shareManager;
-	/** @var Scanner */
-	private $scanner;
-	/** @var PlaylistFileService */
-	private $playlistFileService;
-	/** @var Logger */
-	private $logger;
+	private IManager $shareManager;
+	private Scanner $scanner;
+	private PlaylistFileService $playlistFileService;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
 								Scanner $scanner,
 								PlaylistFileService $playlistFileService,
 								Logger $logger,
-								\OCP\Share\IManager $shareManager) {
+								IManager $shareManager) {
 		parent::__construct($appname, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;

@@ -18,6 +18,7 @@ use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\Cache;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\RadioStation;
@@ -32,12 +33,12 @@ use OCP\IL10N;
  * utility to get cover image for album
  */
 class CoverHelper {
-	private $extractor;
-	private $cache;
-	private $albumBusinessLayer;
-	private $coverSize;
-	private $l10n;
-	private $logger;
+	private Extractor $extractor;
+	private Cache $cache;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private int $coverSize;
+	private IL10N $l10n;
+	private Logger $logger;
 
 	const MAX_SIZE_TO_CACHE = 102400;
 	const DO_NOT_CROP_OR_SCALE = -1;
@@ -63,28 +64,30 @@ class CoverHelper {
 	 * Get cover image of an album, an artist, a podcast, or a playlist.
 	 * Returns a generated placeholder in case there's no art set.
 	 *
-	 * @param Album|Artist|Playlist|PodcastChannel|RadioStation $entity
-	 * @param string $userId
-	 * @param Folder $rootFolder
 	 * @param int|null $size Desired (max) image size, null to use the default.
 	 *                       Special value DO_NOT_CROP_OR_SCALE can be used to opt out of
 	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null, bool $allowPlaceholder=true) : ?array {
+	public function getCover(Entity $entity, string $userId, Folder $rootFolder, int $size=null, bool $allowPlaceholder=true) : ?array {
 		if ($entity instanceof Playlist) {
 			$trackIds = $entity->getTrackIdsAsArray();
 			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
 			$result = $this->getCoverMosaic($albums, $userId, $rootFolder);
 		} elseif ($entity instanceof RadioStation) {
 			$result = null; // only placeholders supported for radio
-		} elseif ($size !== null) {
-			// Skip using cache in case the cover is requested in specific size
-			$result = $this->readCover($entity, $rootFolder, $size);
+		} elseif ($entity instanceof Album || $entity instanceof Artist || $entity instanceof PodcastChannel) {
+			if ($size !== null) {
+				// Skip using cache in case the cover is requested in specific size
+				$result = $this->readCover($entity, $rootFolder, $size);
+			} else {
+				$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
+				$result = $dataAndHash['data'];
+			}
 		} else {
-			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
-			$result = $dataAndHash['data'];
-		}
+			// only placeholder is supported for any other Entity type
+			$result = null;
+		}	
 
 		if ($result === null && $allowPlaceholder) {
 			$result = $this->getPlaceholder($entity, $size);
@@ -173,7 +176,7 @@ class CoverHelper {
 		return null;
 	}
 
-	private function getPlaceholder($entity, ?int $size) : array {
+	private function getPlaceholder(Entity $entity, ?int $size) : array {
 		$name = $entity->getNameString($this->l10n);
 		if (\method_exists($entity, 'getAlbumArtistNameString')) {
 			$seed = $entity->getAlbumArtistNameString($this->l10n) . $name;
@@ -191,7 +194,7 @@ class CoverHelper {
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover
 	 */
-	private function addCoverToCache($entity, string $userId, array $coverData) : ?string {
+	private function addCoverToCache(Entity $entity, string $userId, array $coverData) : ?string {
 		$mime = $coverData['mimetype'];
 		$content = $coverData['content'];
 		$hash = null;
@@ -248,7 +251,7 @@ class CoverHelper {
 	 *                  scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
+	private function readCover(Entity $entity, Folder $rootFolder, int $size) : ?array {
 		if ($entity instanceof PodcastChannel) {
 			$image = HttpUtil::loadFromUrl($entity->getImageUrl())['content'];
 			if ($image !== false) {
@@ -277,7 +280,7 @@ class CoverHelper {
 	 * @param Folder $rootFolder
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCoverFromLocalFile($entity, Folder $rootFolder) : ?array {
+	private function readCoverFromLocalFile(Entity $entity, Folder $rootFolder) : ?array {
 		$response = null;
 
 		$coverId = $entity->getCoverFileId();
@@ -423,7 +426,7 @@ class CoverHelper {
 	/**
 	 * @throws \InvalidArgumentException if entity is not one of the expected types
 	 */
-	private static function getHashKey($entity) : string {
+	private static function getHashKey(Entity $entity) : string {
 		if ($entity instanceof Album) {
 			return 'album_cover_hash_' . $entity->getId();
 		} elseif ($entity instanceof Artist) {

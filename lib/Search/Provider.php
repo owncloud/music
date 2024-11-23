@@ -16,8 +16,15 @@
 
 namespace OCA\Music\Search;
 
-use OCA\Music\AppInfo\Application;;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppInfo\Application;
+use OCA\Music\Db\AlbumMapper;
+use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\MatchMode;
+use OCA\Music\Db\TrackMapper;
+
+use OCP\IL10N;
+use OCP\IURLGenerator;
 
 class Provider extends \OCP\Search\Provider {
 
@@ -28,15 +35,15 @@ class Provider extends \OCP\Search\Provider {
 	 */
 	const MAX_RESULTS_PER_TYPE = 100;
 
-	private $artistMapper;
-	private $albumMapper;
-	private $trackMapper;
-	private $urlGenerator;
-	private $userId;
-	private $l10n;
-	private $resultTypeNames;
-	private $resultTypePaths;
-	private $logger;
+	private ArtistMapper $artistMapper;
+	private AlbumMapper $albumMapper;
+	private TrackMapper $trackMapper;
+	private IURLGenerator $urlGenerator;
+	private string $userId;
+	private IL10N $l10n;
+	private array $resultTypeNames;
+	private array $resultTypePaths;
+	private Logger $logger;
 
 	public function __construct() {
 		$app = \OC::$server->query(Application::class);

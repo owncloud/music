@@ -24,11 +24,11 @@ use OCA\Music\Db\Track;
 use OCP\IConfig;
 
 class LastfmService {
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $trackBusinessLayer;
-	private $logger;
-	private $apiKey;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private Logger $logger;
+	private string $apiKey;
 
 	const LASTFM_URL = 'http://ws.audioscrobbler.com/2.0/';
 

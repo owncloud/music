@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022 - 2024
  */
 
 namespace OCA\Music\Command;
@@ -19,8 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RegisterMimeTypes extends Command {
 
-	/** @var IMimeTypeLoader */
-	private $mimeTypeLoader;
+	private IMimeTypeLoader $mimeTypeLoader;
 
 	private $mimeMappings = [
 		'aac' => ['audio/aac'],

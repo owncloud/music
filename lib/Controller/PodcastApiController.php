@@ -24,9 +24,9 @@ use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
-	private $podcastService;
-	private $userId;
-	private $logger;
+	private PodcastService $podcastService;
+	private ?string $userId;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

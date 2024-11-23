@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -16,8 +16,8 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Cache;
 
 class Random {
-	private $cache;
-	private $logger;
+	private Cache $cache;
+	private Logger $logger;
 
 	public function __construct(Cache $cache, Logger $logger) {
 		$this->cache = $cache;

@@ -12,13 +12,14 @@
 
 namespace OCA\Music\Utility;
 
+use OCP\Files\File;
 use OCP\Files\Folder;
 
 use OCA\Music\AppFramework\Core\Logger;
 
 class DetailsHelper {
-	private $extractor;
-	private $logger;
+	private Extractor $extractor;
+	private Logger $logger;
 
 	public function __construct(
 			Extractor $extractor,
@@ -29,7 +30,7 @@ class DetailsHelper {
 
 	public function getDetails(int $fileId, Folder $userFolder) : ?array {
 		$file = $userFolder->getById($fileId)[0] ?? null;
-		if ($file !== null) {
+		if ($file instanceof File) {
 			$data = $this->extractor->extract($file);
 			$audio = $data['audio'] ?? [];
 			$comments = $data['comments'] ?? [];
@@ -92,7 +93,7 @@ class DetailsHelper {
 	public function getLyricsAsPlainText(int $fileId, Folder $userFolder) : ?string {
 		$lyrics = null;
 		$fileNode = $userFolder->getById($fileId)[0] ?? null;
-		if ($fileNode) {
+		if ($fileNode instanceof File) {
 			$data = $this->extractor->extract($fileNode);
 			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
 			self::sanitizeString($lyrics);
@@ -120,7 +121,7 @@ class DetailsHelper {
 	public function getLyricsAsStructured(int $fileId, Folder $userFolder) : array {
 		$result = [];
 		$fileNode = $userFolder->getById($fileId)[0] ?? null;
-		if ($fileNode) {
+		if ($fileNode instanceof File) {
 			$data = $this->extractor->extract($fileNode);
 			$lyricsTags = ExtractorGetID3::getTags($data, ['LYRICS', 'lyrics', 'unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
 

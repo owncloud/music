@@ -28,12 +28,13 @@ use OCP\AppFramework\Http\Response;
  * purposes.
  */
 class XmlResponse extends Response {
-	private $content;
-	private $doc;
+	private array $content;
+	private \DOMDocument $doc;
+	/* @var bool|string[] $attributeKeys */
 	private $attributeKeys;
-	private $boolAsInt;
-	private $nullAsEmpty;
-	private $textNodeKey;
+	private bool $boolAsInt;
+	private bool $nullAsEmpty;
+	private ?string $textNodeKey;
 
 	/**
 	 * @param array $content

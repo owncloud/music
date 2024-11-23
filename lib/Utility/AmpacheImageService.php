@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023, 2024
  */
 
 namespace OCA\Music\Utility;
@@ -17,8 +17,8 @@ use OCA\Music\Db\AmpacheUserMapper;
 
 class AmpacheImageService {
 
-	private $userMapper;
-	private $logger;
+	private AmpacheUserMapper $userMapper;
+	private Logger $logger;
 
 	public function __construct(
 			AmpacheUserMapper $userMapper,

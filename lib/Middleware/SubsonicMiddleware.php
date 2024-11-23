@@ -29,9 +29,9 @@ use OCA\Music\Utility\Util;
  * Map SubsonicExceptions from the controller to proper Subsonic error results.
  */
 class SubsonicMiddleware extends Middleware {
-	private $request;
-	private $userMapper;
-	private $logger;
+	private IRequest $request;
+	private AmpacheUserMapper $userMapper;
+	private Logger $logger;
 
 	public function __construct(IRequest $request, AmpacheUserMapper $userMapper, Logger $logger) {
 		$this->request = $request;

@@ -30,7 +30,7 @@ use OCP\IL10N;
  * @phpstan-template EntityType of Entity
  */
 abstract class BusinessLayer {
-	protected $mapper;
+	protected BaseMapper $mapper;
 
 	// Some SQLite installations can't handle more than 999 query args. Remember that `user_id` takes one slot in most queries.
 	public const MAX_SQL_ARGS = 999;

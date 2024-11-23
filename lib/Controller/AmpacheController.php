@@ -76,31 +76,31 @@ use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
-	private $config;
-	private $l10n;
-	private $urlGenerator;
-	private $userManager;
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $bookmarkBusinessLayer;
-	private $genreBusinessLayer;
-	private $playlistBusinessLayer;
-	private $podcastChannelBusinessLayer;
-	private $podcastEpisodeBusinessLayer;
-	private $radioStationBusinessLayer;
-	private $trackBusinessLayer;
-	private $library;
-	private $podcastService;
-	private $imageService;
-	private $coverHelper;
-	private $lastfmService;
-	private $librarySettings;
-	private $random;
-	private $logger;
+	private IConfig $config;
+	private IL10N $l10n;
+	private IURLGenerator $urlGenerator;
+	private IUserManager $userManager;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private BookmarkBusinessLayer $bookmarkBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
+	private PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer;
+	private RadioStationBusinessLayer $radioStationBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private Library $library;
+	private PodcastService $podcastService;
+	private AmpacheImageService $imageService;
+	private CoverHelper $coverHelper;
+	private LastfmService $lastfmService;
+	private LibrarySettings $librarySettings;
+	private Random $random;
+	private Logger $logger;
 
-	private $jsonMode;
-	private $session;
-	private $namePrefixes;
+	private bool $jsonMode;
+	private ?AmpacheSession $session;
+	private ?array $namePrefixes;
 
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '4.4.0';
@@ -154,6 +154,8 @@ class AmpacheController extends Controller {
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
 		$this->logger = $logger;
+
+		$this->jsonMode = false;
 	}
 
 	public function setJsonMode(bool $useJsonMode) : void {

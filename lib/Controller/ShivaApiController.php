@@ -34,20 +34,13 @@ use OCA\Music\Http\ErrorResponse;
 
 class ShivaApiController extends Controller {
 
-	/** @var IL10N */
-	private $l10n;
-	/** @var TrackBusinessLayer */
-	private $trackBusinessLayer;
-	/** @var ArtistBusinessLayer */
-	private $artistBusinessLayer;
-	/** @var AlbumBusinessLayer */
-	private $albumBusinessLayer;
-	/** @var string */
-	private $userId;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var Logger */
-	private $logger;
+	private IL10N $l10n;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private string $userId;
+	private IURLGenerator $urlGenerator;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

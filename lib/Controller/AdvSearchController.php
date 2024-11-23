@@ -35,18 +35,18 @@ use OCA\Music\Utility\Util;
 
 class AdvSearchController extends Controller {
 
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $bookmarkBusinessLayer;
-	private $genreBusinessLayer;
-	private $playlistBusinessLayer;
-	private $podcastChannelBusinessLayer;
-	private $podcastEpisodeBusinessLayer;
-	private $radioStationBusinessLayer;
-	private $trackBusinessLayer;
-	private $userId;
-	private $random;
-	private $logger;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private BookmarkBusinessLayer $bookmarkBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
+	private PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer;
+	private RadioStationBusinessLayer $radioStationBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private ?string $userId;
+	private Random $random;
+	private Logger $logger;
 
 	public function __construct(string $appName,
 								IRequest $request,

@@ -40,9 +40,9 @@ class Artist extends Entity {
 	public $rating;
 
 	// not part of the standard content, injected separately when needed
-	private $lastfmUrl;
-	private $albums;
-	private $tracks;
+	private ?string $lastfmUrl = null;
+	private ?array $albums = null;
+	private ?array $tracks = null;
 
 	public function __construct() {
 		$this->addType('coverFileId', 'int');

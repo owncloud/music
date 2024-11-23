@@ -51,10 +51,10 @@ class Album extends Entity {
 	public $disk; // deprecated
 
 	// extra fields injected separately by AlbumBusinessLayer
-	private $years;
-	private $genres; // *partial* Genre objects, not all properties are set
-	private $artistIds;
-	private $numberOfDisks;
+	private ?array $years = null;
+	private ?array $genres = null; // *partial* Genre objects, not all properties are set
+	private ?array $artistIds = null;
+	private ?int $numberOfDisks = null;
 
 	// injected separately when needed
 	private $tracks;

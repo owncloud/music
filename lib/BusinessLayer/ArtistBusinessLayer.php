@@ -33,17 +33,16 @@ use OCP\Files\File;
  * @method Artist[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
+ * @property ArtistMapper $mapper
  * @phpstan-extends BusinessLayer<Artist>
  */
 class ArtistBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	private const FORBIDDEN_CHARS_IN_FILE_NAME = '<>:"/\|?*'; // chars forbidden in Windows, on Linux only '/' is technically forbidden
 
 	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
-		$this->mapper = $artistMapper;
 		$this->logger = $logger;
 	}
 

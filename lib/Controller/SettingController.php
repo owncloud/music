@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -36,14 +36,14 @@ class SettingController extends Controller {
 	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not available on ownCloud. */
 	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-	private $ampacheSessionMapper;
-	private $ampacheUserMapper;
-	private $scanner;
-	private $userId;
-	private $librarySettings;
-	private $secureRandom;
-	private $urlGenerator;
-	private $logger;
+	private AmpacheSessionMapper $ampacheSessionMapper;
+	private AmpacheUserMapper $ampacheUserMapper;
+	private Scanner $scanner;
+	private ?string $userId;
+	private LibrarySettings $librarySettings;
+	private ISecureRandom $secureRandom;
+	private IURLGenerator $urlGenerator;
+	private Logger $logger;
 
 	public function __construct(string $appName,
 								IRequest $request,

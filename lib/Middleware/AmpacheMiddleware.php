@@ -36,12 +36,12 @@ use OCA\Music\Utility\Util;
  */
 class AmpacheMiddleware extends Middleware {
 
-	private $request;
-	private $ampacheSessionMapper;
-	private $ampacheUserMapper;
-	private $logger;
-	private $loggedInUser;
-	private $sessionExpiryTime;
+	private IRequest $request;
+	private AmpacheSessionMapper $ampacheSessionMapper;
+	private AmpacheUserMapper $ampacheUserMapper;
+	private Logger $logger;
+	private ?string $loggedInUser;
+	private int $sessionExpiryTime;
 
 	public function __construct(
 			IRequest $request,
@@ -56,7 +56,7 @@ class AmpacheMiddleware extends Middleware {
 		$this->logger = $logger;
 		$this->loggedInUser = $userId;
 
-		$this->sessionExpiryTime = $config->getSystemValue('music.ampache_session_expiry_time', 6000);
+		$this->sessionExpiryTime = (int)$config->getSystemValue('music.ampache_session_expiry_time', 6000);
 		$this->sessionExpiryTime = \min($this->sessionExpiryTime, 365*24*60*60); // limit to one year
 	}
 

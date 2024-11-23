@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -28,10 +28,10 @@ use OCP\Files\Folder;
  * contents from file.
  */
 class PlaylistFileService {
-	private $playlistBusinessLayer;
-	private $radioStationBusinessLayer;
-	private $trackBusinessLayer;
-	private $logger;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private RadioStationBusinessLayer $radioStationBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private Logger $logger;
 
 	private const PARSE_LOCAL_FILES_ONLY = 1;
 	private const PARSE_URLS_ONLY = 2;

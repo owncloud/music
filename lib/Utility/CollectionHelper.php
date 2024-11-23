@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -36,23 +36,23 @@ use OCP\ICache;
  * DB may be configured with maximum object size of e.g. 1 MB).
  */
 class CollectionHelper {
-	private $library;
-	private $fileCache;
-	private $dbCache;
-	private $logger;
-	private $userId;
+	private Library $library;
+	private ICache $fileCache;
+	private Cache $dbCache;
+	private Logger $logger;
+	private string $userId;
 
 	public function __construct(
 			Library $library,
 			ICache $fileCache,
 			Cache $dbCache,
 			Logger $logger,
-			$userId) {
+			?string $userId) {
 		$this->library = $library;
 		$this->fileCache = $fileCache;
 		$this->dbCache = $dbCache;
 		$this->logger = $logger;
-		$this->userId = $userId;
+		$this->userId = $userId ?? ''; // TODO: null makes no sense but we need it because ApiController may be constructed for public covers without a user
 	}
 
 	public function getJson() {

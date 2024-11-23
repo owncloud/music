@@ -28,15 +28,14 @@ use OCA\Music\Utility\Util;
  * @method PodcastEpisode find(int $episodeId, string $userId)
  * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @method PodcastEpisode[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @property PodcastEpisodeMapper $mapper
  * @phpstan-extends BusinessLayer<PodcastEpisode>
  */
 class PodcastEpisodeBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(PodcastEpisodeMapper $mapper, Logger $logger) {
 		parent::__construct($mapper);
-		$this->mapper = $mapper;
 		$this->logger = $logger;
 	}
 
@@ -86,8 +85,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 
 		$guid = (string)$xmlNode->guid ?: $streamUrl;
 		if (!$guid) {
-			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
-					'Invalid episode, neither <guid> nor <enclosure url> is included');
+			throw new BusinessLayerException('Invalid episode, neither <guid> nor <enclosure url> is included');
 		}
 
 		$episode->setStreamUrl( Util::truncate($streamUrl, 2048) );

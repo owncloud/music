@@ -20,7 +20,7 @@ use OCP\IL10N;
 use OCP\IRequest;
 
 class PageController extends Controller {
-	private $l10n;
+	private IL10N $l10n;
 
 	public function __construct(string $appname,
 								IRequest $request,

@@ -15,15 +15,16 @@
 namespace OCA\Music\Hooks;
 
 use OCP\AppFramework\IAppContainer;
+use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
 use OCP\Files\Node;
 
-use OCA\Music\AppInfo\Application;;
+use OCA\Music\AppInfo\Application;
 
 class FileHooks {
-	private $filesystemRoot;
+	private IRootFolder $filesystemRoot;
 
-	public function __construct($filesystemRoot) {
+	public function __construct(IRootFolder $filesystemRoot) {
 		$this->filesystemRoot = $filesystemRoot;
 	}
 

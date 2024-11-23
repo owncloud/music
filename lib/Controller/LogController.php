@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -21,7 +21,7 @@ use OCP\IRequest;
 use OCA\Music\AppFramework\Core\Logger;
 
 class LogController extends Controller {
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

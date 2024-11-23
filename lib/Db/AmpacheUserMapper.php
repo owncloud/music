@@ -24,7 +24,7 @@ use OCP\IDBConnection;
  *       a mapper either, since this does not extend OCP\AppFramework\Db\Mapper.
  */
 class AmpacheUserMapper {
-	private $db;
+	private IDBConnection $db;
 
 	public function __construct(IDBConnection $db) {
 		$this->db = $db;
@@ -44,7 +44,7 @@ class AmpacheUserMapper {
 
 	public function getPasswordHash(int $id) : ?string {
 		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` WHERE `id` = ?';
-		$params = [$id];
+		$params = [(string)$id];
 		$result = $this->db->executeQuery($sql, $params);
 		$row = $result->fetch();
 
@@ -102,7 +102,7 @@ class AmpacheUserMapper {
 
 	public function getUserId(int $id) : ?string {
 		$sql = 'SELECT `user_id` FROM `*PREFIX*music_ampache_users` WHERE `id` = ?';
-		$params = [$id];
+		$params = [(string)$id];
 		$result = $this->db->executeQuery($sql, $params);
 		$row = $result->fetch();
 

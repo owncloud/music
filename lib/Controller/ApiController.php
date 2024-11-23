@@ -44,36 +44,21 @@ use OCA\Music\Utility\Util;
 
 class ApiController extends Controller {
 
-	/** @var TrackBusinessLayer */
-	private $trackBusinessLayer;
-	/** @var ArtistBusinessLayer */
-	private $artistBusinessLayer;
-	/** @var AlbumBusinessLayer */
-	private $albumBusinessLayer;
-	/** @var GenreBusinessLayer */
-	private $genreBusinessLayer;
-	/** @var Scanner */
-	private $scanner;
-	/** @var CollectionHelper */
-	private $collectionHelper;
-	/** @var CoverHelper */
-	private $coverHelper;
-	/** @var DetailsHelper */
-	private $detailsHelper;
-	/** @var LastfmService */
-	private $lastfmService;
-	/** @var Maintenance */
-	private $maintenance;
-	/** @var LibrarySettings */
-	private $librarySettings;
-	/** @var ?string */
-	private $userId;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var ?Folder */
-	private $userFolder;
-	/** @var Logger */
-	private $logger;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private Scanner $scanner;
+	private CollectionHelper $collectionHelper;
+	private CoverHelper $coverHelper;
+	private DetailsHelper $detailsHelper;
+	private LastfmService $lastfmService;
+	private Maintenance $maintenance;
+	private LibrarySettings $librarySettings;
+	private ?string $userId;
+	private IURLGenerator $urlGenerator;
+	private ?Folder $userFolder;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

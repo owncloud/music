@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Command;
@@ -18,8 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PodcastReset extends BaseCommand {
 
-	/** @var PodcastService */
-	private $podcastService;
+	private PodcastService $podcastService;
 
 	public function __construct(
 			\OCP\IUserManager $userManager,

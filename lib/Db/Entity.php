@@ -34,7 +34,7 @@ class Entity extends \OCP\AppFramework\Db\Entity {
 	 * corresponding DB column varies and in some cases, the value may be technically
 	 * empty but replaced with some localized place-holder text.
 	 *
-	 * The derived classes may override this as neeeded.
+	 * The derived classes may override this as needed.
 	 */
 	public function getNameString(IL10N $l10n) : string {
 		($l10n); // @phpstan-ignore-line // unused in this base implementation

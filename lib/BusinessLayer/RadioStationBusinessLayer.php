@@ -27,15 +27,14 @@ use OCA\Music\Utility\Util;
  * @method RadioStation find(int $stationId, string $userId)
  * @method RadioStation[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method RadioStation[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @property RadioStationMapper $mapper
  * @phpstan-extends BusinessLayer<RadioStation>
  */
 class RadioStationBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(RadioStationMapper $mapper, Logger $logger) {
 		parent::__construct($mapper);
-		$this->mapper = $mapper;
 		$this->logger = $logger;
 	}
 

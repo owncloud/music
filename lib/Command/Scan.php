@@ -25,10 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OCA\Music\Utility\Scanner;
 
 class Scan extends BaseCommand {
-	/**
-	 * @var  Scanner
-	 */
-	private $scanner;
+
+	private Scanner $scanner;
 
 	public function __construct(\OCP\IUserManager $userManager,
 			\OCP\IGroupManager $groupManager, $scanner) {

@@ -23,7 +23,7 @@ use OCP\Files\File;
  */
 class ExtractorGetID3 implements Extractor {
 	private $getID3;
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(Logger $logger) {
 		$this->logger = $logger;

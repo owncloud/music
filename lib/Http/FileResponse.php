@@ -9,25 +9,27 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Http;
 
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http;
+use OCP\Files\File;
 
 /**
  * A renderer for files
  */
 class FileResponse extends Response {
+	/* @var File|string $file */
 	protected $file;
-	protected $start;
-	protected $end;
-	protected $rangeRequest;
+	protected ?int $start;
+	protected ?int $end;
+	protected bool $rangeRequest;
 
 	/**
-	 * @param \OCP\Files\File|array $file file
+	 * @param File|array $file file
 	 * @param int $statusCode the Http status code, defaults to 200
 	 */
 	public function __construct($file, int $statusCode=Http::STATUS_OK) {
@@ -42,7 +44,8 @@ class FileResponse extends Response {
 		}
 		$this->addHeader('Content-type', "$mime; charset=utf-8");
 
-		if (isset($_SERVER['HTTP_RANGE'])) {
+		$this->rangeRequest = isset($_SERVER['HTTP_RANGE']);
+		if ($this->rangeRequest) {
 			// Note that we do not support Range Header of the type
 			// bytes=x-x,y-y
 			if (!\preg_match('/^bytes=\d*-\d*$/', $_SERVER['HTTP_RANGE'])) {
@@ -65,7 +68,6 @@ class FileResponse extends Response {
 						$this->end . '/' . $size
 					);
 					$this->setStatus(Http::STATUS_PARTIAL_CONTENT);
-					$this->rangeRequest = true;
 				}
 			}
 		} else {

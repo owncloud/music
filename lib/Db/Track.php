@@ -71,7 +71,6 @@ class Track extends Entity {
 	public $length;
 	public $fileId;
 	public $bitrate;
-	public $uri;
 	public $mimetype;
 	public $mbid;
 	public $starred;
@@ -90,8 +89,8 @@ class Track extends Entity {
 	public $genreName;
 
 	// the rest of the variables are injected separately when needed
-	private $album;
-	private $numberOnPlaylist;
+	private ?Album $album = null;
+	private ?int $numberOnPlaylist = null;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -105,6 +104,7 @@ class Track extends Entity {
 		$this->addType('genreId', 'int');
 		$this->addType('playCount', 'int');
 		$this->addType('rating', 'int');
+		$this->addType('dirty', 'int');
 		$this->addType('size', 'int');
 		$this->addType('fileModTime', 'int');
 	}

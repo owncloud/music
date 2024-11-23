@@ -27,15 +27,14 @@ use OCA\Music\Utility\Util;
  * @method PodcastChannel find(int $channelId, string $userId)
  * @method PodcastChannel[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @method PodcastChannel[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @property PodcastChannelMapper $mapper
  * @phpstan-extends BusinessLayer<PodcastChannel>
  */
 class PodcastChannelBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(PodcastChannelMapper $mapper, Logger $logger) {
 		parent::__construct($mapper);
-		$this->mapper = $mapper;
 		$this->logger = $logger;
 	}
 

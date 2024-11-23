@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -22,9 +22,9 @@ use OCA\Music\Db\SortBy;
 
 
 class PodcastService {
-	private $channelBusinessLayer;
-	private $episodeBusinessLayer;
-	private $logger;
+	private PodcastChannelBusinessLayer $channelBusinessLayer;
+	private PodcastEpisodeBusinessLayer $episodeBusinessLayer;
+	private Logger $logger;
 
 	public const STATUS_OK = 0;
 	public const STATUS_INVALID_URL = 1;

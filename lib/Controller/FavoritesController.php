@@ -25,13 +25,13 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 class FavoritesController extends Controller {
-	private $albumBusinessLayer;
-	private $artistBusinessLayer;
-	private $playlistBusinessLayer;
-	private $podcastChannelBusinessLayer;
-	private $podcastEpisodeBusinessLayer;
-	private $trackBusinessLayer;
-	private $userId;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
+	private PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private string $userId;
 
 	public function __construct(
 			string $appname,

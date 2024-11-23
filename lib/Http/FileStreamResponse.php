@@ -16,19 +16,17 @@ use OCP\AppFramework\Http\ICallbackResponse;
 use OCP\AppFramework\Http\IOutput;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http;
+use OCP\Files\File;
 
 /**
  * A renderer for files
  */
 class FileStreamResponse extends Response implements ICallbackResponse {
-	private $file;
-	private $start;
-	private $end;
+	private File $file;
+	private ?int $start;
+	private ?int $end;
 
-	/**
-	 * @param \OCP\Files\File $file file
-	 */
-	public function __construct($file) {
+	public function __construct(File $file) {
 
 		$this->file = $file;
 		$mime = $file->getMimetype();
@@ -74,7 +72,7 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		$status = $this->getStatus();
 
 		if ($status === Http::STATUS_OK || $status === Http::STATUS_PARTIAL_CONTENT) {
-			$fp = $this->file->fopen('r') ?? null;
+			$fp = $this->file->fopen('r');
 
 			if (!is_resource($fp)) {
 				$output->setHttpResponseCode(Http::STATUS_NOT_FOUND);

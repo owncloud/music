@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -17,7 +17,7 @@ use OCP\IDBConnection;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 
 class Cache {
-	private $db;
+	private IDBConnection $db;
 
 	public function __construct(IDBConnection $db) {
 		$this->db = $db;

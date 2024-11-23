@@ -31,13 +31,13 @@ use OCA\Music\Utility\Util;
 use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
-	private $config;
-	private $businessLayer;
-	private $service;
-	private $playlistFileService;
-	private $userId;
-	private $userFolder;
-	private $logger;
+	private IConfig $config;
+	private RadioStationBusinessLayer $businessLayer;
+	private RadioService $service;
+	private PlaylistFileService $playlistFileService;
+	private ?string $userId;
+	private ?Folder $userFolder;
+	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,

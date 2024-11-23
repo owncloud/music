@@ -21,6 +21,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IL10N;
+use OCP\L10N\IFactory;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -34,20 +35,20 @@ use OCA\Music\Db\Maintenance;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Scanner extends PublicEmitter {
-	private $extractor;
-	private $artistBusinessLayer;
-	private $albumBusinessLayer;
-	private $trackBusinessLayer;
-	private $playlistBusinessLayer;
-	private $genreBusinessLayer;
-	private $cache;
-	private $coverHelper;
-	private $logger;
-	private $maintenance;
-	private $librarySettings;
-	private $rootFolder;
-	private $config;
-	private $l10nFactory;
+	private Extractor $extractor;
+	private ArtistBusinessLayer $artistBusinessLayer;
+	private AlbumBusinessLayer $albumBusinessLayer;
+	private TrackBusinessLayer $trackBusinessLayer;
+	private PlaylistBusinessLayer $playlistBusinessLayer;
+	private GenreBusinessLayer $genreBusinessLayer;
+	private Cache $cache;
+	private CoverHelper $coverHelper;
+	private Logger $logger;
+	private Maintenance $maintenance;
+	private LibrarySettings $librarySettings;
+	private IRootFolder $rootFolder;
+	private IConfig $config;
+	private IFactory $l10nFactory;
 
 	public function __construct(Extractor $extractor,
 								ArtistBusinessLayer $artistBusinessLayer,
@@ -62,7 +63,7 @@ class Scanner extends PublicEmitter {
 								LibrarySettings $librarySettings,
 								IRootFolder $rootFolder,
 								IConfig $config,
-								\OCP\L10N\IFactory $l10nFactory) {
+								IFactory $l10nFactory) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -450,7 +451,8 @@ class Scanner extends PublicEmitter {
 
 		// filter out any images in the excluded folders
 		return \array_filter($images, function ($image) use ($userId) {
-			return $this->librarySettings->pathBelongsToMusicLibrary($image->getPath(), $userId);
+			return ($image instanceof File) // assure PHPStan that Node indeed is File
+				&& $this->librarySettings->pathBelongsToMusicLibrary($image->getPath(), $userId);
 		});
 	}
 
@@ -803,7 +805,7 @@ class Scanner extends PublicEmitter {
 	 * @param string|null $userId name of user, deducted from $albumId if omitted
 	 * @param Folder|null $baseFolder base folder for the search, library root of $userId is used if omitted
 	 */
-	private function findEmbeddedCoverForAlbum(int $albumId, string $userId=null, Folder $baseFolder=null) : void {
+	private function findEmbeddedCoverForAlbum(int $albumId, ?string $userId=null, ?Folder $baseFolder=null) : void {
 		if ($userId === null) {
 			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
 		}
@@ -813,10 +815,9 @@ class Scanner extends PublicEmitter {
 
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 		foreach ($tracks as $track) {
-			$nodes = $baseFolder->getById($track->getFileId());
-			if (\count($nodes) > 0) {
-				// parse the first valid node and check if it contains embedded cover art
-				$image = $this->extractor->parseEmbeddedCoverArt($nodes[0]);
+			$file = $baseFolder->getById($track->getFileId())[0] ?? null;
+			if ($file instanceof File) {
+				$image = $this->extractor->parseEmbeddedCoverArt($file);
 				if ($image != null) {
 					$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
 					break;

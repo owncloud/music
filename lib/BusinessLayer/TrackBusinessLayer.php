@@ -31,15 +31,14 @@ use OCP\Files\Folder;
  * @method Track find(int $trackId, string $userId)
  * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
  * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @property TrackMapper $mapper
  * @phpstan-extends BusinessLayer<Track>
  */
 class TrackBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(TrackMapper $trackMapper, Logger $logger) {
 		parent::__construct($trackMapper);
-		$this->mapper = $trackMapper;
 		$this->logger = $logger;
 	}
 

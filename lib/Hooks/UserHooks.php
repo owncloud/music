@@ -7,16 +7,19 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Hooks;
 
-class UserHooks {
-	private $userManager;
-	private $maintenance;
+use OC\Hooks\Emitter;
+use OCA\Music\Db\Maintenance;
 
-	public function __construct($userManager, $maintenance) {
+class UserHooks {
+	private Emitter $userManager;
+	private Maintenance $maintenance;
+
+	public function __construct(Emitter $userManager, Maintenance $maintenance) {
 		$this->userManager = $userManager;
 		$this->maintenance = $maintenance;
 	}

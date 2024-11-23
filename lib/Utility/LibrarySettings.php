@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2022
+ * @copyright Pauli Järvinen 2019 - 2024
  */
 
 namespace OCA\Music\Utility;
@@ -22,10 +22,10 @@ use OCA\Music\AppFramework\Core\Logger;
  * Manage the user-specific music folder setting
  */
 class LibrarySettings {
-	private $appName;
-	private $configManager;
-	private $rootFolder;
-	private $logger;
+	private string $appName;
+	private IConfig $configManager;
+	private IRootFolder $rootFolder;
+	private Logger $logger;
 
 	public function __construct(
 			string $appName,
@@ -39,12 +39,12 @@ class LibrarySettings {
 	}
 
 	public function setScanMetadataEnabled(string $userId, bool $enabled) : void {
-		$this->configManager->setUserValue($userId, $this->appName, 'scan_metadata', $enabled ? 1 : 0);
+		$this->configManager->setUserValue($userId, $this->appName, 'scan_metadata', $enabled ? '1' : '0');
 	}
 
 	public function getScanMetadataEnabled(string $userId) : bool {
 		$value = $this->configManager->getUserValue($userId, $this->appName, 'scan_metadata', 1);
-		return ($value > 0);
+		return ((int)$value > 0);
 	}
 
 	public function setIgnoredArticles(string $userId, array $articles) : void {

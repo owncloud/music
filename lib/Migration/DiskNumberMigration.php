@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2024
  */
 
 namespace OCA\Music\Migration;
@@ -19,17 +19,10 @@ use OCP\Migration\IRepairStep;
 
 class DiskNumberMigration implements IRepairStep {
 
-	/** @var IDBConnection */
-	private $db;
-
-	/** @var IConfig */
-	private $config;
-
-	/** @var int[] */
-	private $obsoleteAlbums;
-
-	/** @var int[] */
-	private $mergeFailureAlbums;
+	private IDBConnection $db;
+	private IConfig $config;
+	private array $obsoleteAlbums;
+	private array $mergeFailureAlbums;
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;

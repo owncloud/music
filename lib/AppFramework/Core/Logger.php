@@ -7,8 +7,10 @@
  *
  * @author Alessandro Cosentino <cosenal@gmail.com>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\AppFramework\Core;
@@ -16,10 +18,10 @@ namespace OCA\Music\AppFramework\Core;
 use OCP\ILogger;
 
 class Logger {
-	protected $appName;
-	protected $logger;
+	protected string $appName;
+	protected ILogger $logger;
 
-	public function __construct($appName, ILogger $logger) {
+	public function __construct(string $appName, ILogger $logger) {
 		$this->appName = $appName;
 		$this->logger = $logger;
 	}

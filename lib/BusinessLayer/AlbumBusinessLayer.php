@@ -31,14 +31,13 @@ use OCA\Music\Utility\Util;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @phpstan-extends BusinessLayer<Album>
+ * @property AlbumMapper $mapper
  */
 class AlbumBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
-		$this->mapper = $albumMapper;
 		$this->logger = $logger;
 	}
 

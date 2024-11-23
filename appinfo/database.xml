@@ -312,6 +312,13 @@
 				<type>timestamp</type>
 				<notnull>false</notnull>
 			</field>
+			<field>
+				<name>dirty</name>
+				<type>integer</type>
+				<length>1</integer>
+				<notnull>true</notnull>
+				<default>0</default>
+			</field>
 
 			<index>
 				<name>music_tracks_artist_id_idx</name>

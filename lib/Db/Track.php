@@ -51,6 +51,8 @@ use OCP\IURLGenerator;
  * @method void setPlayCount(int $count)
  * @method ?string getLastPlayed()
  * @method void setLastPlayed(?string $timestamp)
+ * @method int getDirty()
+ * @method void setDirty(int $dirty)
  *
  * @method string getFilename()
  * @method int getSize()
@@ -77,6 +79,7 @@ class Track extends Entity {
 	public $genreId;
 	public $playCount;
 	public $lastPlayed;
+	public $dirty;
 
 	// not from the music_tracks table but still part of the standard content of this entity:
 	public $filename;

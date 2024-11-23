@@ -120,16 +120,12 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $userId
 	 * @return int[]
 	 */
 	public function findAllFileIds(string $userId) : array {
 		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
 		$result = $this->execute($sql, [$userId]);
-
-		return \array_map(function ($i) {
-			return (int)$i['file_id'];
-		}, $result->fetchAll());
+		return $result->fetchAll(\PDO::FETCH_COLUMN);
 	}
 
 	/**
@@ -469,6 +465,28 @@ class TrackMapper extends BaseMapper {
 		$params = [$timeOfPlay->format(BaseMapper::SQL_DATE_FORMAT), $userId, $trackId];
 		$result = $this->execute($sql, $params);
 		return ($result->rowCount() > 0);
+	}
+
+	/**
+	 * Marks tracks as dirty, ultimately requesting the user to rescan them
+	 * @param int[] $fileIds file IDs of the tracks to mark as dirty
+	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
+	 *                      $fileIds are marked for all users
+	 * @return int number of rows affected
+	 */
+	public function markTracksDirty(array $fileIds, ?array $userIds=null) : int {
+		$sql = 'UPDATE `*PREFIX*music_tracks`
+				SET `dirty` = 1
+				WHERE `file_id` IN ' . $this->questionMarks(\count($fileIds));
+		$params = $fileIds;
+
+		if (!empty($userIds)) {
+			$sql .= ' AND `user_id` IN ' . $this->questionMarks(\count($userIds));
+			$params = \array_merge($params, $userIds);
+		}
+
+		$result = $this->execute($sql, $params);
+		return $result->rowCount();
 	}
 
 	/**

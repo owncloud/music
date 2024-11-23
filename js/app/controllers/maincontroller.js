@@ -176,7 +176,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			// check the availability of unscanned files after the collection has been loaded,
 			// unless we are already in the middle of scanning (and intermediate results were just loaded)
 			if (!$scope.scanning) {
-				$scope.updateFilesToScan();
+				updateFilesToScan();
 			}
 		},
 		function(response) { // error handling
@@ -228,22 +228,18 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.updateRadio();
 	$scope.updatePodcasts();
 
-	let FILES_TO_SCAN_PER_STEP = 10;
+	const FILES_TO_SCAN_PER_STEP = 10;
 	let filesToScan = null;
-	let filesToScanIterator = 0;
-	let previouslyScannedCount = 0;
+	$scope.unscannedFiles = null;
+	$scope.dirtyFiles = null;
 
-	$scope.updateFilesToScan = function() {
+	function updateFilesToScan() {
 		$scope.checkingUnscanned = true;
 		Restangular.one('scanstate').get().then(function(state) {
 			$scope.checkingUnscanned = false;
-			previouslyScannedCount = state.scannedCount;
-			filesToScan = state.unscannedFiles;
-			filesToScanIterator = 0;
-			$scope.toScan = (filesToScan.length > 0);
-			$scope.scanningScanned = previouslyScannedCount;
-			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
-			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
+			$scope.unscannedFiles = state.unscannedFiles;
+			$scope.dirtyFiles = state.dirtyFiles;
+			$scope.noMusicAvailable = (state.scannedCount + state.unscannedFiles.length === 0);
 		},
 		function(error) {
 			$scope.checkingUnscanned = false;
@@ -251,11 +247,11 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 					gettextCatalog.getString('Failed to check for new audio files (error {{ code }}); check the server logs for details', {code: error.status})
 			);
 		});
-	};
+	}
 
 	function processNextScanStep() {
-		let sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
-		let filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
+		let sliceEnd = $scope.scanningScanned + FILES_TO_SCAN_PER_STEP;
+		let filesForStep = filesToScan.slice($scope.scanningScanned, sliceEnd);
 		let params = {
 				files: filesForStep.join(','),
 				finalize: sliceEnd >= filesToScan.length
@@ -264,15 +260,13 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			// Ignore the results if scanning has been cancelled while we
 			// were waiting for the result.
 			if ($scope.scanning) {
-				filesToScanIterator = sliceEnd;
+				$scope.scanningScanned = sliceEnd;
 
 				if (result.filesScanned || result.albumCoversUpdated) {
 					$scope.updateAvailable = true;
 				}
 
-				$scope.scanningScanned = previouslyScannedCount + filesToScanIterator;
-
-				if (filesToScanIterator < filesToScan.length) {
+				if ($scope.scanningScanned < filesToScan.length) {
 					processNextScanStep();
 				} else {
 					$scope.scanning = false;
@@ -289,15 +283,16 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function(fileIds = null) {
-		if (fileIds) {
-			filesToScan = fileIds;
-			previouslyScannedCount = 0;
-			$scope.scanningScanned = 0;
-			$scope.scanningTotal = fileIds.length;
-		}
+	$scope.startScanning = function(fileIds) {
+		filesToScan = fileIds;
+		$scope.scanningScanned = 0;
+		$scope.scanningTotal = filesToScan.length;
 
-		$scope.toScan = false;
+		if (fileIds == $scope.unscannedFiles) {
+			$scope.unscannedFiles = null;
+		} else if (fileIds == $scope.dirtyFiles) {
+			$scope.dirtyFiles = null;
+		}
 		$scope.scanning = true;
 		processNextScanStep();
 	};
@@ -307,10 +302,9 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.resetScanned = function() {
-		$scope.toScan = false;
+		$scope.unscannedFiles = null;
+		$scope.dirtyFiles = null;
 		filesToScan = null;
-		filesToScanIterator = 0;
-		previouslyScannedCount = 0;
 		// Genre and artist IDs have got invalidated while resetting the library, drop any related filters
 		if ($scope.smartListParams !== null) {
 			$scope.smartListParams.genres = [];

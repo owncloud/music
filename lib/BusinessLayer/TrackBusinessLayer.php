@@ -118,15 +118,17 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks where the 'modified' time in the file system (actually in the cloud's file cache)
-	 * is later than the 'updated' field of the entity in the database.
+	 * Returns all tracks of the user which should be rescanned to ensure that the library details are up-to-date.
+	 * The track may be considered "dirty" for on of two reasons:
+	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
+	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
 	 * @return Track[]
 	 */
 	public function findAllDirty(string $userId) : array {
 		$tracks = $this->findAll($userId);
 		return \array_filter($tracks, function (Track $track) {
 			$dbModTime = new \DateTime($track->getUpdated());
-			return ($dbModTime->getTimestamp() < $track->getFileModTime());
+			return ($track->getDirty() || $dbModTime->getTimestamp() < $track->getFileModTime());
 		});
 	}
 
@@ -363,11 +365,12 @@ class TrackBusinessLayer extends BusinessLayer {
 		$track->setUserId($userId);
 		$track->setLength($length);
 		$track->setBitrate($bitrate);
+		$track->setDirty(0);
 		return $this->mapper->insertOrUpdate($track);
 	}
 
 	/**
-	 * Deletes a track
+	 * Deletes tracks
 	 * @param int[] $fileIds file IDs of the tracks to delete
 	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
 	 *                      $fileIds are deleted from all users
@@ -435,5 +438,20 @@ class TrackBusinessLayer extends BusinessLayer {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Marks tracks as dirty, ultimately requesting the user to rescan them
+	 * @param int[] $fileIds file IDs of the tracks to mark as dirty
+	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
+	 *                      $fileIds are marked for all users
+	 */
+	public function markTracksDirty(array $fileIds, ?array $userIds=null) : void {
+		// be prepared for huge number of file IDs
+		$chunkMaxSize = self::MAX_SQL_ARGS - \count($userIds ?? []);
+		$idChunks = \array_chunk($fileIds, $chunkMaxSize);
+		foreach ($idChunks as $idChunk) {
+			$this->mapper->markTracksDirty($idChunk, $userIds);
+		}
 	}
 }

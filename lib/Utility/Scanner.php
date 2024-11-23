@@ -131,17 +131,16 @@ class Scanner extends PublicEmitter {
 			if ($this->librarySettings->pathBelongsToMusicLibrary($folder->getPath(), $userId)) {
 				// The new path of the folder belongs to the library but this doesn't necessarily mean
 				// that all the file paths below belong to the library, because of the path exclusions.
-				// Each file needs to be checked and updated separately but this may take too much time
-				// if there is extensive number of files.
-				if (\count($audioFiles) <= 30) {
+				// Each file needs to be checked and updated separately.
+				if (\count($audioFiles) <= 15) {
 					foreach ($audioFiles as $file) {
 						\assert($file instanceof File); // a clue for PHPStan
 						$this->fileMoved($file, $userId);
 					}
 				} else {
-					// Remove the scanned files to get them rescanned when the Music app is opened.
-					// TODO: Better handling e.g. by marking the files as dirty.
-					$this->deleteAudio(Util::extractIds($audioFiles), [$userId]);	
+					// There are too many files to handle them now as we don't want to delay the move operation
+					// too much. The user will be prompted to rescan the files upon opening the Music app.
+					$this->trackBusinessLayer->markTracksDirty(Util::extractIds($audioFiles), [$userId]);
 				}
 			}
 			else {
@@ -562,6 +561,10 @@ class Scanner extends PublicEmitter {
 		$count = 0;
 		foreach ($fileIds as $fileId) {
 			$file = $libraryRoot->getById($fileId)[0] ?? null;
+			if ($file != null && !$this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
+				$this->emit(self::class, 'exclude', [$file->getPath()]);
+				$file = null;
+			}
 			if ($file instanceof File) {
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
 				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
@@ -575,7 +578,8 @@ class Scanner extends PublicEmitter {
 				}
 				$count++;
 			} else {
-				$this->logger->log("File with id $fileId not found for user $userId", 'warn');
+				$this->logger->log("File with id $fileId not found for user $userId, removing it from the library if present", 'info');
+				$this->deleteAudio([$fileId], [$userId]);
 			}
 		}
 

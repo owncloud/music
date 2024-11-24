@@ -35,7 +35,7 @@ Mobile layout and media control integration to the lock screen and notification 
 * AU (`audio/basic`)
 * CAF (`audio/x-caf`)
 
-_Note: The audio formats supported vary depending on the browser. Most recents versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
+_Note: The audio formats supported vary depending on the browser. Most recent versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
 ### Detail
 
@@ -83,7 +83,7 @@ Reset all data stored to the music database. Target either specified user(s) or 
 
 #### Reset cache
 
-Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tests. Target either specified user(s) or user group(s) or all users.
+Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desirable e.g. when running performance tests. Target either specified user(s) or user group(s) or all users.
 
 	./occ music:reset-cache USERNAME1 USERNAME2 ...
 	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
@@ -128,11 +128,11 @@ The application's scalability for large music collections has gradually improved
 
 #### Translations
 
-There exist partial translations for the Music app for many languages, but most of them are very much incomplete. In the past, the application was translated at https://www.transifex.com/owncloud-org/owncloud/ and the resource still exists there. However, large majoriry of the strings used in the app have not been picked by Transifex for many years now, and hence the translations from Transifex cannot be actually used. The root cause is disparity in the localization mechanisms used in the Music app and on ownCloud in general, and bridging the gap would require some support from ownCloud core team. This is probably never going to happen, see https://central.owncloud.org/t/owncloud-music-app-translations/14881. For now, you may contribute translations as normal pull requests, by following the instructions from https://github.com/owncloud/music/issues/671#issuecomment-782746463.
+There exist partial translations for the Music app for many languages, but most of them are very much incomplete. In the past, the application was translated at https://www.transifex.com/owncloud-org/owncloud/ and the resource still exists there. However, large majority of the strings used in the app have not been picked by Transifex for many years now, and hence the translations from Transifex cannot be actually used. The root cause is disparity in the localization mechanisms used in the Music app and on ownCloud in general, and bridging the gap would require some support from ownCloud core team. This is probably never going to happen, see https://central.owncloud.org/t/owncloud-music-app-translations/14881. For now, you may contribute translations as normal pull requests, by following the instructions from https://github.com/owncloud/music/issues/671#issuecomment-782746463.
 
 #### SMB shares
 
-The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track names from the file names and the album names from the folder names. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
+The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track names from the file names and the album names from the folder names. Whether or not the problem exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
 
 ## Development
 
@@ -192,6 +192,27 @@ The integration tests require the music app to be installed under the `apps` fol
 	../vendor/bin/behat
 
 For the acceptance tests, you need to upload all the tracks from the following zip file to your cloud instance: https://github.com/paulijar/music/files/2364060/testcontent.zip
+
+### Translation scripts
+
+The translatable strings are extracted from the front-end files of the Music app proper using the `angular-gettext` module. This is installed among other dependencies with `npm`.
+
+In addition, there are some translatable strings within the back-end code and in the front-end files for the embedded Files player and for the Nextcloud Dashboard widget. These are handled using the perl script `l10n/l10n.pl`. In addition to the perl interpreter, this script requires the module `Locale::PO` (can be installed with CPAN) and the `xgettext` tool. On Linux, the latter should be available with `apt-get install gettext` or similar. On Windows, this needs to be installed manually; you can find some pointers for this from https://stackoverflow.com/a/7612773.
+
+When the tools are setup correctly, all the strings can be extracted from the source codes to `l10n/templates/music.pot` with the command:
+
+	cd build
+	make l10n-extract
+
+The music.pot file can then be used to update the language-specific translation file (l10n/*/music.po) as described in https://github.com/owncloud/music/issues/671#issuecomment-782746463.
+
+Once the translations have been updated in the .po files, we need to generate the final source files used to build the Music application. This, again, uses both `angular-gettext` and `l10n/l10n.pl`. For this, execute
+
+	cd build
+	make l10n-clone
+	make l10n-compile
+
+The step `l10n-clone` above makes copies of some translations to different language codes. This is needed because ownCloud and Nextcloud use slightly different language codes in some cases. Furthermore, the clouds may support multiple versions of the same language but the Music app currently has identical translation for each of them.
 
 ## API
 
@@ -329,7 +350,7 @@ Response:
 
 ### Creating APIKEY for Subsonic/Ampache
 
-The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
+The endpoint `/api/settings/userkey/generate` may be used to programmatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
 
 ```

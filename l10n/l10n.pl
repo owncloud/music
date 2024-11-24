@@ -66,7 +66,11 @@ die( "Program must be executed in a l10n-folder called 'l10n'" ) unless $wheream
 my $pwd = dirname(cwd());
 
 my @dirs = ();
-push(@dirs, $pwd);
+# Append Music app directories which are not handled by angular-gettext
+push(@dirs, $pwd . "/lib");
+push(@dirs, $pwd . "/js/dashboard");
+push(@dirs, $pwd . "/js/embedded");
+push(@dirs, $pwd . "/js/shared");
 
 # Languages
 my @languages = ();
@@ -78,7 +82,6 @@ foreach my $i ( @files ){
 }
 
 if( $task eq 'read' ){
-  rmtree( 'templates' );
   mkdir( 'templates' ) unless -d 'templates';
   print "Mode: reading\n";
   foreach my $dir ( @dirs ){

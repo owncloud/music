@@ -30,19 +30,18 @@ watch: deps
 
 # general
 deps:
-	cd ..
 	npm install --deps
 
 # localization
 l10n-clone:
 	python ./duplicate-lang.py --path=../l10n bg_BG:bg cs_CZ:cs de:de_AT de:de_CH de:de_DE fi_FI:fi hu_HU:hu nb_NO:nb sk_SK:sk th_TH:th
 
-l10n-extract: deps
+l10n-extract:
 	npm run l10n-extract
 
-l10n-compile: deps
+l10n-compile:
 	npm run l10n-compile
-	cd l10n; ./l10n.pl music write
+	cd ../l10n && perl l10n.pl music write
 
 # releasing
 release:

@@ -541,9 +541,7 @@ class TrackMapper extends BaseMapper {
 			"`album`.`name`",
 			"`genre`.`name`"
 		];
-		$parts = \array_map(function(string $field) use ($sqlOp, $conv) {
-			return "$conv($field) $sqlOp $conv(?)";
-		}, $fields);
+		$parts = \array_map(fn($field) => "$conv($field) $sqlOp $conv(?)", $fields);
 
 		$negativeOp = \in_array($sqlOp, ['NOT LIKE', '!=', 'NOT REGEXP']);
 		$cond = \implode($negativeOp ? ' AND ' : ' OR ', $parts);

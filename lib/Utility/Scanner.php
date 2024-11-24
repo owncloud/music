@@ -541,9 +541,7 @@ class Scanner extends PublicEmitter {
 			} catch (\OCP\Files\NotFoundException $e) {
 				return [];
 			}
-			$fileIds = \array_filter($fileIds, function(int $fileId) use ($folder) {
-				return \count($folder->getById($fileId)) > 0;
-			});
+			$fileIds = \array_filter($fileIds, fn(int $fileId) => (\count($folder->getById($fileId)) > 0));
 		}
 
 		return \array_values($fileIds); // make the array non-sparse

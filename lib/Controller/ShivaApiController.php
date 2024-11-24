@@ -83,9 +83,7 @@ class ShivaApiController extends Controller {
 		/** @var Artist[] $artists */
 		$artists = $this->artistBusinessLayer->findAll($this->userId, SortBy::Name, $limit, $offset);
 
-		$artists = \array_map(function ($a) use ($fulltree, $includeAlbums) {
-			return $this->artistToApi($a, $includeAlbums || $fulltree, $fulltree);
-		}, $artists);
+		$artists = \array_map(fn($a) => $this->artistToApi($a, $includeAlbums || $fulltree, $fulltree), $artists);
 
 		return new JSONResponse($artists);
 	}
@@ -119,9 +117,7 @@ class ShivaApiController extends Controller {
 			$artistId = $artist->getId();
 			$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 
-			$artistInApi['albums'] = \array_map(function ($a) use ($includeTracks) {
-				return $this->albumToApi($a, $includeTracks, false);
-			}, $albums);
+			$artistInApi['albums'] = \array_map(fn($a) => $this->albumToApi($a, $includeTracks, false), $albums);
 		}
 		return $artistInApi;
 	}
@@ -140,9 +136,7 @@ class ShivaApiController extends Controller {
 			$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $limit, $offset);
 		}
 
-		$albums = \array_map(function ($a) use ($fulltree) {
-			return $this->albumToApi($a, $fulltree, $fulltree);
-		}, $albums);
+		$albums = \array_map(fn($a) => $this->albumToApi($a, $fulltree, $fulltree), $albums);
 
 		return new JSONResponse($albums);
 	}
@@ -171,17 +165,13 @@ class ShivaApiController extends Controller {
 		if ($includeTracks) {
 			$albumId = $album->getId();
 			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-			$albumInApi['tracks'] = \array_map(function ($t) {
-				return $t->toAPI($this->urlGenerator);
-			}, $tracks);
+			$albumInApi['tracks'] = \array_map(fn($t) => $t->toAPI($this->urlGenerator), $tracks);
 		}
 
 		if ($includeArtists) {
 			$artistIds = $album->getArtistIds();
 			$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
-			$albumInApi['artists'] = \array_map(function ($a) {
-				return $a->toAPI($this->urlGenerator, $this->l10n);
-			}, $artists);
+			$albumInApi['artists'] = \array_map(fn($a) => $a->toAPI($this->urlGenerator, $this->l10n), $artists);
 		}
 
 		return $albumInApi;

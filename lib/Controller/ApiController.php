@@ -137,9 +137,7 @@ class ApiController extends Controller {
 		$genres = $this->genreBusinessLayer->findAllWithTrackIds($this->userId);
 		$unscanned =  $this->trackBusinessLayer->findFilesWithoutScannedGenre($this->userId);
 		return new JSONResponse([
-			'genres' => \array_map(function ($g) {
-				return $g->toApi();
-			}, $genres),
+			'genres' => \array_map(fn($g) => $g->toApi(), $genres),
 			'unscanned' => $unscanned
 		]);
 	}
@@ -317,13 +315,11 @@ class ApiController extends Controller {
 	public function similarArtists(int $artistId) {
 		try {
 			$similar = $this->lastfmService->getSimilarArtists($artistId, $this->userId, /*includeNotPresent=*/true);
-			return new JSONResponse(\array_map(function ($artist) {
-				return [
-					'id' => $artist->getId(),
-					'name' => $artist->getName(),
-					'url' => $artist->getLastfmUrl()
-				];
-			}, $similar));
+			return new JSONResponse(\array_map(fn($artist) => [
+				'id' => $artist->getId(),
+				'name' => $artist->getName(),
+				'url' => $artist->getLastfmUrl()
+			], $similar));
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

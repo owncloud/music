@@ -102,10 +102,11 @@ class PlaceholderImage {
 		if (empty($displayName) === true) {
 			return '?';
 		}
-		$firstTwoLetters = array_map(function ($namePart) {
-			return \mb_strtoupper(mb_substr($namePart, 0, 1), 'UTF-8');
-		}, explode(' ', $displayName, 2));
-			return \implode('', $firstTwoLetters);
+		$firstTwoLetters = array_map(
+			fn($namePart) => \mb_strtoupper(\mb_substr($namePart, 0, 1), 'UTF-8'),
+			\explode(' ', $displayName, 2)
+		);
+		return \implode('', $firstTwoLetters);
 	}
 
 	/**

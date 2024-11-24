@@ -102,10 +102,7 @@ class CoverHelper {
 		} elseif (\count($entities) === 1) {
 			return $this->getCover($entities[0], $userId, $rootFolder, $size);
 		} else {
-			$covers = \array_map(function($entity) use ($userId, $rootFolder) {
-				return $this->getCover($entity, $userId, $rootFolder);
-			}, $entities);
-
+			$covers = \array_map(fn($entity) => $this->getCover($entity, $userId, $rootFolder), $entities);
 			return $this->createMosaic($covers, $size);
 		}
 	}

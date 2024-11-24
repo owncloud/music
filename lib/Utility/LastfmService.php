@@ -238,9 +238,7 @@ class LastfmService {
 			$args = \array_filter($args, [Util::class, 'isNonEmptyString']);
 
 			// glue arg keys and values together ...
-			$args = \array_map(function ($key, $value) {
-				return $key . '=' . \urlencode($value);
-			}, \array_keys($args), $args);
+			$args = \array_map(fn($key, $value) => ($key . '=' . \urlencode($value)), \array_keys($args), $args);
 			// ... and form the final query string
 			$queryString = '?' . \implode('&', $args);
 

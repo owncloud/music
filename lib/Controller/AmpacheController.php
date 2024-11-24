@@ -427,9 +427,10 @@ class AmpacheController extends Controller {
 			$this->userId(), $this->l10n, null, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax, $isAlbumArtist, $filter);
 
 		return [
-			'list' => \array_map(function($idAndName) {
-				return $idAndName + $this->prefixAndBaseName($idAndName['name']);
-			}, $entities)
+			'list' => \array_map(
+				fn($idAndName) => $idAndName + $this->prefixAndBaseName($idAndName['name']),
+				$entities
+			)
 		];
 	}
 
@@ -490,9 +491,7 @@ class AmpacheController extends Controller {
 			'parent_id' => $filter,
 			'parent_type' => $type,
 			'child_type' => $childType,
-			'browse' => \array_map(function($idAndName) {
-				return $idAndName + $this->prefixAndBaseName($idAndName['name']);
-			}, $children)
+			'browse' => \array_map(fn($idAndName) => $idAndName + $this->prefixAndBaseName($idAndName['name']), $children)
 		];
 	}
 
@@ -704,20 +703,16 @@ class AmpacheController extends Controller {
 		$folders = $this->trackBusinessLayer->findAllFolders($userId, $musicFolder);
 
 		// disregard any (parent) folders without any direct track children
-		$folders = \array_filter($folders, function($folder) {
-			return \count($folder['trackIds']) > 0;
-		});
+		$folders = \array_filter($folders, fn($folder) => \count($folder['trackIds']) > 0);
 
 		Util::arraySortByColumn($folders, 'name');
 		$folders = \array_slice($folders, $offset, $limit);
 
 		return [
-			'folder' => \array_map(function ($folder) {
-				return [
-					'id' => (string)$folder['id'],
-					'name' => $folder['name'],
-				];
-			}, $folders)
+			'folder' => \array_map(fn($folder) => [
+				'id' => (string)$folder['id'],
+				'name' => $folder['name'],
+			], $folders)
 		];
 	}
 
@@ -996,19 +991,13 @@ class AmpacheController extends Controller {
 
 		// filter the found tracks according to the additional requirements
 		if ($album !== null) {
-			$tracks = \array_filter($tracks, function ($track) use ($album) {
-				return ($track->getAlbumId() == $album);
-			});
+			$tracks = \array_filter($tracks, fn($track) => ($track->getAlbumId() == $album));
 		}
 		if ($artist !== null) {
-			$tracks = \array_filter($tracks, function ($track) use ($artist) {
-				return ($track->getArtistId() == $artist);
-			});
+			$tracks = \array_filter($tracks, fn($track) => ($track->getArtistId() == $artist));
 		}
 		if ($flag == 1) {
-			$tracks = \array_filter($tracks, function ($track) {
-				return ($track->getStarred() !== null);
-			});
+			$tracks = \array_filter($tracks, fn($track) => ($track->getStarred() !== null));
 		}
 		// After filtering, there may be "holes" between the array indices. Reindex the array.
 		$tracks = \array_values($tracks);
@@ -1991,13 +1980,11 @@ class AmpacheController extends Controller {
 					'rating' => $artist->getRating() ?? 0,
 					'preciserating' => $artist->getRating() ?? 0,
 					'flag' => !empty($artist->getStarred()),
-					$genreKey => \array_map(function ($genreId) use ($genreMap) {
-						return [
-							'id' => (string)$genreId,
-							'text' => $genreMap[$genreId]->getNameString($this->l10n),
-							'count' => 1
-						];
-					}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
+					$genreKey => \array_map(fn($genreId) => [
+						'id' => (string)$genreId,
+						'text' => $genreMap[$genreId]->getNameString($this->l10n),
+						'count' => 1
+					], $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
 				];
 
 				if ($this->jsonMode) {
@@ -2053,13 +2040,11 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($album),
 					'has_art' => $album->getCoverFileId() !== null,
 					'flag' => !empty($album->getStarred()),
-					$genreKey => \array_map(function ($genre) {
-						return [
-							'id' => (string)$genre->getId(),
-							'text' => $genre->getNameString($this->l10n),
-							'count' => 1
-						];
-					}, $album->getGenres() ?? [])
+					$genreKey => \array_map(fn($genre) => [
+						'id' => (string)$genre->getId(),
+						'text' => $genre->getNameString($this->l10n),
+						'count' => 1
+					], $album->getGenres() ?? [])
 				];
 				if ($includeArtists) {
 					$apiAlbum['artists'] = [$apiAlbum['artist']];
@@ -2205,15 +2190,13 @@ class AmpacheController extends Controller {
 	 */
 	private function renderSongsIndex(array $tracks) : array {
 		return [
-			'song' => \array_map(function ($track) {
-				return [
-					'id' => (string)$track->getId(),
-					'title' => $track->getTitle(),
-					'name' => $track->getTitle(),
-					'artist' => $this->renderAlbumOrArtistRef($track->getArtistId(), $track->getArtistNameString($this->l10n)),
-					'album' => $this->renderAlbumOrArtistRef($track->getAlbumId(), $track->getAlbumNameString($this->l10n))
-				];
-			}, $tracks)
+			'song' => \array_map(fn($track) => [
+				'id' => (string)$track->getId(),
+				'title' => $track->getTitle(),
+				'name' => $track->getTitle(),
+				'artist' => $this->renderAlbumOrArtistRef($track->getArtistId(), $track->getArtistNameString($this->l10n)),
+				'album' => $this->renderAlbumOrArtistRef($track->getAlbumId(), $track->getAlbumNameString($this->l10n))
+			], $tracks)
 		];
 	}
 
@@ -2253,9 +2236,10 @@ class AmpacheController extends Controller {
 					'name' => $name,
 					'prefix' => $nameParts['prefix'],
 					'basename' => $nameParts['basename'],
-					'album' => \array_map(function ($album) {
-						return $this->renderAlbumOrArtistRef($album->getId(), $album->getNameString($this->l10n));
-					}, $albums)
+					'album' => \array_map(
+						fn($album) => $this->renderAlbumOrArtistRef($album->getId(), $album->getNameString($this->l10n)),
+						$albums
+					)
 				];
 			}, $artists)
 		];
@@ -2266,13 +2250,11 @@ class AmpacheController extends Controller {
 	 */
 	private function renderPlaylistsIndex(array $playlists) : array {
 		return [
-			'playlist' => \array_map(function ($playlist) {
-				return [
-					'id' => (string)$playlist->getId(),
-					'name' => $playlist->getName(),
-					'playlisttrack' => $playlist->getTrackIdsAsArray()
-				];
-			}, $playlists)
+			'playlist' => \array_map(fn($playlist) => [
+				'id' => (string)$playlist->getId(),
+				'name' => $playlist->getName(),
+				'playlisttrack' => $playlist->getTrackIdsAsArray()
+			], $playlists)
 		];
 	}
 
@@ -2316,11 +2298,10 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return $this->renderEntityIds($entities, $type);
 		} else {
-			return [$type => \array_map(function($entity) {
-				return [
-					'id' => $entity->getId()
-				];
-			}, $entities)];
+			return [$type => \array_map(
+				fn($entity) => ['id' => $entity->getId()],
+				$entities
+			)];
 		}
 	}
 
@@ -2332,20 +2313,14 @@ class AmpacheController extends Controller {
 		// the structure is quite different for JSON compared to XML
 		if ($this->jsonMode) {
 			foreach ($idsWithChildren as &$children) {
-				$children = \array_map(function ($childId) use ($childType) {
-					return ['id' => $childId, 'type' => $childType];
-				}, $children);
+				$children = \array_map(fn($childId) => ['id' => $childId, 'type' => $childType], $children);
 			}
 			return [$type => $idsWithChildren];
 		} else {
-			return [$type => \array_map(function($id, $childIds) use ($childType) {
-				return [
-					'id' => $id,
-					$childType => \array_map(function($id) {
-						return ['id' => $id];
-					}, $childIds)
-				];
-			}, \array_keys($idsWithChildren), $idsWithChildren)];
+			return [$type => \array_map(fn($id, $childIds) => [
+				'id' => $id,
+				$childType => \array_map(fn($id) => ['id' => $id], $childIds)
+			], \array_keys($idsWithChildren), $idsWithChildren)];
 		}
 	}
 
@@ -2429,9 +2404,10 @@ class AmpacheController extends Controller {
 
 		// for some bizarre reason, the 'id' arrays have 'index' attributes in the XML format
 		if ($firstKey == 'id') {
-			$content['id'] = \array_map(function ($id, $index) {
-				return ['index' => $index, 'text' => $id];
-			}, $content['id'], \array_keys($content['id']));
+			$content['id'] = \array_map(
+				fn($id, $index) => ['index' => $index, 'text' => $id],
+				$content['id'], \array_keys($content['id'])
+			);
 		}
 
 		return ['root' => $content];

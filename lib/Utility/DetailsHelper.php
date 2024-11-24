@@ -172,9 +172,9 @@ class DetailsHelper {
 			$result = ['unsynced' => $unsyncedLyrics];
 
 			if ($syncedLyrics !== null) {
-				$result['synced'] = \array_map(function ($timestamp, $text) {
-					return ['time' => \max(0, $timestamp), 'text' => $text];
-				}, \array_keys($syncedLyrics), $syncedLyrics);
+				$result['synced'] = \array_map(fn($timestamp, $text) => [
+					'time' => \max(0, $timestamp), 'text' => $text
+				], \array_keys($syncedLyrics), $syncedLyrics);
 			}
 		} else {
 			$result = null;

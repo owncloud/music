@@ -223,9 +223,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 		$potentialMatches = $this->findAllByName($name, $userId, MatchMode::Wildcards);
 
-		$matches = \array_filter($potentialMatches, function(Artist $artist) use ($name, $l10n) : bool {
-			return self::filenameMatchesArtist($name, $artist, $l10n);
-		});
+		$matches = \array_filter($potentialMatches, fn(Artist $artist) => self::filenameMatchesArtist($name, $artist, $l10n));
 
 		if ($name == Artist::unknownNameString($l10n)) {
 			$matches = \array_merge($matches, $this->findAllByName(null, $userId));

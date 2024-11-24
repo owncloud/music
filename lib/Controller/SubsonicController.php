@@ -402,15 +402,11 @@ class SubsonicController extends Controller {
 		}
 
 		if ($fromYear !== null) {
-			$trackPool = \array_filter($trackPool, function ($track) use ($fromYear) {
-				return ($track->getYear() !== null && $track->getYear() >= $fromYear);
-			});
+			$trackPool = \array_filter($trackPool, fn($track) => ($track->getYear() !== null && $track->getYear() >= $fromYear));
 		}
 
 		if ($toYear !== null) {
-			$trackPool = \array_filter($trackPool, function ($track) use ($toYear) {
-				return ($track->getYear() !== null && $track->getYear() <= $toYear);
-			});
+			$trackPool = \array_filter($trackPool, fn($track) => ($track->getYear() !== null && $track->getYear() <= $toYear));
 		}
 
 		$tracks = Random::pickItems($trackPool, $size);
@@ -570,14 +566,11 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse(['genres' =>
 			[
-				'genre' => \array_map(function ($genre) {
-					return [
-						'songCount' => $genre->getTrackCount(),
-						'albumCount' => $genre->getAlbumCount(),
-						'value' => $genre->getNameString($this->l10n)
-					];
-				},
-				$genres)
+				'genre' => \array_map(fn($genre) => [
+					'songCount' => $genre->getTrackCount(),
+					'albumCount' => $genre->getAlbumCount(),
+					'value' => $genre->getNameString($this->l10n)
+				], $genres)
 			]
 		]);
 	}
@@ -689,16 +682,14 @@ class SubsonicController extends Controller {
 	protected function getInternetRadioStations() {
 		$stations = $this->radioStationBusinessLayer->findAll($this->user());
 
-		return $this->subsonicResponse(['internetRadioStations' =>
-				['internetRadioStation' => \array_map(function($station) {
-					return [
-						'id' => $station->getId(),
-						'name' => $station->getName() ?: $station->getStreamUrl(),
-						'streamUrl' => $station->getStreamUrl(),
-						'homePageUrl' => $station->getHomeUrl()
-					];
-				}, $stations)]
-		]);
+		return $this->subsonicResponse(['internetRadioStations' => [
+			'internetRadioStation' => \array_map(fn($station) => [
+				'id' => $station->getId(),
+				'name' => $station->getName() ?: $station->getStreamUrl(),
+				'streamUrl' => $station->getStreamUrl(),
+				'homePageUrl' => $station->getHomeUrl()
+			], $stations)
+		]]);
 	}
 
 	/**
@@ -1202,11 +1193,11 @@ class SubsonicController extends Controller {
 		return $char;
 	}
 
-	private function getSubfoldersAndTracks(Folder $folder) : array {
+	private function getSubFoldersAndTracks(Folder $folder) : array {
 		$nodes = $folder->getDirectoryListing();
-		$subFolders = \array_filter($nodes, function ($n) {
-			return ($n instanceof Folder) && $this->librarySettings->pathBelongsToMusicLibrary($n->getPath(), $this->user());
-		});
+		$subFolders = \array_filter($nodes, fn($n) =>
+			($n instanceof Folder) && $this->librarySettings->pathBelongsToMusicLibrary($n->getPath(), $this->user())
+		);
 
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->user());
 
@@ -1216,7 +1207,7 @@ class SubsonicController extends Controller {
 	private function getIndexesForFolders() {
 		$rootFolder = $this->librarySettings->getFolder($this->user());
 
-		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
+		list($subFolders, $tracks) = $this->getSubFoldersAndTracks($rootFolder);
 
 		$indexes = [];
 		foreach ($subFolders as $folder) {
@@ -1252,7 +1243,7 @@ class SubsonicController extends Controller {
 			throw new SubsonicException("$id is not a valid folder", 70);
 		}
 
-		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($folder);
+		list($subFolders, $tracks) = $this->getSubFoldersAndTracks($folder);
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
@@ -1415,9 +1406,10 @@ class SubsonicController extends Controller {
 	}
 
 	private function albumCommonApiFields(Album $album) : array {
-		$genreString = \implode(', ', \array_map(function (Genre $genre) {
-			return $genre->getNameString($this->l10n);
-		}, $album->getGenres() ?? []));
+		$genreString = \implode(', ', \array_map(
+			fn(Genre $genre) => $genre->getNameString($this->l10n),
+			$album->getGenres() ?? []
+		));
 
 		return [
 			'id' => 'album-' . $album->getId(),

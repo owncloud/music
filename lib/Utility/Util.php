@@ -27,9 +27,7 @@ class Util {
 	 * Map the given array by calling a named member function for each of the array elements
 	 */
 	public static function arrayMapMethod(array $arr, string $methodName, array $methodArgs=[]) : array {
-		$func = function ($obj) use ($methodName, $methodArgs) {
-			return \call_user_func_array([$obj, $methodName], $methodArgs);
-		};
+		$func = fn($obj) => \call_user_func_array([$obj, $methodName], $methodArgs);
 		return \array_map($func, $arr);
 	}
 

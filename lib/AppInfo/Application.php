@@ -34,6 +34,7 @@ use OCA\Music\Controller\AdvSearchController;
 use OCA\Music\Controller\AmpacheController;
 use OCA\Music\Controller\AmpacheImageController;
 use OCA\Music\Controller\ApiController;
+use OCA\Music\Controller\CoverApiController;
 use OCA\Music\Controller\FavoritesController;
 use OCA\Music\Controller\LogController;
 use OCA\Music\Controller\PageController;
@@ -197,10 +198,7 @@ class Application extends ApplicationBase {
 			return new ApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
-				$c->query('URLGenerator'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('ArtistBusinessLayer'),
-				$c->query('AlbumBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('Scanner'),
 				$c->query('CollectionHelper'),
@@ -210,7 +208,20 @@ class Application extends ApplicationBase {
 				$c->query('Maintenance'),
 				$c->query('LibrarySettings'),
 				$c->query('UserId'),
-				$c->query('UserFolder'),
+				$c->query('Logger')
+			);
+		});
+
+		$context->registerService('CoverApiController', function (IAppContainer $c) {
+			return new CoverApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('URLGenerator'),
+				$c->query('RootFolder'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('CoverHelper'),
+				$c->query('UserId'),
 				$c->query('Logger')
 			);
 		});

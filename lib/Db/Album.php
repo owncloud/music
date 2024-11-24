@@ -199,7 +199,7 @@ class Album extends Entity {
 	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.albumCover',
+			$coverUrl = $urlGenerator->linkToRoute('music.coverApi.albumCover',
 					['albumId' => $this->getId()]);
 		}
 		return $coverUrl;
@@ -215,7 +215,7 @@ class Album extends Entity {
 	 */
 	public function coverToCollection(IURLGenerator $urlGenerator, ?string $cachedCoverHash) : ?string {
 		if (!empty($cachedCoverHash)) {
-			return $urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $cachedCoverHash]);
+			return $urlGenerator->linkToRoute('music.coverApi.cachedCover', ['hash' => $cachedCoverHash]);
 		} elseif ($this->getCoverFileId() > 0) {
 			return $this->coverToAPI($urlGenerator);
 		} else {

@@ -41,15 +41,17 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#getScanState',		'url' => '/api/scanstate',					'verb' => 'GET'],
 	['name' => 'api#scan',				'url' => '/api/scan',						'verb' => 'POST'],
 	['name' => 'api#resetScanned'	,	'url' => '/api/resetscanned',				'verb' => 'POST'],
-	['name' => 'api#cachedCover',		'url' => '/api/cover/{hash}',				'verb' => 'GET'],
-	['name' => 'api#artistCover',		'url' => '/api/artist/{artistId}/cover',	'verb' => 'GET'],
 	['name' => 'api#artistDetails',		'url' => '/api/artist/{artistId}/details',	'verb' => 'GET'],
 	['name' => 'api#similarArtists',	'url' => '/api/artist/{artistId}/similar',	'verb' => 'GET'],
-	['name' => 'api#albumCover',		'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
 	['name' => 'api#albumDetails',		'url' => '/api/album/{albumId}/details',	'verb' => 'GET'],
 	['name' => 'api#scrobble',			'url' => '/api/track/{trackId}/scrobble',	'verb' => 'POST'],
 
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
+
+	// Cover art API
+	['name' => 'coverApi#cachedCover',	'url' => '/api/cover/{hash}',				'verb' => 'GET'],
+	['name' => 'coverApi#artistCover',	'url' => '/api/artist/{artistId}/cover',	'verb' => 'GET'],
+	['name' => 'coverApi#albumCover',	'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
 
 	// Shiva API https://shiva.readthedocs.io/en/latest/index.html
 	['name' => 'shivaApi#artists',		'url' => '/api/artists',					'verb' => 'GET'],

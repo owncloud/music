@@ -102,7 +102,7 @@ class Artist extends Entity {
 	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.artistCover',
+			$coverUrl = $urlGenerator->linkToRoute('music.coverApi.artistCover',
 					['artistId' => $this->getId()]);
 		}
 		return $coverUrl;

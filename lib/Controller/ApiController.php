@@ -18,21 +18,16 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\Files\Folder;
 use OCP\IRequest;
-use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
-use OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Maintenance;
 use OCA\Music\Http\ErrorResponse;
-use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\FileStreamResponse;
 use OCA\Music\Utility\CollectionHelper;
 use OCA\Music\Utility\CoverHelper;
@@ -45,8 +40,6 @@ use OCA\Music\Utility\Util;
 class ApiController extends Controller {
 
 	private TrackBusinessLayer $trackBusinessLayer;
-	private ArtistBusinessLayer $artistBusinessLayer;
-	private AlbumBusinessLayer $albumBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;
 	private Scanner $scanner;
 	private CollectionHelper $collectionHelper;
@@ -55,17 +48,12 @@ class ApiController extends Controller {
 	private LastfmService $lastfmService;
 	private Maintenance $maintenance;
 	private LibrarySettings $librarySettings;
-	private ?string $userId;
-	private IURLGenerator $urlGenerator;
-	private ?Folder $userFolder;
+	private string $userId;
 	private Logger $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
-								IURLGenerator $urlGenerator,
-								TrackBusinessLayer $trackbusinesslayer,
-								ArtistBusinessLayer $artistbusinesslayer,
-								AlbumBusinessLayer $albumbusinesslayer,
+								TrackBusinessLayer $trackBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								Scanner $scanner,
 								CollectionHelper $collectionHelper,
@@ -74,13 +62,10 @@ class ApiController extends Controller {
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
-								?string $userId, // null if this gets called after the user has logged out or on a public page
-								?Folder $userFolder, // null if this gets called after the user has logged out or on a public page
+								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->trackBusinessLayer = $trackbusinesslayer;
-		$this->artistBusinessLayer = $artistbusinesslayer;
-		$this->albumBusinessLayer = $albumbusinesslayer;
+		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->scanner = $scanner;
 		$this->collectionHelper = $collectionHelper;
@@ -89,9 +74,7 @@ class ApiController extends Controller {
 		$this->lastfmService = $lastfmService;
 		$this->maintenance = $maintenance;
 		$this->librarySettings = $librarySettings;
-		$this->userId = $userId;
-		$this->urlGenerator = $urlGenerator;
-		$this->userFolder = $userFolder;
+		$this->userId = $userId ?? ''; // null case should happen only when the user has already logged out
 		$this->logger = $logger;
 	}
 
@@ -227,7 +210,7 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function download(int $fileId) {
-		$nodes = $this->userFolder->getById($fileId);
+		$nodes = $this->scanner->resolveUserFolder($this->userId)->getById($fileId);
 		$node = $nodes[0] ?? null;
 		if ($node instanceof \OCP\Files\File) {
 			return new FileStreamResponse($node);
@@ -241,12 +224,13 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function filePath(int $fileId) {
-		$nodes = $this->userFolder->getById($fileId);
+		$userFolder = $this->scanner->resolveUserFolder($this->userId);
+		$nodes = $userFolder->getById($fileId);
 		if (\count($nodes) == 0) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		} else {
 			$node = $nodes[0];
-			$path = $this->userFolder->getRelativePath($node->getPath());
+			$path = $userFolder->getRelativePath($node->getPath());
 			return new JSONResponse(['path' => Util::urlEncodePath($path)]);
 		}
 	}
@@ -256,7 +240,8 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo(int $fileId) {
-		$info = $this->scanner->getFileInfo($fileId, $this->userId, $this->userFolder);
+		$userFolder = $this->scanner->resolveUserFolder($this->userId);
+		$info = $this->scanner->getFileInfo($fileId, $this->userId, $userFolder);
 		if ($info) {
 			return new JSONResponse($info);
 		} else {
@@ -269,7 +254,8 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileDetails(int $fileId) {
-		$details = $this->detailsHelper->getDetails($fileId, $this->userFolder);
+		$userFolder = $this->scanner->resolveUserFolder($this->userId);
+		$details = $this->detailsHelper->getDetails($fileId, $userFolder);
 		if ($details) {
 			// metadata extracted, attempt to include also the data from Last.fm
 			$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
@@ -339,88 +325,6 @@ class ApiController extends Controller {
 				];
 			}, $similar));
 		} catch (BusinessLayerException $e) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		}
-	}
-
-	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 */
-	public function albumCover(int $albumId, $originalSize, $coverToken) {
-		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$album = $this->albumBusinessLayer->find($albumId, $userId);
-			return $this->cover($album, $userId, $originalSize);
-		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		}
-	}
-
-	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 */
-	public function artistCover(int $artistId, $originalSize, $coverToken) {
-		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$artist = $this->artistBusinessLayer->find($artistId, $userId);
-			return $this->cover($artist, $userId, $originalSize);
-		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		}
-	}
-
-	private function cover($entity, $userId, $originalSize) {
-		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
-		$userFolder = $this->userFolder ?? $this->scanner->resolveUserFolder($userId);
-
-		if ($originalSize) {
-			// cover requested in original size, without scaling or cropping
-			$cover = $this->coverHelper->getCover($entity, $userId, $userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
-			if ($cover !== null) {
-				return new FileResponse($cover);
-			} else {
-				return new ErrorResponse(Http::STATUS_NOT_FOUND);
-			}
-		} else {
-			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $userId, $userFolder);
-
-			if ($coverAndHash['hash'] !== null && $this->userId !== null) {
-				// Cover is in cache. Return a redirection response so that the client
-				// will fetch the content through a cacheable route.
-				// The redirection is not used in case this is a call from the Firefox mediaSession API with not
-				// logged in user.
-				$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
-				return new RedirectResponse($link);
-			} elseif ($coverAndHash['data'] !== null) {
-				return new FileResponse($coverAndHash['data']);
-			} else {
-				return new ErrorResponse(Http::STATUS_NOT_FOUND);
-			}
-		}
-	}
-
-	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 */
-	public function cachedCover(string $hash, ?string $coverToken) {
-		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$coverData = $this->coverHelper->getCoverFromCache($hash, $userId);
-			if ($coverData === null) {
-				throw new \OutOfBoundsException("Cover with hash $hash not found");
-			}
-			$response =  new FileResponse($coverData);
-			// instruct also the client-side to cache the result, this is safe
-			// as the resource URI contains the image hash
-			self::setClientCaching($response);
-			return $response;
-		} catch (\OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}

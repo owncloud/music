@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -21,44 +21,25 @@ use OCA\Music\DB\Track;
 
 class ApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
-	private $artistBusinessLayer;
-	private $albumBusinessLayer;
 	private $genreBusinessLayer;
 	private $collectionHelper;
 	private $request;
 	private $controller;
 	private $userId = 'john';
 	private $appname = 'music';
-	private $urlGenerator;
 	private $scanner;
 	private $coverHelper;
 	private $detailsHelper;
 	private $lastfmService;
 	private $maintenance;
 	private $librarySettings;
-	private $userFolder;
 	private $logger;
 
 	protected function setUp() : void {
 		$this->request = $this->getMockBuilder('\OCP\IRequest')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->urlGenerator
-			->method('linkToRoute')
-			->will($this->returnCallback([$this, 'linkToRouteMock']));
-		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
-			->disableOriginalConstructor()
-			->getMock();
 		$this->trackBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\TrackBusinessLayer')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->artistBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\ArtistBusinessLayer')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->genreBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\GenreBusinessLayer')
@@ -91,10 +72,7 @@ class ApiControllerTest extends ControllerTestUtility {
 		$this->controller = new ApiController(
 			$this->appname,
 			$this->request,
-			$this->urlGenerator,
 			$this->trackBusinessLayer,
-			$this->artistBusinessLayer,
-			$this->albumBusinessLayer,
 			$this->genreBusinessLayer,
 			$this->scanner,
 			$this->collectionHelper,
@@ -104,7 +82,6 @@ class ApiControllerTest extends ControllerTestUtility {
 			$this->maintenance,
 			$this->librarySettings,
 			$this->userId,
-			$this->userFolder,
 			$this->logger);
 	}
 

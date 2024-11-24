@@ -239,6 +239,7 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist
 	 */
 	protected function findUniqueEntity(Entity $artist) : Entity {
+		assert($artist instanceof Artist);
 		$sql = $this->selectUserEntities('`hash` = ?');
 		return $this->findEntity($sql, [$artist->getUserId(), $artist->getHash()]);
 	}

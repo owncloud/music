@@ -522,6 +522,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album
 	 */
 	protected function findUniqueEntity(Entity $album) : Entity {
+		assert($album instanceof Album);
 		$sql = $this->selectUserEntities('`*PREFIX*music_albums`.`hash` = ?');
 		return $this->findEntity($sql, [$album->getUserId(), $album->getHash()]);
 	}

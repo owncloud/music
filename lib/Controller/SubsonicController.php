@@ -88,7 +88,7 @@ class SubsonicController extends Controller {
 	private Random $random;
 	private Logger $logger;
 	private ?string $userId;
-	private ?array $ignoredArticles;
+	private array $ignoredArticles;
 	private string $format;
 	private ?string $callback;
 
@@ -134,6 +134,7 @@ class SubsonicController extends Controller {
 		$this->podcastService = $podcastService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->ignoredArticles = [];
 		$this->format = 'xml'; // default, should be immediately overridden by SubsonicMiddleware
 	}
 

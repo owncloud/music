@@ -39,7 +39,7 @@ class SettingController extends Controller {
 	private AmpacheSessionMapper $ampacheSessionMapper;
 	private AmpacheUserMapper $ampacheUserMapper;
 	private Scanner $scanner;
-	private ?string $userId;
+	private string $userId;
 	private LibrarySettings $librarySettings;
 	private ISecureRandom $secureRandom;
 	private IURLGenerator $urlGenerator;

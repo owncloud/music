@@ -23,15 +23,17 @@ use OCP\Files\File;
  */
 class FileStreamResponse extends Response implements ICallbackResponse {
 	private File $file;
-	private ?int $start;
-	private ?int $end;
+	private int $start;
+	private int $end;
 
 	public function __construct(File $file) {
 
 		$this->file = $file;
 		$mime = $file->getMimetype();
 		$size = $file->getSize();
-
+		$this->start = 0;
+		$this->end = $size - 1;
+	
 		$this->addHeader('Content-type', "$mime; charset=utf-8");
 
 		if (isset($_SERVER['HTTP_RANGE'])) {
@@ -42,27 +44,21 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 				$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 			} else {
 				$parts = \explode('-', \substr($_SERVER['HTTP_RANGE'], 6));
-				$this->start = $parts[0] != '' ? (int)$parts[0] : 0;
-				$this->end = $parts[1] != '' ? (int)$parts[1] : $size - 1;
+				$this->start = ($parts[0] != '') ? (int)$parts[0] : 0;
+				$this->end = ($parts[1] != '') ? (int)$parts[1] : $size - 1;
 				$this->end = \min($this->end, $size - 1);
 
 				if ($this->start > $this->end) {
-					$this->addHeader('Content-Range', 'bytes */' . $size);
+					$this->addHeader('Content-Range', "bytes */$size");
 					$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 				} else {
 					$this->addHeader('Accept-Ranges', 'bytes');
-					$this->addHeader(
-						'Content-Range', 'bytes ' .
-						$this->start . '-' .
-						$this->end . '/' . $size
-					);
+					$this->addHeader('Content-Range', "bytes {$this->start}-{$this->end}/$size");
 					$this->addHeader('Content-Length', (string)($this->end - $this->start + 1));
 					$this->setStatus(Http::STATUS_PARTIAL_CONTENT);
 				}
 			}
 		} else {
-			$this->start = 0;
-			$this->end = $size - 1;
 			$this->addHeader('Content-Length', (string)$size);
 			$this->setStatus(Http::STATUS_OK);
 		}
@@ -92,7 +88,7 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		} else {
 			$outputStream = \fopen('php://output', 'w');
 			$length = $this->end - $this->start + 1;
-			$bytesCopied = stream_copy_to_stream($fp, $outputStream, $length, $this->start);
+			$bytesCopied = \stream_copy_to_stream($fp, $outputStream, $length, $this->start);
 			\fclose($outputStream);
 			return ($bytesCopied > 0);
 		}

@@ -179,7 +179,7 @@ class CoverHelper {
 	private function getPlaceholder(Entity $entity, ?int $size) : array {
 		$name = $entity->getNameString($this->l10n);
 		if (\method_exists($entity, 'getAlbumArtistNameString')) {
-			$seed = $entity->getAlbumArtistNameString($this->l10n) . $name;
+			$seed = $entity->/** @scrutinizer ignore-call */getAlbumArtistNameString($this->l10n) . $name;
 		} else {
 			$seed = $name;
 		}
@@ -251,7 +251,7 @@ class CoverHelper {
 	 *                  scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover(Entity $entity, Folder $rootFolder, int $size) : ?array {
+	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
 		if ($entity instanceof PodcastChannel) {
 			$image = HttpUtil::loadFromUrl($entity->getImageUrl())['content'];
 			if ($image !== false) {
@@ -280,7 +280,7 @@ class CoverHelper {
 	 * @param Folder $rootFolder
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCoverFromLocalFile(Entity $entity, Folder $rootFolder) : ?array {
+	private function readCoverFromLocalFile($entity, Folder $rootFolder) : ?array {
 		$response = null;
 
 		$coverId = $entity->getCoverFileId();

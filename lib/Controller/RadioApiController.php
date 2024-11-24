@@ -35,7 +35,7 @@ class RadioApiController extends Controller {
 	private RadioStationBusinessLayer $businessLayer;
 	private RadioService $service;
 	private PlaylistFileService $playlistFileService;
-	private ?string $userId;
+	private string $userId;
 	private ?Folder $userFolder;
 	private Logger $logger;
 

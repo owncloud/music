@@ -29,6 +29,7 @@ class GenreMapper extends BaseMapper {
 	 * @return Genre
 	 */
 	protected function findUniqueEntity(Entity $genre) : Entity {
+		assert($genre instanceof Genre);
 		$sql = $this->selectGenres('`*PREFIX*music_genres`.`user_id` = ? AND `lower_name` = ?');
 		return $this->findEntity($sql, [$genre->getUserId(), $genre->getLowerName()]);
 	}

@@ -56,6 +56,7 @@ class PodcastChannelMapper extends BaseMapper {
 	 * @return PodcastChannel
 	 */
 	protected function findUniqueEntity(Entity $channel) : Entity {
+		assert($channel instanceof PodcastChannel);
 		$sql = $this->selectUserEntities("`rss_hash` = ?");
 		return $this->findEntity($sql, [$channel->getUserId(), $channel->getRssHash()]);
 	}

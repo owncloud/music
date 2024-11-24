@@ -24,8 +24,8 @@ use OCP\Files\File;
 class FileResponse extends Response {
 	/* @var File|string $file */
 	protected $file;
-	protected ?int $start;
-	protected ?int $end;
+	protected int $start;
+	protected int $end;
 	protected bool $rangeRequest;
 
 	/**
@@ -42,6 +42,9 @@ class FileResponse extends Response {
 			$mime = $file->getMimetype();
 			$size = $file->getSize();
 		}
+		$this->start = 0;
+		$this->end = $size - 1;
+
 		$this->addHeader('Content-type', "$mime; charset=utf-8");
 
 		$this->rangeRequest = isset($_SERVER['HTTP_RANGE']);
@@ -53,8 +56,8 @@ class FileResponse extends Response {
 				$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 			} else {
 				$parts = \explode('-', \substr($_SERVER['HTTP_RANGE'], 6));
-				$this->start = $parts[0] != '' ? (int)$parts[0] : 0;
-				$this->end = $parts[1] != '' ? (int)$parts[1] : $size - 1;
+				$this->start = ($parts[0] != '') ? (int)$parts[0] : 0;
+				$this->end = ($parts[1] != '') ? (int)$parts[1] : $size - 1;
 				$this->end = \min($this->end, $size - 1);
 
 				if ($this->start > $this->end) {
@@ -62,11 +65,7 @@ class FileResponse extends Response {
 					$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 				} else {
 					$this->addHeader('Accept-Ranges', 'bytes');
-					$this->addHeader(
-						'Content-Range', 'bytes ' .
-						$this->start . '-' .
-						$this->end . '/' . $size
-					);
+					$this->addHeader('Content-Range', "bytes {$this->start}-{$this->end}/$size");
 					$this->setStatus(Http::STATUS_PARTIAL_CONTENT);
 				}
 			}
@@ -93,6 +92,7 @@ class FileResponse extends Response {
 	}
 
 	private function renderFromString() {
+		assert(\is_string($this->file));
 		return $this->rangeRequest
 			? \substr($this->file, $this->start, $this->partialSize())
 			: $this->file;

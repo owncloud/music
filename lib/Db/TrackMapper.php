@@ -558,6 +558,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track
 	 */
 	protected function findUniqueEntity(Entity $track) : Entity {
+		assert($track instanceof Track);
 		return $this->findByFileId($track->getFileId(), $track->getUserId());
 	}
 }

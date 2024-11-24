@@ -61,7 +61,7 @@ class RegisterMimeTypes extends Command {
 			foreach ($this->mimeMappings as $ext => $mimetypes) {
 				foreach ($mimetypes as $mimetype) {
 					$mimeId = $this->mimeTypeLoader->getId($mimetype);
-					$updatedCount = $this->mimeTypeLoader->updateFilecache($ext, $mimeId);
+					$updatedCount = $this->mimeTypeLoader->/** @scrutinizer ignore-call */updateFilecache($ext, $mimeId);
 					$output->writeln("  Updated MIME type $mimetype for $updatedCount files with the extension .$ext");
 				}
 			}

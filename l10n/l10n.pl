@@ -97,7 +97,7 @@ if( $task eq 'read' ){
       next if $ignore{$file};
       # TODO: add support for twig templates
       my $keyword = ( $file =~ /\.[jt]s$/ ? 't:2' : 't');
-      my $language = ( $file =~ /\.[jt]s$/ ? 'Python' : 'PHP');
+      my $language = ( $file =~ /\.[jt]s$/ ? 'JavaScript' : 'PHP');
       my $joinexisting = ( -e $output ? '--join-existing' : '');
       print "    Reading $file\n";
       `xgettext --output="$output" $joinexisting --keyword=$keyword --language=$language "$file" --from-code=UTF-8 --package-version="5.0.0" --package-name="$packageName" --msgid-bugs-address="translations\@owncloud.org"`;

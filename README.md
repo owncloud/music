@@ -197,7 +197,7 @@ For the acceptance tests, you need to upload all the tracks from the following z
 
 The translatable strings are extracted from the front-end files of the Music app proper using the `angular-gettext` module. This is installed among other dependencies with `npm`.
 
-In addition, there are some translatable strings within the back-end code and in the front-end files for the embedded Files player and for the Nextcloud Dashboard widget. These are handled using the perl script `l10n/l10n.pl`. In addition to the perl interpreter, this script requires the module `Locale::PO` (can be installed with CPAN) and the `xgettext` tool. On Linux, the latter should be available with `apt-get install gettext` or similar. On Windows, this needs to be installed manually; you can find some pointers for this from https://stackoverflow.com/a/7612773.
+In addition, there are some translatable strings within the back-end code and in the front-end files for the embedded Files player and for the Nextcloud Dashboard widget. These are handled using the perl script `l10n/l10n.pl`. In addition to the perl interpreter, this script requires the module `Locale::PO` (can be installed with CPAN) and the `xgettext` tool. On Linux, the latter should be available with `apt-get install gettext` or similar. On Windows, this needs to be installed manually and the executable must be added to the PATH; at least the version 0.22.5 from https://github.com/vslavik/gettext-tools-windows/releases seems to work well.
 
 When the tools are setup correctly, all the strings can be extracted from the source codes to `l10n/templates/music.pot` with the command:
 

@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the ownCloud music package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2024-11-25 19:57+0200\n"
+"POT-Creation-Date: 2024-11-25 21:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -472,8 +473,8 @@ msgstr ""
 msgid ""
 "Enable streaming HLS-type radio stations, relaying them via the cloud "
 "server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</"
-"samp> and <samp>blob:</samp> will be added to the CSP header <a href="
-"\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
+"samp> and <samp>blob:</samp> will be added to the CSP header <a "
+"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:321
@@ -964,9 +965,9 @@ msgstr ""
 #: templates/partials/views/settingsview.php:140
 msgid ""
 "Note that Music may not be compatible with all Ampache/Subsonic clients. "
-"Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank"
-"\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank"
-"\">Subsonic clients</a>."
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" "
+"target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" "
+"target=\"_blank\">Subsonic clients</a>."
 msgstr ""
 
 #: templates/partials/sidebar/smartlistfilters.php:42
@@ -1602,8 +1603,8 @@ msgid ""
 "the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only "
 "'Contact email' and 'Application name' need to be filled in the form. You "
 "are then provided with an API key which should be used as a value for this "
-"key. For more details, see the <a href=\"{{guideUrl}}\" target=\"_blank"
-"\">tutorial</a>."
+"key. For more details, see the <a href=\"{{guideUrl}}\" "
+"target=\"_blank\">tutorial</a>."
 msgstr ""
 
 #: templates/partials/sidebar/albumdetails.php:28
@@ -1729,10 +1730,10 @@ msgstr ""
 
 #: templates/partials/sidebar/radiohint.php:7
 msgid ""
-"Use the Community Radio Browser <a href=\"{{url}}\" target=\"_blank"
-"\">search</a> to find the radio stations of interest. Instead of using the "
-"search, you may also browse the channels in Community Radio Browser by "
-"category or popularity."
+"Use the Community Radio Browser <a href=\"{{url}}\" "
+"target=\"_blank\">search</a> to find the radio stations of interest. Instead "
+"of using the search, you may also browse the channels in Community Radio "
+"Browser by category or popularity."
 msgstr ""
 
 #: templates/partials/views/settingsview.php:172
@@ -2078,15 +2079,19 @@ msgstr ""
 msgid "Playlists"
 msgstr ""
 
+#: musicwidget.ts:62
+msgid "Select mode"
+msgstr ""
+
+#: musicwidget.ts:182 musicwidget.ts:209
+msgid "Select artist"
+msgstr ""
+
 #: musicwidget.ts:190
 msgid "(All albums)"
 msgstr ""
 
-#: musicwidget.ts:209
-msgid "Select artist"
-msgstr ""
-
-#: musicwidget.ts:221
+#: musicwidget.ts:192 musicwidget.ts:221
 msgid "Select album"
 msgstr ""
 
@@ -2144,6 +2149,12 @@ msgstr ""
 msgid "None of the playlist files are within your music library"
 msgstr ""
 
+#: folderview.js:159
+msgid ""
+"{inCount} out of {totalCount} files are within your music library and can be "
+"imported"
+msgstr ""
+
 #: folderview.js:360
 msgid "No files from the playlist could be found"
 msgstr ""
@@ -2158,12 +2169,6 @@ msgstr ""
 
 #: folderview.js:384 playlisttabview.js:90
 msgid "Error reading playlist file"
-msgstr ""
-
-#: folderview.js:159
-msgid ""
-"{inCount} out of {totalCount} files are within your music library and can be "
-"imported"
 msgstr ""
 
 #: playlistfileservice.js:53

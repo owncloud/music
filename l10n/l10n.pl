@@ -23,7 +23,7 @@ sub crawlFiles{
       push( @found, crawlFiles( $dir.'/'.$i ));
     }
     else{
-      push(@found,$dir.'/'.$i) if $i =~ /\.js$/ || $i =~ /\.php$/;
+      push(@found,$dir.'/'.$i) if $i =~ /\.js$/ || $i =~ /\.ts$/ || $i =~ /\.php$/;
     }
   }
 
@@ -96,8 +96,8 @@ if( $task eq 'read' ){
     foreach my $file ( @totranslate ){
       next if $ignore{$file};
       # TODO: add support for twig templates
-      my $keyword = ( $file =~ /\.js$/ ? 't:2' : 't');
-      my $language = ( $file =~ /\.js$/ ? 'Python' : 'PHP');
+      my $keyword = ( $file =~ /\.[jt]s$/ ? 't:2' : 't');
+      my $language = ( $file =~ /\.[jt]s$/ ? 'Python' : 'PHP');
       my $joinexisting = ( -e $output ? '--join-existing' : '');
       print "    Reading $file\n";
       `xgettext --output="$output" $joinexisting --keyword=$keyword --language=$language "$file" --from-code=UTF-8 --package-version="5.0.0" --package-name="$packageName" --msgid-bugs-address="translations\@owncloud.org"`;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2024-11-24 23:11+0200\n"
+"POT-Creation-Date: 2024-11-25 19:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "(Last.fm has not been set up)"
 msgstr ""
 
-#: templates/fake-template.php:9
+#: templates/fake-template.php:9 musicwidget.ts:238
 msgid "(library root)"
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 
 #: js/app/controllers/playercontroller.js:751
 #: templates/partials/navigation.php:8
-#: templates/partials/sidebar/artistdetails.php:14
+#: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1824
+#: Controller/AmpacheController.php:1824 musicwidget.ts:57
 msgid "All tracks"
 msgstr ""
 
@@ -614,6 +614,7 @@ msgstr ""
 
 #: js/app/controllers/playercontroller.js:752
 #: templates/partials/navigation.php:10 Controller/SubsonicController.php:228
+#: musicwidget.ts:55
 msgid "Folders"
 msgstr ""
 
@@ -644,7 +645,7 @@ msgstr ""
 
 #: js/app/controllers/playercontroller.js:753
 #: templates/partials/navigation.php:12
-#: templates/partials/sidebar/smartlistfilters.php:18
+#: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
 msgid "Genres"
 msgstr ""
 
@@ -738,7 +739,7 @@ msgstr ""
 #: js/app/controllers/playercontroller.js:734
 #: js/app/controllers/playercontroller.js:756
 #: js/app/services/playlistfileservice.ts:109
-#: templates/partials/navigation.php:17
+#: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
 msgstr ""
 
@@ -1134,7 +1135,7 @@ msgid "Podcast metadata"
 msgstr ""
 
 #: js/app/controllers/playercontroller.js:757
-#: templates/partials/navigation.php:19
+#: templates/partials/navigation.php:19 musicwidget.ts:60
 msgid "Podcasts"
 msgstr ""
 
@@ -1336,7 +1337,7 @@ msgid ""
 "<strong>ALT</strong>."
 msgstr ""
 
-#: templates/partials/views/settingsview.php:39
+#: templates/partials/views/settingsview.php:39 musicwidget.ts:234
 msgid "Select folder"
 msgstr ""
 
@@ -2065,6 +2066,42 @@ msgstr ""
 msgid "(Unknown genre)"
 msgstr ""
 
+#: musicwidget.ts:52
+msgid "Album artists"
+msgstr ""
+
+#: musicwidget.ts:53
+msgid "Track artists"
+msgstr ""
+
+#: musicwidget.ts:58
+msgid "Playlists"
+msgstr ""
+
+#: musicwidget.ts:190
+msgid "(All albums)"
+msgstr ""
+
+#: musicwidget.ts:209
+msgid "Select artist"
+msgstr ""
+
+#: musicwidget.ts:221
+msgid "Select album"
+msgstr ""
+
+#: musicwidget.ts:247
+msgid "Select genre"
+msgstr ""
+
+#: musicwidget.ts:263
+msgid "Select playlist"
+msgstr ""
+
+#: musicwidget.ts:279
+msgid "Select channel"
+msgstr ""
+
 #: embeddedplayer.js:136
 msgid "Actions"
 msgstr ""
@@ -2089,7 +2126,7 @@ msgstr ""
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: embeddedplayer.js:468 embeddedplayer.js:499
+#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
 msgid "Loading…"
 msgstr ""
 

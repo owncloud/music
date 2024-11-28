@@ -560,6 +560,8 @@ class Scanner extends PublicEmitter {
 
 		$count = 0;
 		foreach ($fileIds as $fileId) {
+			$this->cache->set($userId, 'scanning', (string)\time()); // update scanning status to prevent simultaneous background cleanup execution
+
 			$file = $libraryRoot->getById($fileId)[0] ?? null;
 			if ($file != null && !$this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
 				$this->emit(self::class, 'exclude', [$file->getPath()]);
@@ -586,8 +588,9 @@ class Scanner extends PublicEmitter {
 		// reset execution time limit
 		\set_time_limit($executionTime);
 
-		// invalidate the cache as the collection has changed
+		// invalidate the cache as the collection has changed and clear the 'scanning' status
 		$this->cache->remove($userId, 'collection');
+		$this->cache->remove($userId, 'scanning'); // this isn't completely thread-safe, in case there would be multiple simultaneous scan jobs for the same user for some bizarre reason
 
 		return $count;
 	}

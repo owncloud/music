@@ -22,11 +22,13 @@
   * Allow method `getOpenSubsonicExtensions` without any user authentication
 
 ### Fixed
-- Ampache API:
-  * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
 - Song progress shown incorrectly in the media session integration of Chrome when playing (exotic file types) with the fallback Aurora.js player
 - Track disappearing from playlists when moved to another folder within the library folder
   [#1173](https://github.com/owncloud/music/issues/1173)
+- Scan sometimes breaking on MariaDB with "Serialization failure: 1213 Deadlock" when the cleanup task gets run on the background
+  [#918](https://github.com/owncloud/music/issues/918)
+- Ampache API:
+  * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
 
 ## 2.0.1 - 2024-09-08
 

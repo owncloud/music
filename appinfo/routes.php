@@ -127,16 +127,18 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#createUserKeyCors',	'url' => '/api/settings/userkey/generate',			'verb' => 'POST'], # external API, keep inconsistent url to maintain compatibility
 
 	// Ampache API https://github.com/ampache/ampache/wiki/Ampache-API
-	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php',	'verb' => 'GET'],
-	['name' => 'ampache#jsonApi',	'url' => '/ampache/server/json.server.php',	'verb' => 'GET'],
+	['name' => 'ampache#xmlApi',			'url' => '/ampache/server/xml.server.php',	'verb' => 'GET'],
+	['name' => 'ampache#jsonApi',			'url' => '/ampache/server/json.server.php',	'verb' => 'GET'],
 	// Ampache API - POST version for JustPlayer. Defining 'postfix' allows binding two routes to the same handler.
-	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php',	'verb' => 'POST',	'postfix' => '_post'],
-	['name' => 'ampache#jsonApi',	'url' => '/ampache/server/json.server.php',	'verb' => 'POST',	'postfix' => '_post'],
+	['name' => 'ampache#xmlApi',			'url' => '/ampache/server/xml.server.php',	'verb' => 'POST',		'postfix' => '_post'],
+	['name' => 'ampache#jsonApi',			'url' => '/ampache/server/json.server.php',	'verb' => 'POST',		'postfix' => '_post'],
 	// Ampache API - Workaround for AmpacheAlbumPlayer
-	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php/',	'verb' => 'GET',	'postfix' => '_aap'],
-
+	['name' => 'ampache#xmlApi',			'url' => '/ampache/server/xml.server.php/',	'verb' => 'GET',		'postfix' => '_aap'],
+	// Ampache API - Allow CORS pre-flight for web clients from different domains
+	['name' => 'ampache#preflightedCors',	'url' => '/ampache/server/xml.server.php',	'verb' => 'OPTIONS'],
+	['name' => 'ampache#preflightedCors',	'url' => '/ampache/server/json.server.php',	'verb' => 'OPTIONS',	'postfix' => '_json'],
 	// Ampache image API
-	['name' => 'ampacheImage#image',	'url' => '/ampache/image.php',	'verb' => 'GET'],
+	['name' => 'ampacheImage#image',		'url' => '/ampache/image.php',				'verb' => 'GET'],
 
 	// Subsonic API http://www.subsonic.org/pages/api.jsp
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.

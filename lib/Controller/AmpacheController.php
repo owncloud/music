@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Controller;
 
-use OCP\AppFramework\Controller;
+use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
@@ -75,7 +75,7 @@ use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
-class AmpacheController extends Controller {
+class AmpacheController extends ApiController {
 	private IConfig $config;
 	private IL10N $l10n;
 	private IURLGenerator $urlGenerator;
@@ -131,7 +131,7 @@ class AmpacheController extends Controller {
 								LibrarySettings $librarySettings,
 								Random $random,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appname, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->config = $config;
 		$this->l10n = $l10n;
@@ -206,6 +206,7 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
+	 * @CORS
 	 */
 	public function xmlApi(string $action) : Response {
 		// differentiation between xmlApi and jsonApi is made already by the middleware
@@ -217,6 +218,7 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
+	 * @CORS
 	 */
 	public function jsonApi(string $action) : Response {
 		// differentiation between xmlApi and jsonApi is made already by the middleware

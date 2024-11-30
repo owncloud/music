@@ -18,6 +18,8 @@
   * Added fields `username`, `max_song`, `max_album`, `max_artist`, `max_video`, `max_podcast`, `max_podcast_episode` to the responses of `handshake` and `ping`
   * Added fields `md5`, `has_access`, `has_collaborate`, and `last_update` to the `playlist` results
   * For radio stations without user-supplied name, use the stream URL as a name
+  * Set CORS headers and enable pre-flight to allow Ample or other web app clients to connect from any domain
+    [#1181](https://github.com/owncloud/music/issues/1181)
 - Subsonic API:
   * Allow method `getOpenSubsonicExtensions` without any user authentication
 

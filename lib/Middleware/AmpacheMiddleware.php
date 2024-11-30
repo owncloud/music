@@ -61,9 +61,7 @@ class AmpacheMiddleware extends Middleware {
 	}
 
 	/**
-	 * This runs all the security checks before a method call. The
-	 * security checks are determined by inspecting the controller method
-	 * annotations
+	 * This runs all the security checks before a method call.
 	 *
 	 * NOTE: Type declarations cannot be used on this function signature because that would be
 	 * in conflict with the base class which is not in our hands.
@@ -73,7 +71,8 @@ class AmpacheMiddleware extends Middleware {
 	 * @throws AmpacheException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
-		if ($controller instanceof AmpacheController) {
+		// The security access logic is not applied to the CORS pre-flight calls with the 'OPTIONS' request
+		if ($controller instanceof AmpacheController && $methodName != 'preflightedCors') {
 			if ($methodName === 'jsonApi') {
 				$controller->setJsonMode(true);
 			}

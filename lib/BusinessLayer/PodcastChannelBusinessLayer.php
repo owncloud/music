@@ -16,8 +16,10 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\BaseMapper;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\PodcastChannelMapper;
 use OCA\Music\Db\PodcastChannel;
+use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
 

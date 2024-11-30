@@ -17,6 +17,7 @@ use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\Genre;
 use OCA\Music\Db\GenreMapper;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 

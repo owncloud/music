@@ -134,6 +134,7 @@ class SubsonicController extends Controller {
 		$this->podcastService = $podcastService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->userId = null;
 		$this->ignoredArticles = [];
 		$this->format = 'xml'; // default, should be immediately overridden by SubsonicMiddleware
 	}

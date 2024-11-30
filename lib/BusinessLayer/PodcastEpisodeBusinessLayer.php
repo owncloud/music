@@ -17,8 +17,10 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\BaseMapper;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\PodcastEpisodeMapper;
 use OCA\Music\Db\PodcastEpisode;
+use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
 

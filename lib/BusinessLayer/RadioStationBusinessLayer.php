@@ -16,8 +16,10 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\RadioStationMapper;
 use OCA\Music\Db\RadioStation;
+use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
 
@@ -41,7 +43,7 @@ class RadioStationBusinessLayer extends BusinessLayer {
 	public function create(string $userId, ?string $name, string $streamUrl, ?string $homeUrl = null) : RadioStation {
 		$station = new RadioStation();
 
-		if ($streamUrl !== null && \strlen($streamUrl) > 2048) {
+		if (\strlen($streamUrl) > 2048) {
 			throw new BusinessLayerException("URL maximum length (2048) exceeded: $streamUrl");
 		}
 

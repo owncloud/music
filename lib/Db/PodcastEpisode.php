@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 namespace OCA\Music\Db;
@@ -173,7 +173,7 @@ class PodcastEpisode extends Entity {
 		$result = (string)$this->getEpisode();
 		// the season is considered only if there actually is an episode
 		$season = $this->getSeason();
-		if ($result !== null && $season !== null) {
+		if ($season !== null) {
 			$result = "$season-$result";
 		}
 		return $result;
@@ -238,12 +238,8 @@ class PodcastEpisode extends Entity {
 			return null;
 		} else {
 			$path = \parse_url($url, PHP_URL_PATH);
-			$ext = \pathinfo($path, PATHINFO_EXTENSION);
-			if (\is_string($ext) && !empty($ext)) {
-				return $ext;
-			} else {
-				return null;
-			}
+			$ext = (string)\pathinfo($path, PATHINFO_EXTENSION);
+			return !empty($ext) ? $ext : null;
 		}
 	}
 }

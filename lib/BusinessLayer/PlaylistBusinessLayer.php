@@ -15,6 +15,7 @@ namespace OCA\Music\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\Core\Logger;
 
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\PlaylistMapper;
 use OCA\Music\Db\SortBy;

@@ -447,6 +447,7 @@ class PlaylistFileService {
 		$absPath = Util::resolveRelativePath($cwd, $path);
 
 		try {
+			/** @throws \OCP\Files\NotFoundException | \OCP\Files\NotPermittedException */
 			$file = $baseFolder->get($absPath);
 			if ($file instanceof File) {
 				return $file;

@@ -1,5 +1,6 @@
 parameters:
     level: 5
+    treatPhpDocTypesAsCertain: false
     paths:
         - lib
     scanDirectories:
@@ -10,9 +11,3 @@ parameters:
         - phpstan-bootstrap.php
     ignoreErrors:
         - '#Property [a-zA-Z0-9\\_]+::\$logger is never read, only written.#'
-        -
-            message: '#Variable \$fp in empty\(\) always exists and is not falsy.#'
-            path: lib/Utility/ExtractorGetID3.php
-        -
-            message: '#Strict comparison using === between int and null will always evaluate to false.#'
-            path: lib/AppFramework/Db/OldNextcloudMapper.php

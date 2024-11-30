@@ -125,7 +125,7 @@ class SubsonicMiddleware extends Middleware {
 		}
 		else {
 			// Not passing any credentials is allowed since some parts of the API are allowed without authentication.
-			// SubsonicController::hanldeRequest needs to check that there is an authenticated user if needed.
+			// SubsonicController::handleRequest needs to check that there is an authenticated user if needed.
 		}
 	}
 

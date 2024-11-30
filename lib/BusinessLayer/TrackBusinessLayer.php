@@ -18,6 +18,8 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 
+use OCA\Music\Db\MatchMode;
+use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
 

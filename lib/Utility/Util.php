@@ -345,7 +345,7 @@ class Util {
 	 * Get a Folder object using a parent Folder object and a relative path
 	 */
 	public static function getFolderFromRelativePath(Folder $parentFolder, string $relativePath) : Folder {
-		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
+		if ($relativePath !== '/' && $relativePath !== '') {
 			$node = $parentFolder->get($relativePath);
 			if ($node instanceof Folder) {
 				return $node;

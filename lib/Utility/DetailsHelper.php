@@ -197,7 +197,7 @@ class DetailsHelper {
 
 	/**
 	 * Remove potentially invalid characters from the string and normalize the line breaks to LF.
-	 * @param string|array $item
+	 * @param mixed $item
 	 */
 	private static function sanitizeString(&$item) : void {
 		if (\is_string($item)) {

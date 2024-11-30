@@ -19,7 +19,7 @@ use OCP\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Track;
 
-class ApiControllerTest extends ControllerTestUtility {
+class MusicApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $genreBusinessLayer;
 	private $collectionHelper;
@@ -69,7 +69,7 @@ class ApiControllerTest extends ControllerTestUtility {
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->controller = new ApiController(
+		$this->controller = new MusicApiController(
 			$this->appname,
 			$this->request,
 			$this->trackBusinessLayer,

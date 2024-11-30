@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Controller;
@@ -45,18 +45,18 @@ class ShivaApiController extends Controller {
 	public function __construct(string $appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
-								TrackBusinessLayer $trackbusinesslayer,
-								ArtistBusinessLayer $artistbusinesslayer,
-								AlbumBusinessLayer $albumbusinesslayer,
+								TrackBusinessLayer $trackBusinessLayer,
+								ArtistBusinessLayer $artistBusinessLayer,
+								AlbumBusinessLayer $albumBusinessLayer,
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;
-		$this->trackBusinessLayer = $trackbusinesslayer;
-		$this->artistBusinessLayer = $artistbusinesslayer;
-		$this->albumBusinessLayer = $albumbusinesslayer;
-		$this->userId = $userId;
+		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->userId = $userId ?? '';
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
 	}

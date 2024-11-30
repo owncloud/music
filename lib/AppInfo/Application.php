@@ -33,10 +33,10 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Controller\AdvSearchController;
 use OCA\Music\Controller\AmpacheController;
 use OCA\Music\Controller\AmpacheImageController;
-use OCA\Music\Controller\ApiController;
 use OCA\Music\Controller\CoverApiController;
 use OCA\Music\Controller\FavoritesController;
 use OCA\Music\Controller\LogController;
+use OCA\Music\Controller\MusicApiController;
 use OCA\Music\Controller\PageController;
 use OCA\Music\Controller\PlaylistApiController;
 use OCA\Music\Controller\PodcastApiController;
@@ -194,8 +194,8 @@ class Application extends ApplicationBase {
 			);
 		});
 
-		$context->registerService('ApiController', function (IAppContainer $c) {
-			return new ApiController(
+		$context->registerService('MusicApiController', function (IAppContainer $c) {
+			return new MusicApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('TrackBusinessLayer'),

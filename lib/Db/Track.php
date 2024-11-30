@@ -184,7 +184,7 @@ class Track extends Entity {
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
 			'files' => [$this->getMimetype() => $urlGenerator->linkToRoute(
-				'music.api.download',
+				'music.musicApi.download',
 				['fileId' => $this->getFileId()]
 			)],
 			'bitrate' => $this->getBitrate(),

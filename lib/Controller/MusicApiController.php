@@ -37,7 +37,7 @@ use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
 
-class ApiController extends Controller {
+class MusicApiController extends Controller {
 
 	private TrackBusinessLayer $trackBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;

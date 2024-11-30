@@ -75,7 +75,7 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['artistId']}";
 			case 'music.shivaApi.album':		return "/link/to/album/{$args['albumId']}";
 			case 'music.shivaApi.track':		return "/link/to/track/{$args['trackId']}";
-			case 'music.api.download':			return "/link/to/file/{$args['fileId']}";
+			case 'music.musicApi.download':		return "/link/to/file/{$args['fileId']}";
 			case 'music.coverApi.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
 			case 'music.coverApi.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
 			default:							return "(mock missing for route $route)";

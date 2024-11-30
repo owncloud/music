@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -81,7 +82,7 @@ class AdvSearchController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function search(string $entity, string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) {
+	public function search(string $entity, string $rules, string $conjunction='and', string $order='name', ?int $limit=null, ?int $offset=null) : JSONResponse {
 		$rules = \json_decode($rules, true);
 
 		foreach ($rules as $rule) {
@@ -110,7 +111,7 @@ class AdvSearchController extends Controller {
 		}
 	}
 
-	private function businessLayerForType($type) {
+	private function businessLayerForType($type) : ?BusinessLayer {
 		$map = [
 			'album' => $this->albumBusinessLayer,
 			'artist' => $this->artistBusinessLayer,
@@ -125,7 +126,7 @@ class AdvSearchController extends Controller {
 		return $map[$type] ?? null;
 	}
 
-	private static function mapSortBy(string $order) {
+	private static function mapSortBy(string $order) : int {
 		$map = [
 			'name'			=> SortBy::Name,
 			'parent'		=> SortBy::Parent,

@@ -24,7 +24,7 @@ class UserHooks {
 		$this->maintenance = $maintenance;
 	}
 
-	public function register() {
+	public function register() : void {
 		$maintenance = $this->maintenance;
 		$callback = function ($user) use ($maintenance) {
 			$maintenance->resetAllData($user->getUID());

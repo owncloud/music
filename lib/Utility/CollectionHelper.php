@@ -55,7 +55,7 @@ class CollectionHelper {
 		$this->userId = $userId ?? ''; // TODO: null makes no sense but we need it because ApiController may be constructed for public covers without a user
 	}
 
-	public function getJson() {
+	public function getJson() : string {
 		$collectionJson = $this->getCachedJson();
 
 		if ($collectionJson === null) {
@@ -71,11 +71,11 @@ class CollectionHelper {
 		return $collectionJson;
 	}
 
-	public function getCachedJsonHash() {
+	public function getCachedJsonHash() : ?string {
 		return $this->dbCache->get($this->userId, 'collection');
 	}
 
-	private function getCachedJson() {
+	private function getCachedJson() : ?string {
 		$json = null;
 		$hash = $this->dbCache->get($this->userId, 'collection');
 		if ($hash !== null) {
@@ -90,7 +90,7 @@ class CollectionHelper {
 		return $json;
 	}
 
-	private function addJsonToCache($json) {
+	private function addJsonToCache(string $json) : void {
 		$hash = \hash('md5', $json);
 		$this->dbCache->add($this->userId, 'collection', $hash);
 		$this->fileCache->set('music_collection.json', $json, 5*365*24*60*60);

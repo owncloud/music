@@ -17,7 +17,7 @@ import * as _ from 'lodash';
 
 declare function t(module : string, text : string) : string;
 
-const AMPACHE_API_URL = 'apps/music/ampache/server/json.server.php';
+const AMPACHE_API_URL = 'apps/music/ampache/internal';
 
 export class MusicWidget {
 
@@ -489,7 +489,6 @@ function createControls(
 function ampacheApiAction(action: string, args: JQuery.PlainObject, callback: JQuery.jqXHR.DoneCallback) : void {
 	const url = OC.generateUrl(AMPACHE_API_URL);
 	args['action'] = action;
-	args['auth'] = 'internal';
 
 	$.get(url, args, callback).fail((error) => {
 		console.error(error)

@@ -225,6 +225,15 @@ class AmpacheController extends ApiController {
 		return $this->dispatch($action);
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function internalApi(string $action, string $xml='0') : Response {
+		$this->setJsonMode(!\filter_var($xml, FILTER_VALIDATE_BOOLEAN));
+		return $this->dispatch($action);
+	}
+
 	protected function dispatch(string $action) : Response {
 		$this->logger->log("Ampache action '$action' requested", 'debug');
 
@@ -1902,12 +1911,21 @@ class AmpacheController extends ApiController {
 		$this->podcastService->injectEpisodes($channels, $userId, $allChannelsIncluded);
 	}
 
+	private function isInternalSession() : bool {
+		return $this->session !== null && $this->session->getToken() === 'internal';
+	}
+
 	private function createAmpacheActionUrl(string $action, int $id, ?string $type=null) : string {
-		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		assert($this->session !== null);
-		$auth = $this->session->getToken();
-		return $this->urlGenerator->linkToRouteAbsolute($api)
-				. "?action=$action&id=$id&auth=$auth"
+		if ($this->isInternalSession()) {
+			$route = 'music.ampache.internalApi';
+			$authArg = '';
+		} else {
+			$route = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
+			$authArg = '&auth=' . $this->session->getToken();
+		}
+		return $this->urlGenerator->linkToRouteAbsolute($route)
+				. "?action=$action&id=$id" . $authArg
 				. (!empty($type) ? "&type=$type" : '');
 	}
 
@@ -1923,7 +1941,7 @@ class AmpacheController extends ApiController {
 		}
 
 		assert($this->session !== null);
-		if ($this->session->getToken() == 'internal') {
+		if ($this->isInternalSession()) {
 			// For internal clients, we don't need to create URLs with permanent but API-key-specific tokens
 			return $this->createAmpacheActionUrl('get_art', $entity->getId(), $type);
 		}

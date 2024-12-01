@@ -71,18 +71,23 @@ class AmpacheMiddleware extends Middleware {
 	 * @throws AmpacheException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
-		// The security access logic is not applied to the CORS pre-flight calls with the 'OPTIONS' request
-		if ($controller instanceof AmpacheController && $methodName != 'preflightedCors') {
-			if ($methodName === 'jsonApi') {
-				$controller->setJsonMode(true);
-			}
-
-			// authenticate on 'handshake' and check the session token on any other action
-			$action = $this->request->getParam('action');
-			if ($action === 'handshake') {
-				$this->handleHandshake($controller);
+		// The security access logic is not applied to the CORS pre-flight calls with the 'OPTIONS'
+		if ($controller instanceof AmpacheController && $methodName !== 'preflightedCors') {
+			if ($methodName === 'internalApi') {
+				// internal clients get the internal session without any additional checking
+				$controller->setSession($this->getInternalSession());
 			} else {
-				$this->handleNonHandshakeAction($controller, $action);
+				if ($methodName === 'jsonApi') {
+					$controller->setJsonMode(true);
+				}
+	
+				// authenticate on 'handshake' and check the session token on any other action
+				$action = $this->request->getParam('action');
+				if ($action === 'handshake') {
+					$this->handleHandshake($controller);
+				} else {
+					$this->handleNonHandshakeAction($controller, $action);
+				}
 			}
 		}
 	}
@@ -197,19 +202,11 @@ class AmpacheMiddleware extends Middleware {
 			return;
 		}
 
-		if ($token === 'internal') {
-			$session = $this->getInternalSession();
-		} else {
-			$session = $this->getExistingSession($token);
-		}
+		$session = $this->getExistingSession($token);
 		$controller->setSession($session);
 
 		if ($action === 'goodbye') {
-			if ($token === 'internal') {
-				throw new AmpacheException('Internal session cannot be terminated', 401);
-			} else {
-				$this->ampacheSessionMapper->delete($session);
-			}
+			$this->ampacheSessionMapper->delete($session);
 		}
 
 		if ($action === null) {

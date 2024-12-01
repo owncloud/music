@@ -139,6 +139,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'ampache#preflightedCors',	'url' => '/ampache/server/json.server.php',	'verb' => 'OPTIONS',	'postfix' => '_json'],
 	// Ampache image API
 	['name' => 'ampacheImage#image',		'url' => '/ampache/image.php',				'verb' => 'GET'],
+	// Ampache API - Internal API for the dashboard widget
+	['name' => 'ampache#internalApi',		'url' => '/ampache/internal',				'verb' => 'GET'],
 
 	// Subsonic API http://www.subsonic.org/pages/api.jsp
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.

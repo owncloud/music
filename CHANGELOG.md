@@ -20,6 +20,7 @@
   * For radio stations without user-supplied name, use the stream URL as a name
   * Set CORS headers and enable pre-flight to allow Ample or other web app clients to connect from any domain
     [#1181](https://github.com/owncloud/music/issues/1181)
+  * Action `get_bookmark` returns an empty response instead of error if the object ID is valid but there are no bookmarks on the object
 - Subsonic API:
   * Allow method `getOpenSubsonicExtensions` without any user authentication
 

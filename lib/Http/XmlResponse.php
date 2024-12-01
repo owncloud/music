@@ -69,7 +69,12 @@ class XmlResponse extends Response {
 
 	public function render() {
 		$rootName = \array_keys($this->content)[0];
-		$this->addChildElement($this->doc, $rootName, $this->content[$rootName]);
+		// empty content is a special case which cannot be handled by the standard recursive manner
+		if (empty($this->content[$rootName])) {
+			$this->doc->appendChild($this->doc->createElement($rootName));
+		} else {
+			$this->addChildElement($this->doc, $rootName, $this->content[$rootName]);
+		}
 		return $this->doc->saveXML();
 	}
 

@@ -1286,7 +1286,13 @@ class AmpacheController extends ApiController {
 	 */
 	protected function get_bookmark(int $filter, string $type, int $include=0) : array {
 		$entryType = self::mapBookmarkType($type);
-		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->userId());
+		try {
+			$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->userId());
+		} catch (BusinessLayerException $ex) {
+			// if the entity exists but there's no bookmark, then return an empty result instead of error
+			$this->getBusinessLayer($type)->find($filter, $this->userId()); // throws again if entity doesn't exist
+			return [];
+		}
 		return $this->renderBookmarks([$bookmark], $include);
 	}
 

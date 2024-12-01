@@ -21,6 +21,7 @@
   * Set CORS headers and enable pre-flight to allow Ample or other web app clients to connect from any domain
     [#1181](https://github.com/owncloud/music/issues/1181)
   * Action `get_bookmark` returns an empty response instead of error if the object ID is valid but there are no bookmarks on the object
+  * Action `get_bookmark` supports argument `all` (affects response format only, we still don't support more than one bookmark per song/episode)
 - Subsonic API:
   * Allow method `getOpenSubsonicExtensions` without any user authentication
 

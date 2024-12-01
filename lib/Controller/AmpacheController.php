@@ -1284,16 +1284,25 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_bookmark(int $filter, string $type, int $include=0) : array {
+	protected function get_bookmark(int $filter, string $type, int $include=0, int $all=0) : array {
+		// first check the validity of the entity identified by $type and $filter
+		$this->getBusinessLayer($type)->find($filter, $this->userId()); // throws if entity doesn't exist
+
 		$entryType = self::mapBookmarkType($type);
 		try {
-			$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->userId());
+			// we currently support only one bookmark per song/episode but the Ampache API doesn't have this limitation
+			$bookmarks = [$this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->userId())];
 		} catch (BusinessLayerException $ex) {
-			// if the entity exists but there's no bookmark, then return an empty result instead of error
-			$this->getBusinessLayer($type)->find($filter, $this->userId()); // throws again if entity doesn't exist
-			return [];
+			$bookmarks = [];
 		}
-		return $this->renderBookmarks([$bookmark], $include);
+
+		if (!$all && empty($bookmarks)) {
+			// It's a special case when a single bookmark is requested but there is none, in that case we
+			// return a completely empty response. Most other actions return an error in similar cases.
+			return [];
+		} else {
+			return $this->renderBookmarks($bookmarks, $include);
+		}
 	}
 
 	/**
@@ -2371,9 +2380,12 @@ class AmpacheController extends ApiController {
 				// their responses are anonymous 1-item arrays. This got fixed in the APIv6.0.1
 				$api5preferenceOddity = ($apiVer === 5 && Util::endsWith($action, 'preference'));
 
+				// The action "get_bookmark" works as plural in case the argument all=1 is given
+				$allBookmarks = ($action === 'get_bookmark' && $this->request->getParam('all'));
+
 				if ($api5preferenceOddity) {
 					$content = \array_pop($content);
-				} elseif (!($plural  || $api5albumOddity)) {
+				} elseif (!($plural  || $api5albumOddity || $allBookmarks)) {
 					$content = \array_pop($content);
 					$content = \array_pop($content);
 				}

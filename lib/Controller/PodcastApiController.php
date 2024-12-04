@@ -22,6 +22,7 @@ use OCP\IURLGenerator;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\RelayStreamResponse;
+use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Util;
 

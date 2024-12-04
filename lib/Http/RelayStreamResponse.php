@@ -23,28 +23,55 @@ use OCA\Music\Utility\HttpUtil;
  * Response which relays a radio stream or similar from an original source URL
  */
 class RelayStreamResponse extends Response implements ICallbackResponse {
-	private $url;
+	private string $url;
+	/** @var resource $context */
+	private $context;
 
 	public function __construct(string $url) {
 		$this->url = $url;
 
-		$this->addHeader('Content-type', "audio/mpeg");
+		$reqHeaders = [];
+		if (isset($_SERVER['HTTP_ACCEPT'])) {
+			$reqHeaders['Accept'] = $_SERVER['HTTP_ACCEPT'];
+		}
+		if (isset($_SERVER['HTTP_RANGE'])) {
+			$reqHeaders['Range'] = $_SERVER['HTTP_RANGE'];
+		}
+
+		$this->context = HttpUtil::createContext(null, $reqHeaders);
+
+		// Get headers from the source and relay the important ones to our client
+		$sourceHeaders = HttpUtil::getUrlHeaders($url, $this->context);
+	
+		if ($sourceHeaders !== null) {
+			// According to RFC 2616, HTTP headers are case-insensitive but we need predictable keys
+			$sourceHeaders = \array_change_key_case($sourceHeaders, CASE_LOWER);
+
+			if (isset($sourceHeaders['content-type'])) {
+				$this->addHeader('Content-Type', $sourceHeaders['content-type']);
+			}
+			if (isset($sourceHeaders['content-length'])) {
+				$this->addHeader('Content-Length', $sourceHeaders['content-length']);
+			}
+			if (isset($sourceHeaders['accept-ranges'])) {
+				$this->addHeader('Accept-Ranges', $sourceHeaders['accept-ranges']);
+			}
+			if (isset($sourceHeaders['content-range'])) {
+				$this->addHeader('Content-Range', $sourceHeaders['content-range']);
+			}
+
+			$this->setStatus($sourceHeaders['status_code']);
+		}
+		else {
+			$this->setStatus(Http::STATUS_FORBIDDEN);
+		}
 	}
 
 	public function callback(IOutput $output) {
-		$opts = [
-			'http' => [
-				'header' => "Accept: audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5\n" . HttpUtil::userAgentHeader(),
-				'ignore_errors' => true, // don't emit warnings for bad/unavailable URL
-				'max_redirects' => 5,
-			]
-		];
-		$context = \stream_context_create($opts);
-
-		$inStream = \fopen($this->url, 'rb', false, $context);
+		$inStream = \fopen($this->url, 'rb', false, $this->context);
 		$outStream = \fopen('php://output', 'wb');
 
-		$bytesCopied = \stream_copy_to_stream($inStream, $outStream, null);
+		$bytesCopied = \stream_copy_to_stream($inStream, $outStream);
 		\fclose($outStream);
 		\fclose($inStream);
 	}

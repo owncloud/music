@@ -52,6 +52,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'coverApi#cachedCover',	'url' => '/api/cover/{hash}',				'verb' => 'GET'],
 	['name' => 'coverApi#artistCover',	'url' => '/api/artist/{artistId}/cover',	'verb' => 'GET'],
 	['name' => 'coverApi#albumCover',	'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
+	['name' => 'coverApi#podcastCover',	'url' => '/api/podcasts/{channelId}/cover',	'verb' => 'GET'],
 
 	// Shiva API https://shiva.readthedocs.io/en/latest/index.html
 	['name' => 'shivaApi#artists',		'url' => '/api/artists',					'verb' => 'GET'],

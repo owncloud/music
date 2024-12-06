@@ -220,6 +220,7 @@ class Application extends ApplicationBase {
 				$c->query('RootFolder'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('UserId'),
 				$c->query('Logger')
@@ -856,7 +857,6 @@ class Application extends ApplicationBase {
 
 		foreach ($radioSources as $source) {
 			$policy->addAllowedMediaDomain($source);
-			$policy->addAllowedImageDomain($source); // for podcast images
 		}
 
 		// Also the media sources 'data:' and 'blob:' are needed for HLS streaming

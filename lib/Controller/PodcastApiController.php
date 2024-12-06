@@ -132,7 +132,7 @@ class PodcastApiController extends Controller {
 		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ false);
 
 		if ($channel !== null) {
-			return $channel->detailsToApi();
+			return $channel->detailsToApi($this->urlGenerator);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

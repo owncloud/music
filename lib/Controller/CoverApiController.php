@@ -24,8 +24,10 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Utility\CoverHelper;
@@ -36,6 +38,7 @@ class CoverApiController extends Controller {
 	private IRootFolder $rootFolder;
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private AlbumBusinessLayer $albumBusinessLayer;
+	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
 	private CoverHelper $coverHelper;
 	private ?string $userId;
 	private Logger $logger;
@@ -46,6 +49,7 @@ class CoverApiController extends Controller {
 								IRootFolder $rootFolder,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
+								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
 								CoverHelper $coverHelper,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
 								Logger $logger) {
@@ -54,6 +58,7 @@ class CoverApiController extends Controller {
 		$this->rootFolder = $rootFolder;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
 		$this->coverHelper = $coverHelper;
 		$this->userId = $userId;
 		$this->logger = $logger;
@@ -93,6 +98,21 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
+	public function podcastCover(int $channelId, $originalSize, $coverToken) {
+		try {
+			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+			$channel = $this->podcastChannelBusinessLayer->find($channelId, $userId);
+			return $this->cover($channel, $userId, $originalSize);
+		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
+			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
 	public function cachedCover(string $hash, ?string $coverToken) {
 		try {
 			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
@@ -112,7 +132,7 @@ class CoverApiController extends Controller {
 	}
 
 	/**
-	 * @param Artist|Album $entity
+	 * @param Artist|Album|PodcastChannel $entity
 	 */
 	private function cover($entity, string $userId, $originalSize) {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);

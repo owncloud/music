@@ -50,6 +50,7 @@
 	line-height: 100%;
 	position: absolute;
 	color: black;
+	text-shadow: #eee 0 0 10px;
 	top: 0;
 	bottom: auto;
 	left: 0;

@@ -33,6 +33,7 @@
   [#918](https://github.com/owncloud/music/issues/918)
 - Ampache API:
   * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
+  * Action `download` still implicitly recording song as played even though that was supposed to change in v2.0.0
 
 ## 2.0.1 - 2024-09-08
 
@@ -69,7 +70,7 @@
 - Ampache and Subsonic APIs: Check the username in case-insensitive manner
   [#1147](https://github.com/owncloud/music/issues/1147)
 - Ampache API:
-  * The action `download` doesn't implicitly record the track as played (unlike `stream`)
+  * The action `download` doesn't implicitly record the track as played (unlike `stream`) (Update: This change didn't actually work, fixed in v2.1.0)
   * The song property `url` refers to the `stream` URL instead of `download` URL
 
 ### Fixed

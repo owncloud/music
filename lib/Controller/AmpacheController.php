@@ -1540,8 +1540,9 @@ class AmpacheController extends ApiController {
 			$file = $this->librarySettings->getFolder($userId)->getById($track->getFileId())[0] ?? null;
 
 			if ($file instanceof \OCP\Files\File) {
-				// download also implicitly records a play since that's how the genuine Ampache server seems to work
-				$this->record_play($id, null);
+				if ($recordPlay) {
+					$this->record_play($id, null);
+				}
 				return new FileStreamResponse($file);
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);

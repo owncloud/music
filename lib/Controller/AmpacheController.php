@@ -61,6 +61,7 @@ use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\FileStreamResponse;
+use OCA\Music\Http\RelayStreamResponse;
 use OCA\Music\Http\XmlResponse;
 
 use OCA\Music\Middleware\AmpacheException;
@@ -1549,7 +1550,11 @@ class AmpacheController extends ApiController {
 			}
 		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
 			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
-			return new RedirectResponse($episode->getStreamUrl());
+			if ($this->config->getSystemValue('music.relay_podcast_stream', true)) {
+				return new RelayStreamResponse($episode->getStreamUrl());
+			} else {
+				return new RedirectResponse($episode->getStreamUrl());
+			}
 		} elseif ($type === 'playlist') {
 			$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)
 				? $this->trackBusinessLayer->findAllIds($userId)
@@ -2162,12 +2167,11 @@ class AmpacheController extends ApiController {
 	 * @param PodcastEpisode[] $episodes
 	 */
 	private function renderPodcastEpisodes(array $episodes) : array {
-		$createImageUrl = function(PodcastEpisode $episode) : string {
-			return $this->createAmpacheActionUrl('get_art', $episode->getChannelId(), 'podcast');
-		};
-
 		return [
-			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi', [$createImageUrl])
+			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi', [
+				fn($episode) => $this->createAmpacheActionUrl('get_art', $episode->getChannelId(), 'podcast'),
+				fn($episode) => $this->createAmpacheActionUrl('stream', $episode->getId(), 'podcast_episode')
+			])
 		];
 	}
 

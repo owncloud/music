@@ -271,6 +271,7 @@ class Application extends ApplicationBase {
 			return new PodcastApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('URLGenerator'),
 				$c->query('PodcastService'),
 				$c->query('UserId'),
@@ -844,7 +845,7 @@ class Application extends ApplicationBase {
 
 		/** @var \OCP\IConfig $config */
 		$config = $container->query('Config');
-		$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
+		$radioSources = $config->getSystemValue('music.allowed_radio_src', []);
 		$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
 
 		if (\is_string($radioSources)) {

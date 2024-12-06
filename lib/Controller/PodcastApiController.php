@@ -15,18 +15,20 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\RelayStreamResponse;
-use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
+	private IConfig $config;
 	private IURLGenerator $urlGenerator;
 	private PodcastService $podcastService;
 	private string $userId;
@@ -34,11 +36,13 @@ class PodcastApiController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
+								IConfig $config,
 								IURLGenerator $urlGenerator,
 								PodcastService $podcastService,
 								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
+		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->podcastService = $podcastService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
@@ -160,7 +164,11 @@ class PodcastApiController extends Controller {
 		$episode = $this->podcastService->getEpisode($id, $this->userId);
 
 		if ($episode !== null) {
-			return new RelayStreamResponse($episode->getStreamUrl());
+			if ($this->config->getSystemValue('music.relay_podcast_stream', true)) {
+				return new RelayStreamResponse($episode->getStreamUrl());
+			} else {
+				return new RedirectResponse($episode->getStreamUrl());
+			}
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

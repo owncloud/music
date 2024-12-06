@@ -266,7 +266,8 @@ class RadioApiController extends Controller {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
 			$resolved = $this->service->resolveStreamUrl($streamUrl);
-			if (!$resolved['hls']) {
+			$relayEnabled = $this->config->getSystemValue('music.relay_radio_stream', true);
+			if ($relayEnabled && !$resolved['hls']) {
 				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.stationStream', ['id' => $id]);
 			}
 			return new JSONResponse($resolved);

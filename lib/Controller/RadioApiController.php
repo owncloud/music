@@ -19,6 +19,7 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\Files\Folder;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
@@ -33,6 +34,7 @@ use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
 	private IConfig $config;
+	private IURLGenerator $urlGenerator;
 	private RadioStationBusinessLayer $businessLayer;
 	private RadioService $service;
 	private PlaylistFileService $playlistFileService;
@@ -43,6 +45,7 @@ class RadioApiController extends Controller {
 	public function __construct(string $appname,
 								IRequest $request,
 								IConfig $config,
+								IURLGenerator $urlGenerator,
 								RadioStationBusinessLayer $businessLayer,
 								RadioService $service,
 								PlaylistFileService $playlistFileService,
@@ -51,6 +54,7 @@ class RadioApiController extends Controller {
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->config = $config;
+		$this->urlGenerator = $urlGenerator;
 		$this->businessLayer = $businessLayer;
 		$this->service = $service;
 		$this->playlistFileService = $playlistFileService;
@@ -261,21 +265,31 @@ class RadioApiController extends Controller {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
-			return new JSONResponse($this->service->resolveStreamUrl($streamUrl));
+			$resolved = $this->service->resolveStreamUrl($streamUrl);
+			if (!$resolved['hls']) {
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.stationStream', ['id' => $id]);
+			}
+			return new JSONResponse($resolved);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
 
 	/**
-	 * TODO
+	 * get audio stream for a radio station
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function relayStreamUrl(int $id) {
-		//return new RelayStreamResponse('http://listen.radionomy.com/70-s-80-smetal');
-		return new RelayStreamResponse('http://212.47.220.188:8000/listen.mp3');
+	public function stationStream(int $id) {
+		try {
+			$station = $this->businessLayer->find($id, $this->userId);
+			$streamUrl = $station->getStreamUrl();
+			$resolved = $this->service->resolveStreamUrl($streamUrl);
+			return new RelayStreamResponse($resolved['url']);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 
 	/**

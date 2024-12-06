@@ -291,6 +291,7 @@ class Application extends ApplicationBase {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('Config'),
+				$c->query('URLGenerator'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('RadioService'),
 				$c->query('PlaylistFileService'),

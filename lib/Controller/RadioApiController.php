@@ -314,17 +314,23 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function hlsManifest(string $url) {
-		if ($this->hlsEnabled()) {
+	public function hlsManifest(string $url, ?string $token) {
+		$url = \rawurldecode($url);
+
+		if (!$this->hlsEnabled()) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		} elseif ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
-				= $this->service->getHlsManifest(\rawurldecode($url));
+				= $this->service->getHlsManifest($url);
 
 			return new FileResponse([
 				'content' => $content,
 				'mimetype' => $contentType
 			], $status);
-		} else {
-			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		}
 	}
 
@@ -336,17 +342,23 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function hlsSegment(string $url) {
-		if ($this->hlsEnabled()) {
+	public function hlsSegment(string $url, ?string $token) {
+		$url = \rawurldecode($url);
+
+		if (!$this->hlsEnabled()) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		} elseif ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
-				= HttpUtil::loadFromUrl(\rawurldecode($url));
+				= HttpUtil::loadFromUrl($url);
 
 			return new FileResponse([
 				'content' => $content,
 				'mimetype' => $contentType ?? 'application/octet-stream'
 			], $status);
-		} else {
-			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		}
 	}
 

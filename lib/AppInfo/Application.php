@@ -685,6 +685,7 @@ class Application extends ApplicationBase {
 		$context->registerService('RadioService', function (IAppContainer $c) {
 			return new RadioService(
 				$c->query('URLGenerator'),
+				$c->query('DbCache'),
 				$c->query('Logger')
 			);
 		});

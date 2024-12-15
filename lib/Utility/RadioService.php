@@ -15,7 +15,6 @@
 namespace OCA\Music\Utility;
 
 use OCA\Music\AppFramework\Core\Logger;
-use OCA\Music\Db\Cache;
 use OCP\IURLGenerator;
 
 /**
@@ -24,13 +23,12 @@ use OCP\IURLGenerator;
 class RadioService {
 
 	private IURLGenerator $urlGenerator;
-	private Cache $cache;
-	private Random $random;
+	private StreamTokenService $tokenService;
 	private Logger $logger;
 
-	public function __construct(IURLGenerator $urlGenerator, Cache $cache, Logger $logger) {
+	public function __construct(IURLGenerator $urlGenerator, StreamTokenService $tokenService, Logger $logger) {
 		$this->urlGenerator = $urlGenerator;
-		$this->cache = $cache;
+		$this->tokenService = $tokenService;
 		$this->logger = $logger;
 	}
 
@@ -268,49 +266,6 @@ class RadioService {
 		return $containedUrl;
 	}
 
-	private static function createToken(string $message, string $privateSecret) : string {
-		$salt = \random_bytes(32);
-		$hash = \hash('sha256', $salt . $message . $privateSecret, /*binary=*/true);
-		return \base64_encode($salt . $hash);
-	}
-
-	private static function tokenIsValid(string $token, string $message, string $privateSecret) : bool {
-		$binToken = (string)\base64_decode($token);
-		$salt = \substr($binToken, 0, 32);
-		$validBinToken = $salt . \hash('sha256', $salt . $message . $privateSecret, /*binary=*/true);
-		return ($binToken === $validBinToken);
-	}
-
-	private function getPrivateSecret() : string {
-		$privateSecretBase64 = $this->cache->get('', 'radioStreamSecret');
-
-		if ($privateSecretBase64 === null) {
-			$privateSecret = \random_bytes(32);
-			$privateSecretBase64 = \base64_encode($privateSecret);
-			$this->cache->set('', 'radioStreamSecret', $privateSecretBase64);
-		} else {
-			$privateSecret = \base64_decode($privateSecretBase64);
-		}
-
-		return $privateSecret;
-	}
-
-	/**
-	 * Create a signature token for the given url. This can be used to prove that an URL passed
-	 * by the client has been previously created by this back-end and the client is not trying to trick
-	 * us relay any other HTTP traffic. If we would allow making calls to just any URL, then that would
-	 * undermine the purpose of having the Content-Security-Policy in place.
-	 */
-	public function tokenForStreamUrl(string $url) : string {
-		$secret = $this->getPrivateSecret();
-		return self::createToken($url, $secret);
-	}
-
-	public function streamUrlTokenIsValid(string $url, string $token) : bool {
-		$secret = $this->getPrivateSecret();
-		return self::tokenIsValid($token, $url, $secret);
-	}
-
 	/**
 	 * Sometimes the URL given as stream URL points to a playlist which in turn contains the actual
 	 * URL to be streamed. This function resolves such indirections.
@@ -339,7 +294,7 @@ class RadioService {
 			} else {
 				$isHls = (\strpos($content, '#EXT-X-MEDIA-SEQUENCE') !== false);
 				if ($isHls) {
-					$token = $this->tokenForStreamUrl($url);
+					$token = $this->tokenService->tokenForUrl($url);
 					$resolvedUrl = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest',
 							['url' => \rawurlencode($url), 'token' => \rawurlencode($token)]);
 				} else {
@@ -384,7 +339,7 @@ class RadioService {
 				$line = \trim($line);
 				if (!empty($line) && !Util::startsWith($line, '#')) {
 					$segUrl = self::convertUrlOnPlaylistToAbsolute($line, $manifestUrlParts);
-					$segToken = $this->tokenForStreamUrl($segUrl);
+					$segToken = $this->tokenService->tokenForUrl($segUrl);
 					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment',
 							['url' => \rawurlencode($segUrl), 'token' => \rawurlencode($segToken)]);
 				}

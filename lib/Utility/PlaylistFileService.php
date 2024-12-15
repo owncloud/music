@@ -219,7 +219,7 @@ class PlaylistFileService {
 	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
 	 * @throws \OCP\Files\NotFoundException if the $fileId is not a valid file under the $baseFolder
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
-	 * @return array
+	 * @return array ['files' => array, 'invalid_paths' => string[]]
 	 */
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$node = $baseFolder->getById($fileId)[0] ?? null;
@@ -235,7 +235,7 @@ class PlaylistFileService {
 	 * @param Folder $baseFolder Base folder for the local files
 	 * @param int $mode One of self::[PARSE_LOCAL_FILES_ONLY, PARSE_URLS_ONLY, PARSE_LOCAL_FILES_AND_URLS]
 	 * @throws \UnexpectedValueException
-	 * @return array
+	 * @return array ['files' => array, 'invalid_paths' => string[]]
 	 */
 	private static function doParseFile(File $file, Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();

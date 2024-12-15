@@ -31,12 +31,14 @@ use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
 use OCA\Music\Utility\RadioService;
+use OCA\Music\Utility\StreamTokenService;
 
 class RadioApiController extends Controller {
 	private IConfig $config;
 	private IURLGenerator $urlGenerator;
 	private RadioStationBusinessLayer $businessLayer;
 	private RadioService $service;
+	private StreamTokenService $tokenService;
 	private PlaylistFileService $playlistFileService;
 	private string $userId;
 	private ?Folder $userFolder;
@@ -48,6 +50,7 @@ class RadioApiController extends Controller {
 								IURLGenerator $urlGenerator,
 								RadioStationBusinessLayer $businessLayer,
 								RadioService $service,
+								StreamTokenService $tokenService,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
 								?Folder $userFolder,
@@ -57,6 +60,7 @@ class RadioApiController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 		$this->businessLayer = $businessLayer;
 		$this->service = $service;
+		$this->tokenService = $tokenService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; may be null when resolveStreamUrl used on public share
 		$this->userFolder = $userFolder;
@@ -306,13 +310,13 @@ class RadioApiController extends Controller {
 
 		if ($token === null) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
-		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
 			$resolved = $this->service->resolveStreamUrl($url);
 			$relayEnabled = $this->config->getSystemValue('music.relay_radio_stream', true);
 			if ($relayEnabled && !$resolved['hls']) {
-				$token = $this->service->tokenForStreamUrl($resolved['url']);
+				$token = $this->tokenService->tokenForUrl($resolved['url']);
 				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
 					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
 			}
@@ -330,7 +334,7 @@ class RadioApiController extends Controller {
 
 		if ($token === null) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
-		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
 			return new RelayStreamResponse($url);
@@ -353,7 +357,7 @@ class RadioApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		} elseif ($token === null) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
-		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
@@ -381,7 +385,7 @@ class RadioApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		} elseif ($token === null) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
-		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)

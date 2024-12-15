@@ -73,12 +73,13 @@ use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\ExtractorGetID3;
 use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\RadioService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
-use OCA\Music\Utility\LibrarySettings;
+use OCA\Music\Utility\StreamTokenService;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
@@ -261,7 +262,7 @@ class Application extends ApplicationBase {
 				$c->query('GenreBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('PlaylistFileService'),
-				$c->query('RadioService'),
+				$c->query('StreamTokenService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('Config'),
@@ -297,6 +298,7 @@ class Application extends ApplicationBase {
 				$c->query('URLGenerator'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('RadioService'),
+				$c->query('StreamTokenService'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
@@ -686,7 +688,7 @@ class Application extends ApplicationBase {
 		$context->registerService('RadioService', function (IAppContainer $c) {
 			return new RadioService(
 				$c->query('URLGenerator'),
-				$c->query('DbCache'),
+				$c->query('StreamTokenService'),
 				$c->query('Logger')
 			);
 		});
@@ -717,6 +719,12 @@ class Application extends ApplicationBase {
 			);
 		});
 
+		$context->registerService('StreamTokenService', function (IAppContainer $c) {
+			return new StreamTokenService(
+				$c->query('DbCache')
+			);
+		});
+	
 		$context->registerService('LibrarySettings', function (IAppContainer $c) {
 			return new LibrarySettings(
 				$c->query('AppName'),

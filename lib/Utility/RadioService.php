@@ -301,7 +301,7 @@ class RadioService {
 	 * us relay any other HTTP traffic. If we would allow making calls to just any URL, then that would
 	 * undermine the purpose of having the Content-Security-Policy in place.
 	 */
-	private function tokenForStreamUrl(string $url) : string {
+	public function tokenForStreamUrl(string $url) : string {
 		$secret = $this->getPrivateSecret();
 		return self::createToken($url, $secret);
 	}

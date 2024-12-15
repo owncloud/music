@@ -301,8 +301,40 @@ class RadioApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function resolveStreamUrl(string $url) {
-		return new JSONResponse($this->service->resolveStreamUrl(\rawurldecode($url)));
+	public function resolveStreamUrl(string $url, ?string $token) {
+		$url = \rawurldecode($url);
+
+		if ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
+			$resolved = $this->service->resolveStreamUrl($url);
+			$relayEnabled = $this->config->getSystemValue('music.relay_radio_stream', true);
+			if ($relayEnabled && !$resolved['hls']) {
+				$token = $this->service->tokenForStreamUrl($resolved['url']);
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+			}
+			return new JSONResponse($resolved);
+		}
+	}
+
+	/**
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function streamFromUrl(string $url, ?string $token) {
+		$url = \rawurldecode($url);
+
+		if ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->service->streamUrlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
+			return new RelayStreamResponse($url);
+		}
 	}
 
 	/**

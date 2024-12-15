@@ -261,6 +261,7 @@ class Application extends ApplicationBase {
 				$c->query('GenreBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('PlaylistFileService'),
+				$c->query('RadioService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('Config'),

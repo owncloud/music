@@ -215,7 +215,7 @@ OCA.Music.FolderView = class {
 				this.#currentFile = file;
 			}
 			if (file.external) {
-				this.#player.playExtUrl(file.url, file.token, file.caption, this.#shareToken);
+				this.#player.playExtUrl(file.url, file.token, file.caption);
 			} else {
 				this.#player.playFile(
 					this.#urlForFile(file),

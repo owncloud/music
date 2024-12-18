@@ -347,7 +347,7 @@ class RadioApiController extends Controller {
 	 * This fetches the manifest file from the given URL and returns a modified version of it.
 	 * The front-end can't easily stream directly from the original source because of the Content-Security-Policy.
 	 *
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
 	public function hlsManifest(string $url, ?string $token) {
@@ -375,7 +375,7 @@ class RadioApiController extends Controller {
 	 *
 	 * The segment is fetched from the given URL and relayed as such to the client.
 	 *
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
 	public function hlsSegment(string $url, ?string $token) {

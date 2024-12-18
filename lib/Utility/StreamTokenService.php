@@ -23,9 +23,11 @@ use OCA\Music\Db\Cache;
 class StreamTokenService {
 
     private Cache $cache;
+	private ?string $secret;
 
     public function __construct(Cache $cache) {
         $this->cache = $cache;
+		$this->secret = null; // lazy load
     }
 
 	public function tokenForUrl(string $url) : string {
@@ -52,6 +54,15 @@ class StreamTokenService {
 	}
 
 	private function getPrivateSecret() : string {
+		// Load the secret all the way from the DB only once per request and cache it for later
+		// invocations to avoid flooding DB requests when parsing a large playlist file for Files.
+		if ($this->secret === null) {
+			$this->secret = $this->getPrivateSecretFromDb();
+		}
+		return $this->secret;
+	}
+
+	private function getPrivateSecretFromDb() : string {
 		$privateSecretBase64 = $this->cache->get('', 'radioStreamSecret');
 
 		if ($privateSecretBase64 === null) {

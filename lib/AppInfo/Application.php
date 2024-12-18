@@ -262,7 +262,6 @@ class Application extends ApplicationBase {
 				$c->query('GenreBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('PlaylistFileService'),
-				$c->query('StreamTokenService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('Config'),
@@ -673,6 +672,7 @@ class Application extends ApplicationBase {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('StreamTokenService'),
 				$c->query('Logger')
 			);
 		});

@@ -34,7 +34,6 @@ use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\StreamTokenService;
 use OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
@@ -46,7 +45,6 @@ class PlaylistApiController extends Controller {
 	private GenreBusinessLayer $genreBusinessLayer;
 	private CoverHelper $coverHelper;
 	private PlaylistFileService $playlistFileService;
-	private StreamTokenService $tokenService;
 	private string $userId;
 	private Folder $userFolder;
 	private IConfig $configManager;
@@ -62,7 +60,6 @@ class PlaylistApiController extends Controller {
 								GenreBusinessLayer $genreBusinessLayer,
 								CoverHelper $coverHelper,
 								PlaylistFileService $playlistFileService,
-								StreamTokenService $tokenService,
 								string $userId,
 								Folder $userFolder,
 								IConfig $configManager,
@@ -76,7 +73,6 @@ class PlaylistApiController extends Controller {
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->coverHelper = $coverHelper;
 		$this->playlistFileService = $playlistFileService;
-		$this->tokenService = $tokenService;
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
 		$this->configManager = $configManager;
@@ -370,7 +366,6 @@ class PlaylistApiController extends Controller {
 					$fileInfo['id'] = $bogusUrlId--;
 					$fileInfo['mimetype'] = null;
 					$fileInfo['external'] = true;
-					$fileInfo['token'] = $this->tokenService->tokenForUrl($fileInfo['url']);
 					return $fileInfo;
 				} else {
 					$file = $fileInfo['file'];

@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 
 use OCP\Files\Folder;
 use OCP\IConfig;
@@ -270,7 +271,7 @@ class RadioApiController extends Controller {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
 			$resolved = $this->service->resolveStreamUrl($streamUrl);
-			$relayEnabled = $this->config->getSystemValue('music.relay_radio_stream', true);
+			$relayEnabled = $this->streamRelayEnabled();
 			if ($relayEnabled && !$resolved['hls']) {
 				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.stationStream', ['id' => $id]);
 			}
@@ -291,7 +292,11 @@ class RadioApiController extends Controller {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
 			$resolved = $this->service->resolveStreamUrl($streamUrl);
-			return new RelayStreamResponse($resolved['url']);
+			if ($this->streamRelayEnabled()) {
+				return new RelayStreamResponse($resolved['url']);
+			} else {
+				return new RedirectResponse($resolved['url']);
+			}
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -314,7 +319,7 @@ class RadioApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
 			$resolved = $this->service->resolveStreamUrl($url);
-			$relayEnabled = $this->config->getSystemValue('music.relay_radio_stream', true);
+			$relayEnabled = $this->streamRelayEnabled();
 			if ($relayEnabled && !$resolved['hls']) {
 				$token = $this->tokenService->tokenForUrl($resolved['url']);
 				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
@@ -325,7 +330,8 @@ class RadioApiController extends Controller {
 	}
 
 	/**
-	 *
+	 * create a relayed stream for the given URL if relaying enabled; otherwise just redirect to the URL
+	 * 
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
@@ -336,8 +342,10 @@ class RadioApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
 		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
-		} else {
+		} elseif ($this->streamRelayEnabled()) {
 			return new RelayStreamResponse($url);
+		} else {
+			return new RedirectResponse($url);
 		}
 	}
 
@@ -400,5 +408,9 @@ class RadioApiController extends Controller {
 
 	private function hlsEnabled() : bool {
 		return (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
+	}
+
+	private function streamRelayEnabled() : bool {
+		return (bool)$this->config->getSystemValue('music.relay_radio_stream', true);
 	}
 }

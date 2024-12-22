@@ -10,6 +10,7 @@
   * OpenSubsonic extension [`apiKeyAuthentication`](https://opensubsonic.netlify.app/docs/extensions/apikeyauth/), including support for arg `apiKey` and the new method `tokenInfo`
 
 ### Changed
+- Renamed config.php key `music.allowed_radio_src` as `music.allowed_stream_src`. Its default value is now an empty array `[]`.
 - Allow translating all the strings in the embedded Files player and the new Dashboard widget. Provide Finnish translations for these.
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`

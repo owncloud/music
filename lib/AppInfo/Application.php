@@ -857,7 +857,7 @@ class Application extends ApplicationBase {
 
 		/** @var IConfig $config */
 		$config = $container->query('Config');
-		$radioSources = $config->getSystemValue('music.allowed_radio_src', []);
+		$radioSources = $config->getSystemValue('music.allowed_stream_src', []);
 
 		if (\is_string($radioSources)) {
 			$radioSources = [$radioSources];

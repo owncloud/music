@@ -1550,7 +1550,7 @@ class AmpacheController extends ApiController {
 			}
 		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
 			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
-			if ($this->config->getSystemValue('music.relay_podcast_stream', true)) {
+			if ($this->isInternalSession() && $this->config->getSystemValue('music.relay_podcast_stream', true)) {
 				return new RelayStreamResponse($episode->getStreamUrl());
 			} else {
 				return new RedirectResponse($episode->getStreamUrl());

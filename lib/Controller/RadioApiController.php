@@ -407,10 +407,18 @@ class RadioApiController extends Controller {
 	}
 
 	private function hlsEnabled() : bool {
-		return (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
+		$enabled = (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
+		if ($this->userId === '') {
+			$enabled = (bool)$this->config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
+		}
+		return $enabled;
 	}
 
 	private function streamRelayEnabled() : bool {
-		return (bool)$this->config->getSystemValue('music.relay_radio_stream', true);
+		$enabled = (bool)$this->config->getSystemValue('music.relay_radio_stream', true);
+		if ($this->userId === '') {
+			$enabled = (bool)$this->config->getSystemValue('music.relay_radio_stream_on_share', $enabled);
+		}
+		return $enabled;
 	}
 }

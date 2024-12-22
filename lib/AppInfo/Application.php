@@ -16,6 +16,7 @@ namespace OCA\Music\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
+use OCP\IConfig;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -854,10 +855,9 @@ class Application extends ApplicationBase {
 	private function adjustCsp() : void {
 		$container = $this->getContainer();
 
-		/** @var \OCP\IConfig $config */
+		/** @var IConfig $config */
 		$config = $container->query('Config');
 		$radioSources = $config->getSystemValue('music.allowed_radio_src', []);
-		$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
 
 		if (\is_string($radioSources)) {
 			$radioSources = [$radioSources];
@@ -869,8 +869,8 @@ class Application extends ApplicationBase {
 			$policy->addAllowedMediaDomain($source);
 		}
 
-		// Also the media sources 'data:' and 'blob:' are needed for HLS streaming
-		if ($enableHls) {
+		// The media sources 'data:' and 'blob:' are needed for HLS streaming
+		if (self::hlsEnabled($config, $container->query('UserId'))) {
 			$policy->addAllowedMediaDomain('data:');
 			$policy->addAllowedMediaDomain('blob:');
 		}
@@ -878,4 +878,11 @@ class Application extends ApplicationBase {
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 	}
 
+	private static function hlsEnabled(IConfig $config, ?string $userId) : bool {
+		$enabled = $config->getSystemValue('music.enable_radio_hls', true);
+		if (empty($userId)) {
+			$enabled = (bool)$config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
+		}
+		return $enabled;
+	}
 }

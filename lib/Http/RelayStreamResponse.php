@@ -23,7 +23,7 @@ use OCA\Music\Utility\HttpUtil;
  * Response which relays a radio stream or similar from an original source URL
  */
 class RelayStreamResponse extends Response implements ICallbackResponse {
-	private string $url;
+	private ?string $url;
 	/** @var resource $context */
 	private $context;
 
@@ -63,16 +63,20 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 			$this->setStatus($sourceHeaders['status_code']);
 		}
 		else {
+			$this->addHeader('Content-Length', '0');
 			$this->setStatus(Http::STATUS_FORBIDDEN);
+			$this->url = null;
 		}
 	}
 
 	public function callback(IOutput $output) {
-		$inStream = \fopen($this->url, 'rb', false, $this->context);
-		$outStream = \fopen('php://output', 'wb');
+		if ($this->url !== null) {
+			$inStream = \fopen($this->url, 'rb', false, $this->context);
+			$outStream = \fopen('php://output', 'wb');
 
-		$bytesCopied = \stream_copy_to_stream($inStream, $outStream);
-		\fclose($outStream);
-		\fclose($inStream);
+			$bytesCopied = \stream_copy_to_stream($inStream, $outStream);
+			\fclose($outStream);
+			\fclose($inStream);
+		}
 	}
 }

@@ -76,23 +76,27 @@ class HttpUtil {
 		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
 			// the type of the second parameter of get_header has changed in PHP 8.0
 			$associative = \version_compare(\phpversion(), '8.0', '<') ? 1 : true;
-			$result = \get_headers($url, $associative, $context);
+			$result = @\get_headers($url, $associative, $context);
 
-			// Do some post-processing on the headers
-			foreach ($result as $key => $value) {
-				// Some of the headers got may be array-valued after a redirection or several, containing value
-				// from each redirected jump. In such cases, preserve only the last value.
-				if (\is_array($value)) {
-					$result[$key] = \end($value);
-				}
+			if ($result === false) {
+				$result = null;
+			} else {
+				// Do some post-processing on the headers
+				foreach ($result as $key => $value) {
+					// Some of the headers got may be array-valued after a redirection or several, containing value
+					// from each redirected jump. In such cases, preserve only the last value.
+					if (\is_array($value)) {
+						$result[$key] = \end($value);
+					}
 
-				// The status header like "HTTP/1.1 200 OK" can found from the index 0. If there were any redirects,
-				// then the statuses after the redirections can be found from indices 1, 2, 3, ... That is, the status
-				// after the last redirection can be found from the highest numerical index. We are interested about the
-				// status code after the last redirection.
-				if (\is_int($key)) {
-					$result['status_code'] = (int)(\explode(' ', $value, 3)[1] ?? 500);
-					unset($result[$key]);
+					// The status header like "HTTP/1.1 200 OK" can found from the index 0. If there were any redirects,
+					// then the statuses after the redirections can be found from indices 1, 2, 3, ... That is, the status
+					// after the last redirection can be found from the highest numerical index. We are interested about the
+					// status code after the last redirection.
+					if (\is_int($key)) {
+						$result['status_code'] = (int)(\explode(' ', $value, 3)[1] ?? 500);
+						unset($result[$key]);
+					}
 				}
 			}
 		}

@@ -20,6 +20,8 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
+ * @method Artist findEntity(string $sql, array $params)
+ * @method Artist[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-extends BaseMapper<Artist>
  */
 class ArtistMapper extends BaseMapper {
@@ -55,6 +57,9 @@ class ArtistMapper extends BaseMapper {
 			$condition, $userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
+	/**
+	 * @return Artist[]
+	 */
 	private function findAllWithCondition(
 			string $condition, string $userId, int $sortBy, ?int $limit, ?int $offset,
 			?string $name, int $matchMode, ?string $createdMin, ?string $createdMax,

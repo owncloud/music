@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2024-12-22 22:35+0200\n"
-"PO-Revision-Date: 2024-12-22 22:39+0200\n"
+"POT-Creation-Date: 2024-12-28 16:31+0200\n"
+"PO-Revision-Date: 2024-12-28 16:56+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #: templates/partials/sidebar/albumdetails.php:36
 #: templates/partials/sidebar/artistdetails.php:39
@@ -693,6 +693,28 @@ msgstr ""
 "Jos tämä URL-osoite ei toimi, yritä lisätä sen perään '/server/xml.server."
 "php'."
 
+#: templates/partials/sidebar/radiohint.php:10
+msgid ""
+"If you have a PLS or M3U file containing the stream URL, then first upload "
+"the file to your cloud using the Files app, press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Import from file\". Find "
+"the previously uploaded playlist file and press \"Choose\"."
+msgstr ""
+"Jos sinulla on PLS- tai M3U-tiedosto, joka sisältää radio-striimin URL-"
+"osoitteen, lataa tiedosto ensin pilveen Tiedostot-sovelluksen avulla, "
+"paina ... -symbolia navigointikohdan \"Internet-radio\" vieressä ja valitse "
+"\"Tuo tiedostosta\". Etsi aiemmin ladattu soittolistatiedosto ja paina "
+"\"Valitse\"."
+
+#: templates/partials/sidebar/radiohint.php:8
+msgid ""
+"If you know the stream URL to add, then press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Add manually\"."
+msgstr ""
+"Jos tiedät lisättävän radio-striimin URL-osoitteen, paina ... -symbolia "
+"navigointikohdan \"Internet-radio\" vieressä ja valitse \"Lisää "
+"manuaalisesti\"."
+
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
@@ -722,17 +744,13 @@ msgstr ""
 "Web-käyttöliittymän lisäksi tätä asetusta noudatetaan Subsonic-rajapinnassa, "
 "vaikkakaan kaikki Subsonic-asiakkaat eivät välttämättä noudata sitä."
 
-#: templates/partials/sidebar/radiohint.php:9
+#: templates/partials/sidebar/radiohint.php:14
 msgid ""
-"In the search results view, press the \"diskette\" icon on an individual "
-"found station to download the station as a PLS file. Alternatively, press "
-"the link \"Save current list as playlist for your media player: PLS\" on top "
-"of the view to get all the matching stations."
+"In case your stream does not play, see <a href=\"{{url}}\" "
+"target=\"_blank\">troubleshooting</a>"
 msgstr ""
-"Paina hakutulosnäkymässä yksittäisen löydetyn aseman \"levyke\"-kuvaketta "
-"ladataksesi aseman PLS-tiedostona. Vaihtoehtoisesti voit painaa näkymän "
-"ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
-"player: PLS\" saadaksesi kaikki löydetyt asemat."
+"Jos radiokanava ei soi, katso <a href=\"{{url}}\" "
+"target=\"_blank\">vianmääritys</a>"
 
 #: templates/partials/views/settingsview.php:131
 msgid "Increase playback speed"
@@ -1162,19 +1180,6 @@ msgstr "Podcastin tiedot"
 msgid "Podcasts"
 msgstr "Podcastit"
 
-#: templates/partials/sidebar/radiohint.php:13
-msgid ""
-"Press the … symbol next to the navigation item \"Internet radio\" and select "
-"\"Import from file\". Find the previously uploaded PLS file and press "
-"\"Choose\". A loading spinner is shown for a while next to the \"Internet "
-"radio\" link. When it disappears, the importing is done and the channels "
-"should become available in the view."
-msgstr ""
-"Paina ...-symbolia \"Internet radio\"-linkin vieressä ja valitse \"Tuo "
-"tiedostosta\". Etsi aiemmin ladattu PLS-tiedosto ja paina \"Valitse\". "
-"\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun se "
-"katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä saataville."
-
 #: templates/partials/controls.php:37 templates/partials/controls.php:5
 #: templates/partials/controls.php:6 embeddedplayer.js:209
 msgid "Previous"
@@ -1517,16 +1522,6 @@ msgstr "Tekniset tiedot"
 msgid "Text copied to clipboard"
 msgstr "Teksti kopioitiin leikepöydälle"
 
-#: templates/partials/sidebar/radiohint.php:15
-msgid ""
-"The PLS file is no longer needed after the import and you may delete it at "
-"will. You might want to keep it, though, because it is also possible to play "
-"the radio stations directly within the Files app by opening the PLS file."
-msgstr ""
-"PLS-tiedostoa ei enää tarvita tuonnin jälkeen, ja voit halutessasi poistaa "
-"sen. Saatat kuitenkin haluta säilyttää sen, koska on myös mahdollista "
-"toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla PLS-tiedosto."
-
 #: js/app/services/podcastservice.ts:104
 msgid "The channel was already up-to-date"
 msgstr "Kanava oli jo ajan tasalla"
@@ -1552,44 +1547,6 @@ msgid ""
 msgstr ""
 "Soittolista sisältää jo joitakin kappaleita. Tuodut kappaleet lisätään "
 "aiemmin luodun sisällön perään. Jatka?"
-
-#: templates/partials/sidebar/radiohint.php:29
-msgid ""
-"The stream is genuinely broken or in such a format that either the Music app "
-"or your browser can't handle it. Majority of the radio stations found from "
-"Community Radio Browser should work on the Music app when a mainstream "
-"browser is being used, but still, there are numerous stations which will not "
-"work."
-msgstr ""
-"Striimi on aidosti rikki tai sellaisessa muodossa, että joko Musiikki-"
-"sovellus tai selaimesi ei pysty käsittelemään sitä. Suurimman osan Community "
-"Radio Browser -palvelusta löytyvistä radioasemista pitäisi toimia Musiikki-"
-"sovelluksessa, kun käytetään valtavirran selainta, mutta silti on olemassa "
-"lukuisia asemia, jotka eivät toimi."
-
-#: templates/partials/sidebar/radiohint.php:25
-msgid ""
-"The stream is of HLS type and the administrator of your cloud has disabled "
-"support for such streams."
-msgstr ""
-"Streami on HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on poistanut käytöstä "
-"tuen tällaisille streameille."
-
-#: templates/partials/sidebar/radiohint.php:27
-msgid ""
-"The stream is of non-HLS type and the administrator of your cloud has "
-"enabled streaming only from some specific sources."
-msgstr ""
-"Virta on ei-HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on sallinut "
-"suoratoiston vain tietyistä lähteistä."
-
-#: templates/partials/sidebar/radiohint.php:20
-msgid ""
-"There are a couple of typical reasons why a configured radio station might "
-"not play on your browser:"
-msgstr ""
-"Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
-"tyypillinen syy:"
 
 #: templates/partials/views/settingsview.php:184
 msgid ""
@@ -1641,6 +1598,18 @@ msgstr "Tämä asetus määrittää kansion, josta musiikkia etsitään."
 #: js/app/controllers/maincontroller.js:191
 msgid "Timeout"
 msgstr "Aikaraja ylittyi"
+
+#: templates/partials/sidebar/radiohint.php:12
+msgid ""
+"To find radio streams, you may use the <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. There, you can find channels "
+"e.g. by name, language, or style. You may save the results as PLS and follow "
+"the instructions above to import them to the Music app."
+msgstr ""
+"Voit etsiä radiolähetyksiä <a href=\"{{url}}\" target=\"_blank\">Community "
+"Radio Browser</a> -sivustolta. Sieltä voit etsiä kanavia esimerkiksi nimen, "
+"kielen tai tyylin perusteella. Voit tallentaa tulokset PLS-muodossa ja tuoda "
+"ne Musiikki-sovellukseen edellä olevien ohjeiden mukaisesti."
 
 #: templates/partials/sidebar/albumdetails.php:28
 #: templates/partials/sidebar/playlistdetails.php:13
@@ -1701,10 +1670,6 @@ msgstr "Kappaleet albumilla {{album}}"
 msgid "Tree layout"
 msgstr "Puumainen asettelu"
 
-#: templates/partials/sidebar/radiohint.php:18
-msgid "Troubleshooting"
-msgstr "Vian etsintä"
-
 #: templates/main.php:80
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
@@ -1763,22 +1728,6 @@ msgid "Upload music in the files app to listen to it here"
 msgstr ""
 "Lähetä musiikkitiedostoja tiedostosovelluksen kautta, jonka jälkeen voit "
 "kuunnella niitä täällä"
-
-#: templates/partials/sidebar/radiohint.php:11
-msgid ""
-"Upload the previously obtained PLS file to your cloud using the Files app."
-msgstr "Lataa aiemmin saamasi PLS-tiedosto pilveen Tiedostot-sovelluksella."
-
-#: templates/partials/sidebar/radiohint.php:7
-msgid ""
-"Use the Community Radio Browser <a href=\"{{url}}\" "
-"target=\"_blank\">search</a> to find the radio stations of interest. Instead "
-"of using the search, you may also browse the channels in Community Radio "
-"Browser by category or popularity."
-msgstr ""
-"Käytä Community Radio Browser -palvelun <a href=\"{{url}}\" "
-"target=\"_blank\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun "
-"sijaan voit myös selata palvelussa kanavia kategorian tai suosion mukaan."
 
 #: templates/partials/views/settingsview.php:172
 msgid ""
@@ -1848,20 +1797,14 @@ msgstr ""
 msgid "You can use the wild cards '?', '*', and '**':"
 msgstr "Voit käyttää jokerimerkkejä '?', '*' ja '**':"
 
-#: templates/partials/sidebar/radiohint.php:23
+#: templates/partials/sidebar/radiohint.php:6
 msgid ""
-"Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
-"scheme. By default, your browser might block such accees. To overcome this, "
-"you may be able to set your browser to allow \"Insecure content\" on this "
-"page. On the desktop browsers, such settings can usually be found by "
-"clicking the icon right next to the address bar on its left side."
+"You may add radio stations either by manually entering the stream URL or by "
+"importing a playlist file containing one or more stream URLs."
 msgstr ""
-"Pilvesi käyttää HTTPS-yhteyttä, mutta striimattu URL-osoite käyttää HTTP-"
-"yhteyttä. Oletusarvoisesti selaimesi saattaa estää tällaisen käytön. Tämän "
-"voi usein ohittaa selaimessa sallimalla erikseen \"vähemmän turvallisen "
-"sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa tällaiset asetukset "
-"löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
-"kuvaketta."
+"Voit lisätä radioasemia joko syöttämällä striimin URL:n manuaalisesti tai "
+"tuomalla soittolistatiedoston, joka sisältää yhden tai useamman striimin URL:"
+"n."
 
 #: templates/partials/views/advancedsearchview.php:9
 msgid "albums"
@@ -2256,6 +2199,106 @@ msgstr "{count} riviä ohitettiin."
 #: playlisttabview.js:76
 msgid "Some files on the playlist were not found"
 msgstr "Joitakin soittolistan tiedostoja ei löytynyt"
+
+#~ msgid ""
+#~ "In the search results view, press the \"diskette\" icon on an individual "
+#~ "found station to download the station as a PLS file. Alternatively, press "
+#~ "the link \"Save current list as playlist for your media player: PLS\" on "
+#~ "top of the view to get all the matching stations."
+#~ msgstr ""
+#~ "Paina hakutulosnäkymässä yksittäisen löydetyn aseman \"levyke\"-kuvaketta "
+#~ "ladataksesi aseman PLS-tiedostona. Vaihtoehtoisesti voit painaa näkymän "
+#~ "ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
+#~ "player: PLS\" saadaksesi kaikki löydetyt asemat."
+
+#~ msgid ""
+#~ "Press the … symbol next to the navigation item \"Internet radio\" and "
+#~ "select \"Import from file\". Find the previously uploaded PLS file and "
+#~ "press \"Choose\". A loading spinner is shown for a while next to the "
+#~ "\"Internet radio\" link. When it disappears, the importing is done and "
+#~ "the channels should become available in the view."
+#~ msgstr ""
+#~ "Paina ...-symbolia \"Internet radio\"-linkin vieressä ja valitse \"Tuo "
+#~ "tiedostosta\". Etsi aiemmin ladattu PLS-tiedosto ja paina \"Valitse\". "
+#~ "\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun "
+#~ "se katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä "
+#~ "saataville."
+
+#~ msgid ""
+#~ "The PLS file is no longer needed after the import and you may delete it "
+#~ "at will. You might want to keep it, though, because it is also possible "
+#~ "to play the radio stations directly within the Files app by opening the "
+#~ "PLS file."
+#~ msgstr ""
+#~ "PLS-tiedostoa ei enää tarvita tuonnin jälkeen, ja voit halutessasi "
+#~ "poistaa sen. Saatat kuitenkin haluta säilyttää sen, koska on myös "
+#~ "mahdollista toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla "
+#~ "PLS-tiedosto."
+
+#~ msgid ""
+#~ "The stream is genuinely broken or in such a format that either the Music "
+#~ "app or your browser can't handle it. Majority of the radio stations found "
+#~ "from Community Radio Browser should work on the Music app when a "
+#~ "mainstream browser is being used, but still, there are numerous stations "
+#~ "which will not work."
+#~ msgstr ""
+#~ "Striimi on aidosti rikki tai sellaisessa muodossa, että joko Musiikki-"
+#~ "sovellus tai selaimesi ei pysty käsittelemään sitä. Suurimman osan "
+#~ "Community Radio Browser -palvelusta löytyvistä radioasemista pitäisi "
+#~ "toimia Musiikki-sovelluksessa, kun käytetään valtavirran selainta, mutta "
+#~ "silti on olemassa lukuisia asemia, jotka eivät toimi."
+
+#~ msgid ""
+#~ "The stream is of HLS type and the administrator of your cloud has "
+#~ "disabled support for such streams."
+#~ msgstr ""
+#~ "Streami on HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on poistanut "
+#~ "käytöstä tuen tällaisille streameille."
+
+#~ msgid ""
+#~ "The stream is of non-HLS type and the administrator of your cloud has "
+#~ "enabled streaming only from some specific sources."
+#~ msgstr ""
+#~ "Virta on ei-HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on sallinut "
+#~ "suoratoiston vain tietyistä lähteistä."
+
+#~ msgid ""
+#~ "There are a couple of typical reasons why a configured radio station "
+#~ "might not play on your browser:"
+#~ msgstr ""
+#~ "Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
+#~ "tyypillinen syy:"
+
+#~ msgid "Troubleshooting"
+#~ msgstr "Vian etsintä"
+
+#~ msgid ""
+#~ "Upload the previously obtained PLS file to your cloud using the Files app."
+#~ msgstr "Lataa aiemmin saamasi PLS-tiedosto pilveen Tiedostot-sovelluksella."
+
+#~ msgid ""
+#~ "Use the Community Radio Browser <a href=\"{{url}}\" "
+#~ "target=\"_blank\">search</a> to find the radio stations of interest. "
+#~ "Instead of using the search, you may also browse the channels in "
+#~ "Community Radio Browser by category or popularity."
+#~ msgstr ""
+#~ "Käytä Community Radio Browser -palvelun <a href=\"{{url}}\" "
+#~ "target=\"_blank\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun "
+#~ "sijaan voit myös selata palvelussa kanavia kategorian tai suosion mukaan."
+
+#~ msgid ""
+#~ "Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
+#~ "scheme. By default, your browser might block such accees. To overcome "
+#~ "this, you may be able to set your browser to allow \"Insecure content\" "
+#~ "on this page. On the desktop browsers, such settings can usually be found "
+#~ "by clicking the icon right next to the address bar on its left side."
+#~ msgstr ""
+#~ "Pilvesi käyttää HTTPS-yhteyttä, mutta striimattu URL-osoite käyttää HTTP-"
+#~ "yhteyttä. Oletusarvoisesti selaimesi saattaa estää tällaisen käytön. "
+#~ "Tämän voi usein ohittaa selaimessa sallimalla erikseen \"vähemmän "
+#~ "turvallisen sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa "
+#~ "tällaiset asetukset löytyvät yleensä napsauttamalla osoiterivin "
+#~ "vasemmalla puolella olevaa kuvaketta."
 
 #~ msgid ""
 #~ "Array of allowed radio and podcast streaming hosts. HLS-type streams are "

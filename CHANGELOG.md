@@ -12,6 +12,7 @@
 ### Changed
 - Renamed config.php key `music.allowed_radio_src` as `music.allowed_stream_src`. Its default value is now an empty array `[]`.
 - Documentation of the admin configuration options moved from the Settings view to the [Wiki page](https://github.com/owncloud/music/wiki/Admin-settings)
+- Troubleshooting for Internet radio moved to the [Wiki page](https://github.com/owncloud/music/wiki/Internet-radio-trouble-shooting)
 - Allow translating all the strings in the embedded Files player and the new Dashboard widget. Provide Finnish translations for these.
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`

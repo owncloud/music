@@ -1527,52 +1527,51 @@ class AmpacheController extends ApiController {
 	 * @AmpacheAPI
 	 */
 	protected function download(int $id, string $type='song', bool $recordPlay=false) : Response {
-		// TODO: This may return both Ampache error responses and HTTP error responses. Should be refactored to always return
-		// HTTP error codes on all error cases. This is probably used in a context where Ampache responses are not properly parsed.
-
 		// request param `format` is ignored
 		// request param `recordPlay` is not a specified part of the API
+
+		// On all errors, return HTTP error codes instead of Ampache errors. When client calls this action, it awaits a binary response
+		// and is probably not prepared to parse any Ampache json/xml responses.
 		$userId = $this->userId();
 
-		if ($type === 'song') {
-			try {
+		try {
+			if ($type === 'song') {
 				$track = $this->trackBusinessLayer->find($id, $userId);
-			} catch (BusinessLayerException $e) {
-				return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
-			}
+				$file = $this->librarySettings->getFolder($userId)->getById($track->getFileId())[0] ?? null;
 
-			$file = $this->librarySettings->getFolder($userId)->getById($track->getFileId())[0] ?? null;
-
-			if ($file instanceof \OCP\Files\File) {
-				if ($recordPlay) {
-					$this->record_play($id, null);
+				if ($file instanceof \OCP\Files\File) {
+					if ($recordPlay) {
+						$this->record_play($id, null);
+					}
+					return new FileStreamResponse($file);
+				} else {
+					return new ErrorResponse(Http::STATUS_NOT_FOUND, "File for song $id does not exist");
 				}
-				return new FileStreamResponse($file);
+			} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
+				$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
+				$streamUrl = $episode->getStreamUrl();
+				if ($streamUrl === null) {
+					return new ErrorResponse(Http::STATUS_NOT_FOUND, "The podcast episode $id has no stream URL");
+				} elseif ($this->isInternalSession() && $this->config->getSystemValue('music.relay_podcast_stream', true)) {
+					return new RelayStreamResponse($streamUrl);
+				} else {
+					return new RedirectResponse($streamUrl);
+				}
+			} elseif ($type === 'playlist') {
+				$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)
+					? $this->trackBusinessLayer->findAllIds($userId)
+					: $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
+				$randomId = Random::pickItem($songIds);
+				if ($randomId === null) {
+					return new ErrorResponse(Http::STATUS_NOT_FOUND, "The playlist $id is empty");
+				} else {
+					return $this->download((int)$randomId, 'song', $recordPlay);
+				}
 			} else {
-				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+				return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, "Unsupported type '$type'");
 			}
-		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
-			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
-			$streamUrl = $episode->getStreamUrl();
-			if ($streamUrl === null) {
-				return new ErrorResponse(Http::STATUS_NOT_FOUND, "The podcast episode $id has no stream URL");
-			} elseif ($this->isInternalSession() && $this->config->getSystemValue('music.relay_podcast_stream', true)) {
-				return new RelayStreamResponse($streamUrl);
-			} else {
-				return new RedirectResponse($streamUrl);
-			}
-		} elseif ($type === 'playlist') {
-			$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)
-				? $this->trackBusinessLayer->findAllIds($userId)
-				: $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
-			$randomId = Random::pickItem($songIds);
-			if ($randomId === null) {
-				throw new AmpacheException("The playlist $id is empty", 404);
-			} else {
-				return $this->download((int)$randomId, 'song', $recordPlay);
-			}
-		} else {
-			throw new AmpacheException("Unsupported type '$type'", 400);
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 		}
 	}
 
@@ -1590,7 +1589,7 @@ class AmpacheController extends ApiController {
 		// from the beginning of the file. Returning an error gives the client a chance to fallback
 		// to other methods of seeking.
 		if ($offset !== null) {
-			throw new AmpacheException('Streaming with time offset is not supported', 400);
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, 'Streaming with time offset is not supported');
 		}
 
 		return $this->download($id, $type, /*recordPlay=*/true);
@@ -1601,13 +1600,17 @@ class AmpacheController extends ApiController {
 	 */
 	protected function get_art(string $type, int $id) : Response {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream'])) {
-			throw new AmpacheException("Unsupported type $type", 400);
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, "Unsupported type $type");
 		}
 
 		if ($type === 'song') {
 			// map song to its parent album
-			$id = $this->trackBusinessLayer->find($id, $this->userId())->getAlbumId();
-			$type = 'album';
+			try {
+				$id = $this->trackBusinessLayer->find($id, $this->userId())->getAlbumId();
+				$type = 'album';
+			} catch (BusinessLayerException $e) {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, "song $id not found");
+			}
 		}
 
 		return $this->getCover($id, $this->getBusinessLayer($type));

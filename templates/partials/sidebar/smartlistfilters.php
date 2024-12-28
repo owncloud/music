@@ -55,4 +55,6 @@
 	</div>
 
 	<div><button id="update-button" ng-click="onUpdateButton()" ng-disabled="!fieldsValid" translate>Update</button></div>
+
+	<div class="hint" translate translate-params-url="'#/search'">Hint: To list tracks with more refined criteria, try <a href="{{url}}">Advanced search</a></div>
 </div>

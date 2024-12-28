@@ -306,7 +306,8 @@
 #app-sidebar #podcast-details a,
 #app-sidebar #podcast-details a *,
 #app-sidebar #radio-station-details a,
-#app-sidebar .tutorial a {
+#app-sidebar .tutorial a,
+#app-sidebar .hint a {
 	text-decoration: underline;
 	display: inline-block;
 }
@@ -476,4 +477,9 @@
 
 #app-sidebar #smartlist-filters #update-button {
 	width: 100%;
+}
+
+#app-sidebar #smartlist-filters .hint {
+	color: var(--color-text-lighter, #a5a5a5);
+	margin-top: 60px;
 }

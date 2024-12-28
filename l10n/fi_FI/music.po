@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2024-12-28 16:31+0200\n"
-"PO-Revision-Date: 2024-12-28 16:56+0200\n"
+"POT-Creation-Date: 2024-12-28 20:42+0200\n"
+"PO-Revision-Date: 2024-12-28 20:43+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -237,7 +237,7 @@ msgstr "Kaikki kanavat olivat jo ajan tasalla"
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1856 musicwidget.ts:57
+#: Controller/AmpacheController.php:1865 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -679,6 +679,14 @@ msgstr ""
 "Erillisiä salasanoja käytetään koska rajapintojen rajoitteiden takia niitä "
 "ei voida käsitellä täysin turvallisesti. Voit luoda niin monta salasanaa "
 "kuin haluat ja peruuttaa ne koska vain."
+
+#: templates/partials/sidebar/smartlistfilters.php:59
+msgid ""
+"Hint: To list tracks with more refined criteria, try <a "
+"href=\"{{url}}\">Advanced search</a>"
+msgstr ""
+"Vihje: Jos haluat listata kappaleita tarkemmilla kriteereillä, kokeile <a "
+"href=\"{{url}}\">tarkennettua hakua</a>"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:270
 #: js/app/controllers/views/advancedsearchviewcontroller.js:297

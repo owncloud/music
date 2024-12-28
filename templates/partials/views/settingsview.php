@@ -180,69 +180,10 @@
 	</div>
 
 	<h2 translate>Admin</h2>
-	<div class="clickable" ng-show="!showAdmin" ng-click="showAdmin=true" translate>Show...</div>
-	<div ng-show="showAdmin">
-		<p translate translate-params-filename="'<cloud root>/config/config.php'">
-			There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below.
+	<div>
+		<p translate translate-params-filename="'<cloud root>/config/config.php'" translate-params-url="'https://github.com/owncloud/music/wiki/Admin-settings'">
+			There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are documented <a href="{{url}}" target="_blank">here</a>.
 		</p>
-		<div>
-			<p>music.lastfm_api_key</p>
-			<p><em translate
-					translate-params-lastfm-url="'https://www.last.fm/api/account/create'"
-					translate-params-guide-url="'https://github.com/owncloud/music/wiki/Setting-up-Last.fm-connection'"
-			>
-				To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{lastfmUrl}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key. For more details, see the <a href="{{guideUrl}}" target="_blank">tutorial</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.cover_size</p>
-			<p><em translate>
-				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer.
-			</em></p>
-		</div>
-		<div>
-			<p>music.allowed_radio_src</p>
-			<p><em translate
-					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
-					translate-params-img-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src'"
-			>
-				Array of allowed radio and podcast streaming hosts. HLS-type streams are not affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy headers <a href="{{mediaSrcUrl}}" target="_blank">media-src</a> and <a href="{{imgSrcUrl}}" target="_blank">img-src</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.enable_radio_hls</p>
-			<p><em translate
-					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
-			>
-				Enable streaming HLS-type radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.podcast_auto_update_interval</p>
-			<p>
-				<em translate>The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours.</em><br/>
-				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
-			</p>
-		</div>
-		<div>
-			<p>music.ampache_api_default_ver</p>
-			<p><em translate translate-params-default-ver="6">
-				The Ampache API major version to use in case the client doesn't specify any version. The default is {{defaultVer}}.
-			</em></p>
-		</div>
-		<div>
-			<p>music.ampache_session_expiry_time</p>
-			<p><em translate
-					translate-params-default-expiry="6000"
-					translate-params-max-expiry="31536000"
-			>
-				The Ampache session expiry time in seconds. The default is {{defaultExpiry}} and the maximum is {{maxExpiry}}.
-			</em></p>
-		</div>
-		<div class="dimmed">
-			<p>music.allowed_radio_hls_src</p>
-			<p><em translate>OBSOLETE. This key is no longer needed or used by the Music application.</em></p>
-		</div>
 	</div>
 
 	<h2 translate>About</h2>

@@ -13,6 +13,7 @@
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+use OCP\IURLGenerator;
 
 /**
  * @method int getChannelId()
@@ -80,12 +81,12 @@ class PodcastEpisode extends Entity {
 		$this->addType('rating', 'int');
 	}
 
-	public function toApi() : array {
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getEpisodeWithSeason(),
-			'stream_url' => $this->getStreamUrl(),
+			'stream_url' => $urlGenerator->linkToRoute('music.podcastApi.episodeStream', ['id' => $this->id]),
 			'mimetype' => $this->getMimetype()
 		];
 	}
@@ -112,7 +113,7 @@ class PodcastEpisode extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(callable $createImageUrl) : array {
+	public function toAmpacheApi(callable $createImageUrl, callable $createStreamUrl) : array {
 		$imageUrl = $createImageUrl($this);
 		return [
 			'id' => (string)$this->getId(),
@@ -131,7 +132,7 @@ class PodcastEpisode extends Entity {
 			'time' => $this->getDuration(),
 			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
-			'url' => $this->getStreamUrl(),
+			'url' => $createStreamUrl($this),
 			'art' => $imageUrl,
 			'has_art' => !empty($imageUrl),
 			'flag' => !empty($this->getStarred()),

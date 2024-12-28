@@ -371,8 +371,8 @@ OCA.Music.EmbeddedPlayer = function() {
 		});
 	}
 
-	function resolveExtUrl(url, callback) {
-		$.get(OC.generateUrl('apps/music/api/radio/streamurl'), {url: url}, callback);
+	function resolveExtUrl(url, token, callback) {
+		$.get(OC.generateUrl('apps/music/api/radio/streamurl'), {url: url, token: token}, callback);
 	}
 
 	function changePlayingUrl(playCallback) {
@@ -512,7 +512,7 @@ OCA.Music.EmbeddedPlayer = function() {
 		});
 	};
 
-	this.playExtUrl = function(url, caption, shareToken = null) {
+	this.playExtUrl = function(url, urlToken, caption) {
 		currentFileId = null;
 		updateMetadata({
 			title: caption,
@@ -520,13 +520,9 @@ OCA.Music.EmbeddedPlayer = function() {
 			cover: radioIconPath
 		});
 		changePlayingUrl(function() {
-			resolveExtUrl(url, function(resolved) {
-				if (shareToken && resolved.hls) {
-					OC.Notification.showTemporary(t('music', 'Stream type not supported on shared file'));
-				} else {
-					player.fromExtUrl(resolved.url, resolved.hls);
-					play();
-				}
+			resolveExtUrl(url, urlToken, function(resolved) {
+				player.fromExtUrl(resolved.url, resolved.hls);
+				play();
 			});
 		});
 	};

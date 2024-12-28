@@ -10,6 +10,11 @@
   * OpenSubsonic extension [`apiKeyAuthentication`](https://opensubsonic.netlify.app/docs/extensions/apikeyauth/), including support for arg `apiKey` and the new method `tokenInfo`
 
 ### Changed
+- Renamed config.php key `music.allowed_radio_src` as `music.allowed_stream_src`. Its default value is now an empty array `[]`.
+- Internet radio and podcast streams are now relayed via the user's cloud instance by default. To opt out, set the config.php keys `music.relay_radio_stream` and `music.relay_podcast_stream` as `false` and add required sources to `music.allowed_stream_src`.
+  [#1035](https://github.com/owncloud/music/issues/1035)
+- Documentation of the admin configuration options moved from the Settings view to the [Wiki page](https://github.com/owncloud/music/wiki/Admin-settings)
+- Troubleshooting for Internet radio moved to the [Wiki page](https://github.com/owncloud/music/wiki/Internet-radio-trouble-shooting)
 - Allow translating all the strings in the embedded Files player and the new Dashboard widget. Provide Finnish translations for these.
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`

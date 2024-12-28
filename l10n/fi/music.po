@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2024-11-25 21:11+0200\n"
-"PO-Revision-Date: 2024-11-25 21:15+0200\n"
+"POT-Creation-Date: 2024-12-28 16:31+0200\n"
+"PO-Revision-Date: 2024-12-28 16:56+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #: templates/partials/sidebar/albumdetails.php:36
 #: templates/partials/sidebar/artistdetails.php:39
@@ -126,7 +126,7 @@ msgstr "<strong>SHIFT+VÄLILYÖNTI</strong> tai <strong>SHIFT+K</strong>"
 msgid "<strong>SPACE</strong> or <strong>K</strong>"
 msgstr "<strong>VÄLILYÖNTI</strong> tai <strong>K</strong>"
 
-#: templates/partials/views/settingsview.php:248
+#: templates/partials/views/settingsview.php:189
 msgid "About"
 msgstr "Tietoja"
 
@@ -238,7 +238,7 @@ msgstr "Kaikki kanavat olivat jo ajan tasalla"
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1824 musicwidget.ts:57
+#: Controller/AmpacheController.php:1856 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -284,21 +284,6 @@ msgstr ""
 "Oletko varma, että haluat nollata musiikkikokoelmasi? Tämä poistaa kaikki "
 "skannatut kappaleet ja käyttäjän luomat soittolistat!"
 
-#: templates/partials/views/settingsview.php:205
-msgid ""
-"Array of allowed radio and podcast streaming hosts. HLS-type streams are not "
-"affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from "
-"any remote URL. The given URLs will be added to the Content-Security-Policy "
-"headers <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a> and <a "
-"href=\"{{imgSrcUrl}}\" target=\"_blank\">img-src</a>."
-msgstr ""
-"Taulukko sallituista radio- ja podcast-suoratoiston host-osoitteista. Tämä "
-"ei vaikuta HLS-tyyppisiin streameihin. Oletusarvo on ['http://*:*', 'https://"
-"*:*'], mikä sallii suoratoiston mistä tahansa etäosoitteesta. Annetut URL-"
-"osoitteet lisätään Content-Security-Policy-otsakkeisiin <a "
-"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a> ja <a "
-"href=\"{{imgSrcUrl}}\" target=\"_blank\">img-src</a>."
-
 #: templates/partials/views/settingsview.php:102
 msgid "Articles to ignore on artist names"
 msgstr "Etuliitteet, joita ei huomioida esittäjän nimessä"
@@ -328,7 +313,7 @@ msgstr "Esittäjän arvosana"
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:227
+#: Controller/SubsonicController.php:228
 msgid "Artists"
 msgstr "Esittäjät"
 
@@ -494,18 +479,6 @@ msgstr "Kesto (sekunteina)"
 msgid "Enable metadata scanning"
 msgstr "Skannaa metatiedot"
 
-#: templates/partials/views/settingsview.php:214
-msgid ""
-"Enable streaming HLS-type radio stations, relaying them via the cloud "
-"server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</"
-"samp> and <samp>blob:</samp> will be added to the CSP header <a "
-"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
-msgstr ""
-"Salli HLS-tyyppisten radioasemien suoratoisto ja välitä ne pilvipalvelimen "
-"kautta. Oletusarvo on <samp>true</samp>. Kun tämä on käytössä, lähteet "
-"<samp>data:</samp> ja <samp>blob:</samp> lisätään CSP-otsikkoon <a "
-"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
-
 #: js/app/controllers/views/advancedsearchviewcontroller.js:321
 msgid "Ends with"
 msgstr "Päättyy"
@@ -645,7 +618,7 @@ msgid "Folder"
 msgstr "Kansio"
 
 #: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:228
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:229
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr "Kansiot"
@@ -720,6 +693,28 @@ msgstr ""
 "Jos tämä URL-osoite ei toimi, yritä lisätä sen perään '/server/xml.server."
 "php'."
 
+#: templates/partials/sidebar/radiohint.php:10
+msgid ""
+"If you have a PLS or M3U file containing the stream URL, then first upload "
+"the file to your cloud using the Files app, press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Import from file\". Find "
+"the previously uploaded playlist file and press \"Choose\"."
+msgstr ""
+"Jos sinulla on PLS- tai M3U-tiedosto, joka sisältää radio-striimin URL-"
+"osoitteen, lataa tiedosto ensin pilveen Tiedostot-sovelluksen avulla, "
+"paina ... -symbolia navigointikohdan \"Internet-radio\" vieressä ja valitse "
+"\"Tuo tiedostosta\". Etsi aiemmin ladattu soittolistatiedosto ja paina "
+"\"Valitse\"."
+
+#: templates/partials/sidebar/radiohint.php:8
+msgid ""
+"If you know the stream URL to add, then press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Add manually\"."
+msgstr ""
+"Jos tiedät lisättävän radio-striimin URL-osoitteen, paina ... -symbolia "
+"navigointikohdan \"Internet-radio\" vieressä ja valitse \"Lisää "
+"manuaalisesti\"."
+
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
@@ -749,17 +744,13 @@ msgstr ""
 "Web-käyttöliittymän lisäksi tätä asetusta noudatetaan Subsonic-rajapinnassa, "
 "vaikkakaan kaikki Subsonic-asiakkaat eivät välttämättä noudata sitä."
 
-#: templates/partials/sidebar/radiohint.php:9
+#: templates/partials/sidebar/radiohint.php:14
 msgid ""
-"In the search results view, press the \"diskette\" icon on an individual "
-"found station to download the station as a PLS file. Alternatively, press "
-"the link \"Save current list as playlist for your media player: PLS\" on top "
-"of the view to get all the matching stations."
+"In case your stream does not play, see <a href=\"{{url}}\" "
+"target=\"_blank\">troubleshooting</a>"
 msgstr ""
-"Paina hakutulosnäkymässä yksittäisen löydetyn aseman \"levyke\"-kuvaketta "
-"ladataksesi aseman PLS-tiedostona. Vaihtoehtoisesti voit painaa näkymän "
-"ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
-"player: PLS\" saadaksesi kaikki löydetyt asemat."
+"Jos radiokanava ei soi, katso <a href=\"{{url}}\" "
+"target=\"_blank\">vianmääritys</a>"
 
 #: templates/partials/views/settingsview.php:131
 msgid "Increase playback speed"
@@ -864,18 +855,6 @@ msgstr "Hyppää edelliseen kappaleeseen"
 msgid "Keyboard shortcuts"
 msgstr "Näppäimistöoikotiet"
 
-#: templates/partials/views/settingsview.php:199
-msgid ""
-"Large album cover images are down-scaled to this size on the server before "
-"providing them for the web browser or the Subsonic/Ampache client. Smaller "
-"images are not up-scaled. The default size is 380 pixels. The value should "
-"be given as a single integer."
-msgstr ""
-"Suuret albumin kansikuvat pienennetään tämän kokoisiksi palvelimella ennen "
-"niiden tarjoamista selaimelle tai Subsonic/Ampache-asiakkaalle. Pienempiä "
-"kuvia ei suurenneta. Oletuskoko on 380 kuvapistettä. Arvo on annettava "
-"yhtenä kokonaislukuna."
-
 #: js/app/controllers/views/advancedsearchviewcontroller.js:126
 #: js/app/controllers/views/advancedsearchviewcontroller.js:181
 #: js/app/controllers/views/advancedsearchviewcontroller.js:234
@@ -928,7 +907,7 @@ msgstr "Vastaa säännöllistä lauseketta"
 msgid "Modified"
 msgstr "Muokattu"
 
-#: templates/partials/views/settingsview.php:253 Dashboard/MusicWidget.php:45
+#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
 #: Search/Provider.php:76
 msgid "Music"
 msgstr "Musiikki"
@@ -1051,14 +1030,6 @@ msgstr ""
 "Huomaa: Kun polkua muutetaan, kaikki aiemmin skannatut tiedostot uuden polun "
 "ulkopuolella poistetaan kokoelmasta ja kaikista soittolistoista."
 
-#: templates/partials/views/settingsview.php:224
-msgid ""
-"Note: the update rate is limited also by the execution rate of your cloud "
-"background task."
-msgstr ""
-"Huomaa: päivitystahtia rajoittaa myös se, kuinka usein pilvi suorittaa "
-"taustatöitä."
-
 #: templates/partials/sidebar/artistdetails.php:25
 msgid "Number of albums"
 msgstr "Albumien määrä"
@@ -1075,11 +1046,6 @@ msgstr "Kappaleiden määrä"
 #: templates/partials/sidebar/artistdetails.php:28
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
-
-#: templates/partials/views/settingsview.php:244
-msgid ""
-"OBSOLETE. This key is no longer needed or used by the Music application."
-msgstr "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avainta."
 
 #: js/app/controllers/playercontroller.js:779
 #: js/app/controllers/playercontroller.js:788
@@ -1184,7 +1150,7 @@ msgstr "Soittolistan nimi"
 msgid "Playlist or folder not found"
 msgstr "Soittolista tai kansio ei löytynyt"
 
-#: templates/partials/views/settingsview.php:256
+#: templates/partials/views/settingsview.php:197
 msgid ""
 "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
 "target=\"_blank\">issue tracker</a>"
@@ -1213,19 +1179,6 @@ msgstr "Podcastin tiedot"
 #: templates/partials/navigation.php:19 musicwidget.ts:60
 msgid "Podcasts"
 msgstr "Podcastit"
-
-#: templates/partials/sidebar/radiohint.php:13
-msgid ""
-"Press the … symbol next to the navigation item \"Internet radio\" and select "
-"\"Import from file\". Find the previously uploaded PLS file and press "
-"\"Choose\". A loading spinner is shown for a while next to the \"Internet "
-"radio\" link. When it disappears, the importing is done and the channels "
-"should become available in the view."
-msgstr ""
-"Paina ...-symbolia \"Internet radio\"-linkin vieressä ja valitse \"Tuo "
-"tiedostosta\". Etsi aiemmin ladattu PLS-tiedosto ja paina \"Valitse\". "
-"\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun se "
-"katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä saataville."
 
 #: templates/partials/controls.php:37 templates/partials/controls.php:5
 #: templates/partials/controls.php:6 embeddedplayer.js:209
@@ -1471,10 +1424,6 @@ msgstr "Näytä vähemmän…"
 msgid "Show more…"
 msgstr "Näytä enemmän…"
 
-#: templates/partials/views/settingsview.php:183
-msgid "Show..."
-msgstr "Näytä…"
-
 #: js/app/controllers/playercontroller.js:778
 #: templates/partials/controls.php:92
 msgid "Shuffle"
@@ -1573,32 +1522,6 @@ msgstr "Tekniset tiedot"
 msgid "Text copied to clipboard"
 msgstr "Teksti kopioitiin leikepöydälle"
 
-#: templates/partials/views/settingsview.php:229
-msgid ""
-"The Ampache API major version to use in case the client doesn't specify any "
-"version. The default is {{defaultVer}}."
-msgstr ""
-"Ampache API:n pääversio, jota käytetään, jos asiakas ei määritä mitään "
-"versiota. Oletusarvo on {{defaultVer}}."
-
-#: templates/partials/views/settingsview.php:235
-msgid ""
-"The Ampache session expiry time in seconds. The default is {{defaultExpiry}} "
-"and the maximum is {{maxExpiry}}."
-msgstr ""
-"Ampache-session vanhenemisaika sekunteina. Oletusarvo on {{defaultExpiry}} "
-"ja suurin sallittu arvo {{maxExpiry}}."
-
-#: templates/partials/sidebar/radiohint.php:15
-msgid ""
-"The PLS file is no longer needed after the import and you may delete it at "
-"will. You might want to keep it, though, because it is also possible to play "
-"the radio stations directly within the Files app by opening the PLS file."
-msgstr ""
-"PLS-tiedostoa ei enää tarvita tuonnin jälkeen, ja voit halutessasi poistaa "
-"sen. Saatat kuitenkin haluta säilyttää sen, koska on myös mahdollista "
-"toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla PLS-tiedosto."
-
 #: js/app/services/podcastservice.ts:104
 msgid "The channel was already up-to-date"
 msgstr "Kanava oli jo ajan tasalla"
@@ -1617,16 +1540,6 @@ msgstr ""
 "Valitse \"Ei\", jos haluat viedä listan toisella nimellä. Peruuta sulkemalla "
 "valintaikkuna."
 
-#: templates/partials/views/settingsview.php:223
-msgid ""
-"The interval for automatic podcast update checks in hours. Decimal value can "
-"be used for sub-hour resolution. Negative value will disable automatic "
-"updating. The default value is 24 hours."
-msgstr ""
-"Automaattisten podcast-päivitysten aikaväli tunteina. Desimaaliarvolla "
-"voidaan asettaa arvo tarkemmin kuin tunnin tarkkuudella. Negatiivinen arvo "
-"poistaa automaattiset päivitykset käytöstä. Oletusarvo on 24 tuntia."
-
 #: js/app/services/playlistfileservice.ts:173
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
@@ -1635,54 +1548,17 @@ msgstr ""
 "Soittolista sisältää jo joitakin kappaleita. Tuodut kappaleet lisätään "
 "aiemmin luodun sisällön perään. Jatka?"
 
-#: templates/partials/sidebar/radiohint.php:29
-msgid ""
-"The stream is genuinely broken or in such a format that either the Music app "
-"or your browser can't handle it. Majority of the radio stations found from "
-"Community Radio Browser should work on the Music app when a mainstream "
-"browser is being used, but still, there are numerous stations which will not "
-"work."
-msgstr ""
-"Striimi on aidosti rikki tai sellaisessa muodossa, että joko Musiikki-"
-"sovellus tai selaimesi ei pysty käsittelemään sitä. Suurimman osan Community "
-"Radio Browser -palvelusta löytyvistä radioasemista pitäisi toimia Musiikki-"
-"sovelluksessa, kun käytetään valtavirran selainta, mutta silti on olemassa "
-"lukuisia asemia, jotka eivät toimi."
-
-#: templates/partials/sidebar/radiohint.php:25
-msgid ""
-"The stream is of HLS type and the administrator of your cloud has disabled "
-"support for such streams."
-msgstr ""
-"Streami on HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on poistanut käytöstä "
-"tuen tällaisille streameille."
-
-#: templates/partials/sidebar/radiohint.php:27
-msgid ""
-"The stream is of non-HLS type and the administrator of your cloud has "
-"enabled streaming only from some specific sources."
-msgstr ""
-"Virta on ei-HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on sallinut "
-"suoratoiston vain tietyistä lähteistä."
-
-#: templates/partials/sidebar/radiohint.php:20
-msgid ""
-"There are a couple of typical reasons why a configured radio station might "
-"not play on your browser:"
-msgstr ""
-"Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
-"tyypillinen syy:"
-
-#: templates/partials/views/settingsview.php:185
+#: templates/partials/views/settingsview.php:184
 msgid ""
 "There is no settings UI for the server-wide settings of the Music app but "
 "some settings are available by adding specific key-value pairs to the file "
-"<samp>{{filename}}</samp>. The available keys are described below."
+"<samp>{{filename}}</samp>. The available keys are documented <a "
+"href=\"{{url}}\" target=\"_blank\">here</a>."
 msgstr ""
-"Musiikki-sovelluksen palvelimen laajuisille asetuksille ei ole "
-"käyttöliittymää, mutta jotkin asetukset ovat käytettävissä lisäämällä "
-"tiedostoon <samp>{{filename}}</samp> tiettyjä avain-arvo-pareja. "
-"Käytettävissä olevat avaimet on kuvattu alla."
+"Musiikkisovelluksen palvelimen laajuisia asetuksia varten ei ole "
+"käyttöliittymää, mutta joitakin asetuksia on saatavissa lisäämällä tiettyjä "
+"avain-arvopareja tiedostoon <samp>{{filename}}</samp>. Käytettävissä olevat "
+"avaimet on dokumentoitu <a href=\"{{url}}\" target=\"_blank\">täällä</a>."
 
 #: templates/partials/views/settingsview.php:88
 msgid "This action erases all the channels shown in the \"Podcasts\" view."
@@ -1723,23 +1599,17 @@ msgstr "Tämä asetus määrittää kansion, josta musiikkia etsitään."
 msgid "Timeout"
 msgstr "Aikaraja ylittyi"
 
-#: templates/partials/views/settingsview.php:190
+#: templates/partials/sidebar/radiohint.php:12
 msgid ""
-"To see the artist biography and other information from Last.fm in the "
-"details view, you need to create an API account with Last.fm. For this, use "
-"the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only "
-"'Contact email' and 'Application name' need to be filled in the form. You "
-"are then provided with an API key which should be used as a value for this "
-"key. For more details, see the <a href=\"{{guideUrl}}\" "
-"target=\"_blank\">tutorial</a>."
+"To find radio streams, you may use the <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. There, you can find channels "
+"e.g. by name, language, or style. You may save the results as PLS and follow "
+"the instructions above to import them to the Music app."
 msgstr ""
-"Jos haluat nähdä taiteilijan elämäkerran ja muita tietoja Last.fm-"
-"palvelusta, sinun on luotava API-tili Last.fm-palveluun. Käytä tähän <a "
-"href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm -lomaketta</a>. "
-"Lomakkeeseen on täytettävä vain kohdat \"Contact email\" ja \"Application "
-"name\". Tämän jälkeen sinulle annetaan API-avain, jota tulisi käyttää tämän "
-"avaimen arvona. Lisätietoja löydät <a href=\"{{guideUrl}}\" "
-"target=\"_blank\">oppaasta</a>."
+"Voit etsiä radiolähetyksiä <a href=\"{{url}}\" target=\"_blank\">Community "
+"Radio Browser</a> -sivustolta. Sieltä voit etsiä kanavia esimerkiksi nimen, "
+"kielen tai tyylin perusteella. Voit tallentaa tulokset PLS-muodossa ja tuoda "
+"ne Musiikki-sovellukseen edellä olevien ohjeiden mukaisesti."
 
 #: templates/partials/sidebar/albumdetails.php:28
 #: templates/partials/sidebar/playlistdetails.php:13
@@ -1800,10 +1670,6 @@ msgstr "Kappaleet albumilla {{album}}"
 msgid "Tree layout"
 msgstr "Puumainen asettelu"
 
-#: templates/partials/sidebar/radiohint.php:18
-msgid "Troubleshooting"
-msgstr "Vian etsintä"
-
 #: templates/main.php:80
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
@@ -1862,22 +1728,6 @@ msgid "Upload music in the files app to listen to it here"
 msgstr ""
 "Lähetä musiikkitiedostoja tiedostosovelluksen kautta, jonka jälkeen voit "
 "kuunnella niitä täällä"
-
-#: templates/partials/sidebar/radiohint.php:11
-msgid ""
-"Upload the previously obtained PLS file to your cloud using the Files app."
-msgstr "Lataa aiemmin saamasi PLS-tiedosto pilveen Tiedostot-sovelluksella."
-
-#: templates/partials/sidebar/radiohint.php:7
-msgid ""
-"Use the Community Radio Browser <a href=\"{{url}}\" "
-"target=\"_blank\">search</a> to find the radio stations of interest. Instead "
-"of using the search, you may also browse the channels in Community Radio "
-"Browser by category or popularity."
-msgstr ""
-"Käytä Community Radio Browser -palvelun <a href=\"{{url}}\" "
-"target=\"_blank\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun "
-"sijaan voit myös selata palvelussa kanavia kategorian tai suosion mukaan."
 
 #: templates/partials/views/settingsview.php:172
 msgid ""
@@ -1947,20 +1797,14 @@ msgstr ""
 msgid "You can use the wild cards '?', '*', and '**':"
 msgstr "Voit käyttää jokerimerkkejä '?', '*' ja '**':"
 
-#: templates/partials/sidebar/radiohint.php:23
+#: templates/partials/sidebar/radiohint.php:6
 msgid ""
-"Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
-"scheme. By default, your browser might block such accees. To overcome this, "
-"you may be able to set your browser to allow \"Insecure content\" on this "
-"page. On the desktop browsers, such settings can usually be found by "
-"clicking the icon right next to the address bar on its left side."
+"You may add radio stations either by manually entering the stream URL or by "
+"importing a playlist file containing one or more stream URLs."
 msgstr ""
-"Pilvesi käyttää HTTPS-yhteyttä, mutta striimattu URL-osoite käyttää HTTP-"
-"yhteyttä. Oletusarvoisesti selaimesi saattaa estää tällaisen käytön. Tämän "
-"voi usein ohittaa selaimessa sallimalla erikseen \"vähemmän turvallisen "
-"sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa tällaiset asetukset "
-"löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
-"kuvaketta."
+"Voit lisätä radioasemia joko syöttämällä striimin URL:n manuaalisesti tai "
+"tuomalla soittolistatiedoston, joka sisältää yhden tai useamman striimin URL:"
+"n."
 
 #: templates/partials/views/advancedsearchview.php:9
 msgid "albums"
@@ -2135,7 +1979,7 @@ msgstr "rajoittamaton"
 msgid "updates checked"
 msgstr "päivitykset tarkastettu"
 
-#: templates/partials/views/settingsview.php:254
+#: templates/partials/views/settingsview.php:195
 msgid "version history"
 msgstr "versiohistoria"
 
@@ -2292,10 +2136,6 @@ msgstr "(tiedosto ei ole musiikkikokoelmakansiossasi)"
 msgid "Loading…"
 msgstr "Ladataan…"
 
-#: embeddedplayer.js:525
-msgid "Stream type not supported on shared file"
-msgstr "Stream-tyyppiä ei tueta jaetussa tiedostossa"
-
 #: folderview.js:141
 msgid ""
 "The option is available only while the parent folder of the playlist file is "
@@ -2359,6 +2199,201 @@ msgstr "{count} riviä ohitettiin."
 #: playlisttabview.js:76
 msgid "Some files on the playlist were not found"
 msgstr "Joitakin soittolistan tiedostoja ei löytynyt"
+
+#~ msgid ""
+#~ "In the search results view, press the \"diskette\" icon on an individual "
+#~ "found station to download the station as a PLS file. Alternatively, press "
+#~ "the link \"Save current list as playlist for your media player: PLS\" on "
+#~ "top of the view to get all the matching stations."
+#~ msgstr ""
+#~ "Paina hakutulosnäkymässä yksittäisen löydetyn aseman \"levyke\"-kuvaketta "
+#~ "ladataksesi aseman PLS-tiedostona. Vaihtoehtoisesti voit painaa näkymän "
+#~ "ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
+#~ "player: PLS\" saadaksesi kaikki löydetyt asemat."
+
+#~ msgid ""
+#~ "Press the … symbol next to the navigation item \"Internet radio\" and "
+#~ "select \"Import from file\". Find the previously uploaded PLS file and "
+#~ "press \"Choose\". A loading spinner is shown for a while next to the "
+#~ "\"Internet radio\" link. When it disappears, the importing is done and "
+#~ "the channels should become available in the view."
+#~ msgstr ""
+#~ "Paina ...-symbolia \"Internet radio\"-linkin vieressä ja valitse \"Tuo "
+#~ "tiedostosta\". Etsi aiemmin ladattu PLS-tiedosto ja paina \"Valitse\". "
+#~ "\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun "
+#~ "se katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä "
+#~ "saataville."
+
+#~ msgid ""
+#~ "The PLS file is no longer needed after the import and you may delete it "
+#~ "at will. You might want to keep it, though, because it is also possible "
+#~ "to play the radio stations directly within the Files app by opening the "
+#~ "PLS file."
+#~ msgstr ""
+#~ "PLS-tiedostoa ei enää tarvita tuonnin jälkeen, ja voit halutessasi "
+#~ "poistaa sen. Saatat kuitenkin haluta säilyttää sen, koska on myös "
+#~ "mahdollista toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla "
+#~ "PLS-tiedosto."
+
+#~ msgid ""
+#~ "The stream is genuinely broken or in such a format that either the Music "
+#~ "app or your browser can't handle it. Majority of the radio stations found "
+#~ "from Community Radio Browser should work on the Music app when a "
+#~ "mainstream browser is being used, but still, there are numerous stations "
+#~ "which will not work."
+#~ msgstr ""
+#~ "Striimi on aidosti rikki tai sellaisessa muodossa, että joko Musiikki-"
+#~ "sovellus tai selaimesi ei pysty käsittelemään sitä. Suurimman osan "
+#~ "Community Radio Browser -palvelusta löytyvistä radioasemista pitäisi "
+#~ "toimia Musiikki-sovelluksessa, kun käytetään valtavirran selainta, mutta "
+#~ "silti on olemassa lukuisia asemia, jotka eivät toimi."
+
+#~ msgid ""
+#~ "The stream is of HLS type and the administrator of your cloud has "
+#~ "disabled support for such streams."
+#~ msgstr ""
+#~ "Streami on HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on poistanut "
+#~ "käytöstä tuen tällaisille streameille."
+
+#~ msgid ""
+#~ "The stream is of non-HLS type and the administrator of your cloud has "
+#~ "enabled streaming only from some specific sources."
+#~ msgstr ""
+#~ "Virta on ei-HLS-tyyppinen, ja pilvipalvelun ylläpitäjä on sallinut "
+#~ "suoratoiston vain tietyistä lähteistä."
+
+#~ msgid ""
+#~ "There are a couple of typical reasons why a configured radio station "
+#~ "might not play on your browser:"
+#~ msgstr ""
+#~ "Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
+#~ "tyypillinen syy:"
+
+#~ msgid "Troubleshooting"
+#~ msgstr "Vian etsintä"
+
+#~ msgid ""
+#~ "Upload the previously obtained PLS file to your cloud using the Files app."
+#~ msgstr "Lataa aiemmin saamasi PLS-tiedosto pilveen Tiedostot-sovelluksella."
+
+#~ msgid ""
+#~ "Use the Community Radio Browser <a href=\"{{url}}\" "
+#~ "target=\"_blank\">search</a> to find the radio stations of interest. "
+#~ "Instead of using the search, you may also browse the channels in "
+#~ "Community Radio Browser by category or popularity."
+#~ msgstr ""
+#~ "Käytä Community Radio Browser -palvelun <a href=\"{{url}}\" "
+#~ "target=\"_blank\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun "
+#~ "sijaan voit myös selata palvelussa kanavia kategorian tai suosion mukaan."
+
+#~ msgid ""
+#~ "Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
+#~ "scheme. By default, your browser might block such accees. To overcome "
+#~ "this, you may be able to set your browser to allow \"Insecure content\" "
+#~ "on this page. On the desktop browsers, such settings can usually be found "
+#~ "by clicking the icon right next to the address bar on its left side."
+#~ msgstr ""
+#~ "Pilvesi käyttää HTTPS-yhteyttä, mutta striimattu URL-osoite käyttää HTTP-"
+#~ "yhteyttä. Oletusarvoisesti selaimesi saattaa estää tällaisen käytön. "
+#~ "Tämän voi usein ohittaa selaimessa sallimalla erikseen \"vähemmän "
+#~ "turvallisen sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa "
+#~ "tällaiset asetukset löytyvät yleensä napsauttamalla osoiterivin "
+#~ "vasemmalla puolella olevaa kuvaketta."
+
+#~ msgid ""
+#~ "Array of allowed radio and podcast streaming hosts. HLS-type streams are "
+#~ "not affected. Default is ['http://*:*', 'https://*:*'], allowing "
+#~ "streaming from any remote URL. The given URLs will be added to the "
+#~ "Content-Security-Policy headers <a href=\"{{mediaSrcUrl}}\" "
+#~ "target=\"_blank\">media-src</a> and <a href=\"{{imgSrcUrl}}\" "
+#~ "target=\"_blank\">img-src</a>."
+#~ msgstr ""
+#~ "Taulukko sallituista radio- ja podcast-suoratoiston host-osoitteista. "
+#~ "Tämä ei vaikuta HLS-tyyppisiin streameihin. Oletusarvo on ['http://*:*', "
+#~ "'https://*:*'], mikä sallii suoratoiston mistä tahansa etäosoitteesta. "
+#~ "Annetut URL-osoitteet lisätään Content-Security-Policy-otsakkeisiin <a "
+#~ "href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a> ja <a "
+#~ "href=\"{{imgSrcUrl}}\" target=\"_blank\">img-src</a>."
+
+#~ msgid ""
+#~ "Enable streaming HLS-type radio stations, relaying them via the cloud "
+#~ "server. Default is <samp>true</samp>. When enabled, the sources "
+#~ "<samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header "
+#~ "<a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
+#~ msgstr ""
+#~ "Salli HLS-tyyppisten radioasemien suoratoisto ja välitä ne "
+#~ "pilvipalvelimen kautta. Oletusarvo on <samp>true</samp>. Kun tämä on "
+#~ "käytössä, lähteet <samp>data:</samp> ja <samp>blob:</samp> lisätään CSP-"
+#~ "otsikkoon <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
+
+#~ msgid ""
+#~ "Large album cover images are down-scaled to this size on the server "
+#~ "before providing them for the web browser or the Subsonic/Ampache client. "
+#~ "Smaller images are not up-scaled. The default size is 380 pixels. The "
+#~ "value should be given as a single integer."
+#~ msgstr ""
+#~ "Suuret albumin kansikuvat pienennetään tämän kokoisiksi palvelimella "
+#~ "ennen niiden tarjoamista selaimelle tai Subsonic/Ampache-asiakkaalle. "
+#~ "Pienempiä kuvia ei suurenneta. Oletuskoko on 380 kuvapistettä. Arvo on "
+#~ "annettava yhtenä kokonaislukuna."
+
+#~ msgid ""
+#~ "Note: the update rate is limited also by the execution rate of your cloud "
+#~ "background task."
+#~ msgstr ""
+#~ "Huomaa: päivitystahtia rajoittaa myös se, kuinka usein pilvi suorittaa "
+#~ "taustatöitä."
+
+#~ msgid ""
+#~ "OBSOLETE. This key is no longer needed or used by the Music application."
+#~ msgstr ""
+#~ "POISTUNUT. Musiikki-sovellus ei enää tarvitse tai käytä tätä avainta."
+
+#~ msgid "Show..."
+#~ msgstr "Näytä…"
+
+#~ msgid ""
+#~ "The Ampache API major version to use in case the client doesn't specify "
+#~ "any version. The default is {{defaultVer}}."
+#~ msgstr ""
+#~ "Ampache API:n pääversio, jota käytetään, jos asiakas ei määritä mitään "
+#~ "versiota. Oletusarvo on {{defaultVer}}."
+
+#~ msgid ""
+#~ "The Ampache session expiry time in seconds. The default is "
+#~ "{{defaultExpiry}} and the maximum is {{maxExpiry}}."
+#~ msgstr ""
+#~ "Ampache-session vanhenemisaika sekunteina. Oletusarvo on "
+#~ "{{defaultExpiry}} ja suurin sallittu arvo {{maxExpiry}}."
+
+#~ msgid ""
+#~ "The interval for automatic podcast update checks in hours. Decimal value "
+#~ "can be used for sub-hour resolution. Negative value will disable "
+#~ "automatic updating. The default value is 24 hours."
+#~ msgstr ""
+#~ "Automaattisten podcast-päivitysten aikaväli tunteina. Desimaaliarvolla "
+#~ "voidaan asettaa arvo tarkemmin kuin tunnin tarkkuudella. Negatiivinen "
+#~ "arvo poistaa automaattiset päivitykset käytöstä. Oletusarvo on 24 tuntia."
+
+#~ msgid ""
+#~ "To see the artist biography and other information from Last.fm in the "
+#~ "details view, you need to create an API account with Last.fm. For this, "
+#~ "use the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. "
+#~ "Only 'Contact email' and 'Application name' need to be filled in the "
+#~ "form. You are then provided with an API key which should be used as a "
+#~ "value for this key. For more details, see the <a href=\"{{guideUrl}}\" "
+#~ "target=\"_blank\">tutorial</a>."
+#~ msgstr ""
+#~ "Jos haluat nähdä taiteilijan elämäkerran ja muita tietoja Last.fm-"
+#~ "palvelusta, sinun on luotava API-tili Last.fm-palveluun. Käytä tähän <a "
+#~ "href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm -lomaketta</a>. "
+#~ "Lomakkeeseen on täytettävä vain kohdat \"Contact email\" ja \"Application "
+#~ "name\". Tämän jälkeen sinulle annetaan API-avain, jota tulisi käyttää "
+#~ "tämän avaimen arvona. Lisätietoja löydät <a href=\"{{guideUrl}}\" "
+#~ "target=\"_blank\">oppaasta</a>."
+
+#~ msgid "Stream type not supported on shared file"
+#~ msgstr "Stream-tyyppiä ei tueta jaetussa tiedostossa"
 
 #~ msgid "From year"
 #~ msgstr "Vuodesta"

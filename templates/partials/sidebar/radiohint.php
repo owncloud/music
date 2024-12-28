@@ -3,31 +3,15 @@
 	<div class="tutorial">
 		<h2 translate>Setting up radio stations</h2>
 
-		<ol>
-			<li translate translate-params-url="'http://www.radio-browser.info/#!/search'">Use the Community Radio Browser <a href="{{url}}" target="_blank">search</a> to find the radio stations of interest. Instead of using the search, you may also browse the channels in Community Radio Browser by category or popularity.</li>
+		<p translate>You may add radio stations either by manually entering the stream URL or by importing a playlist file containing one or more stream URLs.</p>
 
-			<li translate>In the search results view, press the "diskette" icon on an individual found station to download the station as a PLS file. Alternatively, press the link "Save current list as playlist for your media player: PLS" on top of the view to get all the matching stations.</li>
+		<p translate>If you know the stream URL to add, then press the … symbol next to the navigation item "Internet radio", and select "Add manually".</p>
 
-			<li translate>Upload the previously obtained PLS file to your cloud using the Files app.</li>
+		<p translate>If you have a PLS or M3U file containing the stream URL, then first upload the file to your cloud using the Files app, press the … symbol next to the navigation item "Internet radio", and select "Import from file". Find the previously uploaded playlist file and press "Choose".</p>
 
-			<li translate>Press the … symbol next to the navigation item "Internet radio" and select "Import from file". Find the previously uploaded PLS file and press "Choose". A loading spinner is shown for a while next to the "Internet radio" link. When it disappears, the importing is done and the channels should become available in the view.</li>
+		<p translate translate-params-url="'https://www.radio-browser.info/'">To find radio streams, you may use the <a href="{{url}}" target="_blank">Community Radio Browser</a>. There, you can find channels e.g. by name, language, or style. You may save the results as PLS and follow the instructions above to import them to the Music app.</p>
 
-			<li translate>The PLS file is no longer needed after the import and you may delete it at will. You might want to keep it, though, because it is also possible to play the radio stations directly within the Files app by opening the PLS file.</li>
-		</ol>
-
-		<h2 translate>Troubleshooting</h2>
-
-		<p translate>There are a couple of typical reasons why a configured radio station might not play on your browser:</p>
-
-		<ol>
-			<li translate>Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP scheme. By default, your browser might block such accees. To overcome this, you may be able to set your browser to allow "Insecure content" on this page. On the desktop browsers, such settings can usually be found by clicking the icon right next to the address bar on its left side.</li>
-
-			<li translate>The stream is of HLS type and the administrator of your cloud has disabled support for such streams.</li>
-
-			<li translate>The stream is of non-HLS type and the administrator of your cloud has enabled streaming only from some specific sources.</li>
-
-			<li translate>The stream is genuinely broken or in such a format that either the Music app or your browser can't handle it. Majority of the radio stations found from Community Radio Browser should work on the Music app when a mainstream browser is being used, but still, there are numerous stations which will not work.</li>
-		</ol>
+		<p translate translate-params-url="'https://github.com/owncloud/music/wiki/Internet-radio-trouble-shooting'">In case your stream does not play, see <a href="{{url}}" target="_blank">troubleshooting</a></p>
 	</div>
 
 </div>

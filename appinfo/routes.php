@@ -52,6 +52,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'coverApi#cachedCover',	'url' => '/api/cover/{hash}',				'verb' => 'GET'],
 	['name' => 'coverApi#artistCover',	'url' => '/api/artist/{artistId}/cover',	'verb' => 'GET'],
 	['name' => 'coverApi#albumCover',	'url' => '/api/album/{albumId}/cover',		'verb' => 'GET'],
+	['name' => 'coverApi#podcastCover',	'url' => '/api/podcasts/{channelId}/cover',	'verb' => 'GET'],
 
 	// Shiva API https://shiva.readthedocs.io/en/latest/index.html
 	['name' => 'shivaApi#artists',		'url' => '/api/artists',					'verb' => 'GET'],
@@ -88,6 +89,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
 	['name' => 'radioApi#resolveStreamUrl',	'url' => '/api/radio/streamurl',		'verb' => 'GET'],
+	['name' => 'radioApi#streamFromUrl',	'url' => '/api/radio/stream',			'verb' => 'GET'],
 	['name' => 'radioApi#hlsManifest',		'url' => '/api/radio/hls/manifest',		'verb' => 'GET'],
 	['name' => 'radioApi#hlsSegment',		'url' => '/api/radio/hls/segment',		'verb' => 'GET'],
 	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
@@ -95,6 +97,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
 	['name' => 'radioApi#getChannelInfo',	'url' => '/api/radio/{id}/info',		'verb' => 'GET'],
 	['name' => 'radioApi#stationStreamUrl',	'url' => '/api/radio/{id}/streamurl',	'verb' => 'GET'],
+	['name' => 'radioApi#stationStream',	'url' => '/api/radio/{id}/stream',		'verb' => 'GET'],
 
 	// podcast API
 	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],
@@ -102,6 +105,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',					'verb' => 'GET'],
 	['name' => 'podcastApi#channelDetails',	'url' => '/api/podcasts/{id}/details',			'verb' => 'GET'],
 	['name' => 'podcastApi#episodeDetails',	'url' => '/api/podcasts/episodes/{id}/details',	'verb' => 'GET'],
+	['name' => 'podcastApi#episodeStream',	'url' => '/api/podcasts/episodes/{id}/stream',	'verb' => 'GET'],
 	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',					'verb' => 'DELETE'],
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
 	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],

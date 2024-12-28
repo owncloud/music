@@ -31,6 +31,7 @@ class PlaylistFileService {
 	private PlaylistBusinessLayer $playlistBusinessLayer;
 	private RadioStationBusinessLayer $radioStationBusinessLayer;
 	private TrackBusinessLayer $trackBusinessLayer;
+	private StreamTokenService $tokenService;
 	private Logger $logger;
 
 	private const PARSE_LOCAL_FILES_ONLY = 1;
@@ -41,10 +42,12 @@ class PlaylistFileService {
 			PlaylistBusinessLayer $playlistBusinessLayer,
 			RadioStationBusinessLayer $radioStationBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
+			StreamTokenService $tokenService,
 			Logger $logger) {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->tokenService = $tokenService;
 		$this->logger = $logger;
 	}
 
@@ -219,12 +222,19 @@ class PlaylistFileService {
 	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
 	 * @throws \OCP\Files\NotFoundException if the $fileId is not a valid file under the $baseFolder
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
-	 * @return array
+	 * @return array ['files' => array, 'invalid_paths' => string[]]
 	 */
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$node = $baseFolder->getById($fileId)[0] ?? null;
 		if ($node instanceof File) {
-			return self::doParseFile($node, $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
+			$parsed = self::doParseFile($node, $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
+			// add security tokens for the external URL entries
+			foreach ($parsed['files'] as &$entry) {
+				if (isset($entry['url'])) {
+					$entry['token'] = $this->tokenService->tokenForUrl($entry['url']);
+				}
+			}
+			return $parsed;
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
@@ -235,7 +245,7 @@ class PlaylistFileService {
 	 * @param Folder $baseFolder Base folder for the local files
 	 * @param int $mode One of self::[PARSE_LOCAL_FILES_ONLY, PARSE_URLS_ONLY, PARSE_LOCAL_FILES_AND_URLS]
 	 * @throws \UnexpectedValueException
-	 * @return array
+	 * @return array ['files' => array, 'invalid_paths' => string[]]
 	 */
 	private static function doParseFile(File $file, Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();
@@ -245,7 +255,7 @@ class PlaylistFileService {
 		} elseif ($mime == 'audio/x-scpls') {
 			$entries = self::parsePlsFile($file);
 		} else {
-			throw new \UnexpectedValueException("file mime type '$mime' is not suported");
+			throw new \UnexpectedValueException("file mime type '$mime' is not supported");
 		}
 
 		// find the parsed entries from the file system

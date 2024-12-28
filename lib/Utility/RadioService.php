@@ -23,10 +23,12 @@ use OCP\IURLGenerator;
 class RadioService {
 
 	private IURLGenerator $urlGenerator;
+	private StreamTokenService $tokenService;
 	private Logger $logger;
 
-	public function __construct(IURLGenerator $urlGenerator, Logger $logger) {
+	public function __construct(IURLGenerator $urlGenerator, StreamTokenService $tokenService, Logger $logger) {
 		$this->urlGenerator = $urlGenerator;
+		$this->tokenService = $tokenService;
 		$this->logger = $logger;
 	}
 
@@ -292,7 +294,9 @@ class RadioService {
 			} else {
 				$isHls = (\strpos($content, '#EXT-X-MEDIA-SEQUENCE') !== false);
 				if ($isHls) {
-					$resolvedUrl = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest', ['url' => \rawurlencode($url)]);
+					$token = $this->tokenService->tokenForUrl($url);
+					$resolvedUrl = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest',
+							['url' => \rawurlencode($url), 'token' => \rawurlencode($token)]);
 				} else {
 					$entries = PlaylistFileService::parseM3uContent($content);
 				}
@@ -335,7 +339,9 @@ class RadioService {
 				$line = \trim($line);
 				if (!empty($line) && !Util::startsWith($line, '#')) {
 					$segUrl = self::convertUrlOnPlaylistToAbsolute($line, $manifestUrlParts);
-					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment', ['url' => \rawurlencode($segUrl)]);
+					$segToken = $this->tokenService->tokenForUrl($segUrl);
+					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment',
+							['url' => \rawurlencode($segUrl), 'token' => \rawurlencode($segToken)]);
 				}
 				$content .= $line . "\n";
 			}

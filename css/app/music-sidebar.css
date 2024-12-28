@@ -335,7 +335,8 @@
 }
 
 #app-sidebar .tutorial h2,
-#app-sidebar .tutorial li {
+#app-sidebar .tutorial li,
+#app-sidebar .tutorial p {
 	margin-bottom: 10px;
 }
 

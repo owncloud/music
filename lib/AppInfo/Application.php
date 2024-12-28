@@ -16,6 +16,7 @@ namespace OCA\Music\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
+use OCP\IConfig;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -73,12 +74,13 @@ use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\ExtractorGetID3;
 use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\RadioService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
-use OCA\Music\Utility\LibrarySettings;
+use OCA\Music\Utility\StreamTokenService;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
@@ -220,6 +222,7 @@ class Application extends ApplicationBase {
 				$c->query('RootFolder'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('UserId'),
 				$c->query('Logger')
@@ -271,6 +274,8 @@ class Application extends ApplicationBase {
 			return new PodcastApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
+				$c->query('URLGenerator'),
 				$c->query('PodcastService'),
 				$c->query('UserId'),
 				$c->query('Logger')
@@ -290,8 +295,10 @@ class Application extends ApplicationBase {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('Config'),
+				$c->query('URLGenerator'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('RadioService'),
+				$c->query('StreamTokenService'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
@@ -666,6 +673,7 @@ class Application extends ApplicationBase {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('StreamTokenService'),
 				$c->query('Logger')
 			);
 		});
@@ -681,6 +689,7 @@ class Application extends ApplicationBase {
 		$context->registerService('RadioService', function (IAppContainer $c) {
 			return new RadioService(
 				$c->query('URLGenerator'),
+				$c->query('StreamTokenService'),
 				$c->query('Logger')
 			);
 		});
@@ -711,6 +720,12 @@ class Application extends ApplicationBase {
 			);
 		});
 
+		$context->registerService('StreamTokenService', function (IAppContainer $c) {
+			return new StreamTokenService(
+				$c->query('DbCache')
+			);
+		});
+	
 		$context->registerService('LibrarySettings', function (IAppContainer $c) {
 			return new LibrarySettings(
 				$c->query('AppName'),
@@ -840,10 +855,9 @@ class Application extends ApplicationBase {
 	private function adjustCsp() : void {
 		$container = $this->getContainer();
 
-		/** @var \OCP\IConfig $config */
+		/** @var IConfig $config */
 		$config = $container->query('Config');
-		$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
-		$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
+		$radioSources = $config->getSystemValue('music.allowed_stream_src', []);
 
 		if (\is_string($radioSources)) {
 			$radioSources = [$radioSources];
@@ -853,11 +867,10 @@ class Application extends ApplicationBase {
 
 		foreach ($radioSources as $source) {
 			$policy->addAllowedMediaDomain($source);
-			$policy->addAllowedImageDomain($source); // for podcast images
 		}
 
-		// Also the media sources 'data:' and 'blob:' are needed for HLS streaming
-		if ($enableHls) {
+		// The media sources 'data:' and 'blob:' are needed for HLS streaming
+		if (self::hlsEnabled($config, $container->query('UserId'))) {
 			$policy->addAllowedMediaDomain('data:');
 			$policy->addAllowedMediaDomain('blob:');
 		}
@@ -865,4 +878,11 @@ class Application extends ApplicationBase {
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 	}
 
+	private static function hlsEnabled(IConfig $config, ?string $userId) : bool {
+		$enabled = $config->getSystemValue('music.enable_radio_hls', true);
+		if (empty($userId)) {
+			$enabled = (bool)$config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
+		}
+		return $enabled;
+	}
 }

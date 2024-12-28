@@ -13,6 +13,7 @@
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+use OCP\IURLGenerator;
 
 /**
  * @method string getRssUrl()
@@ -87,27 +88,27 @@ class PodcastChannel extends Entity {
 		$this->episodes = $episodes;
 	}
 
-	public function toApi() : array {
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		$result = [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
-			'image' => $this->getImageUrl(),
+			'image' => $this->createImageUrl($urlGenerator),
 			'hash' => $this->getContentHash()
 		];
 
 		if ($this->episodes !== null) {
-			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi');
+			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi', ['urlGenerator' => $urlGenerator]);
 		}
 
 		return $result;
 	}
 
-	public function detailsToApi() : array {
+	public function detailsToApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
 			'description' => $this->getDescription(),
-			'image' => $this->getImageUrl(),
+			'image' => $this->createImageUrl($urlGenerator) . '?originalSize=true',
 			'link_url' =>  $this->getLinkUrl(),
 			'rss_url' => $this->getRssUrl(),
 			'language' => $this->getLanguage(),
@@ -163,5 +164,12 @@ class PodcastChannel extends Entity {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Create URL which loads the channel image via the cloud server. The URL handles down-scaling and caching automatically.
+	 */
+	private function createImageUrl(IURLGenerator $urlGenerator) : string {
+		return $urlGenerator->linkToRoute('music.coverApi.podcastCover', ['channelId' => $this->getId()]);
 	}
 }

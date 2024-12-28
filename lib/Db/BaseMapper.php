@@ -23,6 +23,15 @@ use OCA\Music\Utility\Util;
 
 /**
  * Common base class for data access classes of the Music app
+ * 
+ * Annotate the relevant base class methods since VSCode doesn't understand the dynamically defined base class:
+ * @method string getTableName()
+ * @method Entity delete(Entity $entity)
+ * We need to annotate also a few protected methods as "public" since PHPDoc doesn't have any syntax to declare protected methods:
+ * @method \PDOStatement execute(string $sql, array $params = [], ?int $limit = null, ?int $offset = null)
+ * @method Entity findEntity(string $sql, array $params)
+ * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
+ * 
  * @phpstan-template EntityType of Entity
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)

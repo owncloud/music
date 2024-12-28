@@ -83,9 +83,7 @@ class Scan extends BaseCommand {
 
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
-			$users = \array_map(function ($u) {
-				return $u->getUID();
-			}, $users);
+			$users = \array_map(fn($u) => $u->getUID(), $users);
 		}
 
 		foreach ($users as $user) {

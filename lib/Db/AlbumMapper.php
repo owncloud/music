@@ -411,9 +411,9 @@ class AlbumMapper extends BaseMapper {
 				return \count($coverNames);
 			};
 
-			\usort($images, function ($imageA, $imageB) use ($getImageRank) {
-				return $getImageRank($imageA['name']) <=> $getImageRank($imageB['name']);
-			});
+			\usort($images, fn($imageA, $imageB) =>
+				$getImageRank($imageA['name']) <=> $getImageRank($imageB['name'])
+			);
 			$imageId = (int)$images[0]['fileid'];
 			$this->setCover($imageId, $albumId);
 			$return = true;

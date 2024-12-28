@@ -128,9 +128,10 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		$channel->setAuthor( Util::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
 		$channel->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
 		$channel->setImageUrl( (string)$xmlNode->image->url );
-		$channel->setCategory( \implode(', ', \array_map(function ($category) {
-			return $category->attributes()['text'];
-		}, \iterator_to_array($itunesNodes->category, false))) );
+		$channel->setCategory( \implode(', ', \array_map(
+			fn($category) => $category->attributes()['text'],
+			\iterator_to_array($itunesNodes->category, false)
+		)) );
 	}
 
 	private static function parseDateTime(?\SimpleXMLElement $xmlNode) : ?string {

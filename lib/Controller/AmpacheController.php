@@ -2117,16 +2117,12 @@ class AmpacheController extends ApiController {
 			$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId());
 		}
 
-		$createPlayUrl = function(Track $track) : string {
-			return $this->createAmpacheActionUrl('stream', $track->getId());
-		};
+		$createPlayUrl = fn(Track $track) => $this->createAmpacheActionUrl('stream', $track->getId());
 		$createImageUrl = function(Track $track) : string {
 			$album = $track->getAlbum();
 			return ($album !== null && $album->getId() !== null) ? $this->createCoverUrl($album) : '';
 		};
-		$renderRef = function(int $id, string $name) : array {
-			return $this->renderAlbumOrArtistRef($id, $name);
-		};
+		$renderRef = fn(int $id, string $name) => $this->renderAlbumOrArtistRef($id, $name);
 		$genreKey = $this->genreKey();
 		// In APIv6 JSON format, there is a new property `artists` with an array value
 		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
@@ -2188,9 +2184,7 @@ class AmpacheController extends ApiController {
 	 * @param RadioStation[] $stations
 	 */
 	private function renderLiveStreams(array $stations) : array {
-		$createImageUrl = function(RadioStation $station) : string {
-			return $this->createAmpacheActionUrl('get_art', $station->getId(), 'live_stream');
-		};
+		$createImageUrl = fn(RadioStation $station) => $this->createAmpacheActionUrl('get_art', $station->getId(), 'live_stream');
 
 		return [
 			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi', [$createImageUrl])

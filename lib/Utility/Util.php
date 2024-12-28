@@ -148,9 +148,7 @@ class Util {
 	 * the $condition evaluates to *false*.
 	 */
 	public static function arrayRejectRecursive(array $array, callable $condition) : array {
-		$invCond = function($item) use ($condition) {
-			return !$condition($item);
-		};
+		$invCond = fn($item) => !$condition($item);
 		return self::arrayFilterRecursive($array, $invCond);
 	}
 
@@ -188,9 +186,7 @@ class Util {
 	 * specified column of the inner dimension.
 	 */
 	public static function arraySortByColumn(array &$arr, string $column) : void {
-		\usort($arr, function ($a, $b) use ($column) {
-			return self::stringCaseCompare($a[$column], $b[$column]);
-		});
+		\usort($arr, fn($a, $b) => self::stringCaseCompare($a[$column], $b[$column]));
 	}
 
 	/**

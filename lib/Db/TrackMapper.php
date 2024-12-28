@@ -366,9 +366,7 @@ class TrackMapper extends BaseMapper {
 
 		// Sort the results according the file names. This can't be made using ORDERBY in the
 		// SQL query because then we couldn't use the "natural order" comparison algorithm
-		\usort($rows, function ($a, $b) {
-			return \strnatcasecmp($a['filename'], $b['filename']);
-		});
+		\usort($rows, fn($a, $b) => \strnatcasecmp($a['filename'], $b['filename']));
 
 		// group the files to parent folder "buckets"
 		$result = [];

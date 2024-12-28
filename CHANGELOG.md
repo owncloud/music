@@ -36,6 +36,7 @@
   [#1173](https://github.com/owncloud/music/issues/1173)
 - Scan sometimes breaking on MariaDB with "Serialization failure: 1213 Deadlock" when the cleanup task gets run on the background
   [#918](https://github.com/owncloud/music/issues/918)
+- In Files app, sidebar not showing playlist file contents if the list has any external URLs with no caption
 - Ampache API:
   * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
   * Action `download` still implicitly recording song as played even though that was supposed to change in v2.0.0

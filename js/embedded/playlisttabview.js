@@ -43,7 +43,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 					this.$el.append(list);
 	
 					let titleForFile = function(file) {
-						return file.caption || OCA.Music.Utils.titleFromFilename(file.name);
+						return file.caption || OCA.Music.Utils.titleFromFilename(file.name ?? '') || file.url;
 					};
 	
 					let tooltipForFile = function(file) {

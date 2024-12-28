@@ -76,7 +76,7 @@ class HttpUtil {
 		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
 			// the type of the second parameter of get_header has changed in PHP 8.0
 			$associative = \version_compare(\phpversion(), '8.0', '<') ? 1 : true;
-			$result = @\get_headers($url, $associative, $context);
+			$result = @\get_headers($url, /** @scrutinizer ignore-type */ $associative, $context);
 
 			if ($result === false) {
 				$result = null;

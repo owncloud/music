@@ -1303,7 +1303,7 @@ A mistake made when creating the release package 1.3.0 broke the application pre
 - reset-database command
 - set length of a track in the database and expose via Ampache
 - fix album count in Ampache API
-- expose Album cover via (inofficial) Ampache API
+- expose Album cover via (unofficial) Ampache API
 - ownCloud 8 compatibility
 - user interaction needed to start background scan and reload the music view
 

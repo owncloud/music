@@ -178,7 +178,7 @@ OCA.Music.Utils = class {
 	}
 
 	/**
-	 * Format baud rate given as bit per second to kilobits per second with integer precission
+	 * Format baud rate given as bit per second to kilobits per second with integer precision
 	 */
 	static formatBitrate(bitsPerSecond : number) : string {
 		return (bitsPerSecond / 1000).toFixed() + ' kbps';

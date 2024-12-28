@@ -1527,6 +1527,9 @@ class AmpacheController extends ApiController {
 	 * @AmpacheAPI
 	 */
 	protected function download(int $id, string $type='song', bool $recordPlay=false) : Response {
+		// TODO: This may return both Ampache error responses and HTTP error responses. Should be refactored to always return
+		// HTTP error codes on all error cases. This is probably used in a context where Ampache responses are not properly parsed.
+
 		// request param `format` is ignored
 		// request param `recordPlay` is not a specified part of the API
 		$userId = $this->userId();
@@ -1550,10 +1553,13 @@ class AmpacheController extends ApiController {
 			}
 		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
 			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
-			if ($this->isInternalSession() && $this->config->getSystemValue('music.relay_podcast_stream', true)) {
-				return new RelayStreamResponse($episode->getStreamUrl());
+			$streamUrl = $episode->getStreamUrl();
+			if ($streamUrl === null) {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, "The podcast episode $id has no stream URL");
+			} elseif ($this->isInternalSession() && $this->config->getSystemValue('music.relay_podcast_stream', true)) {
+				return new RelayStreamResponse($streamUrl);
 			} else {
-				return new RedirectResponse($episode->getStreamUrl());
+				return new RedirectResponse($streamUrl);
 			}
 		} elseif ($type === 'playlist') {
 			$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)

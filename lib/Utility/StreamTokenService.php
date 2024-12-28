@@ -22,13 +22,13 @@ use OCA\Music\Db\Cache;
  */
 class StreamTokenService {
 
-    private Cache $cache;
+	private Cache $cache;
 	private ?string $secret;
 
-    public function __construct(Cache $cache) {
-        $this->cache = $cache;
+	public function __construct(Cache $cache) {
+		$this->cache = $cache;
 		$this->secret = null; // lazy load
-    }
+	}
 
 	public function tokenForUrl(string $url) : string {
 		$secret = $this->getPrivateSecret();
@@ -40,7 +40,7 @@ class StreamTokenService {
 		return self::tokenIsValid($token, $url, $secret);
 	}
 
-    private static function createToken(string $message, string $privateSecret) : string {
+	private static function createToken(string $message, string $privateSecret) : string {
 		$salt = \random_bytes(32);
 		$hash = \hash('sha256', $salt . $message . $privateSecret, /*binary=*/true);
 		return \base64_encode($salt . $hash);
@@ -56,10 +56,10 @@ class StreamTokenService {
 	private function getPrivateSecret() : string {
 		// Load the secret all the way from the DB only once per request and cache it for later
 		// invocations to avoid flooding DB requests when parsing a large playlist file for Files.
-		if ($this->secret === null) {
-			$this->secret = $this->getPrivateSecretFromDb();
-		}
-		return $this->secret;
+		// Make this so that also Scrutinizer understands that the return value is always non-null.
+		$secret = $this->secret ?? $this->getPrivateSecretFromDb();
+		$this->secret = $secret;
+		return $secret;
 	}
 
 	private function getPrivateSecretFromDb() : string {

@@ -74,7 +74,7 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 			$inStream = \fopen($this->url, 'rb', false, $this->context);
 			$outStream = \fopen('php://output', 'wb');
 
-			$bytesCopied = \stream_copy_to_stream($inStream, $outStream);
+			\stream_copy_to_stream($inStream, $outStream);
 			\fclose($outStream);
 			\fclose($inStream);
 		}

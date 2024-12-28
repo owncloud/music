@@ -164,10 +164,13 @@ class PodcastApiController extends Controller {
 		$episode = $this->podcastService->getEpisode($id, $this->userId);
 
 		if ($episode !== null) {
-			if ($this->config->getSystemValue('music.relay_podcast_stream', true)) {
-				return new RelayStreamResponse($episode->getStreamUrl());
+			$streamUrl = $episode->getStreamUrl();
+			if ($streamUrl === null) {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, "The podcast episode $id has no stream URL");
+			} elseif ($this->config->getSystemValue('music.relay_podcast_stream', true)) {
+				return new RelayStreamResponse($streamUrl);
 			} else {
-				return new RedirectResponse($episode->getStreamUrl());
+				return new RedirectResponse($streamUrl);
 			}
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

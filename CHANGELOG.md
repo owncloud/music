@@ -29,6 +29,8 @@
   * Action `get_bookmark` supports argument `all` (affects response format only, we still don't support more than one bookmark per song/episode)
 - Subsonic API:
   * Allow method `getOpenSubsonicExtensions` without any user authentication
+  * When browsing by folder, `getMusicDirectory` sorts songs by file name instead of song title
+    [#1182](https://github.com/owncloud/music/issues/1182)
 
 ### Fixed
 - Song progress shown incorrectly in the media session integration of Chrome when playing (exotic file types) with the fallback Aurora.js player

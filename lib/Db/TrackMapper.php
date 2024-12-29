@@ -99,7 +99,7 @@ class TrackMapper extends BaseMapper {
 		}
 
 		$sql = $this->selectUserEntities($condition,
-				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`title`)');
+				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`file`.`name`)');
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
@@ -107,7 +107,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByFolder(int $folderId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$sql = $this->selectUserEntities('`file`.`parent` = ?', 'ORDER BY LOWER(`title`)');
+		$sql = $this->selectUserEntities('`file`.`parent` = ?', 'ORDER BY LOWER(`file`.`name`)');
 		$params = [$userId, $folderId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}

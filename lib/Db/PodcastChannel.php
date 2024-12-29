@@ -97,7 +97,7 @@ class PodcastChannel extends Entity {
 		];
 
 		if ($this->episodes !== null) {
-			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi', ['urlGenerator' => $urlGenerator]);
+			$result['episodes'] = \array_map(fn($e) => $e->toApi($urlGenerator), $this->episodes);
 		}
 
 		return $result;
@@ -141,7 +141,8 @@ class PodcastChannel extends Entity {
 		];
 
 		if ($this->episodes !== null) {
-			$result['podcast_episode'] = Util::arrayMapMethod($this->episodes, 'toAmpacheApi');
+			$createImageUrl = fn($e) => $this->getImageUrl();
+			$result['podcast_episode'] = \array_map(fn($e) => $e->toAmpacheApi($createImageUrl, null), $this->episodes);
 		}
 
 		return $result;
@@ -160,7 +161,7 @@ class PodcastChannel extends Entity {
 		];
 
 		if ($this->episodes !== null) {
-			$result['episode'] = Util::arrayMapMethod($this->episodes, 'toSubsonicApi');
+			$result['episode'] = \array_map(fn($e) => $e->toSubsonicApi(), $this->episodes);
 		}
 
 		return $result;

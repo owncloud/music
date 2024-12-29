@@ -24,19 +24,11 @@ class Util {
 	const SINT32_MIN = -self::SINT32_MAX - 1;
 
 	/**
-	 * Map the given array by calling a named member function for each of the array elements
-	 */
-	public static function arrayMapMethod(array $arr, string $methodName, array $methodArgs=[]) : array {
-		$func = fn($obj) => \call_user_func_array([$obj, $methodName], $methodArgs);
-		return \array_map($func, $arr);
-	}
-
-	/**
 	 * Extract ID of each array element by calling getId and return
 	 * the IDs as an array
 	 */
 	public static function extractIds(array $arr) : array {
-		return self::arrayMapMethod($arr, 'getId');
+		return \array_map(fn($i) => $i->getId(), $arr);
 	}
 
 	/**
@@ -44,7 +36,7 @@ class Util {
 	 * the IDs as an array
 	 */
 	public static function extractUserIds(array $arr) : array {
-		return self::arrayMapMethod($arr, 'getUserId');
+		return \array_map(fn($i) => $i->getUserId(), $arr);
 	}
 
 	/**

@@ -2128,8 +2128,10 @@ class AmpacheController extends ApiController {
 		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
 
 		return [
-			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', 
-				[$this->l10n, $createPlayUrl, $createImageUrl, $renderRef, $genreKey, $includeArtists])
+			'song' => \array_map(
+				fn($t) => $t->toAmpacheApi($this->l10n, $createPlayUrl, $createImageUrl, $renderRef, $genreKey, $includeArtists),
+				$tracks
+			)
 		];
 	}
 
@@ -2146,7 +2148,7 @@ class AmpacheController extends ApiController {
 		};
 
 		$result = [
-			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi', [$createImageUrl, $includeTracks])
+			'playlist' => \array_map(fn($p) => $p->toAmpacheApi($createImageUrl, $includeTracks), $playlists)
 		];
 
 		// annoyingly, the structure of the included tracks is quite different in JSON compared to XML
@@ -2164,7 +2166,7 @@ class AmpacheController extends ApiController {
 	 */
 	private function renderPodcastChannels(array $channels) : array {
 		return [
-			'podcast' => Util::arrayMapMethod($channels, 'toAmpacheApi')
+			'podcast' => \array_map(fn($c) => $c->toAmpacheApi(), $channels)
 		];
 	}
 
@@ -2173,10 +2175,10 @@ class AmpacheController extends ApiController {
 	 */
 	private function renderPodcastEpisodes(array $episodes) : array {
 		return [
-			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi', [
+			'podcast_episode' => \array_map(fn($e) => $e->toAmpacheApi(
 				fn($episode) => $this->createAmpacheActionUrl('get_art', $episode->getChannelId(), 'podcast'),
 				fn($episode) => $this->createAmpacheActionUrl('stream', $episode->getId(), 'podcast_episode')
-			])
+			), $episodes)
 		];
 	}
 
@@ -2187,7 +2189,7 @@ class AmpacheController extends ApiController {
 		$createImageUrl = fn(RadioStation $station) => $this->createAmpacheActionUrl('get_art', $station->getId(), 'live_stream');
 
 		return [
-			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi', [$createImageUrl])
+			'live_stream' => \array_map(fn($s) => $s->toAmpacheApi($createImageUrl), $stations)
 		];
 	}
 
@@ -2196,7 +2198,7 @@ class AmpacheController extends ApiController {
 	 */
 	private function renderTags(array $genres) : array {
 		return [
-			'tag' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
+			'tag' => \array_map(fn($g) => $g->toAmpacheApi($this->l10n), $genres)
 		];
 	}
 
@@ -2205,7 +2207,7 @@ class AmpacheController extends ApiController {
 	 */
 	private function renderGenres(array $genres) : array {
 		return [
-			'genre' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
+			'genre' => \array_map(fn($g) => $g->toAmpacheApi($this->l10n), $genres)
 		];
 	}
 
@@ -2224,7 +2226,7 @@ class AmpacheController extends ApiController {
 		}
 
 		return [
-			'bookmark' => Util::arrayMapMethod($bookmarks, 'toAmpacheApi', [$renderEntry])
+			'bookmark' => \array_map(fn($b) => $b->toAmpacheApi($renderEntry), $bookmarks)
 		];
 	}
 

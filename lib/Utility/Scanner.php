@@ -460,7 +460,7 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	private function getMusicFolder(string $userId, ?string $path) {
+	private function getMusicFolder(string $userId, ?string $path) : Folder {
 		$folder = $this->librarySettings->getFolder($userId);
 
 		if (!empty($path)) {
@@ -532,7 +532,7 @@ class Scanner extends PublicEmitter {
 	 */
 	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
 		$tracks = $this->trackBusinessLayer->findAllDirty($userId);
-		$fileIds = Util::arrayMapMethod($tracks, 'getFileId');
+		$fileIds = \array_map(fn($t) => $t->getFileId(), $tracks);
 
 		// filter by path if given
 		if (!empty($path)) {

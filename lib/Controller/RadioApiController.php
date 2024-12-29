@@ -76,7 +76,7 @@ class RadioApiController extends Controller {
 	 */
 	public function getAll() {
 		$stations = $this->businessLayer->findAll($this->userId);
-		return Util::arrayMapMethod($stations, 'toApi');
+		return \array_map(fn($s) => $s->toApi(), $stations);
 	}
 
 	/**
@@ -202,7 +202,7 @@ class RadioApiController extends Controller {
 		}
 		try {
 			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
-			$result['stations'] = Util::arrayMapMethod($result['stations'], 'toApi');
+			$result['stations'] = \array_map(fn($s) => $s->toApi(), $result['stations']);
 			return $result;
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');

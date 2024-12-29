@@ -265,6 +265,8 @@ class Track extends Entity {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. The $track entity must have the Album reference injected prior to calling this.
+	 * 
+	 * @param string[] $ignoredArticles
 	 */
 	public function toSubsonicApi(IL10N $l10n, array $ignoredArticles) : array {
 		$albumId = $this->getAlbumId();

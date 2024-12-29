@@ -87,7 +87,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function getAll() {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
-		return Util::arrayMapMethod($playlists, 'toAPI', [$this->urlGenerator]);
+		return \array_map(fn($p) => $p->toAPI($this->urlGenerator), $playlists);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class PlaylistApiController extends Controller {
 
 		$result = $playlist->toAPI($this->urlGenerator);
 		unset($result['trackIds']);
-		$result['tracks'] = Util::arrayMapMethod($tracks, 'toAPI', [$this->urlGenerator]);
+		$result['tracks'] = \array_map(fn($t) => $t->toAPI($this->urlGenerator), $tracks);
 
 		return $result;
 	}

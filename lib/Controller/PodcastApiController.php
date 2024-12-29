@@ -57,7 +57,7 @@ class PodcastApiController extends Controller {
 	 */
 	public function getAll() {
 		$channels = $this->podcastService->getAllChannels($this->userId, /*$includeEpisodes=*/ true);
-		return Util::arrayMapMethod($channels, 'toApi', ['urlGenerator' => $this->urlGenerator]);
+		return \array_map(fn($c) => $c->toApi($this->urlGenerator), $channels);
 	}
 
 	/**

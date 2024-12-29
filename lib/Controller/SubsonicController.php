@@ -599,7 +599,7 @@ class SubsonicController extends Controller {
 		}
 
 		return $this->subsonicResponse(['playlists' =>
-			['playlist' => Util::arrayMapMethod($playlists, 'toSubsonicApi')]
+			['playlist' => \array_map(fn($p) => $p->toSubsonicApi(), $playlists)]
 		]);
 	}
 
@@ -925,7 +925,7 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse([
 			'podcasts' => [
-				'channel' => Util::arrayMapMethod($channels, 'toSubsonicApi')
+				'channel' => \array_map(fn($c) => $c->toSubsonicApi(), $channels)
 			]
 		]);
 	}
@@ -938,7 +938,7 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse([
 			'newestPodcasts' => [
-				'episode' => Util::arrayMapMethod($episodes, 'toSubsonicApi')
+				'episode' => \array_map(fn($e) => $e->toSubsonicApi(), $episodes)
 			]
 		]);
 	}
@@ -1338,7 +1338,7 @@ class SubsonicController extends Controller {
 			'directory' => [
 				'id' => $id,
 				'name' => $channel->getTitle(),
-				'child' => Util::arrayMapMethod($channel->getEpisodes() ?? [], 'toSubsonicApi')
+				'child' => \array_map(fn($e) => $e->toSubsonicApi(), $channel->getEpisodes() ?? [])
 			]
 		]);
 	}
@@ -1432,7 +1432,7 @@ class SubsonicController extends Controller {
 	 */
 	private function tracksToApi(array $tracks) : array {
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->user());
-		return Util::arrayMapMethod($tracks, 'toSubsonicApi', [$this->l10n, $this->ignoredArticles]);
+		return \array_map(fn($t) => $t->toSubsonicApi($this->l10n, $this->ignoredArticles), $tracks);
 	}
 
 	/**

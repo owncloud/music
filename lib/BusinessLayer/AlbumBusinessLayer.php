@@ -350,7 +350,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int|null $coverFileId the file id of the cover image
 	 * @param int $albumId the id of the album to be modified
 	 */
-	public function setCover(?int $coverFileId, int $albumId) {
+	public function setCover(?int $coverFileId, int $albumId) : void {
 		$this->mapper->setCover($coverFileId, $albumId);
 	}
 
@@ -408,7 +408,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Given an array of Track objects, inject the corresponding Album object to each of them
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectAlbumsToTracks(array &$tracks, string $userId) {
+	public function injectAlbumsToTracks(array &$tracks, string $userId) : void {
 		$albumIds = [];
 
 		// get unique album IDs

@@ -179,18 +179,53 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
-	 * @return array of entries like {id: int, name: string, path: string, parent: ?int, trackIds: int[]}
+	 * @return array of entries like {id: int, name: string, parent: ?int, trackIds: int[]}
 	 */
 	public function findAllFolders(string $userId, Folder $musicFolder) : array {
 		// All tracks of the user, grouped by their parent folders. Some of the parent folders
 		// may be owned by other users and are invisible to this user (in case of shared files).
-		$tracksByFolder = $this->mapper->findTrackAndFolderIds($userId);
+		$trackIdsByFolder = $this->mapper->findTrackAndFolderIds($userId);
+		return $this->getCompleteFoldersInfo($trackIdsByFolder, $musicFolder);
+	}
 
+	/**
+	 * @param Track[] $tracks
+	 */
+	public function injectFolderPathsToTracks(array &$tracks, string $userId, Folder $musicFolder) : void {
+		$folderIds = \array_map(fn($t) => $t->getFolderId(), $tracks);
+		$folderIds = \array_unique($folderIds);
+		$trackIdsByFolder = \array_fill_keys($folderIds, []); // track IDs are not actually used here so we can use empty arrays
+
+		$foldersInfo = $this->getCompleteFoldersInfo($trackIdsByFolder, $musicFolder);
+
+		// reindex folders by their IDs
+		$foldersInfo = \array_column($foldersInfo, null, 'id');
+
+		// recursive helper to get folder's path and cache all parent paths on the way
+		$getFolderPath = function(int $id, array &$foldersInfo) use (&$getFolderPath) : string {
+			// setup the path if not cached already
+			if (!isset($foldersInfo[$id]['path'])) {
+				$parentId = $foldersInfo[$id]['parent'];
+				if ($parentId === null) {
+					$foldersInfo[$id]['path'] = '';
+				} else {
+					$foldersInfo[$id]['path'] = $getFolderPath($parentId, $foldersInfo) . '/' . $foldersInfo[$id]['name'];
+				}
+			}
+			return $foldersInfo[$id]['path'];
+		};
+
+		foreach ($tracks as &$track) {
+			$track->setFolderPath($getFolderPath($track->getFolderId(), $foldersInfo));
+		}
+	}
+
+	private function getCompleteFoldersInfo(array $trackIdsByFolder, Folder $musicFolder) : array {
 		// Get the folder names and paths for ordinary local folders directly from the DB.
 		// This is significantly more efficient than using the Files API because we need to
 		// run only single DB query instead of one per folder.
 		$folderNamesAndParents = $this->mapper->findNodeNamesAndParents(
-				\array_keys($tracksByFolder), $musicFolder->getStorage()->getId());
+			\array_keys($trackIdsByFolder), $musicFolder->getStorage()->getId());
 
 		// root folder has to be handled as a special case because shared files from
 		// many folders may be shown to this user mapped under the root folder
@@ -199,7 +234,7 @@ class TrackBusinessLayer extends BusinessLayer {
 		// Build the final results. Use the previously fetched data for the ordinary
 		// local folders and query the data through the Files API for the more special cases.
 		$result = [];
-		foreach ($tracksByFolder as $folderId => $trackIds) {
+		foreach ($trackIdsByFolder as $folderId => $trackIds) {
 			$entry = self::getFolderEntry($folderNamesAndParents, $folderId, $trackIds, $musicFolder);
 
 			if ($entry) {

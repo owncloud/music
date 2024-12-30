@@ -372,10 +372,7 @@ class SubsonicController extends Controller {
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->user());
 
 		$albumNode = $this->albumToNewApi($album);
-		$albumNode['song'] = \array_map(function ($track) use ($album) {
-			$track->setAlbum($album);
-			return $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
-		}, $tracks);
+		$albumNode['song'] = $this->tracksToApi($tracks);
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
 
@@ -385,9 +382,7 @@ class SubsonicController extends Controller {
 	protected function getSong(string $id) {
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 		$track = $this->trackBusinessLayer->find($trackId, $this->user());
-		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->user()));
-
-		return $this->subsonicResponse(['song' => $track->toSubsonicApi($this->l10n, $this->ignoredArticles)]);
+		return $this->subsonicResponse(['song' => $this->trackToApi($track)]);
 	}
 
 	/**
@@ -1004,8 +999,7 @@ class SubsonicController extends Controller {
 			try {
 				if ($type === Bookmark::TYPE_TRACK) {
 					$track = $this->trackBusinessLayer->find($entryId, $userId);
-					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $userId));
-					$node['entry'] = $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
+					$node['entry'] = $this->trackToApi($track);
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
 					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $userId)->toSubsonicApi();
 				} else {
@@ -1318,10 +1312,7 @@ class SubsonicController extends Controller {
 				'id' => $id,
 				'parent' => 'artist-' . $album->getAlbumArtistId(),
 				'name' => $albumName,
-				'child' => \array_map(function ($track) use ($album) {
-					$track->setAlbum($album);
-					return $track->toSubsonicApi($this->l10n, $this->ignoredArticles);
-				}, $tracks)
+				'child' => $this->tracksToApi($tracks)
 			]
 		]);
 	}
@@ -1428,11 +1419,17 @@ class SubsonicController extends Controller {
 
 	/**
 	 * @param Track[] $tracks
-	 * @return array
 	 */
 	private function tracksToApi(array $tracks) : array {
-		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->user());
+		$userId = $this->user();
+		$musicFolder = $this->librarySettings->getFolder($userId);
+		$this->trackBusinessLayer->injectFolderPathsToTracks($tracks, $userId, $musicFolder);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 		return \array_map(fn($t) => $t->toSubsonicApi($this->l10n, $this->ignoredArticles), $tracks);
+	}
+
+	private function trackToApi(Track $track) : array {
+		return $this->tracksToApi([$track])[0];
 	}
 
 	/**

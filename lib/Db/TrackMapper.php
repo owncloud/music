@@ -34,7 +34,7 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::selectEntities()
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
-		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`, `file`.`mtime` AS `file_mod_time`,
+		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`, `file`.`mtime` AS `file_mod_time`, `file`.`parent` AS `folder_id`,
 						`album`.`name` AS `album_name`, `artist`.`name` AS `artist_name`, `genre`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
 				INNER JOIN `*PREFIX*filecache` `file`
@@ -358,7 +358,7 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are folder IDs and values are arrays of track IDs
 	 */
 	public function findTrackAndFolderIds(string $userId) : array {
-		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS parent
+		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS `parent`
 				FROM `*PREFIX*music_tracks` `track`
 				JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`

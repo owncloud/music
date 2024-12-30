@@ -60,6 +60,7 @@ use OCP\IURLGenerator;
  * @method ?string getAlbumName()
  * @method ?string getArtistName()
  * @method ?string getGenreName()
+ * @method int getFolderId()
  */
 class Track extends Entity {
 	public $title;
@@ -87,10 +88,12 @@ class Track extends Entity {
 	public $albumName;
 	public $artistName;
 	public $genreName;
+	public $folderId;
 
 	// the rest of the variables are injected separately when needed
 	private ?Album $album = null;
 	private ?int $numberOnPlaylist = null;
+	private ?string $folderPath = null;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -107,6 +110,7 @@ class Track extends Entity {
 		$this->addType('dirty', 'int');
 		$this->addType('size', 'int');
 		$this->addType('fileModTime', 'int');
+		$this->addType('folderId', 'int');
 	}
 
 	public function getAlbum() : ?Album {
@@ -123,6 +127,14 @@ class Track extends Entity {
 
 	public function setNumberOnPlaylist(int $number) {
 		$this->numberOnPlaylist = $number;
+	}
+
+	public function setFolderPath(string $path) : void {
+		$this->folderPath = $path;
+	}
+
+	public function getPath() : ?string {
+		return ($this->folderPath ?? '') . '/' . $this->filename;
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
@@ -287,7 +299,7 @@ class Track extends Entity {
 			'suffix' => $this->getFileExtension(),
 			'duration' => $this->getLength() ?? 0,
 			'bitRate' => empty($this->getBitrate()) ? null : (int)\round($this->getBitrate()/1000), // convert bps to kbps
-			//'path' => '',
+			'path' => $this->getPath(),
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $this->getArtistId(),

@@ -35,8 +35,8 @@ class Cleanup extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln('Running cleanup task...');
-		$removedEtries = $this->maintenance->cleanUp();
-		$output->writeln("Removed entries: " . \json_encode($removedEtries));
+		$removedEntries = $this->maintenance->cleanUp();
+		$output->writeln("Removed entries: " . \json_encode($removedEntries));
 		return 0;
 	}
 }

@@ -608,7 +608,7 @@ class Scanner extends PublicEmitter {
 		$count = \count($unavailableFiles);
 		if ($count > 0) {
 			$this->logger->log('The following files are no longer available within the library of the '.
-				"user $userId, removing: " . /** @scrutinizer ignore-type */ \print_r($unavailableFiles, true), 'info');
+				"user $userId, removing: " . (string)\json_encode($unavailableFiles), 'info');
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
 		return $count;

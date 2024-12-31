@@ -376,7 +376,8 @@ abstract class BaseMapper extends CompatibleMapper {
 	public function exists(int $id, string $userId) : bool {
 		$sql = "SELECT 1 FROM `{$this->getTableName()}` WHERE `id` = ? AND `user_id` = ?";
 		$result = $this->execute($sql, [$id, $userId]);
-		return $result->rowCount() > 0;
+		$row = $result->fetch();
+		return (bool)$row;
 	}
 
 	/**

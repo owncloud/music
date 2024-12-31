@@ -305,10 +305,10 @@ class AlbumMapper extends BaseMapper {
 				WHERE `files`.`parent` = ?';
 		$params = [$folderId];
 		$result = $this->execute($sql, $params);
+		$albumIds = $result->fetchAll(\PDO::FETCH_COLUMN);
 
 		$updated = false;
-		if ($result->rowCount()) {
-			$albumIds = $result->fetchAll(\PDO::FETCH_COLUMN);
+		if (\count($albumIds) > 0) {
 			$sql = 'UPDATE `*PREFIX*music_albums`
 					SET `cover_file_id` = ?
 					WHERE `cover_file_id` IS NULL AND `id` IN '. $this->questionMarks(\count($albumIds));

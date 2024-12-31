@@ -60,7 +60,8 @@ class Maintenance {
 	private function scanningInProgress() : bool {
 		$sql = 'SELECT 1 FROM `*PREFIX*music_cache`	WHERE `key` = "scanning"';
 		$result = $this->db->executeQuery($sql);
-		return ($result->rowCount() > 0);
+		$row = $result->fetch();
+		return (bool)$row;
 	}
 
 	/**

@@ -42,6 +42,7 @@
 - Ampache API:
   * Action `playlist_songs` returning internal error 500 if the playlist contains any broken track references
   * Action `download` still implicitly recording song as played even though that was supposed to change in v2.0.0
+  * Playlist content editing not working with the action `playlist_edit`
 
 ## 2.0.1 - 2024-09-08
 

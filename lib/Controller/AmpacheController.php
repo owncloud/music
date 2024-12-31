@@ -876,8 +876,8 @@ class AmpacheController extends ApiController {
 			$edited = true;
 		}
 
-		$newTrackIds = Util::explode(',', $items);
-		$newTrackOrdinals = Util::explode(',', $tracks);
+		$newTrackIds = \array_map('intval', Util::explode(',', $items));
+		$newTrackOrdinals = \array_map('intval', Util::explode(',', $tracks));
 
 		if (\count($newTrackIds) != \count($newTrackOrdinals)) {
 			throw new AmpacheException("Arguments 'items' and 'tracks' must contain equal amount of elements", 400);

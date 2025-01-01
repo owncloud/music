@@ -17,6 +17,7 @@ function requireAll(context) {
 
 /* Polyfills for IE compatibility */
 require('node_modules/core-js/features/array/includes');
+require('node_modules/core-js/features/number/is-finite');
 require('node_modules/core-js/features/string/includes');
 require('node_modules/core-js/features/string/replace-all');
 require('node_modules/core-js/features/string/starts-with');

@@ -17,6 +17,7 @@ function requireAll(context) {
 
 /* Polyfills for IE compatibility */
 require('node_modules/core-js/features/array/includes');
+require('node_modules/core-js/features/number/is-finite');
 require('node_modules/core-js/features/string/ends-with');
 require('node_modules/core-js/features/weak-map');
 require('node_modules/core-js/features/weak-set');

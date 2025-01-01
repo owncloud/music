@@ -16,6 +16,7 @@
 - Documentation of the admin configuration options moved from the Settings view to the [Wiki page](https://github.com/owncloud/music/wiki/Admin-settings)
 - Troubleshooting for Internet radio moved to the [Wiki page](https://github.com/owncloud/music/wiki/Internet-radio-trouble-shooting)
 - Allow translating all the strings in the embedded Files player and the new Dashboard widget. Provide Finnish translations for these.
+- Optimized loading of folder tree also for cases where the library root is the home folder and there is a huge externally mounted audio folder
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`
   * Actions `playlists` and `playlist` support argument `include`
@@ -31,6 +32,7 @@
   * Allow method `getOpenSubsonicExtensions` without any user authentication
   * When browsing by folder, `getMusicDirectory` sorts songs by file name instead of song title
     [#1182](https://github.com/owncloud/music/issues/1182)
+  * Added field `path` to all song responses
 
 ### Fixed
 - Song progress shown incorrectly in the media session integration of Chrome when playing (exotic file types) with the fallback Aurora.js player

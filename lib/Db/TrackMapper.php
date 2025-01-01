@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -34,7 +34,7 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::selectEntities()
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
-		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`, `file`.`mtime` AS `file_mod_time`,
+		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`, `file`.`mtime` AS `file_mod_time`, `file`.`parent` AS `folder_id`,
 						`album`.`name` AS `album_name`, `artist`.`name` AS `artist_name`, `genre`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
 				INNER JOIN `*PREFIX*filecache` `file`
@@ -358,7 +358,7 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are folder IDs and values are arrays of track IDs
 	 */
 	public function findTrackAndFolderIds(string $userId) : array {
-		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS parent
+		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS `parent`
 				FROM `*PREFIX*music_tracks` `track`
 				JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`
@@ -380,24 +380,19 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Find names and parents of the file system nodes with given IDs within the given storage
+	 * Find names and parents of the file system nodes with given IDs
 	 * @param int[] $nodeIds
-	 * @param string $storageId
-	 * @return array where keys are the node IDs and values are associative arrays
-	 *         like { 'name' => string, 'parent' => int };
+	 * @return array where keys are the node IDs and values are associative arrays like { 'name' => string, 'parent' => int };
 	 */
-	public function findNodeNamesAndParents(array $nodeIds, string $storageId) : array {
+	public function findNodeNamesAndParents(array $nodeIds) : array {
 		$result = [];
 
 		if (!empty($nodeIds)) {
-			$sql = 'SELECT `fileid`, `name`, `parent` '.
-					'FROM `*PREFIX*filecache` `filecache` '.
-					'JOIN `*PREFIX*storages` `storages` '.
-					'ON `filecache`.`storage` = `storages`.`numeric_id` '.
-					'WHERE `storages`.`id` = ? '.
-					'AND `filecache`.`fileid` IN '. $this->questionMarks(\count($nodeIds));
+			$sql = 'SELECT `fileid`, `name`, `parent`
+					FROM `*PREFIX*filecache` `filecache`
+					WHERE `filecache`.`fileid` IN '. $this->questionMarks(\count($nodeIds));
 
-			$rows = $this->execute($sql, \array_merge([$storageId], $nodeIds))->fetchAll();
+			$rows = $this->execute($sql, $nodeIds)->fetchAll();
 
 			foreach ($rows as $row) {
 				$result[$row['fileid']] = [

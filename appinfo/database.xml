@@ -315,7 +315,7 @@
 			<field>
 				<name>dirty</name>
 				<type>integer</type>
-				<length>1</integer>
+				<length>1</length>
 				<notnull>true</notnull>
 				<default>0</default>
 			</field>

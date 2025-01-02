@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 #music-controls .icon-music-dark {
@@ -86,6 +86,11 @@
 #music-controls, #music-controls * {
 	display: inline-block;
 	box-sizing: border-box;
+}
+
+#music-controls .separator {
+	display: inline;
+	border: none;
 }
 
 #music-controls .control {

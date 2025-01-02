@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.1.0 - 2025-01-02
 
 ### Added
 - Dashboard widget for Nextcloud
@@ -17,6 +17,8 @@
 - Troubleshooting for Internet radio moved to the [Wiki page](https://github.com/owncloud/music/wiki/Internet-radio-trouble-shooting)
 - Allow translating all the strings in the embedded Files player and the new Dashboard widget. Provide Finnish translations for these.
 - Optimized loading of folder tree also for cases where the library root is the home folder and there is a huge externally mounted audio folder
+- Prompt user to rescan modified tracks on app load if that has not happened automatically (e.g. for shared files modified by another user)
+  [#706](https://github.com/owncloud/music/issues/706)
 - Ampache API:
   * Action `get_indexes` supports also `type=song_artist`
   * Actions `playlists` and `playlist` support argument `include`

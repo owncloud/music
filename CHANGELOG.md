@@ -1,12 +1,10 @@
-## [Unreleased]
+## 2.1.1 - 2025-01-03
 
-### Fixed
+### Hotfix
 - Background cleanup job not working with PostgreSQL (since v2.1.0)
   [#1191](https://github.com/owncloud/music/issues/1191)
 
-## 2.1.0 - 2025-01-02
-
-### Added
+### Added in v2.1.0
 - Dashboard widget for Nextcloud
   [#1172](https://github.com/owncloud/music/pull/1172)
 - Ampache API:
@@ -15,7 +13,7 @@
 - Subsonic API:
   * OpenSubsonic extension [`apiKeyAuthentication`](https://opensubsonic.netlify.app/docs/extensions/apikeyauth/), including support for arg `apiKey` and the new method `tokenInfo`
 
-### Changed
+### Changed in v2.1.0
 - Renamed config.php key `music.allowed_radio_src` as `music.allowed_stream_src`. Its default value is now an empty array `[]`.
 - Internet radio and podcast streams are now relayed via the user's cloud instance by default. To opt out, set the config.php keys `music.relay_radio_stream` and `music.relay_podcast_stream` as `false` and add required sources to `music.allowed_stream_src`.
   [#1035](https://github.com/owncloud/music/issues/1035)
@@ -42,7 +40,7 @@
     [#1182](https://github.com/owncloud/music/issues/1182)
   * Added field `path` to all song responses
 
-### Fixed
+### Fixed in v2.1.0
 - Song progress shown incorrectly in the media session integration of Chrome when playing (exotic file types) with the fallback Aurora.js player
 - Track disappearing from playlists when moved to another folder within the library folder
   [#1173](https://github.com/owncloud/music/issues/1173)

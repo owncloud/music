@@ -1039,15 +1039,47 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	protected function getPlayQueue() {
-		// TODO: not supported yet
-		return $this->subsonicResponse(['playQueue' => []]);
+		$playQueue = ['entry' => [], 'changedBy' => $this->userId];
+		$playlists = $this->playlistBusinessLayer->findAllByName('Queue', $this->userId);
+		if (\count($playlists) > 1) {
+			return $this->subsonicErrorResponse(10, 'Found multiple play queues');
+		} elseif (\count($playlists) == 1) {
+			$playlist = $playlists[0];
+			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($playlist->id, $this->userId);
+			$playQueue['entry'] = $this->tracksToApi($tracks);
+			$playQueue['changed'] = Util::formatZuluDateTime($playlist->getUpdated());
+			$comment = $playlist->getComment();
+			if (!empty($comment) && $additional = \json_decode($comment, true)) {
+				$playQueue = \array_merge($playQueue, $additional);
+			}
+		}
+		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function savePlayQueue() {
-		// TODO: not supported yet
+	protected function savePlayQueue(array $id, ?string $current = null, ?int $position = null) {
+		$playlists = $this->playlistBusinessLayer->findAllByName('Queue', $this->userId);
+		if (\count($playlists) == 0) {
+			$playlist = $this->playlistBusinessLayer->create('Queue', $this->userId);
+		} elseif (\count($playlists) > 1) {
+			return $this->subsonicErrorResponse(10, 'Found multiple play queues');
+		} else {
+			$playlist = $playlists[0];
+		}
+
+		$this->playlistBusinessLayer->setTracks(
+			\array_map('self::ripIdPrefix', $id),
+			$playlist->id,
+			$this->userId
+		);
+		$additional = [];
+		if (isset($current))
+			$additional['current'] = $current;
+		if (isset($position))
+			$additional['position'] = $position;
+		$this->playlistBusinessLayer->setComment(\json_encode($additional), $playlist->id, $this->userId);
 		return $this->subsonicResponse([]);
 	}
 

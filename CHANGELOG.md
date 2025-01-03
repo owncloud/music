@@ -1,3 +1,9 @@
+## [Unreleased]
+
+### Fixed
+- Background cleanup job not working with PostgreSQL (since v2.1.0)
+  [#1191](https://github.com/owncloud/music/issues/1191)
+
 ## 2.1.0 - 2025-01-02
 
 ### Added

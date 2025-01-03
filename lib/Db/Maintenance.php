@@ -34,7 +34,7 @@ class Maintenance {
 	 */
 	private function removeStrayScanningStatus() : int {
 		$sql = 'SELECT `user_id`, `data` FROM `*PREFIX*music_cache`
-				WHERE `key` = "scanning"';
+				WHERE `key` = \'scanning\'';
 		$result = $this->db->executeQuery($sql);
 		$rows = $result->fetchAll();
 		$result->closeCursor();
@@ -45,7 +45,7 @@ class Maintenance {
 			$timestamp = (int)$row['data'];
 			if ($now - $timestamp > 60) {
 				$modRows += $this->db->executeUpdate(
-					'DELETE FROM `*PREFIX*music_cache` WHERE `key` = "scanning" AND `user_id` = ?',
+					'DELETE FROM `*PREFIX*music_cache` WHERE `key` = \'scanning\' AND `user_id` = ?',
 					[$row['user_id']]
 				);
 			}
@@ -58,7 +58,7 @@ class Maintenance {
 	 * @return bool true if at least one user has an ongoing scanning job
 	 */
 	private function scanningInProgress() : bool {
-		$sql = 'SELECT 1 FROM `*PREFIX*music_cache`	WHERE `key` = "scanning"';
+		$sql = 'SELECT 1 FROM `*PREFIX*music_cache`	WHERE `key` = \'scanning\'';
 		$result = $this->db->executeQuery($sql);
 		$row = $result->fetch();
 		return (bool)$row;

@@ -7,7 +7,7 @@
  * @author Pellaeon Lin <pellaeon@cnmc.tw>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Pellaeon Lin 2015
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 const Hls = require('node_modules/hls.js/dist/hls.light.js');
@@ -102,8 +102,10 @@ export class PlayerWrapper {
 
 		this.#html5audio.onsuspend = handleProgress;
 
-		this.#html5audio.onended = () => this.trigger('end');
+		this.#html5audio.onended = () => {
 			this.#playing = false;
+			this.trigger('end');
+		}
 
 		this.#html5audio.oncanplay = () => {
 			this.#ready = true;
@@ -242,6 +244,15 @@ export class PlayerWrapper {
 	}
 
 	stop() : void {
+		this.#clearPlayer();
+
+		// Aurora has no callback => fire event synchronously
+		if (this.#underlyingPlayer == 'aurora') {
+			this.#onPaused();
+		}
+	}
+
+	#clearPlayer() : void {
 		this.#url = null;
 		this.#playing = false;
 
@@ -275,7 +286,6 @@ export class PlayerWrapper {
 						this.#auroraWorkaroundAudio.src = '';
 					}
 				}
-				this.#onPaused(); // Aurora has no callback => fire event synchronously
 				break;
 		}
 	}
@@ -384,12 +394,12 @@ export class PlayerWrapper {
 		return this.#canPlayWithHtml5(mime) || this.#canPlayWithAurora(mime);
 	}
 
-	#doFromUrl(setupUnderlyingPlayer : CallableFunction) : void {
+	#doFromUrl(setupUnderlyingPlayer : () => void) : void {
 		this.#duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		this.#position = 0;
 		this.#ready = false;
 
-		this.stop(); // clear any previous state first
+		this.#clearPlayer(); // clear any previous state first
 		this.trigger('loading');
 
 		setupUnderlyingPlayer();

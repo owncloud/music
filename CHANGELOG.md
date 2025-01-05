@@ -5,6 +5,7 @@
 ### Changed
 
 ### Fixed
+- Dashboard widget: Playback controls disappearing when the playing track changes with Aurora.js backend (used when the audio format has no native browser support)
 
 ## 2.1.1 - 2025-01-03
 

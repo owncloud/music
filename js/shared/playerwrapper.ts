@@ -221,17 +221,19 @@ export class PlayerWrapper {
 	}
 
 	pause() : void {
-		switch (this.#underlyingPlayer) {
-			case 'html5':
-				this.#html5audio.pause();
-				break;
-			case 'aurora':
-				if (this.#aurora) {
-					this.#aurora.pause();
-					this.#auroraWorkaroundAudio.pause();
-				}
-				this.#onPaused(); // Aurora has no callback => fire event synchronously
-				break;
+		if (this.#url) {
+			switch (this.#underlyingPlayer) {
+				case 'html5':
+					this.#html5audio.pause();
+					break;
+				case 'aurora':
+					if (this.#aurora) {
+						this.#aurora.pause();
+						this.#auroraWorkaroundAudio.pause();
+					}
+					this.#onPaused(); // Aurora has no callback => fire event synchronously
+					break;
+			}
 		}
 	}
 

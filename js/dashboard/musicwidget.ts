@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 import { BrowserMediaSession } from "shared/browsermediasession";
@@ -134,7 +134,10 @@ export class MusicWidget {
 		});
 
 		this.#queue.subscribe('playlistEnded', () => {
-			player.stop();
+			this.#progressAndOrder.hide();
+			this.#currentSongLabel.hide();
+			this.#controls.hide();
+			this.#trackList.find('.current').removeClass('current');
 		});
 
 		this.#player.on('play', () => {
@@ -148,10 +151,7 @@ export class MusicWidget {
 		});
 
 		this.#player.on('stop', () => {
-			this.#progressAndOrder.hide();
-			this.#currentSongLabel.hide();
-			this.#controls.hide();
-			this.#trackList.find('.current').removeClass('current');
+			this.#queue.clearPlaylist();
 		});
 
 		this.#player.on('end', () => this.#onNextButton());

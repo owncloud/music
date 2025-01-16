@@ -8,6 +8,8 @@
 - Dashboard widget: 
   * Playback controls disappearing when the playing track changes with Aurora.js backend (used when the audio format has no native browser support)
   * Clicking the previously played song didn't play it again after stopping the playback with the keyboard 'stop' media key
+- Radio stream relaying not working on some redirecting stream URLs, depending on the headers
+  [#1194](https://github.com/owncloud/music/issues/1194)
 
 ## 2.1.1 - 2025-01-03
 

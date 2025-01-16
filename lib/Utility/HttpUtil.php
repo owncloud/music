@@ -74,28 +74,29 @@ class HttpUtil {
 	public static function getUrlHeaders(string $url, $context) : ?array {
 		$result = null;
 		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
+			// The built-in associative mode of get_headers because it mixes up the headers from the redirection
+			// responses with those of the last response after all the redirections, making it impossible to know,
+			// what is the source of each header. Hence, we roll out our own parsing logic which discards all the
+			// headers from the intermediate redirection responses.
+
 			// the type of the second parameter of get_header has changed in PHP 8.0
-			$associative = \version_compare(\phpversion(), '8.0', '<') ? 1 : true;
-			$result = @\get_headers($url, /** @scrutinizer ignore-type */ $associative, $context);
+			$associative = \version_compare(\phpversion(), '8.0', '<') ? 0 : false;
+			$rawHeaders = @\get_headers($url, /** @scrutinizer ignore-type */ $associative, $context);
 
-			if ($result === false) {
-				$result = null;
-			} else {
-				// Do some post-processing on the headers
-				foreach ($result as $key => $value) {
-					// Some of the headers got may be array-valued after a redirection or several, containing value
-					// from each redirected jump. In such cases, preserve only the last value.
-					if (\is_array($value)) {
-						$result[$key] = \end($value);
-					}
+			if ($rawHeaders !== false) {
+				$result = [];
 
-					// The status header like "HTTP/1.1 200 OK" can found from the index 0. If there were any redirects,
-					// then the statuses after the redirections can be found from indices 1, 2, 3, ... That is, the status
-					// after the last redirection can be found from the highest numerical index. We are interested about the
-					// status code after the last redirection.
-					if (\is_int($key)) {
-						$result['status_code'] = (int)(\explode(' ', $value, 3)[1] ?? 500);
-						unset($result[$key]);
+				foreach ($rawHeaders as $row) {
+					if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true)) {
+						// Start of new response. If we have already parsed some headers, then those are from some
+						// intermediate redirect response and those should be discarded.
+						$result = ['status_code' => (int)(\explode(' ', $row, 3)[1] ?? 500)];
+					} else {
+						$parts = \explode(':', $row, 2);
+						if (\count($parts) == 2) {
+							list($key, $value) = $parts;
+							$result[\trim($key)] = \trim($value);
+						}
 					}
 				}
 			}

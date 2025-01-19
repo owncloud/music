@@ -9,7 +9,7 @@
  * @author Moahmed-Ismail MEJRI <imejri@hotmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Moahmed-Ismail MEJRI 2022
- * @copyright Pauli Järvinen 2022 - 2024
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -59,7 +59,7 @@ class RadioService {
 
 		$ret['scheme'] = $parse_url['scheme'];
 		$ret['hostname'] = $parse_url['host'];
-		$ret['pathname'] = $parse_url['path'];
+		$ret['pathname'] = $parse_url['path'] ?? '/';
 
 		if (isset($parse_url['query'])) {
 			$ret['pathname'] .= "?" . $parse_url['query'];
@@ -276,7 +276,7 @@ class RadioService {
 		$isHls = false;
 
 		$urlParts = \parse_url($url);
-		$lcPath = \mb_strtolower($urlParts['path']);
+		$lcPath = \mb_strtolower($urlParts['path'] ?? '/');
 
 		$isPls = Util::endsWith($lcPath, '.pls');
 		$isM3u = !$isPls && (Util::endsWith($lcPath, '.m3u') || Util::endsWith($lcPath, '.m3u8'));

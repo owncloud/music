@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022, 2023
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -43,9 +43,10 @@ class HttpUtil {
 			// It's some PHP magic that calling file_get_contents creates and populates also a local
 			// variable array $http_response_header, provided that the server could be reached.
 			if (!empty($http_response_header)) {
-				list($version, $status_code, $message) = \explode(' ', $http_response_header[0], 3);
-				$status_code = (int)$status_code;
-				$content_type = self::findHeader($http_response_header, 'Content-Type');
+				$parsedHeaders = self::parseHeaders($http_response_header, true);
+				$status_code = $parsedHeaders['status_code'];
+				$message = $parsedHeaders['status_msg'];
+				$content_type = $parsedHeaders['content-type'];
 			} else {
 				$message = 'The requested URL did not respond';
 			}
@@ -67,11 +68,14 @@ class HttpUtil {
 
 	/**
 	 * @param resource $context
+	 * @param bool $convertKeysToLower When true, the header names used as keys of the result array are
+	 * 				converted to lower case. According to RFC 2616, HTTP headers are case-insensitive.
 	 * @return ?array The headers from the URL, after any redirections. The header names will be array keys.
 	 * 					In addition to the named headers from the server, the key 'status_code' will contain
-	 * 					the status code number of the HTTP request (like 200, 302, 404).
+	 * 					the status code number of the HTTP request (like 200, 302, 404) and 'status_msg'
+	 * 					the textual status following the code (like 'OK' or 'Not Found').
 	 */
-	public static function getUrlHeaders(string $url, $context) : ?array {
+	public static function getUrlHeaders(string $url, $context, bool $convertKeysToLower=false) : ?array {
 		$result = null;
 		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
 			// The built-in associative mode of get_headers because it mixes up the headers from the redirection
@@ -84,23 +88,40 @@ class HttpUtil {
 			$rawHeaders = @\get_headers($url, /** @scrutinizer ignore-type */ $associative, $context);
 
 			if ($rawHeaders !== false) {
-				$result = [];
+				$result = self::parseHeaders($rawHeaders, $convertKeysToLower);
+			}
+		}
+		return $result;
+	}
 
-				foreach ($rawHeaders as $row) {
-					if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true)) {
-						// Start of new response. If we have already parsed some headers, then those are from some
-						// intermediate redirect response and those should be discarded.
-						$result = ['status_code' => (int)(\explode(' ', $row, 3)[1] ?? 500)];
-					} else {
-						$parts = \explode(':', $row, 2);
-						if (\count($parts) == 2) {
-							list($key, $value) = $parts;
-							$result[\trim($key)] = \trim($value);
-						}
+	private static function parseHeaders(array $rawHeaders, bool $convertKeysToLower) : array {
+		$result = [];
+
+		foreach ($rawHeaders as $row) {
+			if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true)) {
+				// Start of new response. If we have already parsed some headers, then those are from some
+				// intermediate redirect response and those should be discarded.
+				$parts = \explode(' ', $row, 3);
+				if (\count($parts) == 3) {
+					list(, $status_code, $status_msg) = $parts;
+				} else {
+					$status_code = 500;
+					$status_msg = 'Bad response status header';
+				}
+				$result = ['status_code' => (int)$status_code, 'status_msg' => $status_msg];
+			} else {
+				// All other lines besides the initial status line should have the format "key: value"
+				$parts = \explode(':', $row, 2);
+				if (\count($parts) == 2) {
+					list($key, $value) = $parts;
+					if ($convertKeysToLower) {
+						$key = \mb_strtolower($key);
 					}
+					$result[\trim($key)] = \trim($value);
 				}
 			}
 		}
+
 		return $result;
 	}
 
@@ -122,19 +143,6 @@ class HttpUtil {
 		}
 
 		return $opts;
-	}
-
-	private static function findHeader(array $headers, string $headerKey) : ?string {
-		// According to RFC 2616, HTTP headers are case-insensitive
-		$headerKey = \mb_strtolower($headerKey);
-		foreach ($headers as $header) {
-			$header = \mb_strtolower($header); // note that this converts also the header value to lower case
-			$find = \strstr($header, $headerKey . ':');
-			if ($find !== false) {
-				return \trim(\substr($find, \strlen($headerKey)+1));
-			}
-		}
-		return null;
 	}
 
 	private static function isUrlSchemeOneOf(string $url, array $schemes) : bool {

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 namespace OCA\Music\Http;
@@ -41,12 +41,9 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 		$this->context = HttpUtil::createContext(null, $reqHeaders);
 
 		// Get headers from the source and relay the important ones to our client
-		$sourceHeaders = HttpUtil::getUrlHeaders($url, $this->context);
+		$sourceHeaders = HttpUtil::getUrlHeaders($url, $this->context, /*convertKeysToLower=*/true);
 	
 		if ($sourceHeaders !== null) {
-			// According to RFC 2616, HTTP headers are case-insensitive but we need predictable keys
-			$sourceHeaders = \array_change_key_case($sourceHeaders, CASE_LOWER);
-
 			if (isset($sourceHeaders['content-type'])) {
 				$this->addHeader('Content-Type', $sourceHeaders['content-type']);
 			}

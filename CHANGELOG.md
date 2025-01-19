@@ -12,6 +12,7 @@
   * Stream relaying not working on some redirecting stream URLs, depending on the headers
     [#1194](https://github.com/owncloud/music/issues/1194)
   * Stream playback failing when the stream URL has only the domain part without any path and no trailing '/' (like http://abc.somedomain.xyz)
+  * Stream playback failing when the given URL redirects to a playlist file containing the actual audio URL
   * HTTP redirections not followed when parsing Icy-MetaData of the channel
 
 ## 2.1.1 - 2025-01-03

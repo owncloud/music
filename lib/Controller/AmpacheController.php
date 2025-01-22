@@ -103,7 +103,7 @@ class AmpacheController extends ApiController {
 	private ?AmpacheSession $session;
 	private array $namePrefixes;
 
-	const ALL_TRACKS_PLAYLIST_ID = -1;
+	const ALL_TRACKS_PLAYLIST_ID = "smart_1";
 	const API4_VERSION = '4.4.0';
 	const API5_VERSION = '5.6.0';
 	const API6_VERSION = '6.6.1';

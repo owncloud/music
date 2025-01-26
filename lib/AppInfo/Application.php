@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\AppInfo;
@@ -563,9 +563,15 @@ class Application extends ApplicationBase {
 		});
 
 		$context->registerService('Logger', function (IAppContainer $c) {
+			// NC 31 removed the getLogger method but the Psr alternative is not available on OC
+			if (\method_exists($c->getServer(), 'getLogger')) {
+				$innerLogger = $c->getServer()->getLogger();
+			} else {
+				$innerLogger = $c->query(\Psr\Log\LoggerInterface::class);
+			}
 			return new Logger(
 				$c->query('AppName'),
-				$c->getServer()->getLogger()
+				$innerLogger
 			);
 		});
 

@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 ### Added
+- Support for Nextcloud 31
+  [#1198](https://github.com/owncloud/music/issues/1198)
 
 ### Changed
 

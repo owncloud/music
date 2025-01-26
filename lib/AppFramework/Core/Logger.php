@@ -10,18 +10,20 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\AppFramework\Core;
 
-use OCP\ILogger;
-
 class Logger {
 	protected string $appName;
-	protected ILogger $logger;
+	/** @var \OCP\ILogger|\Psr\Log\LoggerInterface $logger */
+	protected $logger;
 
-	public function __construct(string $appName, ILogger $logger) {
+	/**
+	 * @param \OCP\ILogger|\Psr\Log\LoggerInterface $logger
+	 */
+	public function __construct(string $appName, $logger) {
 		$this->appName = $appName;
 		$this->logger = $logger;
 	}

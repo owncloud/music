@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 import playOverlayPath from '../../img/play-overlay.svg';
@@ -20,7 +20,7 @@ OCA.Music.FileShareView = class {
 	#mPlayer;
 	#mShareToken;
 
-	constructor(embeddedPlayer, supportedMimes) {
+	constructor(embeddedPlayer, supportedMimes, sharingToken) {
 		// Add click handler to the file preview if this is a supported file.
 		// The feature is disabled on old IE versions where there's no MutationObserver and
 		// $.initialize would not work.
@@ -31,7 +31,7 @@ OCA.Music.FileShareView = class {
 			&& supportedMimes.includes($('#mimetype').val()))
 		{
 			this.#mPlayer = embeddedPlayer;
-			this.#mShareToken = $('#sharingToken').val();
+			this.#mShareToken = sharingToken;
 			this.#initView();
 		}
 	}

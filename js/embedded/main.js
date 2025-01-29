@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 (function() {
@@ -37,19 +37,26 @@
 		// the call succeeds on ownCloud but the registration just does nothing there. Note that we can't wait
 		// for the page load to be finished before doing this because that would be too late for the registration
 		// and cause the issue https://github.com/owncloud/music/issues/1126.
-		import('@nextcloud/files').then(ncFiles => OCA.Music.folderView.registerToNcFiles(ncFiles)).catch(_e => {/*ignore*/});
+		import('@nextcloud/files').then(ncFiles => {
+			import('@nextcloud/sharing/public').then(ncSharingPublic => {
+				const sharingToken = ncSharingPublic.isPublicShare() ? ncSharingPublic.getSharingToken() : null;
+				OCA.Music.folderView.registerToNcFiles(ncFiles, sharingToken);
+			});
+		}).catch(_e => {/*ignore*/});
 
-		// The older fileActions API is used on ownCloud and NC27 and older, but also in NC28+ when operating
+		// The older fileActions API is used on ownCloud and NC27 and older, but also in NC28..30 when operating
 		// within a link-shared folder. It's also possible that we are operating within the share page of an
 		// individual file; this situation can be identified only after the page has been completely loaded.
 		window.addEventListener('DOMContentLoaded', () => {
+			const sharingToken = $('#sharingToken').val(); // undefined if not on a public share or on NC31+
+
 			if ($('#header').hasClass('share-file')) {
 				// individual link shared file
-				OCA.Music.fileShareView = new OCA.Music.FileShareView(mPlayer, mAudioMimes);
+				OCA.Music.fileShareView = new OCA.Music.FileShareView(mPlayer, mAudioMimes, sharingToken);
 			} else {
 				// Files app or a link shared folder
 				if (OCA.Files?.fileActions) {
-					OCA.Music.folderView.registerToFileActions(OCA.Files.fileActions);
+					OCA.Music.folderView.registerToFileActions(OCA.Files.fileActions, sharingToken);
 				}
 				OCA.Music.initPlaylistTabView(mPlaylistMimes);
 				connectPlaylistTabViewEvents(OCA.Music.folderView);

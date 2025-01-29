@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -21,7 +21,7 @@ OCA.Music.FolderView = class {
 	#currentFile = null; // may be an audio file or a playlist file
 	#playingListFile = false;
 	#fileList = null; // FileList from Files (prior to NC28) or Sharing app
-	#shareToken = $('#sharingToken').val(); // undefined when not on share page
+	#shareToken = null;
 	#audioMimes = null;
 	#playlistMimes = null;
 
@@ -43,7 +43,9 @@ OCA.Music.FolderView = class {
 		);
 	}
 
-	registerToNcFiles(ncFiles) {
+	registerToNcFiles(ncFiles, sharingToken) {
+		this.#shareToken = sharingToken;
+
 		const audioFileCb = this.#createFileClickCallback(() => this.#openAudioFile());
 		const plFileCb = this.#createFileClickCallback(() => this.#openPlaylistFile());
 
@@ -51,7 +53,9 @@ OCA.Music.FolderView = class {
 		this.#registerToNcFiles(ncFiles, this.#playlistMimes, plFileCb, 'music_play_playlist_file');
 	}
 
-	registerToFileActions(fileActions) {
+	registerToFileActions(fileActions, sharingToken) {
+		this.#shareToken = sharingToken;
+
 		const audioFileCb = this.#createFileClickCallback(() => this.#openAudioFile());
 		const plFileCb = this.#createFileClickCallback(() => this.#openPlaylistFile());
 
@@ -92,17 +96,15 @@ OCA.Music.FolderView = class {
 	}
 
 	#urlForFile(file) {
-		let url = this.#fileList
-			? this.#fileList.getDownloadUrl(file.name, file.path)
-			: OC.filePath('music', '', 'index.php') + '/api/file/' + file.id + '/download';
+		// Use download endpoints provided by the Music back-end instead of relying on mFileList.getDownloadUrl or the 
+		// file.source from ncFiles.FileAction (on NC28+). This has the benefit of working the same way on all platform
+		// versions and when playing individual audio files or a playlist.
 
-		// Append request token unless this is a public share. This is actually unnecessary for most files
+		// When not playing a public share, we add the request token. This is actually unnecessary for most files
 		// but needed when the file in question is played using our Aurora.js fallback player.
-		if (!this.#shareToken) {
-			let delimiter = _.includes(url, '?') ? '&' : '?';
-			url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
-		}
-		return url;
+		return this.#shareToken
+			? OC.generateUrl(`apps/music/api/share/${this.#shareToken}/${file.id}/download`)
+			: OC.generateUrl(`apps/music/api/file/${file.id}/download`) + '?requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	#onClose() {

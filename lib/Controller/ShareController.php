@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -15,12 +15,15 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\IRequest;
 use OCP\Share\IManager;
+use OCP\Share\Exceptions\ShareNotFound;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileStreamResponse;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Scanner;
 
@@ -84,18 +87,29 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function parsePlaylist(string $token, int $fileId) {
-		$share = $this->shareManager->getShareByToken($token);
-		$fileOwner = $share->getShareOwner();
-		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
-
-		$matchingFolders = $fileOwnerHome->getById($share->getNodeId());
-
+	public function download(string $token, int $fileId) {
 		try {
-			$sharedFolder = $matchingFolders[0] ?? null;
-			if (!($sharedFolder instanceof Folder)) {
-				throw new \OCP\Files\NotFoundException();
+			$sharedFolder = $this->getSharedFolder($token);
+			$file = $sharedFolder->getById($fileId)[0] ?? null;
+			if ($file instanceof File) {
+				return new FileStreamResponse($file);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, 'no such file under the share');
 			}
+		} catch (ShareNotFound $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'invalid share token');
+		} catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'the share is not a valid folder');
+		}
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function parsePlaylist(string $token, int $fileId) {
+		try {
+			$sharedFolder = $this->getSharedFolder($token);
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);
 
 			$bogusUrlId = -1;
@@ -120,10 +134,26 @@ class ShareController extends Controller {
 				}
 			}, $result['files']);
 			return new JSONResponse($result);
+		} catch (ShareNotFound $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'invalid share token');
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
+	}
+
+	private function getSharedFolder(string $token) : Folder {
+		$share = $this->shareManager->getShareByToken($token);
+		$fileOwner = $share->getShareOwner();
+		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
+
+		$matchingFolders = $fileOwnerHome->getById($share->getNodeId());
+		$folder = $matchingFolders[0] ?? null;
+		if (!($folder instanceof Folder)) {
+			throw new \OCP\Files\NotFoundException();
+		}
+
+		return $folder;
 	}
 }

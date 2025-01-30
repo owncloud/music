@@ -7,18 +7,20 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 .app-music #app-navigation {
-	padding-bottom: calc(88px + 4 * var(--default-grid-baseline, 0px)) !important;
+	--music-nav-item-height: var(--default-clickable-area, 44px);
+
+	padding-bottom: calc(2 * var(--music-nav-item-height) + 4 * var(--default-grid-baseline, 0px)) !important;
 	z-index: 999;
 	overflow: unset;
 }
 
 #app-navigation > ul {
 	height: 100%;
-	padding: calc(var(--default-grid-baseline)*2);
+	padding: calc(var(--default-grid-baseline) * 2);
 	padding-bottom: 0;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -60,13 +62,13 @@
 
 #app-navigation .music-navigation-item {
 	position: relative;
-	height: 44px;
+	height: var(--music-nav-item-height);
 }
 
 #app-navigation .music-navigation-item-content {
 	padding-left: 0 !important;
-	height: 44px;
-	line-height: 44px;
+	height: var(--music-nav-item-height);
+	line-height: var(--music-nav-item-height);
 	width: 100%;
 	overflow: hidden;
 	white-space: nowrap;
@@ -80,7 +82,7 @@
 
 #app-navigation .music-navigation-item-content > * {
 	display: inline-block;
-	height: 44px;
+	height: var(--music-nav-item-height);
 }
 
 #app-navigation .music-navigation-item:not(:hover):not(.active):not(.menu-open) .music-navigation-item-content {
@@ -89,7 +91,7 @@
 
 #app-navigation .music-navigation-item-content [class^="icon-"] {
 	width: 40px;
-	height: 44px;
+	height: var(--music-nav-item-height);
 	cursor: pointer;
 }
 
@@ -120,7 +122,7 @@
 
 #app-navigation .action.icon-checkmark, 
 #app-navigation .action.icon-close {
-	margin-top: 10px !important;
+	margin-top: calc((var(--music-nav-item-height) - 24px) / 2);
 }
 
 #app-navigation .play-pause-button {
@@ -152,11 +154,11 @@
 	color: var(--color-primary-text, #fff);
 	border-radius: 50%;
 	margin-left: 2px;
-	width: 32px;
-	height: 32px;
-	line-height: 32px;
+	width: calc(var(--music-nav-item-height) - 12px);
+	height: calc(var(--music-nav-item-height) - 12px);
+	line-height: calc(var(--music-nav-item-height) - 12px);
 	text-align: center;
-	vertical-align: middle;
+	vertical-align: baseline;
 	font-size: smaller;
 }
 
@@ -233,7 +235,9 @@
 	margin-bottom: 4px;
 	margin-top: 4px;
 	margin-right: 5px;
-	height: 32px;
+	height: calc(var(--music-nav-item-height) - 6px);
+	max-height: 32px;
+	min-height: unset;
 	cursor: text;
 	box-shadow: unset;
 }
@@ -277,9 +281,9 @@
 	width: unset;
 	left: 0;
 	right: 0;
-	height: 44px;
+	height: var(--music-nav-item-height);
 	max-width: 300px;
-	margin: calc(var(--default-grid-baseline, 0px)*2);
+	margin: calc(var(--default-grid-baseline, 0px) * 2);
 	z-index: 0;
 }
 
@@ -288,7 +292,7 @@
 }
 
 #app-navigation #music-nav-search {
-	bottom: calc(44px + var(--default-grid-baseline, 0px));
+	bottom: calc(var(--music-nav-item-height) + var(--default-grid-baseline, 0px));
 	z-index: 1;
 }
 
@@ -300,7 +304,7 @@
 	display: block;
 	padding-left: 14px;
 	padding-right: 12px;
-	line-height: 44px;
+	line-height: var(--music-nav-item-height);
 }
 
 #app-navigation #music-nav-settings > a:first-child img {

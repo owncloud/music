@@ -5,6 +5,7 @@
   [#1198](https://github.com/owncloud/music/issues/1198)
 
 ### Changed
+- Denser layout for the navigation pane and actions menu on NC 30+, matching the platform style
 
 ### Fixed
 - Dashboard widget: 

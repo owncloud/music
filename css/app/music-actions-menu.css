@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 .app-music #app .popovermenu {
@@ -22,13 +22,13 @@
 
 .app-music #app .popovermenu ul li {
 	padding: 0;
-	line-height: 44px;
+	line-height: var(--default-clickable-area, 44px);
 }
 
 .app-music #app .popovermenu ul li a {
 	padding-left: 0;
 	padding-right: 12px;
-	line-height: 44px;
+	line-height: var(--default-clickable-area, 44px);
 	background-position: 10px center;
 	background-size: 16px;
 	width: 100%;
@@ -36,7 +36,10 @@
 }
 
 .app-music #app .popovermenu ul li a .icon {
-	padding: 22px 0 22px 44px;
+	padding-top: calc(var(--default-clickable-area, 44px)/2);
+	padding-right: 0;
+	padding-bottom: calc(var(--default-clickable-area, 44px)/2);
+	padding-left: var(--default-clickable-area, 44px);
 	vertical-align: bottom;
 	background-size: inherit;
 }

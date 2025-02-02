@@ -16,6 +16,7 @@
 	padding-bottom: calc(2 * var(--music-nav-item-height) + 4 * var(--default-grid-baseline, 0px)) !important;
 	z-index: 999;
 	overflow: unset;
+	contain: content;
 }
 
 #app-navigation > ul {

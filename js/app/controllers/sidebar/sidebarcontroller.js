@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 
@@ -26,8 +26,6 @@ angular.module('Music').controller('SidebarController', [
 				const offset = sidebarRight + sidebarWidth - contentWidth;
 				$('#app-sidebar .close').css('right', offset);
 				$('#app-sidebar #follow-playback').css('right', offset);
-
-				$('#app-sidebar .close').css('top', $('#header').outerHeight());
 			});
 		};
 

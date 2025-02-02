@@ -17,7 +17,9 @@
   * Stream playback failing when the stream URL has only the domain part without any path and no trailing '/' (like http://abc.somedomain.xyz)
   * Stream playback failing when the given URL redirects to a playlist file containing the actual audio URL
   * HTTP redirections not followed when parsing Icy-MetaData of the channel
-- Layout glitch on the navigation items "Search" and "Settings" on NC30+ with Chromium based browsers
+- Layout glitches:
+  * Navigation items "Search" and "Settings" positioned and highlighted incorrectly on NC30+ with Chromium based browsers
+  * Collapsed navigation pane and corner roundings shown wrong on narrow screens on NC30
 
 ## 2.1.1 - 2025-01-03
 

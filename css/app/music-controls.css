@@ -7,32 +7,20 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 #controls {
 	height: 66px;
 	padding: 0 20px 0 20px;
-	top: 45px;
+	top: 0;
 	position: fixed;
 	overflow: visible;
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	z-index: 1;
-
-	/* For Nextcloud 25+: */
-	border-top-right-radius: var(--body-container-radius);
 }
 
-/* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed
- * to right and this has the side-effect of making the "fixed" position to be eveluated in the
- * context of the transformed element instead of the entire window.
- */
-.snapjs-left #controls {
-	top: 0;
-}
-
-/* Adjustment to taller header pane used on NC14+ */
-body:not(.snapjs-left) #controls.taller-header {
+body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	top: 50px;
 }
 

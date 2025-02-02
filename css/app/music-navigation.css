@@ -17,6 +17,8 @@
 	z-index: 999;
 	overflow: unset;
 	contain: content;
+	height: 100%;
+	top: 0;
 }
 
 #app-navigation > ul {
@@ -109,8 +111,19 @@
 	left: 40px;
 }
 
-#app-navigation-toggle {
+.app-music #app-navigation-toggle {
 	height: 66px;
+	top: 0;
+}
+
+body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
+	top: 50px;
+}
+
+.app-music.nc14to24 #app-navigation {
+	top: 50px;
+	bottom: 0;
+	height: unset;
 }
 
 #app-navigation .action {

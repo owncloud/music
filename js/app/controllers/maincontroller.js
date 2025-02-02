@@ -553,18 +553,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}
 	});
 
-	// Nextcloud 14+ uses taller header than ownCloud
-	const headerHeight = $('#header').outerHeight();
-	if (headerHeight > 45) {
-		$('#controls').addClass('taller-header');
-	}
-
 	if (OCA.Music.Utils.isLegacyLayout()) {
 		$('.app-music').addClass('legacy-layout');
-	} else {
+	} else if (OCA.Music.Utils.getScrollContainer()[0] instanceof HTMLDocument) {
+		// Nextcloud versions 14..24 need some special handling because of different container
+		$('.app-music').addClass('nc14to24');
 		// To be compatible with NC25, we have set the #app-content position as absolute. To fix problems
 		// this causes on older platforms, we need to set the #content to use top-margin instead of top-padding,
 		// just as it has been declared by the core on NC25.
+		const headerHeight = $('#header').outerHeight();
 		$('#content').css('padding-top', 0);
 		$('#content').css('margin-top', headerHeight);
 		$('#content').css('min-height', `var(--body-height, calc(100% - ${headerHeight}px))`);

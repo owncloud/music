@@ -5,17 +5,22 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 #app-sidebar {
 	position: fixed;
-	height: unset;
-	right: var(--body-container-margin, 0);
-	bottom: var(--body-container-margin, 0);
-	border-top-right-radius: var(--body-container-radius);
-	border-bottom-right-radius: var(--body-container-radius);
+	height: 100%;
+	top: 0;
+	right: 0;
 	overflow-y: hidden;
+	contain: content;
+}
+
+.nc14to24 #app-sidebar {
+	top: var(--header-height, 50px);
+	bottom: 0;
+	height: unset;
 }
 
 #app-sidebar #app-sidebar-scroll-container {
@@ -41,8 +46,8 @@
 
 #app-sidebar .close {
 	position: fixed;
-	top: var(--header-height, 45px);
-	right: var(--body-container-margin, 0);
+	top: 0;
+	right: 0;
 	border-radius: 50%;
 	margin: 6px;
 	padding: 14px;

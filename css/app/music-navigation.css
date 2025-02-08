@@ -58,11 +58,6 @@
 	opacity: 0.15;
 }
 
-.ie #app-navigation .app-navigation-separator {
-	/* IE doesn't support the var() syntax */
-	border-color: #222;
-}
-
 #app-navigation .music-navigation-item {
 	position: relative;
 	height: var(--music-nav-item-height);
@@ -178,11 +173,6 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 #app-navigation li.drag-hover {
 	background-color: var(--color-background-dark, #ededed);
-}
-
-/* IE doesn't support the var() syntax */
-.ie #app-navigation li.drag-hover {
-	background-color: #ededed;
 }
 
 #app-navigation .actions {
@@ -328,4 +318,47 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	margin-right: 11px;
 	margin-top: 1.5px;
 	margin-left: 0;
+}
+
+/* Compatibility for Internet Explorer which doesn't support the var() syntax; IE is supported on OC but not on NC */
+.ie #app-navigation .music-navigation-item,
+.ie #app-navigation .music-navigation-item-content,
+.ie #app-navigation .music-navigation-item-content > *,
+.ie #app-navigation .music-navigation-item-content [class^="icon-"],
+.ie #app-navigation #music-nav-settings > a {
+	height: 44px;
+	line-height: 44px;
+}
+
+.ie #app-navigation #new-playlist .track-count-badge {
+	background-color: #1d2d44;
+	color: #fff;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+}
+
+.ie #app-navigation .action.icon-checkmark, 
+.ie #app-navigation .action.icon-close {
+	margin-top: 10px;
+}
+
+.ie #app-navigation .app-navigation-separator {
+	border-color: #222;
+}
+
+.ie #app-navigation li.drag-hover {
+	background-color: #ededed;
+}
+
+.ie #app-navigation-toggle {
+	top: 45px;
+}
+
+.ie #app-navigation #music-nav-search {
+	bottom: 44px;
+}
+
+.ie .app-music #app-navigation {
+	padding-bottom: 88px !important;
 }

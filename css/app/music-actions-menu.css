@@ -63,3 +63,15 @@
 .app-music #app .popovermenu.submenu span {
 	margin-left: 16px;
 }
+
+/* Compatibility for Internet Explorer which doesn't support the var() syntax; IE is supported on OC but not on NC */
+.ie .app-music #app .popovermenu ul li,
+.ie .app-music #app .popovermenu ul li a {
+	line-height: 44px;
+}
+
+.ie .app-music #app .popovermenu ul li a .icon {
+	padding-top: 22px;
+	padding-bottom: 22px;
+	padding-left: 44px;
+}

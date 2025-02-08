@@ -24,6 +24,10 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	top: 50px;
 }
 
+.ie #controls {
+	top: 45px;
+}
+
 #controls, #controls * {
 	display: none;
 }

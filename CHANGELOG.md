@@ -19,7 +19,9 @@
   * HTTP redirections not followed when parsing Icy-MetaData of the channel
 - Layout glitches:
   * Navigation items "Search" and "Settings" positioned and highlighted incorrectly on NC30+ with Chromium based browsers
-  * Collapsed navigation pane and corner roundings shown wrong on narrow screens on NC30
+  * Collapsed navigation pane and corner roundings shown wrong on narrow screens on NC 30.0.5
+- Ampache API: CORS problem on the endpoint `/ampache/image.php`
+  [#1199](https://github.com/owncloud/music/pull/1199) @rstefko
 
 ## 2.1.1 - 2025-01-03
 

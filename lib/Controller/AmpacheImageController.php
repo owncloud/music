@@ -63,6 +63,7 @@ class AmpacheImageController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
+	 * @CORS
 	 */
 	public function image(?string $token, ?string $object_id, string $object_type='album') : Response {
 		if ($token === null) {

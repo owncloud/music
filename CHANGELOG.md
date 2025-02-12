@@ -3,6 +3,7 @@
 ### Added
 - Support for Nextcloud 31
   [#1198](https://github.com/owncloud/music/issues/1198)
+- Support for PHP 8.4
 
 ### Changed
 - Denser layout for the navigation pane and actions menu on NC 30+, matching the platform style

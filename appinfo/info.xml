@@ -31,7 +31,7 @@
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<php min-version="7.4" max-version="8.3"/>
+		<php min-version="7.4" max-version="8.4"/>
 		<owncloud min-version="10.5" max-version="10" />
 		<nextcloud min-version="20" max-version="31" />
 	</dependencies>

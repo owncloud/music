@@ -7,6 +7,7 @@
 
 ### Changed
 - Denser layout for the navigation pane and actions menu on NC 30+, matching the platform style
+- Ampache API: Parse and include lyrics in the response of the action `song` (but not on any other actions returning songs)
 
 ### Fixed
 - Dashboard widget: 

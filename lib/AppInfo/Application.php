@@ -175,6 +175,7 @@ class Application extends ApplicationBase {
 				$c->query('PodcastService'),
 				$c->query('AmpacheImageService'),
 				$c->query('CoverHelper'),
+				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
 				$c->query('LibrarySettings'),
 				$c->query('Random'),

@@ -70,6 +70,7 @@ use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\AmpachePreferences;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
@@ -94,6 +95,7 @@ class AmpacheController extends ApiController {
 	private PodcastService $podcastService;
 	private AmpacheImageService $imageService;
 	private CoverHelper $coverHelper;
+	private DetailsHelper $detailsHelper;
 	private LastfmService $lastfmService;
 	private LibrarySettings $librarySettings;
 	private Random $random;
@@ -128,6 +130,7 @@ class AmpacheController extends ApiController {
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
 								CoverHelper $coverHelper,
+								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
 								Random $random,
@@ -151,6 +154,7 @@ class AmpacheController extends ApiController {
 		$this->podcastService = $podcastService;
 		$this->imageService = $imageService;
 		$this->coverHelper = $coverHelper;
+		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
@@ -650,8 +654,14 @@ class AmpacheController extends ApiController {
 	protected function song(int $filter) : array {
 		$userId = $this->userId();
 		$track = $this->trackBusinessLayer->find($filter, $userId);
-		$trackInArray = [$track];
-		return $this->renderSongs($trackInArray);
+
+		// parse and include also lyrics when fethcing an individual song
+		$rootFolder = $this->librarySettings->getFolder($userId);
+		$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
+		$lyrics = \mb_ereg_replace("\n", "\r\n", $lyrics); // At least Ample expects Windows style endlines, detailsHelper enforces Unix style
+		$track->setLyrics($lyrics);
+
+		return $this->renderSongs([$track]);
 	}
 
 	/**

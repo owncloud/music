@@ -94,6 +94,7 @@ class Track extends Entity {
 	private ?Album $album = null;
 	private ?int $numberOnPlaylist = null;
 	private ?string $folderPath = null;
+	private ?string $lyrics = null;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -131,6 +132,10 @@ class Track extends Entity {
 
 	public function setFolderPath(string $path) : void {
 		$this->folderPath = $path;
+	}
+
+	public function setLyrics(?string $lyrics) : void {
+		$this->lyrics = $lyrics;
 	}
 
 	public function getPath() : ?string {
@@ -242,7 +247,7 @@ class Track extends Entity {
 			'playcount' => $this->getPlayCount(),
 			'flag' => !empty($this->getStarred()),
 			'language' => null,
-			'lyrics' => null,
+			'lyrics' => $this->lyrics,
 			'mode' => null, // cbr/vbr
 			'rate' => null, // sample rate [Hz]
 			'replaygain_album_gain' => null,

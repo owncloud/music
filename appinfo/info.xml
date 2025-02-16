@@ -10,17 +10,18 @@
 - Browse by artists, albums, genres, or folders
 - Gapless play
 - Filter the shown content with the search function
+- Advanced search to freely use and combine dozens of search criteria
 - Play internet radio and podcast channels
 - Setup Last.fm connection to see background information on artists, albums, and songs
 - Control with media control keys on the keyboard or OS
 - The app can handle libraries consisting of thousands of albums and tens of thousands of songs
-- Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on various external apps e.g. on Android or iPhone
+- Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on dozens of external apps on Android, iOS, Windows, Linux, etc.
 - Widget for the Nextcloud Dashboard]]></description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>2.1.1</version>
+	<version>2.1.2</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128608-34dc576b-07b7-424c-ae81-a63b9128f3d7.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128615-554d117c-786f-4847-b110-cd4018b65186.png</screenshot>

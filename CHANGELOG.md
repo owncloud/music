@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.1.2 - 2025-02-16
 
 ### Added
 - Support for Nextcloud 31

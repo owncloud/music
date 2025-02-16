@@ -131,7 +131,7 @@ class Playlist extends Entity {
 
 	public function toSubsonicApi() : array {
 		return [
-			'id' => $this->getId(),
+			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->userId,
 			'public' => false,

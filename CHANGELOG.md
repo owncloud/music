@@ -24,6 +24,8 @@
   * Collapsed navigation pane and corner roundings shown wrong on narrow screens on NC 30.0.5
 - Ampache API: CORS problem on the endpoint `/ampache/image.php`
   [#1199](https://github.com/owncloud/music/pull/1199) @rstefko
+- Subsonic API: In JSON responses, playlist `id` was returned as integer instead of string type
+  [#1202](https://github.com/owncloud/music/issues/1202)
 
 ## 2.1.1 - 2025-01-03
 

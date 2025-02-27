@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -317,12 +317,18 @@ class CoverHelper {
 	 */
 	public function scaleDownAndCrop(array $image, int $maxSize) : array {
 		$meta = \getimagesizefromstring($image['content']);
-		$srcWidth = $meta[0];
-		$srcHeight = $meta[1];
+
+		if ($meta !== false) {
+			$srcWidth = $meta[0];
+			$srcHeight = $meta[1];
+		} else {
+			$srcWidth = $srcHeight = 0;
+			$this->logger->log('Failed to extract size of the image, skip downscaling', 'warn');
+		}
 
 		// only process picture if it's larger than target size or not perfect square
 		if ($srcWidth > $maxSize || $srcHeight > $maxSize || $srcWidth != $srcHeight) {
-			$img = imagecreatefromstring($image['content']);
+			$img = \imagecreatefromstring($image['content']);
 
 			if ($img === false) {
 				$this->logger->log('Failed to open cover image for downscaling', 'warn');
@@ -416,8 +422,9 @@ class CoverHelper {
 		return $image;
 	}
 
-	private static function autoDetectMime(string $imageContent) : string {
-		return \getimagesizefromstring($imageContent)['mime'];
+	private static function autoDetectMime(string $imageContent) : ?string {
+		$meta = \getimagesizefromstring($imageContent);
+		return ($meta === false) ? null : $meta['mime'];
 	}
 
 	/**

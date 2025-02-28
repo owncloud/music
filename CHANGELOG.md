@@ -3,6 +3,7 @@
 ### Added
 
 ### Changed
+- Ampache API: Use HTML line breaks `<br />` in the lyrics to match genuine Ampache behavior
 
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -655,10 +655,10 @@ class AmpacheController extends ApiController {
 		$userId = $this->userId();
 		$track = $this->trackBusinessLayer->find($filter, $userId);
 
-		// parse and include also lyrics when fethcing an individual song
+		// parse and include also lyrics when fetching an individual song
 		$rootFolder = $this->librarySettings->getFolder($userId);
 		$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
-		$lyrics = \mb_ereg_replace("\n", "\r\n", $lyrics); // At least Ample expects Windows style endlines, detailsHelper enforces Unix style
+		$lyrics = \mb_ereg_replace("\n", "<br />", $lyrics); // It's not documented but Ampache proper uses HTML line breaks for the lyrics
 		$track->setLyrics($lyrics);
 
 		return $this->renderSongs([$track]);

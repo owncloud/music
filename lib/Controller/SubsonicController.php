@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -54,6 +54,7 @@ use OCA\Music\Http\XmlResponse;
 
 use OCA\Music\Middleware\SubsonicException;
 
+use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
@@ -85,9 +86,11 @@ class SubsonicController extends Controller {
 	private DetailsHelper $detailsHelper;
 	private LastfmService $lastfmService;
 	private PodcastService $podcastService;
+	private AmpacheImageService $imageService;
 	private Random $random;
 	private Logger $logger;
 	private ?string $userId;
+	private ?int $keyId;
 	private array $ignoredArticles;
 	private string $format;
 	private ?string $callback;
@@ -111,6 +114,7 @@ class SubsonicController extends Controller {
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
 								PodcastService $podcastService,
+								AmpacheImageService $imageService,
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -132,9 +136,11 @@ class SubsonicController extends Controller {
 		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
 		$this->podcastService = $podcastService;
+		$this->imageService = $imageService;
 		$this->random = $random;
 		$this->logger = $logger;
 		$this->userId = null;
+		$this->keyId = null;
 		$this->ignoredArticles = [];
 		$this->format = 'xml'; // default, should be immediately overridden by SubsonicMiddleware
 	}
@@ -151,10 +157,10 @@ class SubsonicController extends Controller {
 
 	/**
 	 * Called by the middleware once the user credentials have been checked
-	 * @param string $userId
 	 */
-	public function setAuthenticatedUser(string $userId) {
+	public function setAuthenticatedUser(string $userId, int $keyId) {
 		$this->userId = $userId;
+		$this->keyId = $keyId;
 		$this->ignoredArticles = $this->librarySettings->getIgnoredArticles($userId);
 	}
 
@@ -1364,7 +1370,7 @@ class SubsonicController extends Controller {
 
 		if (!empty($artist->getCoverFileId())) {
 			$result['coverArt'] = $result['id'];
-			$result['artistImageUrl'] = $this->artistImageUrl($result['id']);
+			$result['artistImageUrl'] = $this->artistImageUrl($id);
 		}
 
 		return $result;
@@ -1541,7 +1547,7 @@ class SubsonicController extends Controller {
 
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			if ($artist->getCoverFileId() !== null) {
-				$content['largeImageUrl'] = [$this->artistImageUrl('artist-' . $artistId)];
+				$content['largeImageUrl'] = [$this->artistImageUrl($artistId)];
 			}
 		}
 
@@ -1736,11 +1742,10 @@ class SubsonicController extends Controller {
 		return \count($genreArr) ? $genreArr[0] : null;
 	}
 
-	private function artistImageUrl(string $id) : string {
-		$par = $this->request->getParams();
-		return $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
-			. "?u={$par['u']}&p={$par['p']}&v={$par['v']}&c={$par['c']}&id=$id&size=" . CoverHelper::DO_NOT_CROP_OR_SCALE;
-		// Note: Using DO_NOT_CROP_OR_SCALE (-1) as size is our proprietary extension and not part of the Subsonic API
+	private function artistImageUrl(int $id) : string {
+		$token = $this->imageService->getToken('artist', $id, $this->keyId);
+		return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image',
+			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverHelper::DO_NOT_CROP_OR_SCALE]);
 	}
 
 	/**

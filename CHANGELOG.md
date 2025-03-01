@@ -8,6 +8,7 @@
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)
   [#1204](https://github.com/owncloud/music/issues/1204)
+- Subsonic API: Property `artistImageUrl` being invalid on artist when authenticated using `apiKey`
 
 ## 2.1.2 - 2025-02-16
 

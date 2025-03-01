@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023, 2024
+ * @copyright Pauli Järvinen 2023 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -65,7 +65,7 @@ class AmpacheImageController extends Controller {
 	 * @NoSameSiteCookieRequired
 	 * @CORS
 	 */
-	public function image(?string $token, ?string $object_id, string $object_type='album') : Response {
+	public function image(?string $token, ?string $object_id, string $object_type='album', ?int $size=null) : Response {
 		if ($token === null) {
 			// Workaround for Ample client which uses this kind of call to get the placeholder graphics
 			return new FileResponse(PlaceholderImage::generateForResponse('?', $object_type, 200));
@@ -78,18 +78,18 @@ class AmpacheImageController extends Controller {
 
 		$businessLayer = $this->getBusinessLayer($object_type);
 		if ($businessLayer === null) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, "invalid object_type $object_type");	
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, "invalid object_type $object_type");
 		}
 
 		try {
 			$entity = $businessLayer->find((int)$object_id, $userId);
 		} catch (BusinessLayerException $e) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id not found");	
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id not found");
 		}
 
-		$coverImage = $this->coverHelper->getCover($entity, $userId, $this->librarySettings->getFolder($userId));
+		$coverImage = $this->coverHelper->getCover($entity, $userId, $this->librarySettings->getFolder($userId), $size);
 		if ($coverImage === null) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id has no cover image");		
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id has no cover image");
 		}
 
 		return new FileResponse($coverImage);

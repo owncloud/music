@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -57,10 +57,10 @@ class AmpacheUserMapper {
 
 	/**
 	 * @param string $hash Password hash
-	 * @return ?string User ID matching the $hash or null if not found
+	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if not found
 	 */
-	public function getUserByPasswordHash(string $hash) : ?string {
-		$sql = 'SELECT `user_id` FROM `*PREFIX*music_ampache_users` WHERE `hash` = ?';
+	public function getUserByPasswordHash(string $hash) : ?array {
+		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_ampache_users` WHERE `hash` = ?';
 		$params = [$hash];
 		$result = $this->db->executeQuery($sql, $params);
 		$row = $result->fetch();
@@ -69,7 +69,10 @@ class AmpacheUserMapper {
 			return null;
 		}
 
-		return $row['user_id'];
+		return [
+			'key_id' => $row['id'],
+			'user_id' => $row['user_id']
+		];
 	}
 
 	/**
@@ -114,7 +117,7 @@ class AmpacheUserMapper {
 	}
 
 	/**
-	 * @return ?int ID of the added key on null on failure (which is highly unexpected)
+	 * @return ?int ID of the added key or null on failure (which is highly unexpected)
 	 */
 	public function addUserKey(string $userId, string $hash, ?string $description) : ?int {
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users`

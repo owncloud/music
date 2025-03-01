@@ -368,6 +368,7 @@ class Application extends ApplicationBase {
 				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
 				$c->query('PodcastService'),
+				$c->query('AmpacheImageService'),
 				$c->query('Random'),
 				$c->query('Logger')
 			);

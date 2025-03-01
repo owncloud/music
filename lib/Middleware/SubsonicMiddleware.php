@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Middleware;
@@ -98,9 +98,9 @@ class SubsonicMiddleware extends Middleware {
 			throw new SubsonicException('Multiple conflicting authentication mechanisms provided', 43);
 		}
 		else if ($apiKey !== null) {
-			$user = $this->userForPass($apiKey);
-			if ($user !== null) {
-				$controller->setAuthenticatedUser($user);
+			$credentials = $this->userAndKeyIdForPass($apiKey);
+			if ($credentials !== null) {
+				$controller->setAuthenticatedUser($credentials['user_id'], $credentials['key_id']);
 			} else {
 				throw new SubsonicException('Invalid API key', 44);
 			}
@@ -116,9 +116,9 @@ class SubsonicMiddleware extends Middleware {
 				$pass = \hex2bin(\substr($pass, \strlen('enc:')));
 			}
 
-			$user = $this->userMapper->getProperUserId($user);
-			if ($user !== null && $this->userForPass($pass) == $user) {
-				$controller->setAuthenticatedUser($user);
+			$credentials = $this->userAndKeyIdForPass($pass);
+			if (Util::stringCaseCompare($user, $credentials['user_id']) === 0) {
+				$controller->setAuthenticatedUser($credentials['user_id'], $credentials['key_id']);
 			} else {
 				throw new SubsonicException('Wrong username or password', 40);
 			}
@@ -131,9 +131,9 @@ class SubsonicMiddleware extends Middleware {
 
 	/**
 	 * @param string $pass Password aka API key
-	 * @return string User ID or null if the $pass was not valid
+	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if $pass was not valid
 	 */
-	private function userForPass(string $pass) : ?string {
+	private function userAndKeyIdForPass(string $pass) : ?array {
 		$hash = \hash('sha256', $pass);
 		return $this->userMapper->getUserByPasswordHash($hash);
 	}

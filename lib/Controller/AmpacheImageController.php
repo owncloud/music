@@ -68,7 +68,9 @@ class AmpacheImageController extends Controller {
 	public function image(?string $token, ?string $object_id, string $object_type='album', ?int $size=null) : Response {
 		if ($token === null) {
 			// Workaround for Ample client which uses this kind of call to get the placeholder graphics
-			return new FileResponse(PlaceholderImage::generateForResponse('?', $object_type, 200));
+			$response = new FileResponse(PlaceholderImage::generateForResponse('?', $object_type, 200));
+			self::setClientCaching($response);
+			return $response;
 		}
 
 		$userId = $this->service->getUserForToken($token, $object_type, (int)$object_id);
@@ -92,7 +94,9 @@ class AmpacheImageController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id has no cover image");
 		}
 
-		return new FileResponse($coverImage);
+		$response = new FileResponse($coverImage);
+		self::setClientCaching($response, 30);
+		return $response;
 	}
 
 	private function getBusinessLayer(string $object_type) : ?BusinessLayer {
@@ -102,5 +106,10 @@ class AmpacheImageController extends Controller {
 			case 'playlist':	return $this->playlistBusinessLayer;
 			default:			return null;
 		}
+	}
+
+	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
+		$httpResponse->cacheFor($days * 24 * 60 * 60);
+		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

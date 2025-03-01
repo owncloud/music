@@ -3,7 +3,12 @@
 ### Added
 
 ### Changed
-- Ampache API: Use HTML line breaks `<br />` in the lyrics to match genuine Ampache behavior
+- Ampache API: 
+  * Use HTML line breaks `<br />` in the lyrics to match genuine Ampache behavior
+  * Add cache headers to the cover art responses
+- Subsonic API:
+  * Add cache headers to the cover art responses
+    [#1205](https://github.com/owncloud/music/issues/1205)
 
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)

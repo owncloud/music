@@ -16,6 +16,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\IL10N;
@@ -438,7 +439,9 @@ class SubsonicController extends Controller {
 		if (!empty($entity)) {
 			$rootFolder = $this->librarySettings->getFolder($userId);
 			$coverData = $this->coverHelper->getCover($entity, $userId, $rootFolder, $size);
-			return new FileResponse($coverData);
+			$response = new FileResponse($coverData);
+			self::setClientCaching($response, 30);
+			return $response;
 		}
 
 		return $this->subsonicErrorResponse(70, "entity $id has no cover");
@@ -1791,6 +1794,11 @@ class SubsonicController extends Controller {
 		}
 
 		return $response;
+	}
+
+	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
+		$httpResponse->cacheFor($days * 24 * 60 * 60);
+		$httpResponse->addHeader('Pragma', 'cache');
 	}
 
 	public function subsonicErrorResponse($errorCode, $errorMessage) {

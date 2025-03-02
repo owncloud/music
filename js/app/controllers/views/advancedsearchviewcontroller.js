@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 angular.module('Music').controller('AdvancedSearchViewController', [
@@ -149,6 +149,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 						{ key: 'year',				name: gettextCatalog.getString('Year'),					type: 'numeric' },
 						{ key: 'time',				name: gettextCatalog.getString('Duration (seconds)'),	type: 'numeric' },
 						{ key: 'song_count',		name: gettextCatalog.getString('Track count'),			type: 'numeric' },
+						{ key: 'disk_count',		name: gettextCatalog.getString('Disk count'),			type: 'numeric' },
 						{ key: 'album_genre',		name: gettextCatalog.getString('Album genre'),			type: 'text' },
 						{ key: 'song_genre',		name: gettextCatalog.getString('Track genre'),			type: 'text' },
 						{ key: 'no_genre',			name: gettextCatalog.getString('Has no genre'),			type: 'boolean' },

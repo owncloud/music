@@ -3,9 +3,11 @@
 ### Added
 
 ### Changed
+- Advanced search: Enable searching albums by disk count
 - Ampache API: 
   * Use HTML line breaks `<br />` in the lyrics to match genuine Ampache behavior
   * Add cache headers to the cover art responses
+  * Advanced search supports new rule `disk_count` for type `album`
 - Subsonic API:
   * Add cache headers to the cover art responses
     [#1205](https://github.com/owncloud/music/issues/1205)

@@ -93,6 +93,7 @@ OC.L10N.register(
     "Description" : "Kuvaus",
     "Description (e.g. App name)" : "Kuvaus (esim. sovelluksen nimi)",
     "Details" : "Tiedot",
+    "Disk count" : "Levyjen määrä",
     "Does not contain" : "Ei sisällä",
     "Does not equal" : "Ei ole sama kuin",
     "Does not match regular expression" : "Ei vastaa säännöllistä lauseketta",

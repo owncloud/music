@@ -1784,7 +1784,7 @@ class AmpacheController extends ApiController {
 
 		$numericRules = [
 			'track', 'year', 'original_year', 'myrating', 'rating', 'songrating', 'albumrating', 'artistrating',
-			'played_times', 'album_count', 'song_count', 'time', 'bitrate'
+			'played_times', 'album_count', 'song_count', 'disk_count', 'time', 'bitrate'
 		];
 		// numeric but no support planned: 'yearformed', 'skipped_times', 'play_skip_ratio', 'image_height', 'image_width'
 

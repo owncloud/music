@@ -498,6 +498,7 @@ class AlbumMapper extends BaseMapper {
 			case 'myplayed':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
 			case 'myplayedartist':	return "`album_artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
 			case 'song_count':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)";
+			case 'disk_count':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`disk`) $sqlOp ?) mysqlhack)";
 			case 'time':			return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`length`) $sqlOp ?) mysqlhack)";
 			case 'genre':			// fall through, alias
 			case 'album_genre':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";

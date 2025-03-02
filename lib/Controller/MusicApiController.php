@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -18,8 +18,6 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\Response;
-use OCP\Files\Folder;
 use OCP\IRequest;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -32,6 +30,7 @@ use OCA\Music\Http\FileStreamResponse;
 use OCA\Music\Utility\CollectionHelper;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\Scanner;
@@ -113,7 +112,7 @@ class MusicApiController extends Controller {
 		$requestHash = $this->request->getParam('hash');
 		$actualHash = $this->collectionHelper->getCachedJsonHash();
 		if (!empty($actualHash) && $requestHash === $actualHash) {
-			self::setClientCaching($response, 90); // cache for 3 months
+			HttpUtil::setClientCachingDays($response, 90);
 		}
 
 		return $response;
@@ -323,10 +322,5 @@ class MusicApiController extends Controller {
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
-	}
-
-	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
-		$httpResponse->cacheFor($days * 24 * 60 * 60);
-		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 namespace OCA\Music\Controller;
@@ -31,6 +31,7 @@ use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\HttpUtil;
 
 class CoverApiController extends Controller {
 
@@ -123,7 +124,7 @@ class CoverApiController extends Controller {
 			$response =  new FileResponse($coverData);
 			// instruct also the client-side to cache the result, this is safe
 			// as the resource URI contains the image hash
-			self::setClientCaching($response);
+			HttpUtil::setClientCachingDays($response, 365);
 			return $response;
 		} catch (\OutOfBoundsException $ex) {
 			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
@@ -162,10 +163,5 @@ class CoverApiController extends Controller {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}
 		}
-	}
-
-	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
-		$httpResponse->cacheFor($days * 24 * 60 * 60);
-		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

@@ -22,6 +22,7 @@ use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PlaceholderImage;
 use OCP\AppFramework\Controller;
@@ -69,7 +70,7 @@ class AmpacheImageController extends Controller {
 		if ($token === null) {
 			// Workaround for Ample client which uses this kind of call to get the placeholder graphics
 			$response = new FileResponse(PlaceholderImage::generateForResponse('?', $object_type, 200));
-			self::setClientCaching($response);
+			HttpUtil::setClientCachingDays($response, 365);
 			return $response;
 		}
 
@@ -95,7 +96,7 @@ class AmpacheImageController extends Controller {
 		}
 
 		$response = new FileResponse($coverImage);
-		self::setClientCaching($response, 30);
+		HttpUtil::setClientCachingDays($response, 30);
 		return $response;
 	}
 
@@ -106,10 +107,5 @@ class AmpacheImageController extends Controller {
 			case 'playlist':	return $this->playlistBusinessLayer;
 			default:			return null;
 		}
-	}
-
-	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
-		$httpResponse->cacheFor($days * 24 * 60 * 60);
-		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

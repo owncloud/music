@@ -935,6 +935,23 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * OpenSubsonic extension
+	 * @SubsonicAPI
+	 */
+	protected function getPodcastEpisode(string $id) {
+		$id = self::ripIdPrefix($id);
+		$episode = $this->podcastService->getEpisode($id, $this->user());
+
+		if ($episode === null) {
+			throw new SubsonicException('Requested episode not found', 70);
+		}
+
+		return $this->subsonicResponse([
+			'podcastEpisode' => $episode->toSubsonicApi()
+		]);
+	}
+
+	/**
 	 * @SubsonicAPI
 	 */
 	protected function getNewestPodcasts(int $count=20) {
@@ -1085,6 +1102,7 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['openSubsonicExtensions' => [
 			[ 'name' => 'apiKeyAuthentication', 'versions' => [1] ],
 			[ 'name' => 'formPost', 'versions' => [1] ],
+			[ 'name' => 'getPodcastEpisode', 'versions' => [1] ],
 			[ 'name' => 'songLyrics', 'versions' => [1] ],
 		]]);
 	}

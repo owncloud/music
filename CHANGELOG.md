@@ -11,6 +11,7 @@
 - Subsonic API:
   * Add cache headers to the cover art responses
     [#1205](https://github.com/owncloud/music/issues/1205)
+  * Add OpenSubsonic extension method [`getPodcastEpisode`](https://opensubsonic.netlify.app/docs/extensions/getpodcastepisode/)
 
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)

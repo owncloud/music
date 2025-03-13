@@ -658,8 +658,10 @@ class AmpacheController extends ApiController {
 		// parse and include also lyrics when fetching an individual song
 		$rootFolder = $this->librarySettings->getFolder($userId);
 		$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
-		$lyrics = \mb_ereg_replace("\n", "<br />", $lyrics); // It's not documented but Ampache proper uses HTML line breaks for the lyrics
-		$track->setLyrics($lyrics);
+		if ($lyrics !== null) {
+			$lyrics = \mb_ereg_replace("\n", "<br />", $lyrics); // It's not documented but Ampache proper uses HTML line breaks for the lyrics
+			$track->setLyrics($lyrics);
+		}
 
 		return $this->renderSongs([$track]);
 	}

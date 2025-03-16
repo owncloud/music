@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Utility;
 
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Response;
 
 /**
@@ -60,10 +61,13 @@ class HttpUtil {
 	/**
 	 * @return resource
 	 */
-	public static function createContext(?int $timeout_s=null, array $extraHeaders = []) {
+	public static function createContext(?int $timeout_s = null, array $extraHeaders = [], ?int $maxRedirects = null) {
 		$opts = self::contextOptions($extraHeaders);
 		if ($timeout_s !== null) {
 			$opts['http']['timeout'] = $timeout_s;
+		}
+		if ($maxRedirects !== null) {
+			$opts['http']['max_redirects'] = $maxRedirects;
 		}
 		return \stream_context_create($opts);
 	}
@@ -72,15 +76,15 @@ class HttpUtil {
 	 * @param resource $context
 	 * @param bool $convertKeysToLower When true, the header names used as keys of the result array are
 	 * 				converted to lower case. According to RFC 2616, HTTP headers are case-insensitive.
-	 * @return ?array The headers from the URL, after any redirections. The header names will be array keys.
+	 * @return array The headers from the URL, after any redirections. The header names will be array keys.
 	 * 					In addition to the named headers from the server, the key 'status_code' will contain
 	 * 					the status code number of the HTTP request (like 200, 302, 404) and 'status_msg'
 	 * 					the textual status following the code (like 'OK' or 'Not Found').
 	 */
-	public static function getUrlHeaders(string $url, $context, bool $convertKeysToLower=false) : ?array {
+	public static function getUrlHeaders(string $url, $context, bool $convertKeysToLower=false) : array {
 		$result = null;
 		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
-			// The built-in associative mode of get_headers because it mixes up the headers from the redirection
+			// Don't use the built-in associative mode of get_headers because it mixes up the headers from the redirection
 			// responses with those of the last response after all the redirections, making it impossible to know,
 			// what is the source of each header. Hence, we roll out our own parsing logic which discards all the
 			// headers from the intermediate redirection responses.
@@ -91,7 +95,11 @@ class HttpUtil {
 
 			if ($rawHeaders !== false) {
 				$result = self::parseHeaders($rawHeaders, $convertKeysToLower);
+			} else {
+				$result = ['status_code' => Http::STATUS_SERVICE_UNAVAILABLE, 'status_msg' => 'Error connecting the URL', 'content-length' => '0'];
 			}
+		} else {
+			$result = ['status_code' => Http::STATUS_FORBIDDEN, 'status_msg' => 'URL scheme not allowed', 'content-length' => '0'];
 		}
 		return $result;
 	}
@@ -107,7 +115,7 @@ class HttpUtil {
 				if (\count($parts) == 3) {
 					list(, $status_code, $status_msg) = $parts;
 				} else {
-					$status_code = 500;
+					$status_code = Http::STATUS_INTERNAL_SERVER_ERROR;
 					$status_msg = 'Bad response status header';
 				}
 				$result = ['status_code' => (int)$status_code, 'status_msg' => $status_msg];
@@ -136,7 +144,7 @@ class HttpUtil {
 			'http' => [
 				'header' => self::userAgentHeader(),	// some servers don't allow requests without a user agent header
 				'ignore_errors' => true,				// don't emit warnings for bad/unavailable URL, we handle errors manually
-				'max_redirects' => 5
+				'max_redirects' => 20
 			]
 		];
 

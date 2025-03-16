@@ -23,12 +23,16 @@ use OCA\Music\Utility\HttpUtil;
  * Response which relays a radio stream or similar from an original source URL
  */
 class RelayStreamResponse extends Response implements ICallbackResponse {
-	private ?string $url;
+	private string $url;
+	private ?int $contentLength;
 	/** @var resource $context */
 	private $context;
 
 	public function __construct(string $url) {
+		parent::__construct();
+
 		$this->url = $url;
+		$this->contentLength = null;
 
 		$reqHeaders = [];
 		if (isset($_SERVER['HTTP_ACCEPT'])) {
@@ -38,42 +42,56 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 			$reqHeaders['Range'] = $_SERVER['HTTP_RANGE'];
 		}
 
-		$this->context = HttpUtil::createContext(null, $reqHeaders);
+		$this->context = HttpUtil::createContext(null, $reqHeaders, /*maxRedirects=*/0);
 
-		// Get headers from the source and relay the important ones to our client
-		$sourceHeaders = HttpUtil::getUrlHeaders($url, $this->context, /*convertKeysToLower=*/true);
-	
-		if ($sourceHeaders !== null) {
-			if (isset($sourceHeaders['content-type'])) {
-				$this->addHeader('Content-Type', $sourceHeaders['content-type']);
+		// Get headers from the source and relay the important ones to our client. Handle the redirection manually
+		// since the platform redirection didn't seem to work in all cases, see https://github.com/owncloud/music/issues/1209.
+		$redirectsAllowed = 20;
+		do {
+			$sourceHeaders = HttpUtil::getUrlHeaders($this->url, $this->context, /*convertKeysToLower=*/true);
+			$status = $sourceHeaders['status_code'];
+			$redirect = ($status >= 300 && $status < 400 && isset($sourceHeaders['location']));
+			if ($redirect) {
+				if ($redirectsAllowed-- > 0) {
+					$this->url = $sourceHeaders['location'];
+				} else {
+					$redirect = false;
+					$status = Http::STATUS_LOOP_DETECTED;
+				}
 			}
-			if (isset($sourceHeaders['content-length'])) {
-				$this->addHeader('Content-Length', $sourceHeaders['content-length']);
-			}
-			if (isset($sourceHeaders['accept-ranges'])) {
-				$this->addHeader('Accept-Ranges', $sourceHeaders['accept-ranges']);
-			}
-			if (isset($sourceHeaders['content-range'])) {
-				$this->addHeader('Content-Range', $sourceHeaders['content-range']);
-			}
+		} while ($redirect);
 
-			$this->setStatus($sourceHeaders['status_code']);
+		$this->setStatus($status);
+
+		if (isset($sourceHeaders['content-type'])) {
+			$this->addHeader('Content-Type', $sourceHeaders['content-type']);
 		}
-		else {
-			$this->addHeader('Content-Length', '0');
-			$this->setStatus(Http::STATUS_FORBIDDEN);
-			$this->url = null;
+		if (isset($sourceHeaders['accept-ranges'])) {
+			$this->addHeader('Accept-Ranges', $sourceHeaders['accept-ranges']);
+		}
+		if (isset($sourceHeaders['content-range'])) {
+			$this->addHeader('Content-Range', $sourceHeaders['content-range']);
+		}
+		if (isset($sourceHeaders['content-length'])) {
+			$this->addHeader('Content-Length', $sourceHeaders['content-length']);
+			$this->contentLength = (int)$sourceHeaders['content-length'];
 		}
 	}
 
 	public function callback(IOutput $output) {
-		if ($this->url !== null) {
+		// The content length is absent for stream-like sources. 0-length indicates that
+		// there is no body to transfer.
+		if ($this->contentLength === null || $this->contentLength > 0) {
 			$inStream = \fopen($this->url, 'rb', false, $this->context);
-			$outStream = \fopen('php://output', 'wb');
+			if ($inStream !== false) {
+				$outStream = \fopen('php://output', 'wb');
 
-			\stream_copy_to_stream($inStream, $outStream);
-			\fclose($outStream);
-			\fclose($inStream);
+				if ($outStream !== false) {
+					\stream_copy_to_stream($inStream, $outStream);
+					\fclose($outStream);
+				}
+				\fclose($inStream);
+			}
 		}
 	}
 }

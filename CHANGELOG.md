@@ -4,7 +4,7 @@
 
 ### Changed
 - Advanced search: Enable searching albums by disk count
-- Ampache API: 
+- Ampache API:
   * Use HTML line breaks `<br />` in the lyrics to match genuine Ampache behavior
   * Add cache headers to the cover art responses
   * Advanced search supports new rule `disk_count` for type `album`
@@ -16,6 +16,8 @@
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)
   [#1204](https://github.com/owncloud/music/issues/1204)
+- Unable to play some podcasts in the default redirected mode
+  [#1209](https://github.com/owncloud/music/issues/1209)
 - Subsonic API: Property `artistImageUrl` being invalid on artist when authenticated using `apiKey`
 - Ampache API: Endpoint `song` failing with code 500 when the song has no lyrics set (since v2.1.2)
   [#1208](https://github.com/owncloud/music/issues/1208)

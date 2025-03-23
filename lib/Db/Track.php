@@ -353,7 +353,7 @@ class Track extends Entity {
 	 * Get an instance which has all the mandatory fields set to valid but empty values
 	 */
 	public static function emptyInstance() : Track {
-		$track = new static();
+		$track = new self();
 
 		$track->id = -1;
 		$track->title = '';

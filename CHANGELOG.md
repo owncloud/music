@@ -18,9 +18,12 @@
   [#1204](https://github.com/owncloud/music/issues/1204)
 - Unable to play some podcasts in the default redirected mode
   [#1209](https://github.com/owncloud/music/issues/1209)
-- Subsonic API: Property `artistImageUrl` being invalid on artist when authenticated using `apiKey`
 - Ampache API: Endpoint `song` failing with code 500 when the song has no lyrics set (since v2.1.2)
   [#1208](https://github.com/owncloud/music/issues/1208)
+- Subsonic API: 
+  * Property `artistImageUrl` being invalid on artist when authenticated using `apiKey`
+  * Method `getPlaylist` failing with code 500 if the playlist has any invalid song references
+    [#1128](https://github.com/owncloud/music/issues/1128)
 
 ## 2.1.2 - 2025-02-16
 

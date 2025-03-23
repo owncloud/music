@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -153,7 +153,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
 			} else {
 				$this->logger->log("Invalid track ID $trackId found on playlist $playlistId", 'debug');
-				$track = new Track();
+				$track = Track::emptyInstance();
 				$track->setId($trackId);
 			}
 			$playlistTracks[] = $track;

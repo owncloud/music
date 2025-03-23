@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -349,4 +349,26 @@ class Track extends Entity {
 		return empty($parts) ? '' : \end($parts);
 	}
 
+	/**
+	 * Get an instance which has all the mandatory fields set to valid but empty values
+	 */
+	public static function emptyInstance() : Track {
+		$track = new static();
+
+		$track->id = -1;
+		$track->title = '';
+		$track->artistId = -1;
+		$track->albumId = -1;
+		$track->fileId = -1;
+		$track->mimetype = '';
+		$track->playCount = 0;
+		$track->dirty = 0;
+
+		$track->filename = '';
+		$track->size = 0;
+		$track->fileModTime = 0;
+		$track->folderId = -1;
+
+		return $track;
+	}
 }

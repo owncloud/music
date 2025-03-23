@@ -238,7 +238,9 @@ class TrackBusinessLayer extends BusinessLayer {
 		// Compile the look-up-table entries from our two intermediary arrays
 		$lut = [];
 		foreach ($trackIdsByFolder as $folderId => $trackIds) {
-			$lut[$folderId] = \array_merge($folderNamesAndParents[$folderId], ['trackIds' => $trackIds]);
+			// $folderId is not found from $folderNamesAndParents if it's a dummy ID created as placeholder on a malformed playlist
+			$nameAndParent = $folderNamesAndParents[$folderId] ?? ['name' => '', 'parent' => null];
+			$lut[$folderId] = \array_merge($nameAndParent, ['trackIds' => $trackIds]);
 		}
 
 		// the root folder should have null parent; here we also ensure it's included

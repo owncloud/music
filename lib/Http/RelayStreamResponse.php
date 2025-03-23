@@ -29,7 +29,9 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 	private $context;
 
 	public function __construct(string $url) {
-		parent::__construct();
+		// Base consturctor parent::__construct() cannot be called because it exists on Nextcloud but not on ownCloud.
+		// Still, we need to properly initialize the headers on NC which would normally happen in the base cosntructor.
+		$this->setHeaders([]);
 
 		$this->url = $url;
 		$this->contentLength = null;

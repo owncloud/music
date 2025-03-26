@@ -49,7 +49,7 @@ class HttpUtil {
 				$parsedHeaders = self::parseHeaders($http_response_header, true);
 				$status_code = $parsedHeaders['status_code'];
 				$message = $parsedHeaders['status_msg'];
-				$content_type = $parsedHeaders['content-type'];
+				$content_type = $parsedHeaders['content-type'] ?? null;
 			} else {
 				$message = 'The requested URL did not respond';
 			}
@@ -108,7 +108,9 @@ class HttpUtil {
 		$result = [];
 
 		foreach ($rawHeaders as $row) {
-			if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true)) {
+			// The response usually starts with a header like "HTTP/1.1 200 OK". However, some shoutcast streams
+			// may instead use "ICY 200 OK".
+			if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true) || Util::startsWith($row, 'ICY ', /*ignoreCase=*/true)) {
 				// Start of new response. If we have already parsed some headers, then those are from some
 				// intermediate redirect response and those should be discarded.
 				$parts = \explode(' ', $row, 3);

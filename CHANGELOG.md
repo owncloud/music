@@ -19,6 +19,7 @@
 - Unable to play some podcasts in the default redirected mode
   [#1209](https://github.com/owncloud/music/issues/1209)
 - Dashboard widget: Internet radio station without given name failing to load album art and showing the load indicator indefinitely
+- Errors like 'Undefined array key "status_code"' logged when playing certain internet radio stations
 - Ampache API: Endpoint `song` failing with code 500 when the song has no lyrics set (since v2.1.2)
   [#1208](https://github.com/owncloud/music/issues/1208)
 - Subsonic API: 

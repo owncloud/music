@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -40,9 +40,9 @@ class Entity extends \OCP\AppFramework\Db\Entity {
 		($l10n); // @phpstan-ignore-line // unused in this base implementation
 
 		if (\property_exists($this, 'name')) {
-			return $this->name;
+			return $this->name ?? '';
 		} elseif (\property_exists($this, 'title')) {
-			return $this->title;
+			return $this->title ?? '';
 		} else {
 			return 'UNIMPLEMENTED';
 		}

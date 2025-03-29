@@ -66,6 +66,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'shivaApi#randomArtist',	'url' => '/api/random/artist',				'verb' => 'GET'],
 	['name' => 'shivaApi#randomAlbum',	'url' => '/api/random/album',				'verb' => 'GET'],
 	['name' => 'shivaApi#randomTrack',	'url' => '/api/random/track',				'verb' => 'GET'],
+	['name' => 'shivaApi#latestItems',	'url' => '/api/whatsnew',					'verb' => 'GET'],
 
 	['name' => 'share#fileInfo',		'url' => '/api/share/{token}/{fileId}/info',	'verb' => 'GET'],
 	['name' => 'share#download',		'url' => '/api/share/{token}/{fileId}/download','verb' => 'GET'],

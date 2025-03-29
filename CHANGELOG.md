@@ -12,6 +12,10 @@
   * Add cache headers to the cover art responses
     [#1205](https://github.com/owncloud/music/issues/1205)
   * Add OpenSubsonic extension method [`getPodcastEpisode`](https://opensubsonic.netlify.app/docs/extensions/getpodcastepisode/)
+- Shiva API:
+  * Added endpoints `/api/random/artist`, `/api/random/album`, `/api/random/track`
+    [#51](https://github.com/owncloud/music/issues/51)
+  * Added endpoint `/api/whatsnew`
 
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)

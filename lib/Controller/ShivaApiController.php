@@ -29,6 +29,7 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
@@ -251,12 +252,39 @@ class ShivaApiController extends Controller {
 		$id = Random::pickItem($ids);
 
 		if ($id !== null) {
-			return new JSONResponse([
-				'id' => $id,
-				'uri' => $this->urlGenerator->linkToRoute("music.shivaApi.$type", ['id' => $id])
-			]);
+			return new JSONResponse($this->entityIdAndUri($id, $type));
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
+	}
+
+	private function entityIdAndUri(int $id, string $type) {
+		return [
+			'id' => $id,
+			'uri' => $this->urlGenerator->linkToRoute("music.shivaApi.$type", ['id' => $id])
+		];
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function latestItems(?string $since) {
+		if ($since === null) {
+			$dateTime = new \DateTime('7 days ago');
+			$since = $dateTime->format(BaseMapper::SQL_DATE_FORMAT);
+		}
+
+		$searchRules = [['rule' => 'added', 'operator' => 'after', 'input' => $since]];
+
+		$artists = $this->artistBusinessLayer->findAllAdvanced('and', $searchRules, $this->userId);
+		$albums = $this->albumBusinessLayer->findAllAdvanced('and', $searchRules, $this->userId);
+		$tracks = $this->trackBusinessLayer->findAllAdvanced('and', $searchRules, $this->userId);
+
+		return new JSONResponse([
+			'artists' => \array_map(fn($a) => $this->entityIdAndUri($a->getId(), 'artist'), $artists),
+			'albums' => \array_map(fn($a) => $this->entityIdAndUri($a->getId(), 'album'), $albums),
+			'tracks' => \array_map(fn($t) => $this->entityIdAndUri($t->getId(), 'track'), $tracks)
+		]);
 	}
 }

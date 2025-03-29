@@ -216,7 +216,7 @@ The step `l10n-clone` above makes copies of some translations to different langu
 
 ## API
 
-The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
+The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows` and `/tracks/<int:track_id>/lyrics`. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
 
 However, the front-end of the Music app nowadays doesn't use any part of the Shiva API. Instead, the following proprietary REST endpoints are used:
 

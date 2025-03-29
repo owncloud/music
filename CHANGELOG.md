@@ -16,6 +16,7 @@
   * Added endpoints `/api/random/artist`, `/api/random/album`, `/api/random/track`
     [#51](https://github.com/owncloud/music/issues/51)
   * Added endpoint `/api/whatsnew`
+  * Systematically use plurals in endpoint names to match the specification: `api/artists/{id}` instead of `api/artist/{id}` etc.
 
 ### Fixed
 - Unhandled error logged on corrupted/incompatible album cover images (now a warning is logged instead)

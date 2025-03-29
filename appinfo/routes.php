@@ -56,13 +56,16 @@ $app->registerRoutes($this, ['routes' => [
 
 	// Shiva API https://shiva.readthedocs.io/en/latest/index.html
 	['name' => 'shivaApi#artists',		'url' => '/api/artists',					'verb' => 'GET'],
-	['name' => 'shivaApi#artist',		'url' => '/api/artist/{artistId}',			'verb' => 'GET'],
-	//['name' => 'shivaApi#artistShows','url' => '/api/artist/{artistId}/shows',	'verb' => 'GET'],
+	['name' => 'shivaApi#artist',		'url' => '/api/artist/{id}',				'verb' => 'GET'],
+	//['name' => 'shivaApi#artistShows','url' => '/api/artist/{id}/shows',			'verb' => 'GET'],
 	['name' => 'shivaApi#albums',		'url' => '/api/albums',						'verb' => 'GET'],
-	['name' => 'shivaApi#album',		'url' => '/api/album/{albumId}',			'verb' => 'GET'],
+	['name' => 'shivaApi#album',		'url' => '/api/album/{id}',					'verb' => 'GET'],
 	['name' => 'shivaApi#tracks',		'url' => '/api/tracks',						'verb' => 'GET'],
-	['name' => 'shivaApi#track',		'url' => '/api/track/{trackId}',			'verb' => 'GET'],
-	//['name' => 'shivaApi#trackLyrics','url' => '/api/track/{trackId}/lyrics',		'verb' => 'GET'],
+	['name' => 'shivaApi#track',		'url' => '/api/track/{id}',					'verb' => 'GET'],
+	//['name' => 'shivaApi#trackLyrics','url' => '/api/track/{id}/lyrics',			'verb' => 'GET'],
+	['name' => 'shivaApi#randomArtist',	'url' => '/api/random/artist',				'verb' => 'GET'],
+	['name' => 'shivaApi#randomAlbum',	'url' => '/api/random/album',				'verb' => 'GET'],
+	['name' => 'shivaApi#randomTrack',	'url' => '/api/random/track',				'verb' => 'GET'],
 
 	['name' => 'share#fileInfo',		'url' => '/api/share/{token}/{fileId}/info',	'verb' => 'GET'],
 	['name' => 'share#download',		'url' => '/api/share/{token}/{fileId}/download','verb' => 'GET'],

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -21,6 +21,7 @@ use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
@@ -31,6 +32,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\Random;
 
 class ShivaApiController extends Controller {
 
@@ -92,11 +94,11 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artist(int $artistId, $fulltree) {
+	public function artist(int $id, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		try {
 			/** @var Artist $artist */
-			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artist = $this->artistBusinessLayer->find($id, $this->userId);
 			$artist = $this->artistToApi($artist, $fulltree, $fulltree);
 			return new JSONResponse($artist);
 		} catch (BusinessLayerException $e) {
@@ -145,10 +147,10 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function album(int $albumId, $fulltree) {
+	public function album(int $id, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		try {
-			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+			$album = $this->albumBusinessLayer->find($id, $this->userId);
 			$album = $this->albumToApi($album, $fulltree, $fulltree);
 			return new JSONResponse($album);
 		} catch (BusinessLayerException $e) {
@@ -210,14 +212,51 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function track(int $trackId) {
+	public function track(int $id) {
 		try {
 			/** @var Track $track */
-			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+			$track = $this->trackBusinessLayer->find($id, $this->userId);
 			return new JSONResponse($track->toAPI($this->urlGenerator));
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function randomArtist() {
+		return $this->randomItem($this->artistBusinessLayer, 'artist');
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function randomAlbum() {
+		return $this->randomItem($this->albumBusinessLayer, 'album');
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function randomTrack() {
+		return $this->randomItem($this->trackBusinessLayer, 'track');
+	}
+
+	private function randomItem(BusinessLayer $businessLayer, string $type) {
+		$ids = $businessLayer->findAllIds($this->userId);
+		$id = Random::pickItem($ids);
+
+		if ($id !== null) {
+			return new JSONResponse([
+				'id' => $id,
+				'uri' => $this->urlGenerator->linkToRoute("music.shivaApi.$type", ['id' => $id])
+			]);
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
 }

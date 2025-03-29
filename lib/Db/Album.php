@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -120,7 +120,7 @@ class Album extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.shivaApi.album',
-			['albumId' => $this->id]
+			['id' => $this->id]
 		);
 	}
 
@@ -136,7 +136,7 @@ class Album extends Entity {
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
 					'music.shivaApi.artist',
-					['artistId' => $artistId]
+					['id' => $artistId]
 				)
 			];
 		}

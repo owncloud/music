@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -28,9 +28,9 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['artistId']}";
-			case 'music.shivaApi.album':		return "/link/to/album/{$args['albumId']}";
-			case 'music.coverApi.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
+			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['id']}";
+			case 'music.shivaApi.album':		return "/link/to/album/{$args['id']}";
+			case 'music.coverApi.albumCover':	return "/link/to/album/{$args['albumId']}/cover";
 			default:							return "(mock missing for route $route)";
 		}
 	}
@@ -50,7 +50,7 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 			'id' => 3,
 			'name' => 'The name',
 			'year' => 2013,
-			'cover' => '/link/to/album/cover/3',
+			'cover' => '/link/to/album/3/cover',
 			'slug' => 'the-name',
 			'artists' => [
 				['id' => 1, 'uri' => '/link/to/artist/1'],

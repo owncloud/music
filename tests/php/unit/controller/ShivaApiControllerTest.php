@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -72,9 +72,9 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['artistId']}";
-			case 'music.shivaApi.album':		return "/link/to/album/{$args['albumId']}";
-			case 'music.shivaApi.track':		return "/link/to/track/{$args['trackId']}";
+			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['id']}";
+			case 'music.shivaApi.album':		return "/link/to/album/{$args['id']}";
+			case 'music.shivaApi.track':		return "/link/to/track/{$args['id']}";
 			case 'music.musicApi.download':		return "/link/to/file/{$args['fileId']}";
 			case 'music.coverApi.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
 			case 'music.coverApi.albumCover':	return "/link/to/album/cover/{$args['albumId']}";

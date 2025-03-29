@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -84,6 +84,19 @@ class DetailsHelper {
 			return $result;
 		}
 		return null;
+	}
+
+	/**
+	 * Check if a file has embedded lyrics without parsing them
+	 */
+	public function hasLyrics(int $fileId, Folder $userFolder) : bool {
+		$fileNode = $userFolder->getById($fileId)[0] ?? null;
+		if ($fileNode instanceof File) {
+			$data = $this->extractor->extract($fileNode);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
+			return ($lyrics !== null);
+		}
+		return false;
 	}
 
 	/**

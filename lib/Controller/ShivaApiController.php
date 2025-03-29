@@ -33,7 +33,9 @@ use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\Scanner;
 
 class ShivaApiController extends Controller {
 
@@ -41,6 +43,8 @@ class ShivaApiController extends Controller {
 	private TrackBusinessLayer $trackBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private AlbumBusinessLayer $albumBusinessLayer;
+	private DetailsHelper $detailsHelper;
+	private Scanner $scanner;
 	private string $userId;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
@@ -51,6 +55,8 @@ class ShivaApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
+								DetailsHelper $detailsHelper,
+								Scanner $scanner,
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								Logger $logger) {
@@ -59,6 +65,8 @@ class ShivaApiController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->detailsHelper = $detailsHelper;
+		$this->scanner = $scanner;
 		$this->userId = $userId ?? '';
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
@@ -215,12 +223,41 @@ class ShivaApiController extends Controller {
 	 */
 	public function track(int $id) {
 		try {
-			/** @var Track $track */
 			$track = $this->trackBusinessLayer->find($id, $this->userId);
 			return new JSONResponse($track->toAPI($this->urlGenerator));
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function trackLyrics(int $id) {
+		try {
+			$track = $this->trackBusinessLayer->find($id, $this->userId);
+			$fileId = $track->getFileId();
+			$userFolder = $this->scanner->resolveUserFolder($this->userId);
+			if ($this->detailsHelper->hasLyrics($fileId, $userFolder)) {
+				/**
+				 * The Shiva API has been designed around the idea that lyrics would be scraped from an external
+				 * source and never stored on the Shiva server. We, on the other hand, support only lyrics embedded
+				 * in the audio file tags and this makes the Shiva lyrics API quite a poor fit. Here we anyway
+				 * create a result which is compatible with the Shiva API specification.
+				 */
+				return new JSONResponse([
+					'track' => $this->entityIdAndUri($id, 'track'),
+					'source_uri' => '',
+					'id' => $fileId,
+					'uri' => $this->urlGenerator->linkToRoute(
+						'music.musicApi.fileLyrics', ['fileId' => $fileId, 'format' => 'plaintext'])
+				]);
+			}
+		} catch (BusinessLayerException $e) {
+			// nothing
+		}
+		return new ErrorResponse(Http::STATUS_NOT_FOUND);
 	}
 
 	/**

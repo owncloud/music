@@ -63,7 +63,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'shivaApi#album',		'url' => '/api/albums/{id}',				'verb' => 'GET'],
 	['name' => 'shivaApi#tracks',		'url' => '/api/tracks',						'verb' => 'GET'],
 	['name' => 'shivaApi#track',		'url' => '/api/tracks/{id}',				'verb' => 'GET'],
-	//['name' => 'shivaApi#trackLyrics','url' => '/api/tracks/{id}/lyrics',			'verb' => 'GET'],
+	['name' => 'shivaApi#trackLyrics',	'url' => '/api/tracks/{id}/lyrics',			'verb' => 'GET'],
 	['name' => 'shivaApi#randomArtist',	'url' => '/api/random/artist',				'verb' => 'GET'],
 	['name' => 'shivaApi#randomAlbum',	'url' => '/api/random/album',				'verb' => 'GET'],
 	['name' => 'shivaApi#randomTrack',	'url' => '/api/random/track',				'verb' => 'GET'],

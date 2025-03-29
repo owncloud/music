@@ -216,7 +216,7 @@ The step `l10n-clone` above makes copies of some translations to different langu
 
 ## API
 
-The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows` and `/tracks/<int:track_id>/lyrics`. The endpoints of this API can be found under `https://own.cloud.example.org/index.php/apps/music/api/`. The Shiva API could be used by other applications running on ownCloud/Nextcloud to access the library contents. This API is accessible only with a valid cloud user session which makes it difficult to use for clients running outside of the hosting cloud.
+The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resource `/artists/<int:artist_id>/shows`. The endpoints of this API can be found under `https://own.cloud.example.org/index.php/apps/music/api/`. The Shiva API could be used by other applications running on ownCloud/Nextcloud to access the library contents. This API is accessible only with a valid cloud user session which makes it difficult to use for clients running outside of the hosting cloud.
 
 To connect external client applications, partial implementations of the following APIs are available:
 

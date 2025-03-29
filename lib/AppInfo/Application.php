@@ -341,6 +341,8 @@ class Application extends ApplicationBase {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('DetailsHelper'),
+				$c->query(('Scanner')),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('Logger')

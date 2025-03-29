@@ -272,6 +272,26 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function fileLyrics(int $fileId, ?string $format) {
+		$userFolder = $this->scanner->resolveUserFolder($this->userId);
+		if ($format == 'plaintext') {
+			$lyrics = $this->detailsHelper->getLyricsAsPlainText($fileId, $userFolder);
+			if ($lyrics !== null) {
+				return new DataDisplayResponse($lyrics, Http::STATUS_OK, ['Content-Type' => 'text/plain; charset=utf-8']);
+			}
+		} else {
+			$lyrics = $this->detailsHelper->getLyricsAsStructured($fileId, $userFolder);
+			if ($lyrics !== null) {
+				return new JSONResponse($lyrics);
+			}
+		}
+		return new ErrorResponse(Http::STATUS_NOT_FOUND);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function scrobble(int $trackId) {
 		try {
 			$this->trackBusinessLayer->recordTrackPlayed($trackId, $this->userId);

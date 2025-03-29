@@ -38,6 +38,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'musicApi#filePath',			'url' => '/api/files/{fileId}/path',		'verb' => 'GET'],
 	['name' => 'musicApi#fileInfo',			'url' => '/api/files/{fileId}/info',		'verb' => 'GET'],
 	['name' => 'musicApi#fileDetails',		'url' => '/api/files/{fileId}/details',		'verb' => 'GET'],
+	['name' => 'musicApi#fileLyrics',		'url' => '/api/files/{fileId}/lyrics',		'verb' => 'GET'],
 	['name' => 'musicApi#getScanState',		'url' => '/api/scanstate',					'verb' => 'GET'],
 	['name' => 'musicApi#scan',				'url' => '/api/scan',						'verb' => 'POST'],
 	['name' => 'musicApi#resetScanned'	,	'url' => '/api/resetscanned',				'verb' => 'POST'],

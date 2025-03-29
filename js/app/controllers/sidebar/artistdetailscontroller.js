@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 
@@ -50,13 +50,13 @@ angular.module('Music').controller('ArtistDetailsController', [
 				// Because of the asynchronous nature of teh REST queries, it is possible that the
 				// current artist has already changed again by the time we get the result. If that has
 				// happened, then the result should be ignored.
-				Restangular.one('artist', artistId).one('cover').get().then(
+				Restangular.one('artists', artistId).one('cover').get().then(
 					function(_result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.artAvailable = true;
 							$scope.loading = false;
 
-							let url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
+							let url = OC.generateUrl('apps/music/api/artists/') + artistId + '/cover?originalSize=true';
 							art.css('background-image', 'url("' + url + '")');
 						}
 					},
@@ -73,7 +73,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 					}
 				);
 
-				Restangular.one('artist', artistId).one('details').get().then(
+				Restangular.one('artists', artistId).one('details').get().then(
 					function(result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.lastfmInfo = result;
@@ -158,7 +158,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 		$scope.onShowAllSimilar = function() {
 			$scope.allSimilarShown = true;
 			$scope.allSimilarLoading = true;
-			Restangular.one('artist', $scope.artist.id).one('similar').get().then(
+			Restangular.one('artists', $scope.artist.id).one('similar').get().then(
 				function(result) {
 					setSimilarArtists(result);
 					$scope.allSimilarLoading = false;

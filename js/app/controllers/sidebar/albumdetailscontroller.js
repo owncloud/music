@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 
@@ -43,7 +43,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 					}, 0);
 	
 					if ($scope.album.cover) {
-						let url = OC.generateUrl('apps/music/api/album/') + albumId + '/cover?originalSize=true';
+						let url = OC.generateUrl('apps/music/api/albums/') + albumId + '/cover?originalSize=true';
 						setImageUrl(url);
 					}
 
@@ -53,7 +53,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 				// Because of the asynchronous nature of teh REST queries, it is possible that the
 				// current album has already changed again by the time we get the result. If that has
 				// happened, then the result should be ignored.
-				Restangular.one('album', albumId).one('details').get().then(
+				Restangular.one('albums', albumId).one('details').get().then(
 					function(result) {
 						if ($scope.album && $scope.album.id == albumId) {
 							$scope.lastfmInfo = result;

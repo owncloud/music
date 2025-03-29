@@ -1,6 +1,6 @@
 <div id="album-details" class="sidebar-content" ng-controller="AlbumDetailsController" ng-if="contentType=='album'">
 
-	<div favorite-toggle entity="album" rest-prefix="'album'"></div>
+	<div favorite-toggle entity="album" rest-prefix="'albums'"></div>
 	<div class="albumart clickable" ng-click="scrollToEntity('album', album)"></div>
 
 	<ul class="tabHeaders">

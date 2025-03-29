@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -398,7 +398,7 @@ OCA.Music.EmbeddedPlayer = function() {
 	}
 
 	function loadFileInfo(fileId, fallbackTitle) {
-		let url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
+		let url  = OC.generateUrl('apps/music/api/files/{fileId}/info', {'fileId':fileId});
 		loadFileInfoFromUrl(url, fallbackTitle, fileId, updateMusicAppLink);
 	}
 

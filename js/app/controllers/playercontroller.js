@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
@@ -167,7 +167,7 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 
 	function scrobbleCurrentTrack() {
 		if ($scope.currentTrack?.type === 'song') {
-			Restangular.one('track', $scope.currentTrack.id).all('scrobble').post();
+			Restangular.one('tracks', $scope.currentTrack.id).all('scrobble').post();
 		}
 		scrobblePending = false;
 	}
@@ -252,7 +252,7 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 			if ($scope.player.canPlayMime(mimeType)) {
 				return {
 					'mime': mimeType,
-					'url': OC.filePath('music', '', 'index.php') + '/api/file/' + track.files[mimeType] + '/download'
+					'url': OC.filePath('music', '', 'index.php') + '/api/files/' + track.files[mimeType] + '/download'
 				};
 			}
 		}

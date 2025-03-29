@@ -104,7 +104,7 @@ OCA.Music.FolderView = class {
 		// but needed when the file in question is played using our Aurora.js fallback player.
 		return this.#shareToken
 			? OC.generateUrl(`apps/music/api/share/${this.#shareToken}/${file.id}/download`)
-			: OC.generateUrl(`apps/music/api/file/${file.id}/download`) + '?requesttoken=' + encodeURIComponent(OC.requestToken);
+			: OC.generateUrl(`apps/music/api/files/${file.id}/download`) + '?requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	#onClose() {

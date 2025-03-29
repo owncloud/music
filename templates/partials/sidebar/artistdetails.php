@@ -1,6 +1,6 @@
 <div id="artist-details" class="sidebar-content" ng-controller="ArtistDetailsController" ng-if="contentType=='artist'">
 
-	<div favorite-toggle entity="artist" rest-prefix="'artist'"></div>
+	<div favorite-toggle entity="artist" rest-prefix="'artists'"></div>
 	<div class="albumart clickable" ng-show="!loading" ng-click="scrollToEntity('artist', artist)">
 		<span ng-if="!artAvailable" title="{{ noImageHint }}"
 			translate>(no artist image available)</span>

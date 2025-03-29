@@ -216,41 +216,16 @@ The step `l10n-clone` above makes copies of some translations to different langu
 
 ## API
 
-The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows` and `/tracks/<int:track_id>/lyrics`. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
-
-However, the front-end of the Music app nowadays doesn't use any part of the Shiva API. Instead, the following proprietary REST endpoints are used:
-
-* `/api/log`
-* `/api/prepare_collection`
-* `/api/collection`
-* `/api/folders`
-* `/api/genres`
-* `/api/file/{fileId}`
-* `/api/file/{fileId}/download`
-* `/api/file/{fileId}/path`
-* `/api/file/{fileId}/info`
-* `/api/file/{fileId}/details`
-* `/api/scanstate`
-* `/api/scan`
-* `/api/resetscanned`
-* `/api/cover/{hash}`
-* `/api/artist/{artistId}/cover`
-* `/api/artist/{artistId}/details`
-* `/api/artist/{artistId}/similar`
-* `/api/album/{albumId}/cover`
-* `/api/album/{albumId}/details`
-* `/api/share/{token}/{fileId}/info`
-* `/api/share/{token}/{fileId}/parse`
-* Playlist API at `/api/playlists/*`
-* Radio API at `/api/radio/*`
-* Podcast API at `/api/podcasts/*`
-* Settings API at `/api/settings/*`
+The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows` and `/tracks/<int:track_id>/lyrics`. The endpoints of this API can be found under `https://own.cloud.example.org/index.php/apps/music/api/`. The Shiva API could be used by other applications running on ownCloud/Nextcloud to access the library contents. This API is accessible only with a valid cloud user session which makes it difficult to use for clients running outside of the hosting cloud.
 
 To connect external client applications, partial implementations of the following APIs are available:
 
 * [Ampache XML API](https://github.com/ampache/ampache/wiki/XML-methods) at `/ampache/server/xml.server.php`
 * [Ampache JSON API](https://github.com/ampache/ampache/wiki/JSON-methods) at `/ampache/server/json.server.php`
 * [Subsonic API](http://www.subsonic.org/pages/api.jsp) at `/subsonic/rest/{method}`
+
+The web interface of the Music app uses a proprietary REST API. Note that this API may change between the application versions without prior notice. For list of all available endpoints, see [appinfo/routes.php](https://github.com/owncloud/music/blob/master/appinfo/routes.php). As this API is not documented anywhere, the details of each endpoint have to be checked from the implementation. See [here](https://github.com/owncloud/music/issues/1012#issuecomment-1256943457) for some hints.
+
 
 ### `/api/log`
 

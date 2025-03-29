@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -108,7 +108,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$scope.playFile = function (fileid) {
 			if (fileid) {
-				Restangular.one('file', fileid).get().then(function(result) {
+				Restangular.one('files', fileid).get().then(function(result) {
 					$scope.playTrack(result.id);
 					scrollToAlbumOfTrack(result.id);
 				});

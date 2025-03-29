@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 
@@ -52,7 +52,7 @@ angular.module('Music').controller('TrackDetailsController', [
 				let fileId = getFileId();
 				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
 
-				Restangular.one('file', fileId).one('details').get().then(function(result) {
+				Restangular.one('files', fileId).one('details').get().then(function(result) {
 					if (result.tags.picture) {
 						albumart.css('background-image', 'url("' + result.tags.picture + '")');
 						albumart.css('height', ''); // remove the inline height and use the one from the css file

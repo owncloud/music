@@ -30,7 +30,6 @@ use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\RelayStreamResponse;
 use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\Util;
 use OCA\Music\Utility\RadioService;
 use OCA\Music\Utility\StreamTokenService;
 
@@ -118,7 +117,7 @@ class RadioApiController extends Controller {
 	public function get(int $id) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
-			return $station->toAPI();
+			return $station->toApi();
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -130,7 +129,7 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update(int $id, string $name = null, string $streamUrl = null, string $homeUrl = null) {
+	public function update(int $id, ?string $name = null, ?string $streamUrl = null, ?string $homeUrl = null) {
 		if ($name === null && $streamUrl === null && $homeUrl === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'streamUrl', 'homeUrl'] must be given");
 		}

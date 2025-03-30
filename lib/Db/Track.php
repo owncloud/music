@@ -193,7 +193,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getAdjustedTrackNumber(),

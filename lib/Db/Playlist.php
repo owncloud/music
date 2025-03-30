@@ -88,7 +88,7 @@ class Playlist extends Entity {
 		return $this->isEmpty() ? null : \md5($this->getTrackIds());
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator) : array {
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'name' => $this->getName(),
 			'trackIds' => $this->getTrackIdsAsArray(),

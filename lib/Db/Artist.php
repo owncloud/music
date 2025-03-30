@@ -120,7 +120,7 @@ class Artist extends Entity {
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),

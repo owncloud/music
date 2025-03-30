@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -32,7 +32,7 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 			->will($this->returnValue('Unknown artist'));
 		}
 
-	public function testToAPI() {
+	public function testToShivaApi() {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The name');
@@ -44,7 +44,7 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 			'image' => 'https://some.url',
 			'slug' => 'the-name',
 			'uri' => 'https://some.url'
-		], $artist->toAPI($this->urlGenerator, $this->l10n));
+		], $artist->toShivaApi($this->urlGenerator, $this->l10n));
 	}
 
 	public function testNullNameLocalisation() {

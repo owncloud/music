@@ -248,7 +248,7 @@ class Album extends Entity {
 	 * @param  IL10N $l10n Localization handler
 	 * @return array shiva API object
 	 */
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),

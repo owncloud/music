@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -23,7 +23,7 @@ class TrackTest extends \PHPUnit\Framework\TestCase {
 			->getMock();
 	}
 
-	public function testToAPI() {
+	public function testToShivaApi() {
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -50,6 +50,6 @@ class TrackTest extends \PHPUnit\Framework\TestCase {
 			'bitrate' => 123,
 			'slug' => 'the-title',
 			'uri' => 'someUrl'
-			], $track->toAPI($this->urlGenerator));
+			], $track->toShivaApi($this->urlGenerator));
 	}
 }

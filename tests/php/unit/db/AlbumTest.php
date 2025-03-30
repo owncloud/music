@@ -35,7 +35,7 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function testToAPI() {
+	public function testToShivaApi() {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
@@ -58,7 +58,7 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 			],
 			'uri' => '/link/to/album/3',
 			'albumArtistId' => 3,
-			], $album->toAPI($this->urlGenerator, $l10n));
+			], $album->toShivaApi($this->urlGenerator, $l10n));
 	}
 
 	public function testNameLocalisation() {

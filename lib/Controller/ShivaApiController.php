@@ -123,7 +123,7 @@ class ShivaApiController extends Controller {
 	 * @return array
 	 */
 	private function artistToApi(Artist $artist, bool $includeAlbums, bool $includeTracks) : array {
-		$artistInApi = $artist->toAPI($this->urlGenerator, $this->l10n);
+		$artistInApi = $artist->toShivaApi($this->urlGenerator, $this->l10n);
 		if ($includeAlbums) {
 			$artistId = $artist->getId();
 			$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
@@ -171,18 +171,18 @@ class ShivaApiController extends Controller {
 	 * Return given album in the Shiva API format
 	 */
 	private function albumToApi(Album $album, bool $includeTracks, bool $includeArtists) : array {
-		$albumInApi = $album->toAPI($this->urlGenerator, $this->l10n);
+		$albumInApi = $album->toShivaApi($this->urlGenerator, $this->l10n);
 
 		if ($includeTracks) {
 			$albumId = $album->getId();
 			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-			$albumInApi['tracks'] = \array_map(fn($t) => $t->toAPI($this->urlGenerator), $tracks);
+			$albumInApi['tracks'] = \array_map(fn($t) => $t->toShivaApi($this->urlGenerator), $tracks);
 		}
 
 		if ($includeArtists) {
 			$artistIds = $album->getArtistIds();
 			$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
-			$albumInApi['artists'] = \array_map(fn($a) => $a->toAPI($this->urlGenerator, $this->l10n), $artists);
+			$albumInApi['artists'] = \array_map(fn($a) => $a->toShivaApi($this->urlGenerator, $this->l10n), $artists);
 		}
 
 		return $albumInApi;
@@ -206,12 +206,12 @@ class ShivaApiController extends Controller {
 		foreach ($tracks as &$track) {
 			$artistId = $track->getArtistId();
 			$albumId = $track->getAlbumId();
-			$track = $track->toAPI($this->urlGenerator);
+			$track = $track->toShivaApi($this->urlGenerator);
 			if ($fulltree) {
 				$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-				$track['artist'] = $artist->toAPI($this->urlGenerator, $this->l10n);
+				$track['artist'] = $artist->toShivaApi($this->urlGenerator, $this->l10n);
 				$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-				$track['album'] = $album->toAPI($this->urlGenerator, $this->l10n);
+				$track['album'] = $album->toShivaApi($this->urlGenerator, $this->l10n);
 			}
 		}
 		return new JSONResponse($tracks);
@@ -224,7 +224,7 @@ class ShivaApiController extends Controller {
 	public function track(int $id) {
 		try {
 			$track = $this->trackBusinessLayer->find($id, $this->userId);
-			return new JSONResponse($track->toAPI($this->urlGenerator));
+			return new JSONResponse($track->toShivaApi($this->urlGenerator));
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

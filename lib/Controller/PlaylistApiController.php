@@ -249,7 +249,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update(int $id, string $name = null, string $comment = null, string $trackIds = null) {
+	public function update(int $id, ?string $name = null, ?string $comment = null, ?string $trackIds = null) {
 		$result = null;
 		if ($name !== null) {
 			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
@@ -280,12 +280,13 @@ class PlaylistApiController extends Controller {
 	/**
 	 * removes tracks from a playlist
 	 * @param  int $id playlist ID
+	 * @param string|int $index Comma-separated list of track indices within the playlist
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeTracks(int $id, $indices) {
-		return $this->modifyPlaylist('removeTracks', [self::toIntArray($indices), $id, $this->userId]);
+	public function removeTracks(int $id, $index) {
+		return $this->modifyPlaylist('removeTracks', [self::toIntArray($index), $id, $this->userId]);
 	}
 
 	/**

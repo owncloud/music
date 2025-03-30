@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 
@@ -53,7 +53,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				playQueueService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			Restangular.one('playlists', listId).all('remove').post({indices: trackIndex}).then(function (result) {
+			Restangular.one('playlists', listId).all('remove').post({index: trackIndex}).then(function (result) {
 				$scope.playlist.updated = result.updated;
 			});
 		};

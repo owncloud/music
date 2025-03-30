@@ -18,6 +18,7 @@
   * Added endpoint `/api/tracks/{id}/lyrics`
     [#48](https://github.com/owncloud/music/issues/48)
   * Added endpoint `/api/whatsnew`
+  * The playlists API is now mostly compatible with the Shiva specification
   * Systematically use plurals in endpoint names to match the specification: `api/artists/{id}` instead of `api/artist/{id}` etc.
 - Proprietary REST API:
   * Systematically use plurals in endpoint names for consistency

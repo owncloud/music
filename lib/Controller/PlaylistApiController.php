@@ -267,19 +267,21 @@ class PlaylistApiController extends Controller {
 	}
 
 	/**
-	 * add tracks to a playlist
-	 * @param  int $id playlist ID
+	 * insert or append tracks to a playlist
+	 * @param int $id playlist ID
+	 * @param string|int $track Comma-separated list of track IDs
+	 * @param ?int $index Insertion position within the playlist, or null to append
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function addTracks(int $id, $trackIds) {
-		return $this->modifyPlaylist('addTracks', [self::toIntArray($trackIds), $id, $this->userId]);
+	public function addTracks(int $id, $track, ?int $index = null) {
+		return $this->modifyPlaylist('addTracks', [self::toIntArray($track), $id, $this->userId, $index]);
 	}
 
 	/**
 	 * removes tracks from a playlist
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
 	 * @param string|int $index Comma-separated list of track indices within the playlist
 	 *
 	 * @NoAdminRequired
@@ -291,7 +293,7 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * moves single track on playlist to a new position
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

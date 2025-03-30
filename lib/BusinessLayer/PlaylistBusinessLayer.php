@@ -53,10 +53,15 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	public function addTracks(array $trackIds, int $playlistId, string $userId) : Playlist {
+	public function addTracks(array $trackIds, int $playlistId, string $userId, ?int $insertIndex = null) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
-		$prevTrackIds = $playlist->getTrackIdsAsArray();
-		$playlist->setTrackIdsFromArray(\array_merge($prevTrackIds, $trackIds));
+		$allTrackIds = $playlist->getTrackIdsAsArray();
+		if ($insertIndex === null) {
+			$allTrackIds = \array_merge($allTrackIds, $trackIds);
+		} else {
+			\array_splice($allTrackIds, $insertIndex, 0, $trackIds);
+		}
+		$playlist->setTrackIdsFromArray($allTrackIds);
 		$this->mapper->update($playlist);
 		return $playlist;
 	}

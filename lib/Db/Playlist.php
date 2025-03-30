@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -97,6 +97,21 @@ class Playlist extends Entity {
 			'updated' => $this->getUpdated(),
 			'comment' => $this->getComment(),
 			'cover' => $this->getCoverUrl($urlGenerator)
+		];
+	}
+
+	public function toShivaApi(IURLGenerator $urlGenerator) : array {
+		$trackIds = $this->getTrackIdsAsArray();
+		return [
+			'name' => $this->getName(),
+			'lenght' => \count($trackIds),
+			'tracks' => \array_map(fn($id, $index) => [
+				'id' => $id,
+				'index' => $index,
+				'uri' => $urlGenerator->linkToRoute('music.shivaApi.track', ['id' => $id])
+			], $trackIds, \array_keys($trackIds)),
+			'id' => $this->getId(),
+			'creation_date' => $this->getCreated()
 		];
 	}
 

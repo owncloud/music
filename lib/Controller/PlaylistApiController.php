@@ -30,11 +30,11 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Playlist;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
 	private IURLGenerator $urlGenerator;
@@ -85,9 +85,13 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getAll() {
+	public function getAll(string $type = 'shiva') {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
-		return \array_map(fn($p) => $p->toApi($this->urlGenerator), $playlists);
+		if ($type === 'shiva') {
+			return \array_map(fn($p) => $p->toShivaApi($this->urlGenerator), $playlists);
+		} else {
+			return \array_map(fn($p) => $p->toApi($this->urlGenerator), $playlists);
+		}
 	}
 
 	/**
@@ -130,31 +134,37 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get(int $id, $fulltree) {
+	public function get(int $id, string $type = 'shiva', $fulltree = 'false') {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
+			if ($type === 'shiva') {
+				$result = $playlist->toShivaApi($this->urlGenerator);
+			} else {
+				$result = $playlist->toApi($this->urlGenerator);
+			}
+
 			$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 			if ($fulltree) {
-				return $this->toFullTree($playlist);
-			} else {
-				return $playlist->toApi($this->urlGenerator);
+				unset($result['trackIds']);
+				$result['tracks'] = $this->getTracksFulltree($playlist);
 			}
+
+			return $result;
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
 
-	private function toFullTree($playlist) {
+	private function getTracksFulltree(Playlist $playlist) : array {
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$tracks = $this->trackBusinessLayer->findById($trackIds, $this->userId);
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
 
-		$result = $playlist->toApi($this->urlGenerator);
-		unset($result['trackIds']);
-		$result['tracks'] = \array_map(fn($t) => $t->toShivaApi($this->urlGenerator), $tracks);
-
-		return $result;
+		return \array_map(
+			fn($track, $index) => \array_merge($track->toShivaApi($this->urlGenerator), ['index' => $index]),
+			$tracks, \array_keys($tracks)
+		);
 	}
 
 	/**

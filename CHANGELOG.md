@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+- Album title misplaced on NC30+ when using "normal layout" on narrow screen (like mobile phone)
+
 ## 2.1.3 - 2025-03-30
 
 ### Changed

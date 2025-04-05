@@ -17,7 +17,7 @@
 .artist-area {
 	clear: both;
 	padding-top: 15px;
-	display: table;
+	display: inline-block;
 	width: 100%;
 }
 

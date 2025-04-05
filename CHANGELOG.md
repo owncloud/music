@@ -6,6 +6,7 @@
 
 ### Fixed
 - Album title misplaced on NC30+ when using "normal layout" on narrow screen (like mobile phone)
+- Podcast episode titles overlapping alphabet navigation on narrow screen
 
 ## 2.1.3 - 2025-03-30
 

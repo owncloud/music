@@ -7,6 +7,8 @@
 ### Fixed
 - Album title misplaced on NC30+ when using "normal layout" on narrow screen (like mobile phone)
 - Podcast episode titles overlapping alphabet navigation on narrow screen
+- Subsonic API not working on PHP versions 7.4 and 8.0 (since v2.1.3)
+  [#1218](https://github.com/owncloud/music/issues/1218)
 
 ## 2.1.3 - 2025-03-30
 

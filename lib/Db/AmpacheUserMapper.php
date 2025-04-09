@@ -70,7 +70,7 @@ class AmpacheUserMapper {
 		}
 
 		return [
-			'key_id' => $row['id'],
+			'key_id' => (int)$row['id'],
 			'user_id' => $row['user_id']
 		];
 	}

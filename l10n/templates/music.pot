@@ -1,1847 +1,2094 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the ownCloud music package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: ownCloud music 5.0.0\n"
+"Report-Msgid-Bugs-To: translations@owncloud.org\n"
+"POT-Creation-Date: 2025-03-02 22:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ./templates/partials/sidebar/albumdetails.php:36
-#: ./templates/partials/sidebar/artistdetails.php:39
+#: templates/partials/sidebar/albumdetails.php:36
+#: templates/partials/sidebar/artistdetails.php:39
 msgid "(Failed to connect Last.fm)"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:33
-#: ./templates/partials/sidebar/artistdetails.php:36
+#: templates/partials/sidebar/albumdetails.php:33
+#: templates/partials/sidebar/artistdetails.php:36
 msgid "(Last.fm has not been set up)"
 msgstr ""
 
-#: ./templates/fake-template.php:9
+#: templates/fake-template.php:9 musicwidget.ts:238
 msgid "(library root)"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:5
+#: templates/partials/sidebar/artistdetails.php:5
 msgid "(no artist image available)"
 msgstr ""
 
-#: ./templates/fake-template.php:14
+#: templates/fake-template.php:14
 msgid "(press and hold for more)"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:26
+#: templates/partials/views/advancedsearchview.php:26
 msgid "10 matches"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:28
+#: templates/partials/views/advancedsearchview.php:28
 msgid "100 matches"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:27
+#: templates/partials/views/advancedsearchview.php:27
 msgid "30 matches"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:29
+#: templates/partials/views/advancedsearchview.php:29
 msgid "500 matches"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:30
-msgid "<strong>**</strong> matches zero or more arbitrary characters including path segment separators '/'"
+#: templates/partials/views/settingsview.php:30
+msgid ""
+"<strong>**</strong> matches zero or more arbitrary characters including path "
+"segment separators '/'"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:29
-msgid "<strong>*</strong> matches zero or more arbitrary characters within a path segment"
+#: templates/partials/views/settingsview.php:29
+msgid ""
+"<strong>*</strong> matches zero or more arbitrary characters within a path "
+"segment"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:28
+#: templates/partials/views/settingsview.php:28
 msgid "<strong>?</strong> matches any one character within a path segment"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:132
+#: templates/partials/views/settingsview.php:132
 msgid "<strong>CTRL+F</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:125
+#: templates/partials/views/settingsview.php:125
 msgid "<strong>CTRL+LEFT</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:126
+#: templates/partials/views/settingsview.php:126
 msgid "<strong>CTRL+RIGHT</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:123
+#: templates/partials/views/settingsview.php:123
 msgid "<strong>LEFT</strong> or <strong>J</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:127
+#: templates/partials/views/settingsview.php:127
 msgid "<strong>M</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:128
+#: templates/partials/views/settingsview.php:128
 msgid "<strong>NUMPAD MINUS</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:129
+#: templates/partials/views/settingsview.php:129
 msgid "<strong>NUMPAD PLUS</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:124
+#: templates/partials/views/settingsview.php:124
 msgid "<strong>RIGHT</strong> or <strong>L</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:130
+#: templates/partials/views/settingsview.php:130
 msgid "<strong>SHIFT+COMMA</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:131
+#: templates/partials/views/settingsview.php:131
 msgid "<strong>SHIFT+PERIOD</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:122
+#: templates/partials/views/settingsview.php:122
 msgid "<strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:121
+#: templates/partials/views/settingsview.php:121
 msgid "<strong>SPACE</strong> or <strong>K</strong>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:189
+#: templates/partials/views/settingsview.php:189
 msgid "About"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:81
+#: js/app/services/podcastservice.ts:81
 msgid "Add a new podcast channel from an RSS feed"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:82
+#: js/app/services/podcastservice.ts:82
 msgid "Add channel"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:105
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:163
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:216
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:253
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:274
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:301
+#: js/app/controllers/views/advancedsearchviewcontroller.js:105
+#: js/app/controllers/views/advancedsearchviewcontroller.js:163
+#: js/app/controllers/views/advancedsearchviewcontroller.js:216
+#: js/app/controllers/views/advancedsearchviewcontroller.js:253
+#: js/app/controllers/views/advancedsearchviewcontroller.js:274
+#: js/app/controllers/views/advancedsearchviewcontroller.js:301
 msgid "Add date"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:97
+#: templates/partials/navigationitem.php:97
 msgid "Add from RSS feed"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:85
+#: templates/partials/navigationitem.php:85
 msgid "Add manually"
 msgstr ""
 
-#: ./templates/partials/views/playlistview.php:41
+#: templates/partials/views/playlistview.php:41
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:182
+#: templates/partials/views/settingsview.php:182
 msgid "Admin"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:34
-msgid "Admin may set up the Last.fm API key to show album background information here. See the Settings view for details."
+#: templates/partials/sidebar/albumdetails.php:34
+msgid ""
+"Admin may set up the Last.fm API key to show album background information "
+"here. See the Settings view for details."
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:37
-msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
+#: templates/partials/sidebar/artistdetails.php:37
+msgid ""
+"Admin may set up the Last.fm API key to show artist biography here. See the "
+"Settings view for details."
 msgstr ""
 
-#: ./templates/partials/navigation.php:67
-#: ./templates/partials/views/advancedsearchview.php:2
+#: templates/partials/navigation.php:67
+#: templates/partials/views/advancedsearchview.php:2
 msgid "Advanced search"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:347
+#: js/app/controllers/views/advancedsearchviewcontroller.js:347
 msgid "After"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:758
-#: ./templates/partials/sidebar/trackdetails.php:54
+#: js/app/controllers/playercontroller.js:758
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
 msgid "Album"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:146
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:90
+#: js/app/controllers/views/advancedsearchviewcontroller.js:146
+#: js/app/controllers/views/advancedsearchviewcontroller.js:90
 msgid "Album artist name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:204
+#: js/app/controllers/views/advancedsearchviewcontroller.js:204
 msgid "Album count"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:153
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:96
+#: js/app/controllers/views/advancedsearchviewcontroller.js:153
+#: js/app/controllers/views/advancedsearchviewcontroller.js:96
 msgid "Album genre"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:143
+#: js/app/controllers/views/advancedsearchviewcontroller.js:143
 msgid "Album metadata"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:201
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:88
+#: js/app/controllers/views/advancedsearchviewcontroller.js:201
+#: js/app/controllers/views/advancedsearchviewcontroller.js:88
 msgid "Album name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:118
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:228
+#: js/app/controllers/views/advancedsearchviewcontroller.js:118
+#: js/app/controllers/views/advancedsearchviewcontroller.js:228
 msgid "Album rating"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:751
-#: ./templates/partials/navigation.php:8
-#: ./templates/partials/sidebar/artistdetails.php:14
+#: js/app/controllers/playercontroller.js:751
+#: templates/partials/navigation.php:8
+#: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:66
+#: templates/partials/sidebar/artistdetails.php:66
 msgid "Albums by {{artist}}"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:131
+#: js/app/services/podcastservice.ts:131
 msgid "All channels were already up-to-date"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:754
-#: ./templates/partials/navigation.php:14
-#: ./templates/partials/views/alltracksview.php:4
+#: js/app/controllers/playercontroller.js:754
+#: templates/partials/navigation.php:14
+#: templates/partials/views/alltracksview.php:4
+#: Controller/AmpacheController.php:1875 musicwidget.ts:57
 msgid "All tracks"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:138
+#: templates/partials/views/settingsview.php:138
 msgid "Ampache and Subsonic"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:81
+#: js/app/controllers/views/advancedsearchviewcontroller.js:81
 msgid "Any searchable text"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:175
+#: js/app/services/playlistfileservice.ts:175
 msgid "Append to an existing playlist?"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:193
-msgid "Are you sure to permanently erase all the configured internet radio stations?"
+#: js/app/controllers/views/settingsviewcontroller.js:193
+msgid ""
+"Are you sure to permanently erase all the configured internet radio stations?"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:223
+#: js/app/controllers/views/settingsviewcontroller.js:223
 msgid "Are you sure to permanently erase all the configured podcast channels?"
 msgstr ""
 
-#: ./js/app/controllers/navigationcontroller.js:173
+#: js/app/controllers/navigationcontroller.js:173
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:175
+#: js/app/services/podcastservice.ts:175
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr ""
 
-#: ./js/app/controllers/views/radioviewcontroller.js:38
+#: js/app/controllers/views/radioviewcontroller.js:38
 msgid "Are you sure to remove the radio station \"{{ name }}\"?"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:150
-msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
+#: js/app/controllers/views/settingsviewcontroller.js:150
+msgid ""
+"Are you sure to reset the music collection? This removes all scanned tracks "
+"and user-created playlists!"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:102
+#: templates/partials/views/settingsview.php:102
 msgid "Articles to ignore on artist names"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:759
-#: ./templates/partials/sidebar/trackdetails.php:51
+#: js/app/controllers/playercontroller.js:759
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
 msgid "Artist"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:206
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:97
+#: js/app/controllers/views/advancedsearchviewcontroller.js:206
+#: js/app/controllers/views/advancedsearchviewcontroller.js:97
 msgid "Artist genre"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:198
+#: js/app/controllers/views/advancedsearchviewcontroller.js:198
 msgid "Artist metadata"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:89
+#: js/app/controllers/views/advancedsearchviewcontroller.js:89
 msgid "Artist name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:119
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:175
+#: js/app/controllers/views/advancedsearchviewcontroller.js:119
+#: js/app/controllers/views/advancedsearchviewcontroller.js:175
 msgid "Artist rating"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:14
-#: ./templates/partials/sidebar/smartlistfilters.php:25
+#: templates/partials/sidebar/albumdetails.php:14
+#: templates/partials/sidebar/smartlistfilters.php:25
+#: Controller/SubsonicController.php:235
 msgid "Artists"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:64
+#: templates/partials/sidebar/albumdetails.php:64
 msgid "Artists featured on {{album}}"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:346
+#: js/app/controllers/views/advancedsearchviewcontroller.js:346
 msgid "Before"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:94
-#: ./templates/partials/sidebar/radiostationdetails.php:44
+#: js/app/controllers/views/advancedsearchviewcontroller.js:94
+#: templates/partials/sidebar/radiostationdetails.php:44
 msgid "Bit rate"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:32
+#: templates/partials/sidebar/radiostationdetails.php:32
 msgid "Broadcasted name"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:58
+#: templates/partials/views/settingsview.php:58
 msgid "Changes on this setting take effect only upon rescan of the library."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:33
+#: templates/partials/views/settingsview.php:33
 msgid "Changes to the excluded paths will only take effect upon rescan."
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:134
+#: js/app/services/podcastservice.ts:134
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/playercontroller.js:763
+#: js/app/controllers/playercontroller.js:763
 msgid "Channel"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/smartlistfilterscontroller.js:74
+#: js/app/controllers/sidebar/smartlistfilterscontroller.js:74
 msgid "Check the filter values"
 msgstr ""
 
-#: ./templates/main.php:63
+#: templates/main.php:63
 msgid "Click here to rescan these files"
 msgstr ""
 
-#: ./templates/main.php:55
+#: templates/main.php:55
 msgid "Click here to start the scan"
 msgstr ""
 
-#: ./templates/partials/views/podcastsview.php:41
+#: templates/partials/views/podcastsview.php:41
 msgid "Click to add your first podcast channel"
 msgstr ""
 
-#: ./js/app/directives/collapsiblehtml.js:12
+#: js/app/directives/collapsiblehtml.js:12
 msgid "Click to expand"
 msgstr ""
 
-#: ./templates/partials/views/genresview.php:33
+#: templates/partials/views/genresview.php:33
 msgid "Click to rescan"
 msgstr ""
 
-#: ./templates/partials/views/radioview.php:38
+#: templates/partials/views/radioview.php:38
 msgid "Click to show \"Getting started\""
 msgstr ""
 
-#: ./templates/partials/sidebar/sidebar.php:2
+#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:248
 msgid "Close"
 msgstr ""
 
-#: ./templates/partials/sidebar/playlistdetails.php:22
+#: templates/partials/sidebar/playlistdetails.php:22
 msgid "Comment"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:114
+#: templates/partials/navigationitem.php:114
 msgid "Compact layout"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:319
+#: js/app/controllers/views/advancedsearchviewcontroller.js:319
 msgid "Contains"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:158
-#: ./js/app/services/podcastservice.ts:168
+#: js/app/services/podcastservice.ts:158 js/app/services/podcastservice.ts:168
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:29
+#: js/app/services/podcastservice.ts:29
 msgid "Could not update the channel \"{{ title }}\" from the source"
 msgstr ""
 
-#: ./templates/partials/sidebar/playlistdetails.php:16
-#: ./templates/partials/sidebar/radiostationdetails.php:26
+#: templates/partials/sidebar/playlistdetails.php:16
+#: templates/partials/sidebar/radiostationdetails.php:26
 msgid "Created"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:273
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:300
+#: js/app/controllers/views/advancedsearchviewcontroller.js:273
+#: js/app/controllers/views/advancedsearchviewcontroller.js:300
 msgid "Date published"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:130
+#: templates/partials/views/settingsview.php:130
 msgid "Decrease playback speed"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:128
-msgid "Decrease volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>."
+#: templates/partials/views/settingsview.php:128
+msgid ""
+"Decrease volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:64
-#: ./templates/partials/views/radioview.php:25
+#: templates/partials/navigationitem.php:64
+#: templates/partials/views/radioview.php:25
 msgid "Delete"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:35
-#: ./templates/partials/views/settingsview.php:158
+#: templates/partials/sidebar/radiostationdetails.php:35
+#: templates/partials/views/settingsview.php:158
 msgid "Description"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:168
+#: templates/partials/views/settingsview.php:168
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ./js/app/directives/listheading.js:24
-#: ./js/app/directives/tracklist.js:51
-#: ./templates/partials/navigationitem.php:33
-#: ./templates/partials/views/playlistview.php:30
-#: ./templates/partials/views/radioview.php:23
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
+#: templates/partials/navigationitem.php:33
+#: templates/partials/views/playlistview.php:30
+#: templates/partials/views/radioview.php:23
 msgid "Details"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:152
+#: js/app/controllers/views/advancedsearchviewcontroller.js:152
 msgid "Disk count"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:320
+#: js/app/controllers/views/advancedsearchviewcontroller.js:320
 msgid "Does not contain"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:334
+#: js/app/controllers/views/advancedsearchviewcontroller.js:334
 msgid "Does not equal"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:328
+#: js/app/controllers/views/advancedsearchviewcontroller.js:328
 msgid "Does not match regular expression"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:326
+#: js/app/controllers/views/advancedsearchviewcontroller.js:326
 msgid "Does not sound like"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:150
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:203
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:267
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:294
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:93
+#: js/app/controllers/views/advancedsearchviewcontroller.js:150
+#: js/app/controllers/views/advancedsearchviewcontroller.js:203
+#: js/app/controllers/views/advancedsearchviewcontroller.js:267
+#: js/app/controllers/views/advancedsearchviewcontroller.js:294
+#: js/app/controllers/views/advancedsearchviewcontroller.js:93
 msgid "Duration (seconds)"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:52
+#: templates/partials/views/settingsview.php:52
 msgid "Enable metadata scanning"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:322
+#: js/app/controllers/views/advancedsearchviewcontroller.js:322
 msgid "Ends with"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:764
+#: js/app/controllers/playercontroller.js:764
 msgid "Episode"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:333
+#: js/app/controllers/views/advancedsearchviewcontroller.js:333
 msgid "Equals"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:138
+#: js/app/controllers/playercontroller.js:138
 msgid "Error playing URL:"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:100
+#: js/app/services/playlistfileservice.ts:100
 msgid "Export playlist to a file in the selected folder"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:131
+#: js/app/services/playlistfileservice.ts:131
 msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:42
-#: ./templates/partials/navigationitem.php:82
+#: templates/partials/navigationitem.php:42
+#: templates/partials/navigationitem.php:82
 msgid "Export to file"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:72
+#: js/app/services/podcastservice.ts:72
 msgid "Failed to add the podcast channel"
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:247
-msgid "Failed to check for new audio files (error {{ code }}); check the server logs for details"
+#: js/app/controllers/maincontroller.js:247
+msgid ""
+"Failed to check for new audio files (error {{ code }}); check the server "
+"logs for details"
 msgstr ""
 
-#: ./js/app/controllers/views/radioviewcontroller.js:72
+#: js/app/controllers/views/radioviewcontroller.js:72
 msgid "Failed to delete the radio station:"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:170
+#: templates/partials/views/settingsview.php:170
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:157
+#: js/app/services/playlistfileservice.ts:157
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:211
+#: js/app/services/playlistfileservice.ts:211
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:197
+#: js/app/controllers/maincontroller.js:197
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:173
+#: js/app/controllers/views/settingsviewcontroller.js:173
 msgid "Failed to reset the collection:"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:241
+#: js/app/controllers/views/settingsviewcontroller.js:241
 msgid "Failed to reset the podcast channels:"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:211
+#: js/app/controllers/views/settingsviewcontroller.js:211
 msgid "Failed to reset the radio stations:"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:48
+#: templates/partials/views/settingsview.php:48
 msgid "Failed to save the ignored paths"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:12
+#: templates/partials/views/settingsview.php:12
 msgid "Failed to save the music collection path"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:106
-#: ./templates/partials/views/settingsview.php:56
+#: templates/partials/views/settingsview.php:106
+#: templates/partials/views/settingsview.php:56
 msgid "Failed to save the setting"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:114
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:172
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:225
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:257
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:283
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:310
-#: ./templates/partials/sidebar/smartlistfilters.php:32
+#: js/app/controllers/views/advancedsearchviewcontroller.js:114
+#: js/app/controllers/views/advancedsearchviewcontroller.js:172
+#: js/app/controllers/views/advancedsearchviewcontroller.js:225
+#: js/app/controllers/views/advancedsearchviewcontroller.js:257
+#: js/app/controllers/views/advancedsearchviewcontroller.js:283
+#: js/app/controllers/views/advancedsearchviewcontroller.js:310
+#: templates/partials/sidebar/smartlistfilters.php:32
 msgid "Favorite"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:115
-#: ./templates/partials/sidebar/smartlistfilters.php:36
+#: js/app/controllers/views/advancedsearchviewcontroller.js:115
+#: templates/partials/sidebar/smartlistfilters.php:36
 msgid "Favorite album"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:116
-#: ./templates/partials/sidebar/smartlistfilters.php:37
+#: js/app/controllers/views/advancedsearchviewcontroller.js:116
+#: templates/partials/sidebar/smartlistfilters.php:37
 msgid "Favorite artist"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:35
+#: templates/partials/sidebar/smartlistfilters.php:35
 msgid "Favorite track"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:38
+#: templates/partials/sidebar/smartlistfilters.php:38
 msgid "Favorite track, album, or artist"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:102
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:160
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:213
+#: js/app/controllers/views/advancedsearchviewcontroller.js:102
+#: js/app/controllers/views/advancedsearchviewcontroller.js:160
+#: js/app/controllers/views/advancedsearchviewcontroller.js:213
 msgid "File data"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:104
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:162
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/controllers/views/advancedsearchviewcontroller.js:104
+#: js/app/controllers/views/advancedsearchviewcontroller.js:162
+#: js/app/controllers/views/advancedsearchviewcontroller.js:215
 msgid "File name"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:142
+#: templates/partials/navigationitem.php:142
 msgid "Filters"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:128
+#: templates/partials/navigationitem.php:128
 msgid "Flat layout"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:760
+#: js/app/controllers/playercontroller.js:760
 msgid "Folder"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:752
-#: ./templates/partials/navigation.php:10
+#: js/app/controllers/playercontroller.js:752
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:236
+#: musicwidget.ts:55
 msgid "Folders"
 msgstr ""
 
-#: ./templates/partials/sidebar/sidebar.php:20
+#: templates/partials/sidebar/sidebar.php:20
 msgid "Follow playback"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:110
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:110
 msgid "GUID"
 msgstr ""
 
-#: ./templates/partials/sidebar/trackdetails.php:9
+#: templates/partials/sidebar/trackdetails.php:9
 msgid "General"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:169
+#: templates/partials/views/settingsview.php:169
 msgid "Generate API password"
 msgstr ""
 
-#: ./js/app/controllers/navigationcontroller.js:256
+#: js/app/controllers/navigationcontroller.js:256
 msgid "Generated {{ datetime }}"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:761
-#: ./templates/partials/sidebar/radiostationdetails.php:41
+#: js/app/controllers/playercontroller.js:761
+#: templates/partials/sidebar/radiostationdetails.php:41
 msgid "Genre"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:753
-#: ./templates/partials/navigation.php:12
-#: ./templates/partials/sidebar/smartlistfilters.php:18
+#: js/app/controllers/playercontroller.js:753
+#: templates/partials/navigation.php:12
+#: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
 msgid "Genres"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:76
+#: templates/partials/navigationitem.php:76
 msgid "Getting started"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:156
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:209
+#: js/app/controllers/views/advancedsearchviewcontroller.js:156
+#: js/app/controllers/views/advancedsearchviewcontroller.js:209
 msgid "Has image"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:155
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:208
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:98
+#: js/app/controllers/views/advancedsearchviewcontroller.js:155
+#: js/app/controllers/views/advancedsearchviewcontroller.js:208
+#: js/app/controllers/views/advancedsearchviewcontroller.js:98
 msgid "Has no genre"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:153
-msgid "Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime."
+#: templates/partials/views/settingsview.php:153
+msgid ""
+"Here you can generate passwords to use with the Ampache or Subsonic API. "
+"Separate passwords are used because they can't be stored in a really secure "
+"way due to the design of the APIs. You can generate as many passwords as you "
+"want and revoke them at anytime."
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:59
-msgid "Hint: To list tracks with more refined criteria, try <a href=\"{{url}}\">Advanced search</a>"
+#: templates/partials/sidebar/smartlistfilters.php:59
+msgid ""
+"Hint: To list tracks with more refined criteria, try <a "
+"href=\"{{url}}\">Advanced search</a>"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:271
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:298
-#: ./templates/partials/sidebar/smartlistfilters.php:43
+#: js/app/controllers/views/advancedsearchviewcontroller.js:271
+#: js/app/controllers/views/advancedsearchviewcontroller.js:298
+#: templates/partials/sidebar/smartlistfilters.php:43
 msgid "History"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:146
+#: templates/partials/views/settingsview.php:146
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:10
-msgid "If you have a PLS or M3U file containing the stream URL, then first upload the file to your cloud using the Files app, press the … symbol next to the navigation item \"Internet radio\", and select \"Import from file\". Find the previously uploaded playlist file and press \"Choose\"."
+#: templates/partials/sidebar/radiohint.php:10
+msgid ""
+"If you have a PLS or M3U file containing the stream URL, then first upload "
+"the file to your cloud using the Files app, press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Import from file\". Find "
+"the previously uploaded playlist file and press \"Choose\"."
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:8
-msgid "If you know the stream URL to add, then press the … symbol next to the navigation item \"Internet radio\", and select \"Add manually\"."
+#: templates/partials/sidebar/radiohint.php:8
+msgid ""
+"If you know the stream URL to add, then press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Add manually\"."
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:39
-#: ./templates/partials/navigationitem.php:79
+#: templates/partials/navigationitem.php:39
+#: templates/partials/navigationitem.php:79
 msgid "Import from file"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:166
+#: js/app/services/playlistfileservice.ts:166
 msgid "Import playlist contents from the selected file"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:219
+#: js/app/services/playlistfileservice.ts:219
 msgid "Import radio stations from the selected file"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:199
+#: js/app/services/playlistfileservice.ts:199
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:145
+#: js/app/services/playlistfileservice.ts:145
 msgid "Imported {{ count }} tracks from the file {{ file }}."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:108
-msgid "In addition to the web interface, this setting is respected in the Subsonic interface although not necessarily by all clients."
+#: templates/partials/views/settingsview.php:108
+msgid ""
+"In addition to the web interface, this setting is respected in the Subsonic "
+"interface although not necessarily by all clients."
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:14
-msgid "In case your stream does not play, see <a href=\"{{url}}\" target=\"_blank\">troubleshooting</a>"
+#: templates/partials/sidebar/radiohint.php:14
+msgid ""
+"In case your stream does not play, see <a href=\"{{url}}\" "
+"target=\"_blank\">troubleshooting</a>"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:131
+#: templates/partials/views/settingsview.php:131
 msgid "Increase playback speed"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:129
-msgid "Increase volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>."
+#: templates/partials/views/settingsview.php:129
+msgid ""
+"Increase volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:8
-#: ./templates/partials/sidebar/artistdetails.php:11
+#: templates/partials/sidebar/albumdetails.php:8
+#: templates/partials/sidebar/artistdetails.php:11
 msgid "Info"
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:188
+#: js/app/controllers/maincontroller.js:188
 msgid "Internal server error"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:734
-#: ./js/app/controllers/playercontroller.js:756
-#: ./js/app/services/playlistfileservice.ts:109
-#: ./templates/partials/navigation.php:17
+#: js/app/controllers/playercontroller.js:734
+#: js/app/controllers/playercontroller.js:756
+#: js/app/services/playlistfileservice.ts:109
+#: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
 msgstr ""
 
-#: ./templates/partials/views/radioview.php:4
+#: templates/partials/views/radioview.php:4
 msgid "Internet radio stations"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:68
+#: js/app/services/podcastservice.ts:68
 msgid "Invalid RSS feed URL"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:323
+#: js/app/controllers/views/advancedsearchviewcontroller.js:323
 msgid "Is"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:350
+#: js/app/controllers/views/advancedsearchviewcontroller.js:350
 msgid "Is equal to"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:343
+#: js/app/controllers/views/advancedsearchviewcontroller.js:343
 msgid "Is false"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:335
+#: js/app/controllers/views/advancedsearchviewcontroller.js:335
 msgid "Is greater than"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:331
+#: js/app/controllers/views/advancedsearchviewcontroller.js:331
 msgid "Is greater than or equal to"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:336
+#: js/app/controllers/views/advancedsearchviewcontroller.js:336
 msgid "Is less than"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:332
+#: js/app/controllers/views/advancedsearchviewcontroller.js:332
 msgid "Is less than or equal to"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:324
+#: js/app/controllers/views/advancedsearchviewcontroller.js:324
 msgid "Is not"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:351
+#: js/app/controllers/views/advancedsearchviewcontroller.js:351
 msgid "Is not equal to"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:128
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:184
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:237
+#: js/app/controllers/views/advancedsearchviewcontroller.js:128
+#: js/app/controllers/views/advancedsearchviewcontroller.js:184
+#: js/app/controllers/views/advancedsearchviewcontroller.js:237
 msgid "Is played"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:129
+#: js/app/controllers/views/advancedsearchviewcontroller.js:129
 msgid "Is played album"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:130
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:185
+#: js/app/controllers/views/advancedsearchviewcontroller.js:130
+#: js/app/controllers/views/advancedsearchviewcontroller.js:185
 msgid "Is played artist"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:342
+#: js/app/controllers/views/advancedsearchviewcontroller.js:342
 msgid "Is true"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:126
+#: templates/partials/views/settingsview.php:126
 msgid "Jump to the next track"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:125
+#: templates/partials/views/settingsview.php:125
 msgid "Jump to the previous track"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:112
+#: templates/partials/views/settingsview.php:112
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:126
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:182
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:235
+#: js/app/controllers/views/advancedsearchviewcontroller.js:126
+#: js/app/controllers/views/advancedsearchviewcontroller.js:182
+#: js/app/controllers/views/advancedsearchviewcontroller.js:235
 msgid "Last played"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:339
+#: js/app/controllers/views/advancedsearchviewcontroller.js:339
 msgid "Limit"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:6
+#: templates/partials/sidebar/smartlistfilters.php:6
 msgid "List size"
 msgstr ""
 
-#: ./templates/partials/sidebar/trackdetails.php:12
+#: templates/partials/sidebar/trackdetails.php:12
 msgid "Lyrics"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:106
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:106
 msgid "MIME type"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:57
-msgid "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only."
+#: templates/partials/views/settingsview.php:57
+msgid ""
+"Many features of the Music app are based on the metadata stored in the audio "
+"files. However, scanning this data may consume a lot of time on some systems "
+"using extrenal storage. When disabled, the library structure is built based "
+"on the file and folder names only."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:116
-msgid "Many functionalities of the Music app web UI can be controlled with keyboard shortcuts."
+#: templates/partials/views/settingsview.php:116
+msgid ""
+"Many functionalities of the Music app web UI can be controlled with keyboard "
+"shortcuts."
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:327
+#: js/app/controllers/views/advancedsearchviewcontroller.js:327
 msgid "Matches regular expression"
 msgstr ""
 
-#: ./templates/partials/sidebar/playlistdetails.php:19
-#: ./templates/partials/sidebar/radiostationdetails.php:29
+#: templates/partials/sidebar/playlistdetails.php:19
+#: templates/partials/sidebar/radiostationdetails.php:29
 msgid "Modified"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:194
+#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
+#: Search/Provider.php:76
 msgid "Music"
 msgstr ""
 
-#: ./templates/fake-template.php:8
-#: ./templates/partials/views/settingsview.php:4
+#: templates/fake-template.php:8 templates/partials/views/settingsview.php:4
 msgid "Music library"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:44
-#: ./templates/partials/sidebar/artistdetails.php:58
-#: ./templates/partials/sidebar/trackdetails.php:60
+#: templates/partials/sidebar/albumdetails.php:44
+#: templates/partials/sidebar/artistdetails.php:58
+#: templates/partials/sidebar/trackdetails.php:60
 msgid "MusicBrainz"
 msgstr ""
 
-#: ./templates/fake-template.php:15
+#: templates/fake-template.php:15
 msgid "Mute"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:127
+#: templates/partials/views/settingsview.php:127
 msgid "Mute / Unmute"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:145
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:200
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:252
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:265
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:292
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:87
-#: ./templates/partials/sidebar/radiostationdetails.php:8
+#: js/app/controllers/views/advancedsearchviewcontroller.js:145
+#: js/app/controllers/views/advancedsearchviewcontroller.js:200
+#: js/app/controllers/views/advancedsearchviewcontroller.js:252
+#: js/app/controllers/views/advancedsearchviewcontroller.js:265
+#: js/app/controllers/views/advancedsearchviewcontroller.js:292
+#: js/app/controllers/views/advancedsearchviewcontroller.js:87
+#: templates/partials/sidebar/radiostationdetails.php:8
 msgid "Name"
 msgstr ""
 
-#: ./templates/partials/navigation.php:28
-#: ./templates/partials/navigation.php:31
+#: templates/partials/navigation.php:28 templates/partials/navigation.php:31
 msgid "New Playlist"
 msgstr ""
 
-#: ./templates/main.php:54
+#: templates/main.php:54
 msgid "New music available"
 msgstr ""
 
-#: ./templates/main.php:95
-#: ./templates/main.php:96
+#: templates/main.php:95 templates/main.php:96
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:5
+#: templates/partials/sidebar/radiostationdetails.php:5
 msgid "New radio station"
 msgstr ""
 
-#: ./templates/partials/controls.php:53
-#: ./templates/partials/controls.php:54
+#: templates/partials/controls.php:53 templates/partials/controls.php:54
+#: embeddedplayer.js:218
 msgid "Next"
 msgstr ""
 
-#: ./templates/partials/views/podcastsview.php:40
+#: templates/partials/views/podcastsview.php:40
 msgid "No channels"
 msgstr ""
 
-#: ./templates/main.php:46
+#: templates/main.php:46
 msgid "No music found"
 msgstr ""
 
-#: ./templates/main.php:86
+#: templates/main.php:86
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 
-#: ./templates/partials/views/radioview.php:37
+#: templates/partials/views/radioview.php:37
 msgid "No stations"
 msgstr ""
 
-#: ./templates/partials/views/playlistview.php:40
+#: templates/partials/views/playlistview.php:40
 msgid "No tracks"
 msgstr ""
 
-#: ./templates/partials/views/smartlistview.php:24
+#: templates/partials/views/smartlistview.php:24
 msgid "No tracks matching the filters"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:111
+#: templates/partials/navigationitem.php:111
 msgid "Normal layout"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:51
+#: templates/partials/sidebar/smartlistfilters.php:51
 msgid "Not recently added"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:47
+#: templates/partials/sidebar/smartlistfilters.php:47
 msgid "Not recently played"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:140
-msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients</a>."
+#: templates/partials/views/settingsview.php:140
+msgid ""
+"Note that Music may not be compatible with all Ampache/Subsonic clients. "
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" "
+"target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" "
+"target=\"_blank\">Subsonic clients</a>."
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:42
-msgid "Note that this selection makes any difference only when the library has more than the requested number of matches. In the strict mode, only the best matching songs are included with no element of randomness."
+#: templates/partials/sidebar/smartlistfilters.php:42
+msgid ""
+"Note that this selection makes any difference only when the library has more "
+"than the requested number of matches. In the strict mode, only the best "
+"matching songs are included with no element of randomness."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:14
-msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
+#: templates/partials/views/settingsview.php:14
+msgid ""
+"Note: When the path is changed, any previously scanned files outside the new "
+"path are removed from the collection and any playlists."
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:25
+#: templates/partials/sidebar/artistdetails.php:25
 msgid "Number of albums"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:31
+#: templates/partials/sidebar/artistdetails.php:31
 msgid "Number of performed tracks"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:25
-#: ./templates/partials/sidebar/playlistdetails.php:10
+#: templates/partials/sidebar/albumdetails.php:25
+#: templates/partials/sidebar/playlistdetails.php:10
 msgid "Number of tracks"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:28
+#: templates/partials/sidebar/artistdetails.php:28
 msgid "Number of tracks on albums"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:779
-#: ./js/app/controllers/playercontroller.js:788
+#: js/app/controllers/playercontroller.js:779
+#: js/app/controllers/playercontroller.js:788
 msgid "Off"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:48
+#: templates/partials/sidebar/smartlistfilters.php:48
 msgid "Often played"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:33
+#: js/app/services/playlistfileservice.ts:33
 msgid "Overwrite existing file"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:176
+#: templates/partials/views/settingsview.php:176
 msgid "Password:"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:75
+#: js/app/controllers/views/settingsviewcontroller.js:75
 msgid "Path to exclude from your music collection"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:40
-#: ./templates/partials/views/settingsview.php:7
+#: js/app/controllers/views/settingsviewcontroller.js:40
+#: templates/partials/views/settingsview.php:7
 msgid "Path to your music collection"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:18
+#: templates/partials/views/settingsview.php:18
 msgid "Paths to exclude from your music collection"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:32
-msgid "Paths with a leading '/' character are resolved relative to the user home directory and others relative to the music library base path."
+#: templates/partials/views/settingsview.php:32
+msgid ""
+"Paths with a leading '/' character are resolved relative to the user home "
+"directory and others relative to the music library base path."
 msgstr ""
 
-#: ./templates/fake-template.php:13
+#: templates/fake-template.php:13 embeddedplayer.js:199
 msgid "Pause"
 msgstr ""
 
-#: ./js/app/directives/listheading.js:23
-#: ./templates/fake-template.php:12
-#: ./templates/partials/views/advancedsearchview.php:69
-#: ./templates/partials/views/albumsview.php:27
-#: ./templates/partials/views/alltracksview.php:5
-#: ./templates/partials/views/playlistview.php:5
-#: ./templates/partials/views/podcastsview.php:18
-#: ./templates/partials/views/radioview.php:5
-#: ./templates/partials/views/smartlistview.php:5
+#: js/app/directives/listheading.js:23 templates/fake-template.php:12
+#: templates/partials/views/advancedsearchview.php:69
+#: templates/partials/views/albumsview.php:27
+#: templates/partials/views/alltracksview.php:5
+#: templates/partials/views/playlistview.php:5
+#: templates/partials/views/podcastsview.php:18
+#: templates/partials/views/radioview.php:5
+#: templates/partials/views/smartlistview.php:5 embeddedplayer.js:189
+#: folderview.js:254 folderview.js:322
 msgid "Play"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:121
+#: templates/partials/views/settingsview.php:121
 msgid "Play / Pause"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:123
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:179
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:232
+#: js/app/controllers/views/advancedsearchviewcontroller.js:123
+#: js/app/controllers/views/advancedsearchviewcontroller.js:179
+#: js/app/controllers/views/advancedsearchviewcontroller.js:232
 msgid "Play history"
 msgstr ""
 
-#: ./templates/partials/controls.php:46
+#: templates/partials/controls.php:46
 msgid "Playback rate"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:372
+#: js/app/controllers/playercontroller.js:372
 msgid "Playback speed not adjustible for the current song"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:125
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:181
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:234
+#: js/app/controllers/views/advancedsearchviewcontroller.js:125
+#: js/app/controllers/views/advancedsearchviewcontroller.js:181
+#: js/app/controllers/views/advancedsearchviewcontroller.js:234
 msgid "Played times"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:762
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:134
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:136
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:189
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:191
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:241
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:243
+#: js/app/controllers/playercontroller.js:762
+#: js/app/controllers/views/advancedsearchviewcontroller.js:134
+#: js/app/controllers/views/advancedsearchviewcontroller.js:136
+#: js/app/controllers/views/advancedsearchviewcontroller.js:189
+#: js/app/controllers/views/advancedsearchviewcontroller.js:191
+#: js/app/controllers/views/advancedsearchviewcontroller.js:241
+#: js/app/controllers/views/advancedsearchviewcontroller.js:243
+#: playlisttabview.js:17
 msgid "Playlist"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:89
+#: js/app/services/playlistfileservice.ts:89
 msgid "Playlist exported to file {{ path }}"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:137
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:192
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:244
+#: js/app/controllers/views/advancedsearchviewcontroller.js:137
+#: js/app/controllers/views/advancedsearchviewcontroller.js:192
+#: js/app/controllers/views/advancedsearchviewcontroller.js:244
 msgid "Playlist name"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:53
+#: js/app/services/playlistfileservice.ts:53
 msgid "Playlist or folder not found"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:197
-msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>"
+#: templates/partials/views/settingsview.php:197
+msgid ""
+"Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">issue tracker</a>"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:266
+#: js/app/controllers/views/advancedsearchviewcontroller.js:266
 msgid "Podcast channel"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:59
+#: js/app/services/podcastservice.ts:59
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:293
+#: js/app/controllers/views/advancedsearchviewcontroller.js:293
 msgid "Podcast episode"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:263
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:290
+#: js/app/controllers/views/advancedsearchviewcontroller.js:263
+#: js/app/controllers/views/advancedsearchviewcontroller.js:290
 msgid "Podcast metadata"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:757
-#: ./templates/partials/navigation.php:19
+#: js/app/controllers/playercontroller.js:757
+#: templates/partials/navigation.php:19 musicwidget.ts:60
 msgid "Podcasts"
 msgstr ""
 
-#: ./templates/partials/controls.php:37
-#: ./templates/partials/controls.php:5
-#: ./templates/partials/controls.php:6
+#: templates/partials/controls.php:37 templates/partials/controls.php:5
+#: templates/partials/controls.php:6 embeddedplayer.js:209
 msgid "Previous"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:37
-#: ./templates/partials/sidebar/artistdetails.php:40
+#: templates/partials/sidebar/albumdetails.php:37
+#: templates/partials/sidebar/artistdetails.php:40
 msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:94
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:94
 msgid "RSS URL"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:4
+#: templates/partials/sidebar/radiostationdetails.php:4
 msgid "Radio station"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:294
+#: js/app/controllers/playercontroller.js:294
 msgid "Radio station not found"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:117
+#: js/app/services/playlistfileservice.ts:117
 msgid "Radio stations exported to file {{ path }}"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:49
+#: templates/partials/sidebar/smartlistfilters.php:49
 msgid "Rarely played"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:112
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:117
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:170
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:173
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:223
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:226
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:281
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:284
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:308
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:311
+#: js/app/controllers/views/advancedsearchviewcontroller.js:112
+#: js/app/controllers/views/advancedsearchviewcontroller.js:117
+#: js/app/controllers/views/advancedsearchviewcontroller.js:170
+#: js/app/controllers/views/advancedsearchviewcontroller.js:173
+#: js/app/controllers/views/advancedsearchviewcontroller.js:223
+#: js/app/controllers/views/advancedsearchviewcontroller.js:226
+#: js/app/controllers/views/advancedsearchviewcontroller.js:281
+#: js/app/controllers/views/advancedsearchviewcontroller.js:284
+#: js/app/controllers/views/advancedsearchviewcontroller.js:308
+#: js/app/controllers/views/advancedsearchviewcontroller.js:311
 msgid "Rating"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:107
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:165
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:218
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:255
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:276
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:303
-#: ./templates/partials/sidebar/smartlistfilters.php:50
+#: js/app/controllers/views/advancedsearchviewcontroller.js:107
+#: js/app/controllers/views/advancedsearchviewcontroller.js:165
+#: js/app/controllers/views/advancedsearchviewcontroller.js:218
+#: js/app/controllers/views/advancedsearchviewcontroller.js:255
+#: js/app/controllers/views/advancedsearchviewcontroller.js:276
+#: js/app/controllers/views/advancedsearchviewcontroller.js:303
+#: templates/partials/sidebar/smartlistfilters.php:50
 msgid "Recently added"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:127
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:183
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:236
-#: ./templates/partials/sidebar/smartlistfilters.php:46
+#: js/app/controllers/views/advancedsearchviewcontroller.js:127
+#: js/app/controllers/views/advancedsearchviewcontroller.js:183
+#: js/app/controllers/views/advancedsearchviewcontroller.js:236
+#: templates/partials/sidebar/smartlistfilters.php:46
 msgid "Recently played"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:108
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:166
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:219
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:256
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:277
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:304
+#: js/app/controllers/views/advancedsearchviewcontroller.js:108
+#: js/app/controllers/views/advancedsearchviewcontroller.js:166
+#: js/app/controllers/views/advancedsearchviewcontroller.js:219
+#: js/app/controllers/views/advancedsearchviewcontroller.js:256
+#: js/app/controllers/views/advancedsearchviewcontroller.js:277
+#: js/app/controllers/views/advancedsearchviewcontroller.js:304
 msgid "Recently updated"
 msgstr ""
 
-#: ./templates/partials/views/smartlistview.php:25
+#: templates/partials/views/smartlistview.php:25
 msgid "Refine the filters defined for the smart playlist"
 msgstr ""
 
-#: ./templates/fake-template.php:5
-#: ./templates/partials/navigationitem.php:139
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:139
 msgid "Reload"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:100
 msgid "Reload channels"
 msgstr ""
 
-#: ./templates/partials/views/playlistview.php:33
-#: ./templates/partials/views/settingsview.php:40
+#: templates/partials/views/playlistview.php:33
+#: templates/partials/views/settingsview.php:40
 msgid "Remove"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:176
+#: js/app/services/podcastservice.ts:176
 msgid "Remove channel"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:61
+#: templates/partials/navigationitem.php:61
 msgid "Remove duplicates"
 msgstr ""
 
-#: ./js/app/controllers/navigationcontroller.js:174
+#: js/app/controllers/navigationcontroller.js:174
 msgid "Remove playlist"
 msgstr ""
 
-#: ./js/app/controllers/views/radioviewcontroller.js:39
+#: js/app/controllers/views/radioviewcontroller.js:39
 msgid "Remove radio station"
 msgstr ""
 
-#: ./templates/partials/views/playlistview.php:33
+#: templates/partials/views/playlistview.php:33
 msgid "Remove track from playlist"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:36
+#: templates/partials/navigationitem.php:36
 msgid "Rename"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:784
-#: ./templates/partials/controls.php:94
+#: js/app/controllers/playercontroller.js:784
+#: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr ""
 
-#: ./js/app/controllers/views/albumsviewcontroller.js:275
-#: ./js/app/controllers/views/playlistviewcontroller.js:196
+#: js/app/controllers/views/albumsviewcontroller.js:275
+#: js/app/controllers/views/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:61
+#: templates/partials/views/settingsview.php:61
 msgid "Reset"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:194
-#: ./templates/partials/views/settingsview.php:74
+#: js/app/controllers/views/settingsviewcontroller.js:194
+#: templates/partials/views/settingsview.php:74
 msgid "Reset internet radio stations"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:151
-#: ./templates/partials/views/settingsview.php:64
+#: js/app/controllers/views/settingsviewcontroller.js:151
+#: templates/partials/views/settingsview.php:64
 msgid "Reset music collection"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:224
-#: ./templates/partials/views/settingsview.php:83
+#: js/app/controllers/views/settingsviewcontroller.js:224
+#: templates/partials/views/settingsview.php:83
 msgid "Reset podcast channels"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:159
+#: templates/partials/views/settingsview.php:159
 msgid "Revoke API password"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:32
+#: templates/partials/views/advancedsearchview.php:32
 msgid "Rules"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:145
+#: templates/partials/navigationitem.php:145
 msgid "Save playlist"
 msgstr ""
 
-#: ./templates/main.php:70
+#: templates/main.php:70
 msgid "Scanning music …"
 msgstr ""
 
-#: ./templates/partials/navigation.php:54
-#: ./templates/partials/navigation.php:56
-#: ./templates/partials/views/advancedsearchview.php:62
-#: ./templates/partials/views/settingsview.php:132
+#: templates/partials/navigation.php:54 templates/partials/navigation.php:56
+#: templates/partials/views/advancedsearchview.php:62
+#: templates/partials/views/settingsview.php:132
 msgid "Search"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:6
+#: templates/partials/views/advancedsearchview.php:6
 msgid "Search for"
 msgstr ""
 
-#: ./js/app/controllers/searchcontroller.js:98
+#: js/app/controllers/searchcontroller.js:98
 msgid "Search not available in this view"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/albumdetailscontroller.js:68
+#: js/app/controllers/sidebar/albumdetailscontroller.js:68
 msgid "See the album on Last.fm"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/trackdetailscontroller.js:89
+#: js/app/controllers/sidebar/trackdetailscontroller.js:89
 msgid "See the track on Last.fm"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:123
-msgid "Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>."
+#: templates/partials/views/settingsview.php:123
+msgid ""
+"Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:124
-msgid "Seek forward. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>."
+#: templates/partials/views/settingsview.php:124
+msgid ""
+"Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:39
+#: templates/partials/views/settingsview.php:39 musicwidget.ts:234
 msgid "Select folder"
 msgstr ""
 
-#: ./templates/partials/favoritetoggle.php:3
+#: templates/partials/favoritetoggle.php:3
 msgid "Set favorite"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:4
+#: templates/partials/sidebar/radiohint.php:4
 msgid "Setting up radio stations"
 msgstr ""
 
-#: ./templates/partials/navigation.php:77
-#: ./templates/partials/views/settingsview.php:2
+#: templates/partials/navigation.php:77
+#: templates/partials/views/settingsview.php:2
 msgid "Settings"
 msgstr ""
 
-#: ./js/app/controllers/views/podcastsviewcontroller.js:114
+#: js/app/controllers/views/podcastsviewcontroller.js:114
 msgid "Show all {{ count }} episodes …"
 msgstr ""
 
-#: ./js/app/directives/tracklist.js:53
+#: js/app/directives/tracklist.js:53
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:54
-#: ./templates/partials/views/settingsview.php:117
+#: templates/partials/sidebar/artistdetails.php:54
+#: templates/partials/views/settingsview.php:117
 msgid "Show all…"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:97
-msgid "Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site."
+#: templates/partials/views/settingsview.php:97
+msgid ""
+"Show desktop notification when the playing song changes. You also need to "
+"have the desktop notifications allowed in your browser for this site."
 msgstr ""
 
-#: ./templates/partials/sidebar/trackdetails.php:5
+#: templates/partials/sidebar/trackdetails.php:5
 msgid "Show in Files"
 msgstr ""
 
-#: ./js/app/directives/tracklist.js:50
+#: js/app/directives/tracklist.js:50
 msgid "Show less …"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:23
+#: templates/partials/views/settingsview.php:23
 msgid "Show more…"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:778
-#: ./templates/partials/controls.php:92
+#: js/app/controllers/playercontroller.js:778
+#: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:47
+#: templates/partials/sidebar/artistdetails.php:47
 msgid "Similar to"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:755
-#: ./templates/partials/navigation.php:22
-#: ./templates/partials/views/smartlistview.php:4
+#: js/app/controllers/playercontroller.js:755
+#: templates/partials/navigation.php:22
+#: templates/partials/views/smartlistview.php:4
 msgid "Smart playlist"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:3
+#: templates/partials/sidebar/smartlistfilters.php:3
 msgid "Smart playlist filters"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:529
+#: js/app/controllers/playercontroller.js:529
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ./templates/main.php:62
+#: templates/main.php:62
 msgid "Some of the previously scanned files may have changed"
 msgstr ""
 
-#: ./templates/main.php:79
+#: templates/main.php:79
 msgid "Some search results are omitted"
 msgstr ""
 
-#: ./templates/partials/views/genresview.php:34
+#: templates/partials/views/genresview.php:34
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:94
+#: templates/partials/views/settingsview.php:94
 msgid "Song change notifications"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:45
+#: templates/partials/navigationitem.php:45
 msgid "Sort …"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:325
+#: js/app/controllers/views/advancedsearchviewcontroller.js:325
 msgid "Sounds like"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:22
-msgid "Specify folders within your music collection path which shall be excluded from the scanning."
+#: templates/partials/views/settingsview.php:22
+msgid ""
+"Specify folders within your music collection path which shall be excluded "
+"from the scanning."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:107
-msgid "Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive."
+#: templates/partials/views/settingsview.php:107
+msgid ""
+"Specify space-delimited list of articles which should be ignored when "
+"ordering the artists alphabetically. The articles are case-insensitive."
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:321
+#: js/app/controllers/views/advancedsearchviewcontroller.js:321
 msgid "Starts with"
 msgstr ""
 
-#: ./templates/partials/controls.php:14
-#: ./templates/partials/controls.php:15
-#: ./templates/partials/controls.php:27
-#: ./templates/partials/views/settingsview.php:122
+#: templates/partials/controls.php:14 templates/partials/controls.php:15
+#: templates/partials/controls.php:27
+#: templates/partials/views/settingsview.php:122
 msgid "Stop"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:14
+#: templates/partials/sidebar/radiostationdetails.php:14
 msgid "Stream URL"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:53
+#: templates/partials/sidebar/smartlistfilters.php:53
 msgid "Strict"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:41
-#: ./templates/partials/sidebar/artistdetails.php:44
-#: ./templates/partials/sidebar/trackdetails.php:57
+#: templates/partials/sidebar/albumdetails.php:41
+#: templates/partials/sidebar/artistdetails.php:44
+#: templates/partials/sidebar/trackdetails.php:57
 msgid "Tags"
 msgstr ""
 
-#: ./templates/partials/sidebar/trackdetails.php:15
+#: templates/partials/sidebar/trackdetails.php:15
 msgid "Technical"
 msgstr ""
 
-#: ./js/app/controllers/views/settingsviewcontroller.js:334
+#: js/app/controllers/views/settingsviewcontroller.js:334
 msgid "Text copied to clipboard"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:104
+#: js/app/services/podcastservice.ts:104
 msgid "The channel was already up-to-date"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:101
+#: js/app/services/podcastservice.ts:101
 msgid "The channel was updated from the source"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:30
-msgid "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to overwrite it. Select \"No\" to export the list with another name. Close the dialog to cancel."
+#: js/app/services/playlistfileservice.ts:30
+msgid ""
+"The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
+"overwrite it. Select \"No\" to export the list with another name. Close the "
+"dialog to cancel."
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:173
-msgid "The playlist already contains some tracks. Imported tracks will be appended after the existing contents. Proceed?"
+#: js/app/services/playlistfileservice.ts:173
+msgid ""
+"The playlist already contains some tracks. Imported tracks will be appended "
+"after the existing contents. Proceed?"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:184
-msgid "There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are documented <a href=\"{{url}}\" target=\"_blank\">here</a>."
+#: templates/partials/views/settingsview.php:184
+msgid ""
+"There is no settings UI for the server-wide settings of the Music app but "
+"some settings are available by adding specific key-value pairs to the file "
+"<samp>{{filename}}</samp>. The available keys are documented <a "
+"href=\"{{url}}\" target=\"_blank\">here</a>."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:88
+#: templates/partials/views/settingsview.php:88
 msgid "This action erases all the channels shown in the \"Podcasts\" view."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:79
-msgid "This action erases all the stations shown in the \"Internet radio\" view."
+#: templates/partials/views/settingsview.php:79
+msgid ""
+"This action erases all the stations shown in the \"Internet radio\" view."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:69
-msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
+#: templates/partials/views/settingsview.php:69
+msgid ""
+"This action resets all the scanned tracks and all the user-created "
+"playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:70
+#: js/app/services/podcastservice.ts:70
 msgid "This channel is already subscribed"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:70
-msgid "This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
+#: templates/partials/views/settingsview.php:70
+msgid ""
+"This may be desirable after changing the excluded paths, or if the database "
+"would somehow get corrupted. If the latter happens, please report a bug to "
+"the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:13
+#: templates/partials/views/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:191
+#: js/app/controllers/maincontroller.js:191
 msgid "Timeout"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:12
-msgid "To find radio streams, you may use the <a href=\"{{url}}\" target=\"_blank\">Community Radio Browser</a>. There, you can find channels e.g. by name, language, or style. You may save the results as PLS and follow the instructions above to import them to the Music app."
+#: templates/partials/sidebar/radiohint.php:12
+msgid ""
+"To find radio streams, you may use the <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. There, you can find channels "
+"e.g. by name, language, or style. You may save the results as PLS and follow "
+"the instructions above to import them to the Music app."
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:28
-#: ./templates/partials/sidebar/playlistdetails.php:13
+#: templates/partials/sidebar/albumdetails.php:28
+#: templates/partials/sidebar/playlistdetails.php:13
 msgid "Total length"
 msgstr ""
 
-#: ./js/app/controllers/playercontroller.js:791
+#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
 msgid "Track"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:147
+#: js/app/controllers/views/advancedsearchviewcontroller.js:147
 msgid "Track artist name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:151
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:205
+#: js/app/controllers/views/advancedsearchviewcontroller.js:151
+#: js/app/controllers/views/advancedsearchviewcontroller.js:205
 msgid "Track count"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:154
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:207
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:95
+#: js/app/controllers/views/advancedsearchviewcontroller.js:154
+#: js/app/controllers/views/advancedsearchviewcontroller.js:207
+#: js/app/controllers/views/advancedsearchviewcontroller.js:95
 msgid "Track genre"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:85
+#: js/app/controllers/views/advancedsearchviewcontroller.js:85
 msgid "Track metadata"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:148
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:202
+#: js/app/controllers/views/advancedsearchviewcontroller.js:148
+#: js/app/controllers/views/advancedsearchviewcontroller.js:202
 msgid "Track name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:91
+#: js/app/controllers/views/advancedsearchviewcontroller.js:91
 msgid "Track number"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:174
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:227
+#: js/app/controllers/views/advancedsearchviewcontroller.js:174
+#: js/app/controllers/views/advancedsearchviewcontroller.js:227
 msgid "Track rating"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:11
-#: ./templates/partials/sidebar/artistdetails.php:17
+#: templates/partials/sidebar/albumdetails.php:11
+#: templates/partials/sidebar/artistdetails.php:17
 msgid "Tracks"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:93
+#: templates/partials/sidebar/artistdetails.php:93
 msgid "Tracks by {{artist}}"
 msgstr ""
 
-#: ./templates/partials/sidebar/albumdetails.php:51
+#: templates/partials/sidebar/albumdetails.php:51
 msgid "Tracks on {{album}}"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:125
+#: templates/partials/navigationitem.php:125
 msgid "Tree layout"
 msgstr ""
 
-#: ./templates/main.php:80
+#: templates/main.php:80
 msgid "Try to refine the search"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:89
+#: js/app/services/podcastservice.ts:89
 msgid "URL"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:61
+#: js/app/services/playlistfileservice.ts:61
 msgid "Unexpected error"
 msgstr ""
 
-#: ./js/app/services/podcastservice.ts:38
+#: js/app/services/podcastservice.ts:38
 msgid "Unexpected error when updating the channel \"{{ title }}\""
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:98
-msgid "Unlike the other settings, this switch is stored per browser and not per user account."
+#: templates/partials/views/settingsview.php:98
+msgid ""
+"Unlike the other settings, this switch is stored per browser and not per "
+"user account."
 msgstr ""
 
-#: ./templates/fake-template.php:16
+#: templates/fake-template.php:16
 msgid "Unmute"
 msgstr ""
 
-#: ./templates/partials/favoritetoggle.php:5
+#: templates/partials/favoritetoggle.php:5
 msgid "Unset favorite"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:57
+#: templates/partials/sidebar/smartlistfilters.php:57
 msgid "Update"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:106
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:164
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:217
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:254
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:275
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:302
+#: js/app/controllers/views/advancedsearchviewcontroller.js:106
+#: js/app/controllers/views/advancedsearchviewcontroller.js:164
+#: js/app/controllers/views/advancedsearchviewcontroller.js:217
+#: js/app/controllers/views/advancedsearchviewcontroller.js:254
+#: js/app/controllers/views/advancedsearchviewcontroller.js:275
+#: js/app/controllers/views/advancedsearchviewcontroller.js:302
 msgid "Update date"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/artistdetailscontroller.js:68
-msgid "Upload image named \"{{name}}\" to anywhere within your library path to see it here."
+#: js/app/controllers/sidebar/artistdetailscontroller.js:68
+msgid ""
+"Upload image named \"{{name}}\" to anywhere within your library path to see "
+"it here."
 msgstr ""
 
-#: ./templates/main.php:47
+#: templates/main.php:47
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:172
-msgid "Use the following credentials to connect to this Ampache/Subsonic instance."
+#: templates/partials/views/settingsview.php:172
+msgid ""
+"Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:151
-msgid "Use this address to browse your music collection from a Subsonic compatible player."
+#: templates/partials/views/settingsview.php:151
+msgid ""
+"Use this address to browse your music collection from a Subsonic compatible "
+"player."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:146
-msgid "Use this address to browse your music collection from an Ampache compatible player."
+#: templates/partials/views/settingsview.php:146
+msgid ""
+"Use this address to browse your music collection from an Ampache compatible "
+"player."
 msgstr ""
 
-#: ./js/app/controllers/navigationcontroller.js:258
+#: js/app/controllers/navigationcontroller.js:258
 msgid "Used filters: {{ params }}"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:91
+#: templates/partials/views/settingsview.php:91
 msgid "User interface"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:174
+#: templates/partials/views/settingsview.php:174
 msgid "Username:"
 msgstr ""
 
-#: ./templates/partials/controls.php:102
-#: ./templates/partials/controls.php:98
+#: templates/partials/controls.php:102 templates/partials/controls.php:98
 msgid "Volume"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiostationdetails.php:38
+#: templates/partials/sidebar/radiostationdetails.php:38
 msgid "Website"
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:57
+#: js/app/services/playlistfileservice.ts:57
 msgid "Writing to the file is not allowed"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:149
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:92
+#: js/app/controllers/views/advancedsearchviewcontroller.js:149
+#: js/app/controllers/views/advancedsearchviewcontroller.js:92
 msgid "Year"
 msgstr ""
 
-#: ./templates/partials/sidebar/smartlistfilters.php:11
+#: templates/partials/sidebar/smartlistfilters.php:11
 msgid "Years"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:139
-msgid "You can browse and play your music collection from external applications which support either Ampache or Subsonic API."
+#: templates/partials/views/settingsview.php:139
+msgid ""
+"You can browse and play your music collection from external applications "
+"which support either Ampache or Subsonic API."
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:26
+#: templates/partials/views/settingsview.php:26
 msgid "You can use the wild cards '?', '*', and '**':"
 msgstr ""
 
-#: ./templates/partials/sidebar/radiohint.php:6
-msgid "You may add radio stations either by manually entering the stream URL or by importing a playlist file containing one or more stream URLs."
+#: templates/partials/sidebar/radiohint.php:6
+msgid ""
+"You may add radio stations either by manually entering the stream URL or by "
+"importing a playlist file containing one or more stream URLs."
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:9
+#: templates/partials/views/advancedsearchview.php:9
 msgid "albums"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:10
+#: templates/partials/views/advancedsearchview.php:10
 msgid "artists"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:97
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:97
 msgid "author"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:109
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:109
 msgid "bit rate"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:100
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:100
 msgid "build date"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:55
+#: templates/partials/navigationitem.php:55
 msgid "by album"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:36
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:45
-#: ./templates/partials/navigationitem.php:52
+#: js/app/controllers/views/advancedsearchviewcontroller.js:36
+#: js/app/controllers/views/advancedsearchviewcontroller.js:45
+#: templates/partials/navigationitem.php:52
 msgid "by artist"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:63
+#: js/app/controllers/views/advancedsearchviewcontroller.js:63
 msgid "by channel"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:35
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:44
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:51
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:57
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:62
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:69
+#: js/app/controllers/views/advancedsearchviewcontroller.js:35
+#: js/app/controllers/views/advancedsearchviewcontroller.js:44
+#: js/app/controllers/views/advancedsearchviewcontroller.js:51
+#: js/app/controllers/views/advancedsearchviewcontroller.js:57
+#: js/app/controllers/views/advancedsearchviewcontroller.js:62
+#: js/app/controllers/views/advancedsearchviewcontroller.js:69
 msgid "by name"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:38
+#: js/app/controllers/views/advancedsearchviewcontroller.js:38
 msgid "by play count"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:40
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:47
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:53
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:65
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:71
+#: js/app/controllers/views/advancedsearchviewcontroller.js:40
+#: js/app/controllers/views/advancedsearchviewcontroller.js:47
+#: js/app/controllers/views/advancedsearchviewcontroller.js:53
+#: js/app/controllers/views/advancedsearchviewcontroller.js:65
+#: js/app/controllers/views/advancedsearchviewcontroller.js:71
 msgid "by rating"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:39
+#: js/app/controllers/views/advancedsearchviewcontroller.js:39
 msgid "by recent play"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:37
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:46
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:52
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:58
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:64
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:70
+#: js/app/controllers/views/advancedsearchviewcontroller.js:37
+#: js/app/controllers/views/advancedsearchviewcontroller.js:46
+#: js/app/controllers/views/advancedsearchviewcontroller.js:52
+#: js/app/controllers/views/advancedsearchviewcontroller.js:58
+#: js/app/controllers/views/advancedsearchviewcontroller.js:64
+#: js/app/controllers/views/advancedsearchviewcontroller.js:70
 msgid "by time added"
 msgstr ""
 
-#: ./templates/partials/navigationitem.php:49
+#: templates/partials/navigationitem.php:49
 msgid "by title"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:98
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:98
 msgid "category"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:104
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:104
 msgid "channel"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:96
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:96
 msgid "copyright"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:92
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:92
 msgid "description"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:107
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:107
 msgid "duration"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:102
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:102
 msgid "episode"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:111
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:111
 msgid "keywords"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:95
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:95
 msgid "language"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:23
+#: templates/partials/views/advancedsearchview.php:23
 msgid "limiting to"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:16
+#: templates/partials/views/advancedsearchview.php:16
 msgid "matching all rules"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:17
+#: templates/partials/views/advancedsearchview.php:17
 msgid "matching any rule"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:19
+#: templates/partials/views/advancedsearchview.php:19
 msgid "ordering results"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:11
+#: templates/partials/views/advancedsearchview.php:11
 msgid "playlists"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:13
+#: templates/partials/views/advancedsearchview.php:13
 msgid "podcast channels"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:12
+#: templates/partials/views/advancedsearchview.php:12
 msgid "podcast episodes"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:99
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:99
 msgid "published"
 msgstr ""
 
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:41
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:48
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:54
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:59
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:66
-#: ./js/app/controllers/views/advancedsearchviewcontroller.js:72
+#: js/app/controllers/views/advancedsearchviewcontroller.js:41
+#: js/app/controllers/views/advancedsearchviewcontroller.js:48
+#: js/app/controllers/views/advancedsearchviewcontroller.js:54
+#: js/app/controllers/views/advancedsearchviewcontroller.js:59
+#: js/app/controllers/views/advancedsearchviewcontroller.js:66
+#: js/app/controllers/views/advancedsearchviewcontroller.js:72
 msgid "randomly"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:103
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:103
 msgid "season"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:108
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:108
 msgid "size"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:105
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:105
 msgid "stream URL"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:91
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:91
 msgid "title"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:8
+#: templates/partials/views/advancedsearchview.php:8
 msgid "tracks"
 msgstr ""
 
-#: ./templates/partials/views/advancedsearchview.php:25
+#: templates/partials/views/advancedsearchview.php:25
 msgid "unlimited"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:101
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:101
 msgid "updates checked"
 msgstr ""
 
-#: ./templates/partials/views/settingsview.php:195
+#: templates/partials/views/settingsview.php:195
 msgid "version history"
 msgstr ""
 
-#: ./js/app/controllers/sidebar/podcastdetailscontroller.js:93
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:93
 msgid "website"
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:69
+#: js/app/controllers/maincontroller.js:69
 msgid "{{ count }} album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/maincontroller.js:102
+#: js/app/controllers/maincontroller.js:102
 msgid "{{ count }} channel"
 msgid_plural "{{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/navigationcontroller.js:159
+#: js/app/controllers/navigationcontroller.js:159
 msgid "{{ count }} duplicate track was removed"
 msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/services/playlistfileservice.ts:202
+#: js/app/services/playlistfileservice.ts:202
 msgid "{{ count }} entries were skipped."
 msgstr ""
 
-#: ./js/app/services/playlistfileservice.ts:148
+#: js/app/services/playlistfileservice.ts:148
 msgid "{{ count }} files were skipped."
 msgstr ""
 
-#: ./js/app/controllers/maincontroller.js:75
+#: js/app/controllers/maincontroller.js:75
 msgid "{{ count }} folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/maincontroller.js:84
+#: js/app/controllers/maincontroller.js:84
 msgid "{{ count }} genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/maincontroller.js:93
+#: js/app/controllers/maincontroller.js:93
 msgid "{{ count }} station"
 msgid_plural "{{ count }} stations"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./js/app/controllers/maincontroller.js:59
-#: ./js/app/controllers/maincontroller.js:64
+#: js/app/controllers/maincontroller.js:59
+#: js/app/controllers/maincontroller.js:64
 msgid "{{ count }} track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./templates/partials/views/advancedsearchview.php:68
+#: templates/partials/views/advancedsearchview.php:68
 msgid "{{ resultCount() }} result"
 msgid_plural "{{ resultCount() }} results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ./templates/main.php:71
+#: templates/main.php:71
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""
 
-#: ./templates/partials/sidebar/artistdetails.php:78
+#: templates/partials/sidebar/artistdetails.php:78
 msgid "{{artist}} appears on albums"
+msgstr ""
+
+#: Db/Album.php:271
+msgid "Unknown album"
+msgstr ""
+
+#: Db/Artist.php:134
+msgid "Unknown artist"
+msgstr ""
+
+#: Db/Bookmark.php:47
+msgid "(no comment)"
+msgstr ""
+
+#: Db/Genre.php:84
+msgid "(Unknown genre)"
+msgstr ""
+
+#: musicwidget.ts:52
+msgid "Album artists"
+msgstr ""
+
+#: musicwidget.ts:53
+msgid "Track artists"
+msgstr ""
+
+#: musicwidget.ts:58
+msgid "Playlists"
+msgstr ""
+
+#: musicwidget.ts:62
+msgid "Select mode"
+msgstr ""
+
+#: musicwidget.ts:182 musicwidget.ts:209
+msgid "Select artist"
+msgstr ""
+
+#: musicwidget.ts:190
+msgid "(All albums)"
+msgstr ""
+
+#: musicwidget.ts:192 musicwidget.ts:221
+msgid "Select album"
+msgstr ""
+
+#: musicwidget.ts:247
+msgid "Select genre"
+msgstr ""
+
+#: musicwidget.ts:263
+msgid "Select playlist"
+msgstr ""
+
+#: musicwidget.ts:279
+msgid "Select channel"
+msgstr ""
+
+#: embeddedplayer.js:136
+msgid "Actions"
+msgstr ""
+
+#: embeddedplayer.js:162
+msgid "Import radio to Music"
+msgstr ""
+
+#: embeddedplayer.js:163
+msgid "Import list to Music"
+msgstr ""
+
+#: embeddedplayer.js:164
+msgid "Show playlist"
+msgstr ""
+
+#: embeddedplayer.js:414
+msgid "Continue playing in Music"
+msgstr ""
+
+#: embeddedplayer.js:417
+msgid "(file is not within your music collection folder)"
+msgstr ""
+
+#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
+msgid "Loading…"
+msgstr ""
+
+#: folderview.js:143
+msgid ""
+"The option is available only while the parent folder of the playlist file is "
+"shown"
+msgstr ""
+
+#: folderview.js:156
+msgid "None of the playlist files are within your music library"
+msgstr ""
+
+#: folderview.js:161
+msgid ""
+"{inCount} out of {totalCount} files are within your music library and can be "
+"imported"
+msgstr ""
+
+#: folderview.js:362
+msgid "No files from the playlist could be found"
+msgstr ""
+
+#: folderview.js:365
+msgid "The playlist contained {count} invalid path(s)."
+msgstr ""
+
+#: folderview.js:370
+msgid "See the playlist file details."
+msgstr ""
+
+#: folderview.js:386 playlisttabview.js:90
+msgid "Error reading playlist file"
+msgstr ""
+
+#: playlistfileservice.js:53
+msgid "Imported {count} tracks to a new playlist '{name}'."
+msgstr ""
+
+#: playlistfileservice.js:56
+msgid "{count} files were skipped."
+msgstr ""
+
+#: playlistfileservice.js:62 playlistfileservice.js:86
+msgid "Failed to import the playlist file {file}"
+msgstr ""
+
+#: playlistfileservice.js:67
+msgid "Failed to create a new playlist"
+msgstr ""
+
+#: playlistfileservice.js:78
+msgid "Imported {count} radio stations."
+msgstr ""
+
+#: playlistfileservice.js:80
+msgid "{count} entries were skipped."
+msgstr ""
+
+#: playlisttabview.js:76
+msgid "Some files on the playlist were not found"
 msgstr ""

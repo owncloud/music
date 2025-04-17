@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -175,8 +175,8 @@ class PlaylistImport extends BaseCommand {
 	private static function fileMatchesPattern(File $file, string $pattern) : bool {
 		// convert the pattern to regex
 		$pattern = \preg_quote($pattern);				// escape regex meta characters
-		$pattern = \str_replace('\*', '.*', $pattern);	// convert * to its regex equivaleant
-		$pattern = \str_replace('\?', '.', $pattern);	// convert ? to its regex equivaleant
+		$pattern = \str_replace('\*', '.*', $pattern);	// convert * to its regex equivalent
+		$pattern = \str_replace('\?', '.', $pattern);	// convert ? to its regex equivalent
 		$pattern = "/^$pattern$/";						// the pattern should match the name from begin to end
 
 		return (\preg_match($pattern, $file->getName()) === 1);

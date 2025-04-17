@@ -104,7 +104,7 @@ class Playlist extends Entity {
 		$trackIds = $this->getTrackIdsAsArray();
 		return [
 			'name' => $this->getName(),
-			'lenght' => \count($trackIds),
+			'length' => \count($trackIds),
 			'tracks' => \array_map(fn($id, $index) => [
 				'id' => $id,
 				'index' => $index,

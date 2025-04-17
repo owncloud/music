@@ -579,7 +579,7 @@ class Application extends ApplicationBase {
 			);
 		});
 
-		$context->registerService('MimeTypeLoader', function (IappContainer $c) {
+		$context->registerService('MimeTypeLoader', function (IAppContainer $c) {
 			return $c->getServer()->getMimeTypeLoader();
 		});
 

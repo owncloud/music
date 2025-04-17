@@ -69,7 +69,7 @@ class CoverHelper {
 	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover(Entity $entity, string $userId, Folder $rootFolder, int $size=null, bool $allowPlaceholder=true) : ?array {
+	public function getCover(Entity $entity, string $userId, Folder $rootFolder, ?int $size=null, bool $allowPlaceholder=true) : ?array {
 		if ($entity instanceof Playlist) {
 			$trackIds = $entity->getTrackIdsAsArray();
 			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
@@ -96,7 +96,7 @@ class CoverHelper {
 		return $result;
 	}
 
-	public function getCoverMosaic(array $entities, string $userId, Folder $rootFolder, int $size=null) : ?array {
+	public function getCoverMosaic(array $entities, string $userId, Folder $rootFolder, ?int $size=null) : ?array {
 		if (\count($entities) === 0) {
 			return null;
 		} elseif (\count($entities) === 1) {
@@ -227,7 +227,7 @@ class CoverHelper {
 	 * Remove album cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeAlbumCoverFromCache(int $albumId, string $userId=null) : void {
+	public function removeAlbumCoverFromCache(int $albumId, ?string $userId=null) : void {
 		$this->cache->remove($userId, 'album_cover_hash_' . $albumId);
 	}
 
@@ -235,7 +235,7 @@ class CoverHelper {
 	 * Remove artist cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeArtistCoverFromCache(int $artistId, string $userId=null) : void {
+	public function removeArtistCoverFromCache(int $artistId, ?string $userId=null) : void {
 		$this->cache->remove($userId, 'artist_cover_hash_' . $artistId);
 	}
 

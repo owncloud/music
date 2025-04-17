@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -123,7 +123,7 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+	public function findById(array $ids, ?string $userId=null, bool $preserveOrder=false) : array {
 		$entities = [];
 		if (\count($ids) > 0) {
 			// don't use more than 999 SQL args in one query since that may be a problem for SQLite

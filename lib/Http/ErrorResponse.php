@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Http;
@@ -23,7 +23,7 @@ class ErrorResponse extends JSONResponse {
 	 * @param int $statusCode the Http status code
 	 * @param string $message Error message, defaults to empty
 	 */
-	public function __construct(int $statusCode, string $message=null) {
+	public function __construct(int $statusCode, ?string $message=null) {
 		parent::__construct(
 				empty($message) ? [] : ['message' => $message],
 				$statusCode

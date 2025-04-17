@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -56,7 +56,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findById()
 	 * @return Album[]
 	 */
-	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+	public function findById(array $ids, ?string $userId=null, bool $preserveOrder=false) : array {
 		$albums = parent::findById($ids, $userId, $preserveOrder);
 		if ($userId !== null) {
 			return $this->injectExtraFields($albums, $userId);
@@ -360,7 +360,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Album[] albums which got modified, empty array if none
 	 */
-	public function removeCovers(array $coverFileIds, array $userIds=null) : array {
+	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 
@@ -369,7 +369,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string|null $userId target user; omit to target all users
 	 * @return string[] users whose collections got modified
 	 */
-	public function findCovers(string $userId = null) : array {
+	public function findCovers(?string $userId = null) : array {
 		$affectedUsers = [];
 		$albums = $this->mapper->getAlbumsWithoutCover($userId);
 		foreach ($albums as $album) {

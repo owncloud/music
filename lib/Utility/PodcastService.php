@@ -19,7 +19,7 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
-
+use OCP\Files\File;
 use OCP\Files\Folder;
 
 class PodcastService {
@@ -264,7 +264,7 @@ class PodcastService {
 	}
 
 	/**
-	 * export all the podcast channels of a user to a file
+	 * export all the podcast channels of a user to an OPML file
 	 * @param string $userId user
 	 * @param Folder $userFolder home dir of the user
 	 * @param string $folderPath target parent folder path
@@ -324,5 +324,78 @@ class PodcastService {
 		$rootElem->appendChild($bodyElem);
 
 		return $dom->saveXML();
+	}
+
+	/**
+	 * import podcast channels from an OPML file
+	 * @param string $userId user
+	 * @param Folder $userFolder user home dir
+	 * @param string $filePath path of the file to import
+	 * @return array with three keys:
+	 * 			- 'channels': Array of PodcastChannel objects imported from the file
+	 * 			- 'not_changed_count': An integer showing the number of channels in the file which were already subscribed by the user
+	 * 			- 'failed_count': An integer showing the number of entries in the file which were not valid URLs
+	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
+	 */
+	public function importFromFile(string $userId, Folder $userFolder, string $filePath, ?callable $progressCallback = null) : array {
+		$channelUrls = self::parseOpml(self::getFile($userFolder, $filePath));
+
+		$channels = [];
+		$existingCount = 0;
+		$failedCount = 0;
+
+		foreach ($channelUrls as $rssUrl) {
+			$channelResult = $this->subscribe($rssUrl, $userId);
+			if (!empty($channelResult['channel'])) {
+				$channels[] = $channelResult['channel'];
+			} else if ($channelResult['status'] == self::STATUS_ALREADY_EXISTS) {
+				$existingCount++;
+			} else {
+				$failedCount++;
+			}
+
+			if ($progressCallback !== null) {
+				$channelResult['rss'] = $rssUrl;
+				$progressCallback($channelResult);
+			}
+		}
+
+		return [
+			'channels' => $channels,
+			'not_changed_count' => $existingCount,
+			'failed_count' => $failedCount
+		];
+	}
+
+	/**
+	 * @return string[] RSS URLs
+	 */
+	private static function parseOpml(File $file) : array {
+		$rssUrls = [];
+
+		$rootNode = \simplexml_load_string($file->getContent(), \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($rootNode === false) {
+			throw new \UnexpectedValueException('the file is not in valid OPML format');
+		}
+
+		$rssNodes = $rootNode->xpath("/opml/body//outline[@type='rss']");
+
+		foreach ($rssNodes as $node) {
+			$rssUrls[] = (string)$node->attributes()['xmlUrl'];
+		}
+
+		return $rssUrls;
+	}
+
+	/**
+	 * @throws \OCP\Files\NotFoundException if the $path does not point to a file under the $baseFolder
+	 */
+	private static function getFile(Folder $baseFolder, string $path) : File {
+		$node = $baseFolder->get($path);
+		if (!($node instanceof File)) {
+			throw new \OCP\Files\NotFoundException();
+		}
+		return $node;
 	}
 }

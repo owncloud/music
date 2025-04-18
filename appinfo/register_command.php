@@ -52,6 +52,12 @@ $application->add(new OCA\Music\Command\PodcastExport(
 	$c->query('RootFolder'),
 	$c->query('PodcastService')
 ));
+$application->add(new OCA\Music\Command\PodcastImport(
+	$c->query('UserManager'),
+	$c->query('GroupManager'),
+	$c->query('RootFolder'),
+	$c->query('PodcastService')
+));
 $application->add(new OCA\Music\Command\PodcastReset(
 		$c->query('UserManager'),
 		$c->query('GroupManager'),

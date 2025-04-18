@@ -8,8 +8,8 @@
  * @copyright Pauli Järvinen 2017 - 2025
  */
 
-import playIconPath from '../../img/play-big.svg';
-import playIconSvgData from '../../img/play-big.svg?raw';
+import playIconPath from '../../img/music-dark.svg';
+import playIconSvgData from '../../img/music-dark.svg?raw';
 
 OCA.Music = OCA.Music || {};
 

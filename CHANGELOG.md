@@ -6,6 +6,7 @@
   * MIME mapping for the file is needed which can be added with `occ music:register-mime-types`
 
 ### Changed
+- In the Files app, use the Music app icon on the file actions menu item "Play"
 
 ### Fixed
 

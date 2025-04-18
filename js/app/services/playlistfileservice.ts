@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 import * as ng from 'angular';
@@ -71,7 +71,7 @@ function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : Librar
 		OCA.Music.Dialogs.filePicker(
 				caption,
 				onSelectedCallback,
-				['audio/mpegurl', 'audio/x-scpls']
+				['audio/mpegurl', 'audio/x-scpls', 'application/vnd.ms-wpl']
 		);
 	}
 

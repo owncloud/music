@@ -1,3 +1,14 @@
+## [Unreleased]
+
+### Added
+- Support for importing WPL playlist files and play them within Files
+  [#1153](https://github.com/owncloud/music/issues/1153)
+  * MIME mapping for the file is needed which can be added with `occ music:register-mime-types`
+
+### Changed
+
+### Fixed
+
 ## 2.1.4 - 2025-05-10
 
 ### Fixed

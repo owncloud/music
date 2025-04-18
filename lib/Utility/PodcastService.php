@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -20,6 +20,7 @@ use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
 
+use OCP\Files\Folder;
 
 class PodcastService {
 	private PodcastChannelBusinessLayer $channelBusinessLayer;
@@ -260,5 +261,68 @@ class PodcastService {
 		}
 		// return the episodes in inverted chronological order (newest first)
 		return \array_reverse($episodes);
+	}
+
+	/**
+	 * export all the podcast channels of a user to a file
+	 * @param string $userId user
+	 * @param Folder $userFolder home dir of the user
+	 * @param string $folderPath target parent folder path
+	 * @param string $filename target file name
+	 * @param string $collisionMode action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 * @return string path of the written file
+	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
+	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
+	 */
+	public function exportToFile(
+		string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
+		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
+
+		$filename = FilesUtil::sanitizeFileName($filename, ['opml']);
+
+		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);
+
+		$channels = $this->channelBusinessLayer->findAll($userId, SortBy::Name);
+
+		$content = self::channelsToOpml($channels);
+		$file->putContent($content);
+
+		return $userFolder->getRelativePath($file->getPath());
+	}
+
+	/**
+	 * @param PodcastChannel[] $channels
+	 */
+	private static function channelsToOpml(array $channels) : string {
+		$dom = new \DOMDocument('1.0', 'UTF-8');
+		$dom->formatOutput = true;
+
+		$rootElem = $dom->createElement('opml');
+		$rootElem->setAttribute('version', '1.0');
+		$dom->appendChild($rootElem);
+
+		$headElem = $dom->createElement('head');
+		$titleElem = $dom->createElement('title', 'Podcast channels from ownCloud/Nextcloud Music');
+		$headElem->appendChild($titleElem);
+		$rootElem->appendChild($headElem);
+
+		$bodyElem = $dom->createElement('body');
+		foreach ($channels as $channel) {
+			$outlineElem = $dom->createElement('outline');
+			$outlineElem->setAttribute('type', 'rss');
+			$outlineElem->setAttribute('text', $channel->getTitle());
+			$outlineElem->setAttribute('title', $channel->getTitle());
+			$outlineElem->setAttribute('xmlUrl', $channel->getRssUrl());
+			$outlineElem->setAttribute('htmlUrl', $channel->getLinkUrl());
+			$bodyElem->appendChild($outlineElem);
+		}
+		$rootElem->appendChild($bodyElem);
+
+		return $dom->saveXML();
 	}
 }

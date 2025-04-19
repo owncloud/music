@@ -277,6 +277,7 @@ class Application extends ApplicationBase {
 				$c->query('Request'),
 				$c->query('Config'),
 				$c->query('URLGenerator'),
+				$c->query('RootFolder'),
 				$c->query('PodcastService'),
 				$c->query('UserId'),
 				$c->query('Logger')

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 import * as ng from 'angular';
@@ -41,6 +41,54 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		);
 
 		return deferred.promise;
+	}
+
+	/** return true if the operation can be retried */
+	function handleExportError(httpError : number) : boolean {
+		switch (httpError) {
+		case 409: // conflict
+			return true;
+		case 404: // not found
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Playlist or folder not found'));
+			return false;
+		case 403: // forbidden
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Writing to the file is not allowed'));
+			return false;
+		default: // unexpected
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Unexpected error'));
+			return false;
+		}
+	}
+
+	function queryOverwrite(path : string, onSelection : CallableFunction) {
+		const fileName = path.split('/').pop();
+
+		OC.dialogs.confirm(
+			gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
+									' Select "No" to save with another name.',
+									{ filename: fileName }),
+			gettextCatalog.getString('Overwrite existing file'),
+			onSelection,
+			true // modal
+		);
+	}
+
+	function queryFileName(defaultName : string, onNameGiven : CallableFunction) : void {
+		const title = gettextCatalog.getString('File name');
+		const promptText = gettextCatalog.getString('Save with given file name');
+		OCA.Music.Dialogs.prompt(
+			title,
+			promptText,
+			(accept : boolean, name : string) => {
+				if (accept) {
+					onNameGiven(name);
+				}
+			},
+			defaultName
+		);
 	}
 
 	// Service API
@@ -89,6 +137,49 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 					gettextCatalog.getString('URL'),
 					false // password
 			);
+
+			return deferred.promise;
+		},
+
+		// Export podcast channels to an OPML file
+		exportToFile() : ng.IPromise<any> {
+			let deferred = $q.defer();
+			let name = 'podcasts.opml';
+
+			let selPath : string = null;
+
+			OCA.Music.Dialogs.folderPicker(
+				gettextCatalog.getString('Export podcasts to an OPML file in the selected folder'),
+				(path : string) => {
+					selPath = path;
+					queryFileName(gettextCatalog.getString('Podcasts') + '.opml', onFileNameGiven);
+				}
+			);
+
+			function onFileNameGiven(name : string, onCollision = 'abort') {
+				deferred.notify('started');
+				let args = { path: selPath, name: name, oncollision: onCollision };
+				Restangular.all('podcasts/export').post(args).then(
+					(result) => {
+						OC.Notification.showTemporary(
+							gettextCatalog.getString('Podcast channels exported to file {{ path }}', { path: result.wrote_to_file }));
+						deferred.resolve();
+					},
+					(error) => {
+						deferred.notify('stopped');
+						let retry = handleExportError(error.status);
+						if (retry) {
+							queryOverwrite(error.data.path, (overwrite : boolean) => {
+								if (overwrite) {
+									onFileNameGiven(name, 'overwrite');
+								} else {
+									queryFileName(error.data.suggested_name, onFileNameGiven);
+								}
+							});
+						}
+					}
+				);
+			}
 
 			return deferred.promise;
 		},

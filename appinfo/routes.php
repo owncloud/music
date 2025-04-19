@@ -115,6 +115,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',					'verb' => 'DELETE'],
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
 	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
+	['name' => 'podcastApi#exportAllToFile','url' => '/api/podcasts/export',				'verb' => 'POST'],
 
 	// favorites API
 	['name' => 'favorites#favorites',			'url' => '/api/favorites',						'verb' => 'GET'],

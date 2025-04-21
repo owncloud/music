@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-04-21 22:38+0300\n"
+"POT-Creation-Date: 2025-05-18 20:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Any searchable text"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:175
+#: js/app/services/playlistfileservice.ts:210
 msgid "Append to an existing playlist?"
 msgstr ""
 
@@ -480,11 +480,11 @@ msgstr ""
 msgid "Error playing URL:"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:100
+#: js/app/services/playlistfileservice.ts:96
 msgid "Export playlist to a file in the selected folder"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:131
+#: js/app/services/playlistfileservice.ts:136
 msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
@@ -511,11 +511,11 @@ msgstr ""
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:157
+#: js/app/services/playlistfileservice.ts:192
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:211
+#: js/app/services/playlistfileservice.ts:246
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr ""
 
@@ -585,6 +585,7 @@ msgstr ""
 #: js/app/controllers/views/advancedsearchviewcontroller.js:104
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
 msgid "File name"
 msgstr ""
 
@@ -695,19 +696,19 @@ msgstr ""
 msgid "Import from file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:166
+#: js/app/services/playlistfileservice.ts:201
 msgid "Import playlist contents from the selected file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:219
+#: js/app/services/playlistfileservice.ts:254
 msgid "Import radio stations from the selected file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:199
+#: js/app/services/playlistfileservice.ts:234
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:145
+#: js/app/services/playlistfileservice.ts:180
 msgid "Imported {{ count }} tracks from the file {{ file }}."
 msgstr ""
 
@@ -744,7 +745,7 @@ msgstr ""
 
 #: js/app/controllers/playercontroller.js:734
 #: js/app/controllers/playercontroller.js:756
-#: js/app/services/playlistfileservice.ts:109
+#: js/app/services/playlistfileservice.ts:139
 #: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
 msgstr ""
@@ -1006,7 +1007,7 @@ msgstr ""
 msgid "Often played"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:33
+#: js/app/services/playlistfileservice.ts:35
 msgid "Overwrite existing file"
 msgstr ""
 
@@ -1084,7 +1085,7 @@ msgstr ""
 msgid "Playlist"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:89
+#: js/app/services/playlistfileservice.ts:109
 msgid "Playlist exported to file {{ path }}"
 msgstr ""
 
@@ -1094,7 +1095,7 @@ msgstr ""
 msgid "Playlist name"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:53
+#: js/app/services/playlistfileservice.ts:48
 msgid "Playlist or folder not found"
 msgstr ""
 
@@ -1148,7 +1149,7 @@ msgstr ""
 msgid "Radio station not found"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:117
+#: js/app/services/playlistfileservice.ts:149
 msgid "Radio stations exported to file {{ path }}"
 msgstr ""
 
@@ -1275,6 +1276,10 @@ msgstr ""
 
 #: templates/partials/navigationitem.php:145
 msgid "Save playlist"
+msgstr ""
+
+#: js/app/services/playlistfileservice.ts:67
+msgid "Save with given file name"
 msgstr ""
 
 #: templates/main.php:70
@@ -1462,13 +1467,13 @@ msgstr ""
 msgid "The channel was updated from the source"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:30
+#: js/app/services/playlistfileservice.ts:32
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
 "overwrite it. Select \"No\" to save with another name."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:173
+#: js/app/services/playlistfileservice.ts:208
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
 "after the existing contents. Proceed?"
@@ -1591,7 +1596,7 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:61
+#: js/app/services/playlistfileservice.ts:56
 msgid "Unexpected error"
 msgstr ""
 
@@ -1673,7 +1678,7 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:57
+#: js/app/services/playlistfileservice.ts:52
 msgid "Writing to the file is not allowed"
 msgstr ""
 
@@ -1901,11 +1906,11 @@ msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/app/services/playlistfileservice.ts:202
+#: js/app/services/playlistfileservice.ts:237
 msgid "{{ count }} entries were skipped."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:148
+#: js/app/services/playlistfileservice.ts:183
 msgid "{{ count }} files were skipped."
 msgstr ""
 

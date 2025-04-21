@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-04-21 22:38+0300\n"
-"PO-Revision-Date: 2025-04-21 22:43+0300\n"
+"POT-Creation-Date: 2025-05-18 20:22+0300\n"
+"PO-Revision-Date: 2025-05-18 20:24+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -250,7 +250,7 @@ msgstr "Ampache ja Subsonic"
 msgid "Any searchable text"
 msgstr "Mikä tahansa teksti"
 
-#: js/app/services/playlistfileservice.ts:175
+#: js/app/services/playlistfileservice.ts:210
 msgid "Append to an existing playlist?"
 msgstr "Lisätäänkö olemassa olevan soittolistan perään?"
 
@@ -499,11 +499,11 @@ msgstr "On sama kuin"
 msgid "Error playing URL:"
 msgstr "Virhe toistettaessa:"
 
-#: js/app/services/playlistfileservice.ts:100
+#: js/app/services/playlistfileservice.ts:96
 msgid "Export playlist to a file in the selected folder"
 msgstr "Vie soittolista tiedostoon valitussa kansiossa"
 
-#: js/app/services/playlistfileservice.ts:131
+#: js/app/services/playlistfileservice.ts:136
 msgid "Export radio stations to a file in the selected folder"
 msgstr "Vie radio-kanavat tiedostoon valitussa kansiossa"
 
@@ -532,11 +532,11 @@ msgstr "Radio-kanavan poistaminen epäonnistui:"
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr "Ampache/Subsonic-salasanan luominen epäonnistui"
 
-#: js/app/services/playlistfileservice.ts:157
+#: js/app/services/playlistfileservice.ts:192
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr "Soittolistan tuominen tiedostosta {{ file }} epäonnistui"
 
-#: js/app/services/playlistfileservice.ts:211
+#: js/app/services/playlistfileservice.ts:246
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr "Radio-kanavien tuominen tiedostosta {{ file }} epäonnistui"
 
@@ -606,6 +606,7 @@ msgstr "Tiedoston tiedot"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:104
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
 msgid "File name"
 msgstr "Tiedoston nimi"
 
@@ -732,19 +733,19 @@ msgstr ""
 msgid "Import from file"
 msgstr "Tuo tiedostosta"
 
-#: js/app/services/playlistfileservice.ts:166
+#: js/app/services/playlistfileservice.ts:201
 msgid "Import playlist contents from the selected file"
 msgstr "Tuo soittolistan sisältö valitusta tiedostosta"
 
-#: js/app/services/playlistfileservice.ts:219
+#: js/app/services/playlistfileservice.ts:254
 msgid "Import radio stations from the selected file"
 msgstr "Tuo radio-asemat valitusta tiedostosta"
 
-#: js/app/services/playlistfileservice.ts:199
+#: js/app/services/playlistfileservice.ts:234
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr "Tuotiin {{ count }} radioasemaa tiedostosta {{ file }}."
 
-#: js/app/services/playlistfileservice.ts:145
+#: js/app/services/playlistfileservice.ts:180
 msgid "Imported {{ count }} tracks from the file {{ file }}."
 msgstr "Tuotiin {{ count }} kappaletta tiedostosta {{ file }}."
 
@@ -787,7 +788,7 @@ msgstr "Sisäinen virhe palvelimella"
 
 #: js/app/controllers/playercontroller.js:734
 #: js/app/controllers/playercontroller.js:756
-#: js/app/services/playlistfileservice.ts:109
+#: js/app/services/playlistfileservice.ts:139
 #: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
 msgstr "Internet radio"
@@ -1068,7 +1069,7 @@ msgstr "Pois"
 msgid "Often played"
 msgstr "Usein soitettu"
 
-#: js/app/services/playlistfileservice.ts:33
+#: js/app/services/playlistfileservice.ts:35
 msgid "Overwrite existing file"
 msgstr "Ylikirjoita aiempi tiedosto"
 
@@ -1148,7 +1149,7 @@ msgstr "Soittokerrat"
 msgid "Playlist"
 msgstr "Soittolista"
 
-#: js/app/services/playlistfileservice.ts:89
+#: js/app/services/playlistfileservice.ts:109
 msgid "Playlist exported to file {{ path }}"
 msgstr "Soittolista vietiin tiedostoon {{ path }}"
 
@@ -1158,7 +1159,7 @@ msgstr "Soittolista vietiin tiedostoon {{ path }}"
 msgid "Playlist name"
 msgstr "Soittolistan nimi"
 
-#: js/app/services/playlistfileservice.ts:53
+#: js/app/services/playlistfileservice.ts:48
 msgid "Playlist or folder not found"
 msgstr "Soittolista tai kansio ei löytynyt"
 
@@ -1215,7 +1216,7 @@ msgstr "Radioasema"
 msgid "Radio station not found"
 msgstr "Radioasemaa ei löydy"
 
-#: js/app/services/playlistfileservice.ts:117
+#: js/app/services/playlistfileservice.ts:149
 msgid "Radio stations exported to file {{ path }}"
 msgstr "Radioasemat vietiin tiedostoon {{ path }}"
 
@@ -1343,6 +1344,10 @@ msgstr "Säännöt"
 #: templates/partials/navigationitem.php:145
 msgid "Save playlist"
 msgstr "Tallenna soittolista"
+
+#: js/app/services/playlistfileservice.ts:67
+msgid "Save with given file name"
+msgstr "Tallenna annetulla tiedostonimellä"
 
 #: templates/main.php:70
 msgid "Scanning music …"
@@ -1542,7 +1547,7 @@ msgstr "Kanava oli jo ajan tasalla"
 msgid "The channel was updated from the source"
 msgstr "Kanava päivitettiin lähteestä"
 
-#: js/app/services/playlistfileservice.ts:30
+#: js/app/services/playlistfileservice.ts:32
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
 "overwrite it. Select \"No\" to save with another name."
@@ -1550,7 +1555,7 @@ msgstr ""
 "Kansiossa on jo tiedosto nimeltä \"{{ filename }}\". Valitse \"Kyllä\" "
 "korvataksesi sen. Valitse \"Ei\" tallentaaksesi tiedoston toisella nimellä."
 
-#: js/app/services/playlistfileservice.ts:173
+#: js/app/services/playlistfileservice.ts:208
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
 "after the existing contents. Proceed?"
@@ -1688,7 +1693,7 @@ msgstr "Yritä tarkentaa hakua"
 msgid "URL"
 msgstr "URL"
 
-#: js/app/services/playlistfileservice.ts:61
+#: js/app/services/playlistfileservice.ts:56
 msgid "Unexpected error"
 msgstr "Odottamaton virhe"
 
@@ -1782,7 +1787,7 @@ msgstr "Äänenvoimakkuus"
 msgid "Website"
 msgstr "Verkkosivu"
 
-#: js/app/services/playlistfileservice.ts:57
+#: js/app/services/playlistfileservice.ts:52
 msgid "Writing to the file is not allowed"
 msgstr "Tiedostoon kirjoittaminen ei ole sallittua"
 
@@ -2015,11 +2020,11 @@ msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] "{{ count }} kaksoiskappale poistettiin"
 msgstr[1] "{{ count }} kaksoiskappaletta poistettiin"
 
-#: js/app/services/playlistfileservice.ts:202
+#: js/app/services/playlistfileservice.ts:237
 msgid "{{ count }} entries were skipped."
 msgstr "{{ count }}  riviä ohitettiin."
 
-#: js/app/services/playlistfileservice.ts:148
+#: js/app/services/playlistfileservice.ts:183
 msgid "{{ count }} files were skipped."
 msgstr "{{ count }} tiedostoa ohitettiin."
 

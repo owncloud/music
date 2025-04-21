@@ -25,6 +25,7 @@ use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
@@ -307,6 +308,7 @@ class PlaylistApiController extends Controller {
 	 * export the playlist to a file
 	 * @param int $id playlist ID
 	 * @param string $path parent folder path
+	 * @param ?string $filename target file name, omit to use the playlist name
 	 * @param string $oncollision action to take on file name collision,
 	 *								supported values:
 	 *								- 'overwrite' The existing file will be overwritten
@@ -316,17 +318,17 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportToFile(int $id, string $path, string $oncollision) {
+	public function exportToFile(int $id, string $path, ?string $filename=null, string $oncollision='abort') {
 		try {
 			$exportedFilePath = $this->playlistFileService->exportToFile(
-					$id, $this->userId, $this->userFolder, $path, $oncollision);
+					$id, $this->userId, $this->userFolder, $path, $filename, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
-		} catch (\RuntimeException $ex) {
-			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
+		} catch (FileExistsException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, 'file already exists', ['path' => $ex->getPath(), 'suggested_name' => $ex->getAltName()]);
 		} catch (\OCP\Files\NotPermittedException $ex) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}

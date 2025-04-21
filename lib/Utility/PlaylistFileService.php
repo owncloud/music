@@ -14,6 +14,7 @@ namespace OCA\Music\Utility;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
@@ -57,6 +58,7 @@ class PlaylistFileService {
 	 * @param string $userId owner of the playlist
 	 * @param Folder $userFolder home dir of the user
 	 * @param string $folderPath target parent folder path
+	 * @param ?string $filename target file name, omit to use the list name
 	 * @param string $collisionMode action to take on file name collision,
 	 *								supported values:
 	 *								- 'overwrite' The existing file will be overwritten
@@ -65,24 +67,18 @@ class PlaylistFileService {
 	 * @return string path of the written file
 	 * @throws BusinessLayerException if playlist with ID not found
 	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
-	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws FileExistsException on name conflict if $collisionMode == 'abort'
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
 	public function exportToFile(
-			int $id, string $userId, Folder $userFolder, string $folderPath, string $collisionMode='abort') : string {
+			int $id, string $userId, Folder $userFolder, string $folderPath, ?string $filename=null, string $collisionMode='abort') : string {
 		$playlist = $this->playlistBusinessLayer->find($id, $userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
 
-		// Name the file according the playlist. File names cannot contain the '/' character on Linux, and in
-		// owncloud/Nextcloud, the whole name must fit 250 characters, including the file extension. Reserve
-		// another 5 characters to fit the postfix like " (xx)" on name collisions. If there are more than 100
-		// exports of the same playlist with overly long name, then this function will fail but we can live
-		// with that :).
-		$filename = \str_replace('/', '-', $playlist->getName());
-		$filename = Util::truncate($filename, 250 - 5 - 5);
-		$filename .= '.m3u8';
-		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
+		$filename = $filename ?: $playlist->getName();
+		$filename = self::sanitizeFileName($filename);
+		$filename = self::handleFileNameConflicts($targetFolder, $filename, $collisionMode);
 
 		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 		foreach ($tracks as $track) {
@@ -112,14 +108,15 @@ class PlaylistFileService {
 	 *								- 'abort' (default) The operation will fail
 	 * @return string path of the written file
 	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
-	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws FileExistsException on name conflict if $collisionMode == 'abort'
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
 	public function exportRadioStationsToFile(
 			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
 		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
 
-		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
+		$filename = self::sanitizeFileName($filename);
+		$filename = self::handleFileNameConflicts($targetFolder, $filename, $collisionMode);
 
 		$stations = $this->radioStationBusinessLayer->findAll($userId, SortBy::Name);
 
@@ -446,7 +443,31 @@ class PlaylistFileService {
 		return $entries;
 	}
 
-	private static function checkFileNameConflict(Folder $targetFolder, string $filename, string $collisionMode) : string {
+	private static function sanitizeFileName(string $filename) : string {
+		// File names cannot contain the '/' character on Linux
+		$filename = \str_replace('/', '-', $filename);
+
+		// separate the file extension
+		$parts = \pathinfo($filename);
+		$ext = $parts['extension'] ?? '';
+
+		// enforce proper extension
+		if (\mb_strtolower($ext) != 'm3u' && \mb_strtolower($ext) != 'm3u8') {
+			// no extension or invalid extension, append the proper one and keep any original extension in $filename
+			$ext = 'm3u8';
+		} else {
+			$filename = $parts['filename']; // without the extension
+		}
+
+		// In owncloud/Nextcloud, the whole file name must fit 250 characters, including the file extension.
+		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions. If there are more
+		// than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
+		$filename = Util::truncate($filename, 250 - 5 - 5);
+
+		return "$filename.$ext";
+	}
+
+	private static function handleFileNameConflicts(Folder $targetFolder, string $filename, string $collisionMode) : string {
 		if ($targetFolder->nodeExists($filename)) {
 			switch ($collisionMode) {
 				case 'overwrite':
@@ -456,7 +477,10 @@ class PlaylistFileService {
 					$filename = $targetFolder->getNonExistingName($filename);
 					break;
 				default:
-					throw new \RuntimeException('file already exists');
+					throw new FileExistsException(
+						$targetFolder->get($filename)->getPath(),
+						$targetFolder->getNonExistingName($filename)
+					);
 			}
 		}
 		return $filename;

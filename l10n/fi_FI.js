@@ -268,6 +268,7 @@ OC.L10N.register(
     "Revoke API password" : "Kumoa API-salasana",
     "Rules" : "Säännöt",
     "Save playlist" : "Tallenna soittolista",
+    "Save with given file name" : "Tallenna annetulla tiedostonimellä",
     "Scanning music …" : "Skannataan musiikkia …",
     "Search" : "Etsi",
     "Search for" : "Etsi",

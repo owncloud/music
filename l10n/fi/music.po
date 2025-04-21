@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-03-02 22:46+0200\n"
-"PO-Revision-Date: 2025-03-02 22:47+0200\n"
+"POT-Creation-Date: 2025-04-21 22:38+0300\n"
+"PO-Revision-Date: 2025-04-21 22:43+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -238,7 +238,7 @@ msgstr "Kaikki kanavat olivat jo ajan tasalla"
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1875 musicwidget.ts:57
+#: Controller/AmpacheController.php:1877 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -1545,12 +1545,10 @@ msgstr "Kanava päivitettiin lähteestä"
 #: js/app/services/playlistfileservice.ts:30
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
-"overwrite it. Select \"No\" to export the list with another name. Close the "
-"dialog to cancel."
+"overwrite it. Select \"No\" to save with another name."
 msgstr ""
-"Kansiossa on jo tiedosto {{ filename }}. Korvaa se valitsemalla \"Kyllä\". "
-"Valitse \"Ei\", jos haluat viedä listan toisella nimellä. Peruuta sulkemalla "
-"valintaikkuna."
+"Kansiossa on jo tiedosto nimeltä \"{{ filename }}\". Valitse \"Kyllä\" "
+"korvataksesi sen. Valitse \"Ei\" tallentaaksesi tiedoston toisella nimellä."
 
 #: js/app/services/playlistfileservice.ts:173
 msgid ""

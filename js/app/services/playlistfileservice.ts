@@ -28,7 +28,7 @@ function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : Librar
 	function onExportConflict(path : string, name : string, retryFunc : CallableFunction) : void {
 		OC.dialogs.confirm(
 			gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
-									' Select "No" to export the list with another name. Close the dialog to cancel.',
+									' Select "No" to save with another name.',
 									{ filename: name + '.m3u8' }),
 			gettextCatalog.getString('Overwrite existing file'),
 			(overwrite : boolean) => {

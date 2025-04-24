@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-03-02 22:46+0200\n"
-"PO-Revision-Date: 2025-04-22 11:55+0300\n"
+"POT-Creation-Date: 2025-04-21 22:38+0300\n"
+"PO-Revision-Date: 2025-04-24 23:05+0300\n"
 "Last-Translator: Kirill Kurenov, 2025\n"
 "Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/"
 "language/ru/)\n"
@@ -158,7 +158,7 @@ msgstr "Дата добавления"
 
 #: templates/partials/navigationitem.php:97
 msgid "Add from RSS feed"
-msgstr ""
+msgstr "Добавить канал (RSS)"
 
 #: templates/partials/navigationitem.php:85
 msgid "Add manually"
@@ -248,7 +248,7 @@ msgstr "Все каналы уже были обновлены"
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1875 musicwidget.ts:57
+#: Controller/AmpacheController.php:1877 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Все треки"
 
@@ -353,7 +353,7 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:33
 msgid "Changes to the excluded paths will only take effect upon rescan."
-msgstr ""
+msgstr "Изменения вступят в силу только после повторного сканирования."
 
 #: js/app/services/podcastservice.ts:134
 msgid "Changes were loaded for one channel"
@@ -799,7 +799,7 @@ msgstr "Интернет-радиостанции"
 
 #: js/app/services/podcastservice.ts:68
 msgid "Invalid RSS feed URL"
-msgstr ""
+msgstr "Некорректная ссылка (RSS)"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:323
 msgid "Is"
@@ -858,11 +858,11 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:126
 msgid "Jump to the next track"
-msgstr ""
+msgstr "Следующий трек"
 
 #: templates/partials/views/settingsview.php:125
 msgid "Jump to the previous track"
-msgstr ""
+msgstr "Предыдущий трек"
 
 #: templates/partials/views/settingsview.php:112
 msgid "Keyboard shortcuts"
@@ -1005,11 +1005,11 @@ msgstr "Обычный вид"
 
 #: templates/partials/sidebar/smartlistfilters.php:51
 msgid "Not recently added"
-msgstr ""
+msgstr "Давно добавленные"
 
 #: templates/partials/sidebar/smartlistfilters.php:47
 msgid "Not recently played"
-msgstr ""
+msgstr "Давно не проигрываемые"
 
 #: templates/partials/views/settingsview.php:140
 msgid ""
@@ -1066,7 +1066,7 @@ msgstr ""
 
 #: templates/partials/sidebar/smartlistfilters.php:48
 msgid "Often played"
-msgstr ""
+msgstr "Часто проигрываемые"
 
 #: js/app/services/playlistfileservice.ts:33
 msgid "Overwrite existing file"
@@ -1372,12 +1372,16 @@ msgid ""
 "Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
 "<strong>ALT</strong>."
 msgstr ""
+"Перемотка назад. Для ускорения удерживайте <strong>SHIFT</strong>, для "
+"замедления — <strong>ALT</strong>."
 
 #: templates/partials/views/settingsview.php:124
 msgid ""
 "Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
 "<strong>ALT</strong>."
 msgstr ""
+"Перемотка вперёд. Для ускорения удерживайте <strong>SHIFT</strong>, для "
+"замедления — <strong>ALT</strong>."
 
 #: templates/partials/views/settingsview.php:39 musicwidget.ts:234
 msgid "Select folder"
@@ -1538,12 +1542,11 @@ msgstr ""
 #: js/app/services/playlistfileservice.ts:30
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
-"overwrite it. Select \"No\" to export the list with another name. Close the "
-"dialog to cancel."
+"overwrite it. Select \"No\" to save with another name."
 msgstr ""
 "Папка уже содержит файл с именем \"{{ filename }}\". Выберите \"Да\", чтобы "
-"перезаписать его. Выберите \"Нет\", чтобы экспортировать список под другим "
-"именем. Закройте окно для отмены."
+"перезаписать его. Выберите \"Нет\", чтобы сохранить под другим именем. "
+"Закройте окно для отмены."
 
 #: js/app/services/playlistfileservice.ts:173
 msgid ""
@@ -1567,7 +1570,7 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:88
 msgid "This action erases all the channels shown in the \"Podcasts\" view."
-msgstr ""
+msgstr "Это действие удалит все каналы, отображаемые в разделе «Подкасты»."
 
 #: templates/partials/views/settingsview.php:79
 msgid ""

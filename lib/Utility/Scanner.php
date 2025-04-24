@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -347,7 +347,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteAudio(array $fileIds, array $userIds=null) : bool {
+	private function deleteAudio(array $fileIds, ?array $userIds=null) : bool {
 		$this->logger->log('deleteAudio - '. \implode(', ', $fileIds), 'debug');
 
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userIds);
@@ -382,7 +382,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteImage(array $fileIds, array $userIds=null) : bool {
+	private function deleteImage(array $fileIds, ?array $userIds=null) : bool {
 		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
 
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
@@ -407,7 +407,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds the IDs of the users to remove the file from; if omitted,
 	 *                               the file is removed from all users (ie. owner and sharees)
 	 */
-	public function delete(int $fileId, array $userIds=null) : void {
+	public function delete(int $fileId, ?array $userIds=null) : void {
 		if (!$this->deleteAudio([$fileId], $userIds) && !$this->deleteImage([$fileId], $userIds)) {
 			$this->logger->log("deleted file $fileId was not an indexed " .
 					'audio file or a cover image', 'debug');
@@ -422,7 +422,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds the IDs of the users to remove the folder from; if omitted,
 	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
-	public function deleteFolder(Folder $folder, array $userIds=null) : void {
+	public function deleteFolder(Folder $folder, ?array $userIds=null) : void {
 		$audioFiles = $folder->searchByMime('audio');
 		if (\count($audioFiles) > 0) {
 			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
@@ -547,7 +547,7 @@ class Scanner extends PublicEmitter {
 		return \array_values($fileIds); // make the array non-sparse
 	}
 
-	public function scanFiles(string $userId, array $fileIds, OutputInterface $debugOutput = null) : int {
+	public function scanFiles(string $userId, array $fileIds, ?OutputInterface $debugOutput = null) : int {
 		$count = \count($fileIds);
 		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
@@ -702,7 +702,7 @@ class Scanner extends PublicEmitter {
 	 * @param string|null $userId
 	 * @return bool true if any albums were updated; false otherwise
 	 */
-	public function findAlbumCovers(string $userId = null) : bool {
+	public function findAlbumCovers(?string $userId = null) : bool {
 		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {

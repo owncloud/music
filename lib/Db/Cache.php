@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -64,7 +64,7 @@ class Cache {
 	 * @param string $userId User to target, omit to target all users
 	 * @param string $key Key to target, omit to target all keys
 	 */
-	public function remove(string $userId = null, string $key = null) : void {
+	public function remove(?string $userId = null, ?string $key = null) : void {
 		$sql = 'DELETE FROM `*PREFIX*music_cache`';
 		$params = [];
 		if ($userId !== null) {
@@ -103,7 +103,7 @@ class Cache {
 	 * @param string|null $prefix
 	 * @return array of arrays with keys 'key', 'data'
 	 */
-	public function getAll(string $userId, string $prefix = null) : array {
+	public function getAll(string $userId, ?string $prefix = null) : array {
 		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache`
 				WHERE `user_id` = ?';
 		$params = [$userId];

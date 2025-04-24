@@ -39,7 +39,7 @@ class GenreMapper extends BaseMapper {
 	 * @see \OCA\Music\Db\BaseMapper::selectEntities
 	 * @return string SQL query
 	 */
-	protected function selectEntities(string $condition, string $extension=null) : string {
+	protected function selectEntities(string $condition, ?string $extension=null) : string {
 		return $this->selectGenres($condition, 'HAVING COUNT(`track`.`id`) > 0 ' . $extension);
 	}
 
@@ -48,7 +48,7 @@ class GenreMapper extends BaseMapper {
 	 * base class BaseMapper, this function returns also the genres with no tracks at all.
 	 * @return string SQL query
 	 */
-	private function selectGenres(string $condition, string $extension=null) : string {
+	private function selectGenres(string $condition, ?string $extension=null) : string {
 		return "SELECT
 					`*PREFIX*music_genres`.`id`,
 					`*PREFIX*music_genres`.`name`,

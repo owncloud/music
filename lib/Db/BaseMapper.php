@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -88,7 +88,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findById(array $ids, string $userId=null) : array {
+	public function findById(array $ids, ?string $userId=null) : array {
 		$count = \count($ids);
 		$condition = "`{$this->getTableName()}`.`id` IN ". $this->questionMarks($count);
 
@@ -111,7 +111,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null,
+	public function findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$sorting = $this->formatSortingClause($sortBy);
 		[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
@@ -130,7 +130,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllByName(
-		?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null,
+		?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 		?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 
 		$params = [$userId];
@@ -155,7 +155,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
+	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		if (\property_exists($this->entityClass, 'starred')) {
 			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
@@ -187,7 +187,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllRated(string $userId, int $limit=null, int $offset=null) : array {
+	public function findAllRated(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		if (\property_exists($this->entityClass, 'rating')) {
 			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`rating` > 0",
@@ -540,7 +540,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
 	 *                               the conditions in the SQL statement
 	 */
-	protected function selectUserEntities(string $condition=null, string $extension=null) : string {
+	protected function selectUserEntities(?string $condition=null, ?string $extension=null) : string {
 		$allConditions = "`{$this->getTableName()}`.`user_id` = ?";
 
 		if (!empty($condition)) {
@@ -557,7 +557,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
 	 *                               the conditions in the SQL statement
 	 */
-	protected function selectEntities(string $condition, string $extension=null) : string {
+	protected function selectEntities(string $condition, ?string $extension=null) : string {
 		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
 	}
 

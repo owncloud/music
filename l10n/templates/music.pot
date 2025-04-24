@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-03-02 22:46+0200\n"
+"POT-Creation-Date: 2025-04-21 22:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -228,7 +228,7 @@ msgstr ""
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1875 musicwidget.ts:57
+#: Controller/AmpacheController.php:1877 musicwidget.ts:57
 msgid "All tracks"
 msgstr ""
 
@@ -1465,8 +1465,7 @@ msgstr ""
 #: js/app/services/playlistfileservice.ts:30
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
-"overwrite it. Select \"No\" to export the list with another name. Close the "
-"dialog to cancel."
+"overwrite it. Select \"No\" to save with another name."
 msgstr ""
 
 #: js/app/services/playlistfileservice.ts:173

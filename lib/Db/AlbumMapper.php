@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -35,7 +35,7 @@ class AlbumMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::selectEntities()
 	 */
-	protected function selectEntities(string $condition, string $extension=null) : string {
+	protected function selectEntities(string $condition, ?string $extension=null) : string {
 		return "SELECT `*PREFIX*music_albums`.*, `artist`.`name` AS `album_artist_name`
 				FROM `*PREFIX*music_albums`
 				INNER JOIN `*PREFIX*music_artists` `artist`
@@ -285,7 +285,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @return Album[]
 	 */
-	public function findAllByGenre(int $genreId, string $userId, int $limit=null, int $offset=null) : array {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_tracks` `track`
 				  WHERE `*PREFIX*music_albums`.`id` = `track`.`album_id`
@@ -337,7 +337,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[] albums which got modified (with incomplete data, only id and user are valid),
 	 *         empty array if none
 	 */
-	public function removeCovers(array $coverFileIds, array $userIds=null) : array {
+	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		// find albums using the given file as cover
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_albums` WHERE `cover_file_id` IN ' .
 			$this->questionMarks(\count($coverFileIds));
@@ -365,7 +365,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string|null $userId target user; omit to target all users
 	 * @return array of dictionaries with keys [albumId, userId, parentFolderId]
 	 */
-	public function getAlbumsWithoutCover(string $userId = null) : array {
+	public function getAlbumsWithoutCover(?string $userId = null) : array {
 		$sql = 'SELECT DISTINCT `albums`.`id`, `albums`.`user_id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`

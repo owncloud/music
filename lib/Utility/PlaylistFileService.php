@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -254,6 +254,8 @@ class PlaylistFileService {
 			$entries = self::parseM3uFile($file);
 		} elseif ($mime == 'audio/x-scpls') {
 			$entries = self::parsePlsFile($file);
+		} elseif ($mime == 'application/vnd.ms-wpl') {
+			$entries = self::parseWplFile($file);
 		} else {
 			throw new \UnexpectedValueException("file mime type '$mime' is not supported");
 		}
@@ -416,6 +418,28 @@ class PlaylistFileService {
 			$entries[] = [
 				'path' => $filePath,
 				'caption' => $titles[$idx] ?? null
+			];
+		}
+
+		return $entries;
+	}
+
+	public static function parseWplFile(File $file) : array {
+		$entries = [];
+
+		$rootNode = \simplexml_load_string($file->getContent(), \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($rootNode === false) {
+			throw new \UnexpectedValueException('the file is not in valid WPL format');
+		}
+
+		$mediaNodes = $rootNode->xpath('body/seq/media');
+
+		foreach ($mediaNodes as $node) {
+			$path = (string)$node->attributes()['src'];
+			$path = \str_replace('\\', '/', $path); // WPL is a Windows format and uses backslashes as directory separators
+			$entries[] = [
+				'path' => $path,
+				'caption' => null
 			];
 		}
 

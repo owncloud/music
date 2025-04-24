@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -244,7 +244,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 			return true; // exact match
 		} else {
 			// iterate over all the bytes and require that all the other bytes are equal but
-			// underscores are allowed to match any forbidden filesystem chracter
+			// underscores are allowed to match any forbidden filesystem character
 			$matchedChars = self::FORBIDDEN_CHARS_IN_FILE_NAME . '_';
 			for ($i = 0; $i < $length; ++$i) {
 				if ($filename[$i] === '_') {

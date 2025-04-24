@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022 - 2024
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -22,12 +22,13 @@ class RegisterMimeTypes extends Command {
 	private IMimeTypeLoader $mimeTypeLoader;
 
 	private $mimeMappings = [
-		'aac' => ['audio/aac'],
-		'au' => ['audio/basic'],
-		'aif' => ['audio/aiff'],
-		'aiff' => ['audio/aiff'],
-		'aifc' => ['audio/aiff'],
-		'caf' => ['audio/x-caf']
+		'aac'	=> ['audio/aac'],
+		'aif'	=> ['audio/aiff'],
+		'aifc'	=> ['audio/aiff'],
+		'aiff'	=> ['audio/aiff'],
+		'au'	=> ['audio/basic'],
+		'caf'	=> ['audio/x-caf'],
+		'wpl'	=> ['application/vnd.ms-wpl'],
 	];
 
 	public function __construct(IMimeTypeLoader $mimeTypeLoader) {
@@ -38,7 +39,7 @@ class RegisterMimeTypes extends Command {
 	protected function configure() {
 		$this
 			->setName('music:register-mime-types')
-			->setDescription('map following file extensions as audio MIME types: ' . \json_encode(\array_keys($this->mimeMappings)));
+			->setDescription('map following file extensions to proper MIME types: ' . \json_encode(\array_keys($this->mimeMappings)));
 		;
 	}
 

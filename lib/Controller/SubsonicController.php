@@ -151,7 +151,7 @@ class SubsonicController extends Controller {
 	 * @param string $format Response format: xml/json/jsonp
 	 * @param string|null $callback Function name to use if the @a $format is 'jsonp'
 	 */
-	public function setResponseFormat(string $format, string $callback = null) {
+	public function setResponseFormat(string $format, ?string $callback = null) {
 		$this->format = $format;
 		$this->callback = $callback;
 	}

@@ -41,9 +41,9 @@ _Note: The audio formats supported vary depending on the browser. Most recent ve
 
 The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. Still, there is no browser which could natively play all the formats listed above. For those formats not supported natively, the Music app utilizes the Aurora.js javascript library which is able to play most of the formats listed above, excluding only the OGG containers. On the other hand, Aurora.js may not be able to play all the individual files of the supported formats and is very limited in features (no seeking, no adjusting of playback speed).
 
-_Note: In order to be playable in the Music app, the file type has to be mapped to a MIME type `audio/*` on your cloud instance. Neither ownCloud nor Nextcloud has these mappings by default for the file types AAC, AIFF, AU, or CAF. To add these mappings, run:_
+_Note: In order to be playable in the Music app, the file type has to be mapped to a MIME type `audio/*` on your cloud instance. Neither ownCloud nor Nextcloud has these mappings by default for the file types AIFF, AU, or CAF. The mapping for the file type AAC is missing from ownCloud but present on Nextcloud. To add the missing mappings, run:_
 
-	./occ music:register-mime-types
+	php occ music:register-mime-types
 
 ## Usage hints
 
@@ -53,41 +53,8 @@ If the database would somehow get corrupted, the user can force it to be rebuilt
 
 ### Commands
 
-If preferred, it is also possible to use the command line tool for the database maintenance as described below. This may be quicker than scanning via the web UI in case of large music library, and optionally allows targeting more than one user at once.
+If preferred, it is also possible to use the command line tool for the database maintenance, see https://github.com/owncloud/music/wiki/Commands. This may be quicker than scanning via the web UI in case of large music library, and optionally allows targeting more than one user at once, as well as some more options not available on the web interface.
 
-Following commands are available(see script occ in your ownCloud root folder):
-
-#### Scan music files
-
-Scan all audio files not already indexed in the database. Extract metadata from those and insert it to the database. Target either specified user(s) or user group(s) or all users.
-
-	./occ music:scan USERNAME1 USERNAME2 ...
-	./occ music:scan --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:scan --all
-
-All the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
-
-You can also supply the option `--rescan` to scan also the files which are already part of the collection. This might be necessary, if some file update has been missed by the app because of some bug or because the admin has temporarily disabled the app.
-
-Lastly, you can give option `--clean-obsolete` to make the process check all the previously scanned files, and clean up those which are no longer found. Again, this is usually handled automatically, but manually running the command could be necessary on some special cases.
-
-#### Reset scanned metadata
-
-Reset all data stored to the music database. Target either specified user(s) or user group(s) or all users.
-
-**Warning:** This command will erase user-created data! It will remove all playlists as playlists are linked against the track metadata.
-
-	./occ music:reset-database USERNAME1 USERNAME2 ...
-	./occ music:reset-database --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:reset-database --all
-
-#### Reset cache
-
-Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desirable e.g. when running performance tests. Target either specified user(s) or user group(s) or all users.
-
-	./occ music:reset-cache USERNAME1 USERNAME2 ...
-	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:reset-cache --all
 
 ### Ampache and Subsonic
 
@@ -138,9 +105,8 @@ The Music app may be unable to extract metadata of the files residing on a SMB s
 
 ### Build frontend bundle
 
-All the frontend javascript sources of the Music app, including the used vendor libraries, are bundled into a single file for deployment using webpack. This bundle file is `dist/webpack.app.js`. Similarly, all the style files of the Music app are bundled into `dist/webpack.app.css`. Downloading the vendor libraries and generating these bundles requires the `npm` utility, and happens by running:
+All the frontend javascript sources of the Music app, including the used vendor libraries, are bundled into a few files for deployment using webpack. These bundle files are named like `dist/webpack.*.js`. Similarly, all the style files of the Music app are bundled into files like `dist/webpack.*.css`. Downloading the vendor libraries and generating these bundles requires the `npm` utility, and happens by running:
 
-	cd build
 	npm install --deps
 	npm run build
 
@@ -169,20 +135,20 @@ To install test dependencies, run the following command on the root level of the
 
 #### Static analysis with PHPStan
 
-	composer run-script analyze
+	composer run analyze
 
 #### PHP unit tests
 
-	composer run-script unit-tests
+	composer run unit-tests
 
 #### PHP integration tests
 The integration tests require the music app to be installed under the `apps` folder of an ownCloud or Nextcloud installation. The following steps assume that the cloud installation in question has not been taken into use yet, e.g. it's a fresh clone from github.
 
 	cd ../..          # owncloud/nextcloud core
-	./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
-	./occ app:enable music
+	php occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
+	php occ app:enable music
 	cd apps/music
-	composer run-script integration-tests
+	composer run integration-tests
 
 #### Behat acceptance tests
 

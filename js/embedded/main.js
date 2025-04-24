@@ -27,7 +27,8 @@
 
 	const mPlaylistMimes = [
 		'audio/mpegurl',
-		'audio/x-scpls'
+		'audio/x-scpls',
+		'application/vnd.ms-wpl'
 	];
 
 	function register() {

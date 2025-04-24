@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 import * as ng from 'angular';
@@ -28,7 +28,7 @@ function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : Librar
 	function onExportConflict(path : string, name : string, retryFunc : CallableFunction) : void {
 		OC.dialogs.confirm(
 			gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
-									' Select "No" to export the list with another name. Close the dialog to cancel.',
+									' Select "No" to save with another name.',
 									{ filename: name + '.m3u8' }),
 			gettextCatalog.getString('Overwrite existing file'),
 			(overwrite : boolean) => {
@@ -71,7 +71,7 @@ function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : Librar
 		OCA.Music.Dialogs.filePicker(
 				caption,
 				onSelectedCallback,
-				['audio/mpegurl', 'audio/x-scpls']
+				['audio/mpegurl', 'audio/x-scpls', 'application/vnd.ms-wpl']
 		);
 	}
 

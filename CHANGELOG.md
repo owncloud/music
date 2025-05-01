@@ -4,6 +4,9 @@
 - Support for importing WPL playlist files and play them within Files
   [#1153](https://github.com/owncloud/music/issues/1153)
   * MIME mapping for the file is needed which can be added with `occ music:register-mime-types`
+- Support parsing lyrics from .lrc files in addition to the audio file metadata tags
+  [#1221](https://github.com/owncloud/music/issues/1221)
+  * The lyrics file must be found in the same folder with the audio file and have the same file name but with the extension `.lrc`.
 
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"

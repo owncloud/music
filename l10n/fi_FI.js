@@ -182,7 +182,7 @@ OC.L10N.register(
     "List size" : "Listan koko",
     "Lyrics" : "Lyriikat",
     "MIME type" : "MIME-tyyppi",
-    "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only." : "Monet Musiikki-sovelluksen ominaisuudet perustuvat äänitiedostoihin tallennettuihin metatietoihin. Näiden tietojen skannaaminen voi kuitenkin kuluttaa paljon aikaa joissakin järjestelmissä, joissa käytetään erillistä tallennustilaa. Kun asetus on poistettu käytöstä, perustuu kirjaston rakenne vain tiedosto- ja kansioiden nimiin.",
+    "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using external storage. When disabled, the library structure is built based on the file and folder names only." : "Monet Musiikki-sovelluksen ominaisuudet perustuvat äänitiedostoihin tallennettuihin metatietoihin. Näiden tietojen skannaaminen voi kuitenkin kuluttaa paljon aikaa joissakin järjestelmissä, joissa käytetään erillistä tallennustilaa. Kun asetus on poistettu käytöstä, perustuu kirjaston rakenne vain tiedosto- ja kansioiden nimiin.",
     "Many functionalities of the Music app web UI can be controlled with keyboard shortcuts." : "Musiikkisovelluksen web-käyttöliittymän monia toimintoja voidaan hallita pikanäppäimillä.",
     "Matches regular expression" : "Vastaa säännöllistä lauseketta",
     "Modified" : "Muokattu",

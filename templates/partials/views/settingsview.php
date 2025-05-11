@@ -54,7 +54,7 @@
 		<input type="checkbox" id="scan-metadata-toggle" ng-model="settings.scanMetadata"/>
 		<div class="icon-loading-small operation-in-progress" ng-show="savingScanMetadata"></div>
 		<span style="color:red" ng-show="errorScanMetadata" translate>Failed to save the setting</span>
-		<p><em translate>Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only.</em></p>
+		<p><em translate>Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using external storage. When disabled, the library structure is built based on the file and folder names only.</em></p>
 		<p><em translate>Changes on this setting take effect only upon rescan of the library.</em></p>
 	</div>
 

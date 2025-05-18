@@ -212,13 +212,8 @@ div:hover > .play-pause,
 
 #app-content .emptycontent.collapsed {
 	top: unset;
-	bottom: var(--body-container-margin, 0);
-	padding: 5px 20px;
-	border-bottom-right-radius: var(--body-container-radius, 0);
-}
-
-.ie #app-content .emptycontent.collapsed {
 	bottom: 0;
+	padding: 5px 20px;
 }
 
 #app-content .emptycontent.collapsed > * {

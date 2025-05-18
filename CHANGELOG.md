@@ -12,6 +12,7 @@
 - In the Files app, use the Music app icon on the file actions menu item "Play"
 
 ### Fixed
+- "New files to scan" and "Scanning" bottom panes being slightly misplaced on NC 25+
 
 ## 2.1.4 - 2025-05-10
 

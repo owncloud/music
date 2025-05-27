@@ -52,7 +52,8 @@ class SubsonicMiddleware extends Middleware {
 	 * @throws SubsonicException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
-		if ($controller instanceof SubsonicController) {
+		// The security access logic is not applied to the CORS pre-flight calls with the 'OPTIONS'
+		if ($controller instanceof SubsonicController && $methodName !== 'preflightedCors') {
 			$this->setupResponseFormat($controller);
 			$this->checkAuthentication($controller);
 		}

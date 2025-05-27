@@ -11,6 +11,7 @@
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"
 - Allow manual entry of file name when exporting a playlist or the radio stations
+- Subsonic API: Set CORS headers and enable pre-flight to allow web app clients to connect from any domain
 
 ### Fixed
 - "New files to scan" and "Scanning" bottom panes being slightly misplaced on NC 25+

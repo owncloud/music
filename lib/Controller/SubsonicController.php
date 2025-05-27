@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Controller;
 
-use OCP\AppFramework\Controller;
+use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
@@ -65,7 +65,7 @@ use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
-class SubsonicController extends Controller {
+class SubsonicController extends ApiController {
 	const API_VERSION = '1.16.1';
 	const FOLDER_ID_ARTISTS = -1;
 	const FOLDER_ID_FOLDERS = -2;
@@ -118,7 +118,7 @@ class SubsonicController extends Controller {
 								AmpacheImageService $imageService,
 								Random $random,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appname, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
@@ -170,6 +170,7 @@ class SubsonicController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
+	 * @CORS
 	 */
 	public function handleRequest($method) {
 		$this->logger->log("Subsonic request $method", 'debug');

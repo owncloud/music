@@ -156,5 +156,6 @@ $app->registerRoutes($this, ['routes' => [
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.
 	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'GET',	'requirements' => ['method' => '[a-zA-Z0-9\.]+']],
 	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'POST',	'requirements' => ['method' => '[a-zA-Z0-9\.]+'],	'postfix' => '_post'],
-
+	// Subsonic API - Allow CORS pre-flight for web clients from different domains
+	['name' => 'subsonic#preflightedCors',	'url' => '/subsonic/rest/{method}',	'verb' => 'OPTIONS','requirements' => ['method' => '[a-zA-Z0-9\.]+']],
 ]]);

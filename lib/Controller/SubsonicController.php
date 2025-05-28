@@ -200,7 +200,7 @@ class SubsonicController extends ApiController {
 		}
 
 		$this->logger->log("Request $method not supported", 'warn');
-		return $this->subsonicErrorResponse(70, "Requested action $method is not supported");
+		return $this->subsonicErrorResponse(0, "Requested action $method is not supported");
 	}
 
 	/* -------------------------------------------------------------------------

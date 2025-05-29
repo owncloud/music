@@ -11,6 +11,7 @@
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"
 - Allow manual entry of file name when exporting a playlist or the radio stations
+- Data stored to DB tables is truncated to max number of bytes instead of characters; this should avoid problems on some DB configurations
 - Subsonic API:
   * Set CORS headers and enable pre-flight to allow web app clients to connect from any domain
   * Use error code 0 (generic error) instead of 70 (requested data not found) when an unsupported API endpoint is requested

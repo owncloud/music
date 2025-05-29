@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -201,15 +201,19 @@ class Util {
 	}
 
 	/**
-	 * Truncate the given string to maximum length, appending ellipsis character
-	 * if the truncation happened. Also null argument may be safely passed and
-	 * it remains unaltered.
+	 * Truncate the given string to maximum number of bytes, appending ellipsis character
+	 * (or other given marker) if the truncation happened. Note that for multi-byte encoding (like utf8),
+	 * the number of bytes may not be the same as the number of characters.
+	 * Also null argument may be safely passed and it remains unaltered.
 	 */
-	public static function truncate(?string $string, int $maxLength) : ?string {
+	public static function truncate(?string $string, int $maxBytes, string $trimMarker="\u{2026}") : ?string {
 		if ($string === null) {
 			return null;
+		} else if (\strlen($string) > $maxBytes) {
+			$string = \mb_strcut($string, 0, $maxBytes - \strlen($trimMarker));
+			return $string . $trimMarker;
 		} else {
-			return \mb_strimwidth($string, 0, $maxLength, "\u{2026}");
+			return $string;
 		}
 	}
 

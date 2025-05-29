@@ -77,8 +77,9 @@ class PlaylistFileService {
 		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
 		$filename = $filename ?: $playlist->getName();
-		$filename = self::sanitizeFileName($filename);
-		$filename = self::handleFileNameConflicts($targetFolder, $filename, $collisionMode);
+		$filename = FilesUtil::sanitizeFileName($filename, ['m3u8', 'm3u']);
+
+		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);
 
 		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 		foreach ($tracks as $track) {
@@ -89,7 +90,6 @@ class PlaylistFileService {
 				$content .= FilesUtil::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 			}
 		}
-		$file = $targetFolder->newFile($filename);
 		$file->putContent($content);
 
 		return $userFolder->getRelativePath($file->getPath());
@@ -115,8 +115,9 @@ class PlaylistFileService {
 			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
 		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
-		$filename = self::sanitizeFileName($filename);
-		$filename = self::handleFileNameConflicts($targetFolder, $filename, $collisionMode);
+		$filename = FilesUtil::sanitizeFileName($filename, ['m3u8', 'm3u']);
+
+		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);
 
 		$stations = $this->radioStationBusinessLayer->findAll($userId, SortBy::Name);
 
@@ -125,7 +126,6 @@ class PlaylistFileService {
 			$content .= "#EXTINF:1,{$station->getName()}\n";
 			$content .= $station->getStreamUrl() . "\n";
 		}
-		$file = $targetFolder->newFile($filename);
 		$file->putContent($content);
 
 		return $userFolder->getRelativePath($file->getPath());
@@ -441,56 +441,6 @@ class PlaylistFileService {
 		}
 
 		return $entries;
-	}
-
-	private static function sanitizeFileName(string $filename) : string {
-		// File names cannot contain the '/' character on Linux
-		$filename = \str_replace('/', '-', $filename);
-
-		// separate the file extension
-		$parts = \pathinfo($filename);
-		$ext = $parts['extension'] ?? '';
-
-		// enforce proper extension
-		if (\mb_strtolower($ext) != 'm3u' && \mb_strtolower($ext) != 'm3u8') {
-			// no extension or invalid extension, append the proper one and keep any original extension in $filename
-			$ext = 'm3u8';
-		} else {
-			$filename = $parts['filename']; // without the extension
-		}
-
-		// In owncloud/Nextcloud, the whole file name must fit 250 characters, including the file extension.
-		$maxLength = 250 - \strlen($ext) - 1;
-		$filename = Util::truncate($filename, $maxLength);
-		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions, unless there is such postfix already.
-		// If there are more than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
-		$matches = null;
-		\assert($filename !== null); // for Scrutinizer, cannot be null
-		if (\preg_match('/.+\(\d+\)$/', $filename, $matches) !== 1) {
-			$maxLength -= 5;
-			$filename = Util::truncate($filename, $maxLength);
-		}
-
-		return "$filename.$ext";
-	}
-
-	private static function handleFileNameConflicts(Folder $targetFolder, string $filename, string $collisionMode) : string {
-		if ($targetFolder->nodeExists($filename)) {
-			switch ($collisionMode) {
-				case 'overwrite':
-					$targetFolder->get($filename)->delete();
-					break;
-				case 'keepboth':
-					$filename = $targetFolder->getNonExistingName($filename);
-					break;
-				default:
-					throw new FileExistsException(
-						$targetFolder->get($filename)->getPath(),
-						$targetFolder->getNonExistingName($filename)
-					);
-			}
-		}
-		return $filename;
 	}
 
 	private static function captionForTrack(Track $track) : string {

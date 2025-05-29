@@ -12,6 +12,8 @@
 
 namespace OCA\Music\Utility;
 
+use OCA\Music\AppFramework\Utility\FileExistsException;
+use OCP\Files\File;
 use OCP\Files\Folder;
 
 /**
@@ -80,5 +82,76 @@ class FilesUtil {
 		}
 
 		return \implode('/', $cwdParts);
+	}
+
+	/**
+	 * @param ?string[] $validExtensions If defined, the output file is checked to have one of these extensions.
+	 * 									If the extension is not already present, the first extension of the array
+	 * 									is appended to the filename.
+	 * @return string Sanitized file name
+	 */
+	public static function sanitizeFileName(string $filename, ?array $validExtensions=null) : string {
+		// File names cannot contain the '/' character on Linux
+		$filename = \str_replace('/', '-', $filename);
+
+		// separate the file extension
+		$parts = \pathinfo($filename);
+		$ext = $parts['extension'] ?? '';
+
+		// enforce proper extension if defined
+		if (!empty($validExtensions)) {
+			$validExtensions = \array_map('mb_strtolower', $validExtensions); // normalize to lower case
+			if (!\in_array(\mb_strtolower($ext), $validExtensions)) {
+				// no extension or invalid extension, append the proper one and keep any original extension in $filename
+				$ext = $validExtensions[0];
+			} else {
+				$filename = $parts['filename']; // without the extension
+			}
+		}
+
+		// In owncloud/Nextcloud, the whole file name must fit 250 characters, including the file extension.
+		$maxLength = 250 - \strlen($ext) - 1;
+		$filename = Util::truncate($filename, $maxLength);
+		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions, unless there is such postfix already.
+		// If there are more than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
+		$matches = null;
+		\assert($filename !== null); // for Scrutinizer, cannot be null
+		if (\preg_match('/.+\(\d+\)$/', $filename, $matches) !== 1) {
+			$maxLength -= 5;
+			$filename = Util::truncate($filename, $maxLength);
+		}
+
+		return "$filename.$ext";
+	}
+
+	/**
+	 * @param Folder $targetFolder target parent folder
+	 * @param string $filename target file name
+	 * @param string $collisionMode action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 * @return File the newly created file
+	 * @throws FileExistsException on name conflict if $collisionMode == 'abort'
+	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
+	 */
+	public static function createFile(Folder $targetFolder, string $filename, string $collisionMode) : File {
+		if ($targetFolder->nodeExists($filename)) {
+			switch ($collisionMode) {
+				case 'overwrite':
+					$targetFolder->get($filename)->delete();
+					break;
+				case 'keepboth':
+					$filename = $targetFolder->getNonExistingName($filename);
+					break;
+				default:
+					throw new FileExistsException(
+						$targetFolder->get($filename)->getPath(),
+						$targetFolder->getNonExistingName($filename)
+					);
+			}
+		}
+		return $targetFolder->newFile($filename);
 	}
 }

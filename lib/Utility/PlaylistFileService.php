@@ -138,7 +138,7 @@ class PlaylistFileService {
 	 * @param Folder $userFolder user home dir
 	 * @param string $filePath path of the file to import
 	 * @parma string $mode one of the following:
-	 * 						- 'append' (dafault) Append the imported tracks after the existing tracks on the list
+	 * 						- 'append' (default) Append the imported tracks after the existing tracks on the list
 	 * 						- 'overwrite' Replace any previous tracks on the list with the imported tracks
 	 * @return array with three keys:
 	 * 			- 'playlist': The Playlist entity after the modification
@@ -460,9 +460,16 @@ class PlaylistFileService {
 		}
 
 		// In owncloud/Nextcloud, the whole file name must fit 250 characters, including the file extension.
-		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions. If there are more
-		// than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
-		$filename = Util::truncate($filename, 250 - 5 - 5);
+		$maxLength = 250 - \strlen($ext) - 1;
+		$filename = Util::truncate($filename, $maxLength);
+		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions, unless there is such postfix already.
+		// If there are more than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
+		$matches = null;
+		\assert($filename !== null); // for Scrutinizer, cannot be null
+		if (\preg_match('/.+\(\d+\)$/', $filename, $matches) !== 1) {
+			$maxLength -= 5;
+			$filename = Util::truncate($filename, $maxLength);
+		}
 
 		return "$filename.$ext";
 	}

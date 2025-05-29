@@ -465,7 +465,7 @@ class Scanner extends PublicEmitter {
 
 		if (!empty($path)) {
 			$userFolder = $this->resolveUserFolder($userId);
-			$requestedFolder = Util::getFolderFromRelativePath($userFolder, $path);
+			$requestedFolder = FilesUtil::getFolderFromRelativePath($userFolder, $path);
 			if ($folder->isSubNode($requestedFolder) || $folder->getPath() == $requestedFolder->getPath()) {
 				$folder = $requestedFolder;
 			} else {
@@ -676,8 +676,8 @@ class Scanner extends PublicEmitter {
 		$userHome = $this->resolveUserFolder($userId);
 
 		try {
-			$oldFolder = Util::getFolderFromRelativePath($userHome, $oldPath);
-			$newFolder = Util::getFolderFromRelativePath($userHome, $newPath);
+			$oldFolder = FilesUtil::getFolderFromRelativePath($userHome, $oldPath);
+			$newFolder = FilesUtil::getFolderFromRelativePath($userHome, $newPath);
 
 			if ($newFolder->getPath() === $oldFolder->getPath()) {
 				$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');

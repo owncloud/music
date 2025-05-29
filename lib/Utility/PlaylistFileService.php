@@ -74,7 +74,7 @@ class PlaylistFileService {
 			int $id, string $userId, Folder $userFolder, string $folderPath, ?string $filename=null, string $collisionMode='abort') : string {
 		$playlist = $this->playlistBusinessLayer->find($id, $userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
-		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
+		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
 		$filename = $filename ?: $playlist->getName();
 		$filename = self::sanitizeFileName($filename);
@@ -86,7 +86,7 @@ class PlaylistFileService {
 			if (\count($nodes) > 0) {
 				$caption = self::captionForTrack($track);
 				$content .= "#EXTINF:{$track->getLength()},$caption\n";
-				$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
+				$content .= FilesUtil::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 			}
 		}
 		$file = $targetFolder->newFile($filename);
@@ -113,7 +113,7 @@ class PlaylistFileService {
 	 */
 	public function exportRadioStationsToFile(
 			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
-		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
+		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
 		$filename = self::sanitizeFileName($filename);
 		$filename = self::handleFileNameConflicts($targetFolder, $filename, $collisionMode);
@@ -509,7 +509,7 @@ class PlaylistFileService {
 	}
 
 	private static function findFile(Folder $baseFolder, string $cwd, string $path) : ?File {
-		$absPath = Util::resolveRelativePath($cwd, $path);
+		$absPath = FilesUtil::resolveRelativePath($cwd, $path);
 
 		try {
 			/** @throws \OCP\Files\NotFoundException | \OCP\Files\NotPermittedException */

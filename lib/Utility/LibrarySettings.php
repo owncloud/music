@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -104,7 +104,7 @@ class LibrarySettings {
 	public function getFolder(string $userId) : Folder {
 		$userHome = $this->rootFolder->getUserFolder($userId);
 		$path = $this->getPath($userId);
-		return Util::getFolderFromRelativePath($userHome, $path);
+		return FilesUtil::getFolderFromRelativePath($userHome, $path);
 	}
 
 	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {

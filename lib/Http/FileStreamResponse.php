@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Http;
@@ -83,7 +83,7 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 
 	private function streamDataToOutput($fp) {
 		// Request Range Not Satisfiable
-		if (!isset($this->start) || !isset($this->end) || $this->start > $this->end) {
+		if ($this->start > $this->end) {
 			return false;
 		} else {
 			$outputStream = \fopen('php://output', 'w');

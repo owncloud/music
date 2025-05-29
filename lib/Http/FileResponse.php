@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Http;
@@ -79,11 +79,9 @@ class FileResponse extends Response {
 	 * @return string the file
 	 */
 	public function render() : ?string {
-		if ($this->rangeRequest) {
+		if ($this->rangeRequest && $this->start > $this->end) {
 			// Request Range Not Satisfiable
-			if (!isset($this->start) || !isset($this->end) || $this->start > $this->end) {
-				return null;
-			}
+			return null;
 		}
 
 		return \is_string($this->file)

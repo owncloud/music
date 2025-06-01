@@ -342,7 +342,7 @@ class PodcastService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile(string $userId, Folder $userFolder, string $filePath, ?callable $progressCallback = null) : array {
-		$channelUrls = self::parseOpml(self::getFile($userFolder, $filePath));
+		$channelUrls = self::parseOpml($userFolder, $filePath);
 
 		$channels = [];
 		$existingCount = 0;
@@ -374,9 +374,10 @@ class PodcastService {
 	/**
 	 * @return string[] RSS URLs
 	 */
-	private static function parseOpml(File $file) : array {
+	public static function parseOpml(Folder $userFolder, string $filePath) : array {
 		$rssUrls = [];
 
+		$file = self::getFile($userFolder, $filePath);
 		$rootNode = \simplexml_load_string($file->getContent(), \SimpleXMLElement::class, LIBXML_NOCDATA);
 		if ($rootNode === false) {
 			throw new \UnexpectedValueException('the file is not in valid OPML format');

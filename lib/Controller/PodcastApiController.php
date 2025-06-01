@@ -245,4 +245,22 @@ class PodcastApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}
 	}
+
+	/**
+	 * parse an OPML file and return list of contained channels
+	 *
+	 * @param string $filePath path of the file to parse
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function parseListFile(string $filePath) {
+		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
+			$list = $this->podcastService->parseOpml($userFolder, $filePath);
+			return $list;
+		} catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		}
+	}
 }

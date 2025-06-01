@@ -91,6 +91,36 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		);
 	}
 
+	function subscribePodcastChannel (url : string) {
+		const deferred = $q.defer();
+
+		Restangular.all('podcasts').post({url: url}).then(
+			(result) => {
+				libraryService.addPodcastChannel(result);
+				OC.Notification.showTemporary(
+					gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
+				if ($rootScope.currentView === '#/podcasts') {
+					$timeout(() => $rootScope.$emit('viewContentChanged'));
+				}
+				deferred.resolve();
+			},
+			(error) => {
+				let errMsg;
+				if (error.status === 400) {
+					errMsg = gettextCatalog.getString('Invalid RSS feed URL');
+				} else if (error.status === 409) {
+					errMsg = gettextCatalog.getString('This channel is already subscribed');
+				} else {
+					errMsg = gettextCatalog.getString('Failed to add the podcast channel');
+				}
+				OC.Notification.showTemporary(errMsg);
+				deferred.reject();
+			}
+		);
+
+		return deferred.promise;
+	}
+
 	// Service API
 	return {
 
@@ -98,39 +128,18 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		showAddPodcastDialog() : ng.IPromise<any> {
 			const deferred = $q.defer();
 
-			const subscribePodcastChannel = function(url : string) {
-				deferred.notify('started');
-				Restangular.all('podcasts').post({url: url}).then(
-					(result) => {
-						libraryService.addPodcastChannel(result);
-						OC.Notification.showTemporary(
-							gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
-						if ($rootScope.currentView === '#/podcasts') {
-							$timeout(() => $rootScope.$emit('viewContentChanged'));
-						}
-						deferred.resolve();
-					},
-					(error) => {
-						let errMsg;
-						if (error.status === 400) {
-							errMsg = gettextCatalog.getString('Invalid RSS feed URL');
-						} else if (error.status === 409) {
-							errMsg = gettextCatalog.getString('This channel is already subscribed');
-						} else {
-							errMsg = gettextCatalog.getString('Failed to add the podcast channel');
-						}
-						OC.Notification.showTemporary(errMsg);
-						deferred.reject();
-					}
-				);
-			};
-
 			OC.dialogs.prompt(
 					gettextCatalog.getString('Add a new podcast channel from an RSS feed'),
 					gettextCatalog.getString('Add channel'),
 					(confirmed : boolean, url : string) => {
 						if (confirmed) {
-							subscribePodcastChannel(url);
+							deferred.notify('started');
+							subscribePodcastChannel(url).then(
+								() => deferred.resolve(),
+								() => deferred.reject()
+							)
+						} else {
+							deferred.reject();
 						}
 					},
 					true, // modal
@@ -144,7 +153,6 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		// Export podcast channels to an OPML file
 		exportToFile() : ng.IPromise<any> {
 			let deferred = $q.defer();
-			let name = 'podcasts.opml';
 
 			let selPath : string = null;
 
@@ -180,6 +188,43 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 					}
 				);
 			}
+
+			return deferred.promise;
+		},
+
+		// Import podcast channels from an OPML file
+		importFromFile() : ng.IPromise<any> {
+			let deferred = $q.defer();
+
+			OCA.Music.Dialogs.filePicker(
+				gettextCatalog.getString('Import podcast channels from the selected OPML file'),
+				onFileSelected,
+				null
+			);
+
+			function onFileSelected(file : string) {
+				deferred.notify('started');
+
+				Restangular.one('podcasts/parse').get({filePath: file}).then(
+					function(rssUrls) {
+						// Got a list of RSS URLs. Now we need to asynchronously subscribe them one by one
+						function processNext() {
+							if (rssUrls.length > 0) {
+								const url = rssUrls.shift();
+								subscribePodcastChannel(url).finally(processNext);
+							} else {
+								deferred.resolve();
+							}
+						}
+						processNext();
+					},
+					function(_error) {
+						OC.Notification.showTemporary(
+								gettextCatalog.getString('Failed to import podcasts from the file {{ file }}', { file: file }));
+						deferred.reject();
+					}
+				);
+			};
 
 			return deferred.promise;
 		},

@@ -17,7 +17,7 @@ OCA.Music = OCA.Music || {};
  */
 OCA.Music.Dialogs = class {
 
-	static filePicker(title : string, callback : CallableFunction, mimetype : string|string[], path : string|undefined = undefined) {
+	static filePicker(title : string, callback : CallableFunction, mimetype : string|string[]|null, path : string|undefined = undefined) {
 		// The filepicker interface wants to get the initial path without a trailing slash
 		if (path?.endsWith('/')) {
 			path = path.slice(0, -1);

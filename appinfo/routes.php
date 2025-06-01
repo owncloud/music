@@ -108,14 +108,15 @@ $app->registerRoutes($this, ['routes' => [
 	// podcast API
 	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],
 	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',						'verb' => 'POST'],
-	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',					'verb' => 'GET'],
-	['name' => 'podcastApi#channelDetails',	'url' => '/api/podcasts/{id}/details',			'verb' => 'GET'],
+	['name' => 'podcastApi#exportAllToFile','url' => '/api/podcasts/export',				'verb' => 'POST'],
+	['name' => 'podcastApi#parseListFile',	'url' => '/api/podcasts/parse',					'verb' => 'GET'],
+	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
 	['name' => 'podcastApi#episodeDetails',	'url' => '/api/podcasts/episodes/{id}/details',	'verb' => 'GET'],
 	['name' => 'podcastApi#episodeStream',	'url' => '/api/podcasts/episodes/{id}/stream',	'verb' => 'GET'],
+	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',					'verb' => 'GET'],
 	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',					'verb' => 'DELETE'],
+	['name' => 'podcastApi#channelDetails',	'url' => '/api/podcasts/{id}/details',			'verb' => 'GET'],
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
-	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
-	['name' => 'podcastApi#exportAllToFile','url' => '/api/podcasts/export',				'verb' => 'POST'],
 
 	// favorites API
 	['name' => 'favorites#favorites',			'url' => '/api/favorites',						'verb' => 'GET'],

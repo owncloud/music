@@ -248,6 +248,14 @@ angular.module('Music').controller('NavigationController', [
 			}
 		};
 
+		$scope.importPodcastsFromFile = function() {
+			podcastService.importFromFile().then(
+				() => $scope.podcastsBusy = false, // success
+				() => $scope.podcastsBusy = false, // failure
+				() => $scope.podcastsBusy = true   // notification about import actually starting
+			);
+		};
+
 		$scope.reloadPodcasts = function(event) {
 			if ($scope.anyPodcastChannels()) {
 				$scope.podcastsBusy = true;

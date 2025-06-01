@@ -21,10 +21,9 @@ use OCA\Music\Db\PlaylistMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Db\TrackMapper;
-
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\StringUtil;
-use OCA\Music\Utility\Util;
 
 /**
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:
@@ -145,7 +144,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.
-		$tracksById = Util::createIdLookupTable($tracks);
+		$tracksById = ArrayUtil::createIdLookupTable($tracks);
 
 		$playlistTracks = [];
 		foreach ($trackIds as $index => $trackId) {
@@ -233,7 +232,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		// Pick the final random set of tracks
 		$tracks = Random::pickItems($tracks, $size);
 
-		$playlist->setTrackIdsFromArray(Util::extractIds($tracks));
+		$playlist->setTrackIdsFromArray(ArrayUtil::extractIds($tracks));
 
 		return $playlist;
 	}

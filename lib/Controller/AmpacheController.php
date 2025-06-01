@@ -75,6 +75,7 @@ use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
 
 use OCA\Music\Utility\AppInfo;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
@@ -420,7 +421,7 @@ class AmpacheController extends ApiController {
 						$idsWithChildren[$playlist->getId()] = $playlist->getTrackIdsAsArray();
 					}
 				} else {
-					$idsWithChildren = $this->getBusinessLayer($childType)->findAllIdsByParentIds($userId, Util::extractIds($entities));
+					$idsWithChildren = $this->getBusinessLayer($childType)->findAllIdsByParentIds($userId, ArrayUtil::extractIds($entities));
 				}
 				return $this->renderIdsWithChildren($idsWithChildren, $type, $childType);
 			}
@@ -551,7 +552,7 @@ class AmpacheController extends ApiController {
 			case 'random':
 				$entities = $businessLayer->findAll($userId, SortBy::Name);
 				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_stats_'.$type);
-				$entities = Util::arrayMultiGet($entities, $indices);
+				$entities = ArrayUtil::multiGet($entities, $indices);
 				break;
 			case 'frequent':
 				$entities = $getEntitiesIfSupported($businessLayer, 'findFrequentPlay', $userId, $limit, $offset);
@@ -731,7 +732,7 @@ class AmpacheController extends ApiController {
 		// disregard any (parent) folders without any direct track children
 		$folders = \array_filter($folders, fn($folder) => \count($folder['trackIds']) > 0);
 
-		Util::arraySortByColumn($folders, 'name');
+		ArrayUtil::sortByColumn($folders, 'name');
 		$folders = \array_slice($folders, $offset, $limit);
 
 		return [
@@ -858,7 +859,7 @@ class AmpacheController extends ApiController {
 
 		if ($random) {
 			$indices = $this->random->getIndices(\count($tracks), $rndOffset, $rndLimit, $userId, 'ampache_playlist_songs');
-			$tracks = Util::arrayMultiGet($tracks, $indices);
+			$tracks = ArrayUtil::multiGet($tracks, $indices);
 		}
 
 		return $this->renderSongs($tracks);
@@ -988,7 +989,7 @@ class AmpacheController extends ApiController {
 			if (!\in_array($song, $trackIds)) {
 				throw new AmpacheException("Song $song not found in playlist", 404);
 			}
-			$trackIds = Util::arrayDiff($trackIds, [$song]);
+			$trackIds = ArrayUtil::diff($trackIds, [$song]);
 			$message = 'song removed from playlist';
 		} elseif ($track !== null) {
 			$trackIds = $playlist->getTrackIdsAsArray();
@@ -1031,7 +1032,7 @@ class AmpacheController extends ApiController {
 		if ($mode == 'random') {
 			$userId = $this->userId();
 			$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $userId, 'ampache_playlist_generate');
-			$tracks = Util::arrayMultiGet($tracks, $indices);
+			$tracks = ArrayUtil::multiGet($tracks, $indices);
 		} else { // 'recent', 'forgotten', 'unplayed'
 			throw new AmpacheException("Mode '$mode' is not supported", 400);
 		}
@@ -1707,9 +1708,9 @@ class AmpacheController extends ApiController {
 			case 'song':
 				return [$id];
 			case 'album':
-				return Util::extractIds($this->trackBusinessLayer->findAllByAlbum($id, $userId));
+				return ArrayUtil::extractIds($this->trackBusinessLayer->findAllByAlbum($id, $userId));
 			case 'artist':
-				return Util::extractIds($this->trackBusinessLayer->findAllByArtist($id, $userId));
+				return ArrayUtil::extractIds($this->trackBusinessLayer->findAllByArtist($id, $userId));
 			case 'playlist':
 				return $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
 			default:
@@ -2014,7 +2015,7 @@ class AmpacheController extends ApiController {
 	 */
 	private function renderArtists(array $artists) : array {
 		$userId = $this->userId();
-		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
+		$genreMap = ArrayUtil::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 		$genreKey = $this->genreKey();
 		// In APIv3-4, the properties 'albums' and 'songs' were used for the album/song count in case the inclusion of the relevant
 		// child objects wasn't requested. APIv5+ has the dedicated properties 'albumcount' and 'songcount' for this purpose.
@@ -2168,7 +2169,7 @@ class AmpacheController extends ApiController {
 		// annoyingly, the structure of the included tracks is quite different in JSON compared to XML
 		if ($includeTracks && $this->jsonMode) {
 			foreach ($result['playlist'] as &$apiPlaylist) {
-				$apiPlaylist['items'] = Util::convertArrayKeys($apiPlaylist['items']['playlisttrack'], ['text' => 'playlisttrack']);
+				$apiPlaylist['items'] = ArrayUtil::convertKeys($apiPlaylist['items']['playlisttrack'], ['text' => 'playlisttrack']);
 			}
 		}
 
@@ -2345,7 +2346,7 @@ class AmpacheController extends ApiController {
 	 * @param Entity[] $entities
 	 */
 	private function renderEntityIds(array $entities, string $key = 'id') : array {
-		return [$key => Util::extractIds($entities)];
+		return [$key => ArrayUtil::extractIds($entities)];
 	}
 
 	/**
@@ -2436,16 +2437,16 @@ class AmpacheController extends ApiController {
 
 		// In API versions < 6, all boolean valued properties should be converted to 0/1.
 		if ($apiVer < 6) {
-			Util::intCastArrayValues($content, 'is_bool');
+			ArrayUtil::intCastValues($content, 'is_bool');
 		}
 
 		// The key 'text' has a special meaning on XML responses, as it makes the corresponding value
 		// to be treated as text content of the parent element. In the JSON API, these are mostly
 		// substituted with property 'name', but error responses use the property 'message', instead.
 		if (\array_key_exists('error', $content)) {
-			$content = Util::convertArrayKeys($content, ['text' => 'message']);
+			$content = ArrayUtil::convertKeys($content, ['text' => 'message']);
 		} else {
-			$content = Util::convertArrayKeys($content, ['text' => 'name']);
+			$content = ArrayUtil::convertKeys($content, ['text' => 'name']);
 		}
 		return $content;
 	}

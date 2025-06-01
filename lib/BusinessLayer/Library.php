@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -16,7 +16,7 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Service\CoverService;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
 
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -55,8 +55,8 @@ class Library {
 		$albums = $this->albumBusinessLayer->findAll($userId);
 		$artists = $this->artistBusinessLayer->findAll($userId);
 
-		$artistsById = Util::createIdLookupTable($artists);
-		$albumsById = Util::createIdLookupTable($albums);
+		$artistsById = ArrayUtil::createIdLookupTable($artists);
+		$albumsById = ArrayUtil::createIdLookupTable($albums);
 
 		foreach ($tracks as $idx => $track) {
 			$album = $albumsById[$track->getAlbumId()];
@@ -145,12 +145,12 @@ class Library {
 		$trBussLayer = $this->trackBusinessLayer;
 
 		if (\count($albums) < $alBussLayer::MAX_SQL_ARGS && \count($albums) < $alBussLayer->count($userId)) {
-			$tracks = $trBussLayer->findAllByAlbum(Util::extractIds($albums), $userId);
+			$tracks = $trBussLayer->findAllByAlbum(ArrayUtil::extractIds($albums), $userId);
 		} else {
 			$tracks = $trBussLayer->findAll($userId);
 		}
 
-		$tracksPerAlbum = Util::arrayGroupBy($tracks, 'getAlbumId');
+		$tracksPerAlbum = ArrayUtil::groupBy($tracks, 'getAlbumId');
 
 		foreach ($albums as &$album) {
 			$albumTracks = $tracksPerAlbum[$album->getId()] ?? [];
@@ -170,12 +170,12 @@ class Library {
 		$trBussLayer = $this->trackBusinessLayer;
 
 		if (\count($artists) < $arBussLayer::MAX_SQL_ARGS && \count($artists) < $arBussLayer->count($userId)) {
-			$tracks = $trBussLayer->findAllByArtist(Util::extractIds($artists), $userId);
+			$tracks = $trBussLayer->findAllByArtist(ArrayUtil::extractIds($artists), $userId);
 		} else {
 			$tracks = $trBussLayer->findAll($userId);
 		}
 
-		$tracksPerArtist = Util::arrayGroupBy($tracks, 'getArtistId');
+		$tracksPerArtist = ArrayUtil::groupBy($tracks, 'getArtistId');
 
 		foreach ($artists as &$artist) {
 			$artistTracks = $tracksPerArtist[$artist->getId()] ?? [];
@@ -192,12 +192,12 @@ class Library {
 		$alBussLayer = $this->albumBusinessLayer;
 
 		if (\count($artists) < $arBussLayer::MAX_SQL_ARGS && \count($artists) < $arBussLayer->count($userId)) {
-			$albums = $alBussLayer->findAllByAlbumArtist(Util::extractIds($artists), $userId);
+			$albums = $alBussLayer->findAllByAlbumArtist(ArrayUtil::extractIds($artists), $userId);
 		} else {
 			$albums = $alBussLayer->findAll($userId);
 		}
 
-		$albumsPerArtist = Util::arrayGroupBy($albums, 'getAlbumArtistId');
+		$albumsPerArtist = ArrayUtil::groupBy($albums, 'getAlbumArtistId');
 
 		foreach ($artists as &$artist) {
 			$artistAlbums = $albumsPerArtist[$artist->getId()] ?? [];

@@ -22,7 +22,6 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Controller\SubsonicController;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Utility\StringUtil;
-use OCA\Music\Utility\Util;
 
 /**
  * Checks the authentication on each Subsonic API call before the

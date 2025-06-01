@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Db;
 
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
 
 use OCP\IDBConnection;
 
@@ -83,7 +83,7 @@ class AmpacheUserMapper {
 		$result = $this->db->executeQuery($sql);
 		$rows = $result->fetchAll();
 
-		return Util::arrayColumns($rows, ['user_id', 'hash'], 'id');
+		return ArrayUtil::columns($rows, ['user_id', 'hash'], 'id');
 	}
 
 	/**

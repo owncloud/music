@@ -9,12 +9,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
 
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
 
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -184,7 +184,7 @@ class ArtistMapper extends BaseMapper {
 			$sql = 'UPDATE `*PREFIX*music_artists`
 					SET `cover_file_id` = NULL
 					WHERE `id` IN ' . $this->questionMarks($count);
-			$params = Util::extractIds($artists);
+			$params = ArrayUtil::extractIds($artists);
 			$this->execute($sql, $params);
 		}
 

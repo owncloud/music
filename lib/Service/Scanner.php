@@ -31,6 +31,7 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Cache;
 use OCA\Music\Db\Maintenance;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\FilesUtil;
 use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
@@ -144,13 +145,13 @@ class Scanner extends PublicEmitter {
 				} else {
 					// There are too many files to handle them now as we don't want to delay the move operation
 					// too much. The user will be prompted to rescan the files upon opening the Music app.
-					$this->trackBusinessLayer->markTracksDirty(Util::extractIds($audioFiles), [$userId]);
+					$this->trackBusinessLayer->markTracksDirty(ArrayUtil::extractIds($audioFiles), [$userId]);
 				}
 			}
 			else {
 				// The new path of the folder doesn't belong to the library so neither does any of the
 				// contained files. Remove audio files from the lib if found.
-				$this->deleteAudio(Util::extractIds($audioFiles), [$userId]);
+				$this->deleteAudio(ArrayUtil::extractIds($audioFiles), [$userId]);
 			}
 		}
 	}
@@ -392,13 +393,13 @@ class Scanner extends PublicEmitter {
 		$affectedArtists = $this->artistBusinessLayer->removeCovers($fileIds, $userIds);
 
 		$affectedUsers = \array_merge(
-			Util::extractUserIds($affectedAlbums),
-			Util::extractUserIds($affectedArtists)
+			ArrayUtil::extractUserIds($affectedAlbums),
+			ArrayUtil::extractUserIds($affectedArtists)
 		);
 		$affectedUsers = \array_unique($affectedUsers);
 
 		$this->invalidateCacheOnDelete(
-				$affectedUsers, Util::extractIds($affectedAlbums), Util::extractIds($affectedArtists));
+				$affectedUsers, ArrayUtil::extractIds($affectedAlbums), ArrayUtil::extractIds($affectedArtists));
 
 		return (\count($affectedAlbums) + \count($affectedArtists) > 0);
 	}
@@ -428,7 +429,7 @@ class Scanner extends PublicEmitter {
 	public function deleteFolder(Folder $folder, ?array $userIds=null) : void {
 		$audioFiles = $folder->searchByMime('audio');
 		if (\count($audioFiles) > 0) {
-			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
+			$this->deleteAudio(ArrayUtil::extractIds($audioFiles), $userIds);
 		}
 
 		// NOTE: When a folder is removed, we don't need to check for any image
@@ -507,7 +508,7 @@ class Scanner extends PublicEmitter {
 					&& $this->librarySettings->pathBelongsToMusicLibrary($f->getPath(), $userId);
 		});
 
-		return \array_values(Util::extractIds($files)); // the array may be sparse before array_values
+		return \array_values(ArrayUtil::extractIds($files)); // the array may be sparse before array_values
 	}
 
 	public function getAllMusicFileIds(string $userId, ?string $path = null) : array {
@@ -606,7 +607,7 @@ class Scanner extends PublicEmitter {
 	public function removeUnavailableFiles(string $userId) : int {
 		$indexedFiles = $this->getScannedFileIds($userId);
 		$availableFiles = $this->getAllMusicFileIds($userId);
-		$unavailableFiles = Util::arrayDiff($indexedFiles, $availableFiles);
+		$unavailableFiles = ArrayUtil::diff($indexedFiles, $availableFiles);
 
 		$count = \count($unavailableFiles);
 		if ($count > 0) {

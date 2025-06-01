@@ -24,7 +24,7 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
-
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
@@ -257,7 +257,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
 			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
-					? null : Util::extractIds($albums);
+					? null : ArrayUtil::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
@@ -426,7 +426,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		}
 
 		// create hash tables "id => entity" for the albums for fast access
-		$albumMap = Util::createIdLookupTable($albums);
+		$albumMap = ArrayUtil::createIdLookupTable($albums);
 
 		// finally, set the references on the tracks
 		foreach ($tracks as &$track) {

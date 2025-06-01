@@ -22,8 +22,8 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\StringUtil;
-use OCA\Music\Utility\Util;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\Files\FileInfo;
@@ -317,7 +317,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$parentIds = \array_unique(\array_column($foldersToProcess, 'parent'));
 			// do not process root even if it's included in $foldersToProcess
 			$parentIds = \array_filter($parentIds, fn($i) => $i !== null);
-			$parentIds = Util::arrayDiff($parentIds, \array_keys($lut));
+			$parentIds = ArrayUtil::diff($parentIds, \array_keys($lut));
 			$parentFolders = $this->mapper->findNodeNamesAndParents($parentIds);
 
 			$foldersToProcess = [];
@@ -434,7 +434,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result = false;
 		} else {
 			// delete all the matching tracks
-			$trackIds = Util::extractIds($tracks);
+			$trackIds = ArrayUtil::extractIds($tracks);
 			$this->deleteById($trackIds);
 
 			// find all distinct albums, artists, and users of the deleted tracks

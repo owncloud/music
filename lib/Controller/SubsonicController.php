@@ -62,6 +62,7 @@ use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
 
 use OCA\Music\Utility\AppInfo;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\StringUtil;
@@ -1249,7 +1250,7 @@ class SubsonicController extends ApiController {
 
 		$folders = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			Util::arraySortByColumn($bucketArtists, 'sortName');
+			ArrayUtil::sortByColumn($bucketArtists, 'sortName');
 			$folders[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
@@ -1305,7 +1306,7 @@ class SubsonicController extends ApiController {
 
 		$result = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			Util::arraySortByColumn($bucketArtists, 'sortName');
+			ArrayUtil::sortByColumn($bucketArtists, 'sortName');
 			$result[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
@@ -1477,7 +1478,7 @@ class SubsonicController extends ApiController {
 			case 'random':
 				$allAlbums = $this->albumBusinessLayer->findAll($userId);
 				$indices = $this->random->getIndices(\count($allAlbums), $offset, $size, $userId, 'subsonic_albums');
-				$albums = Util::arrayMultiGet($allAlbums, $indices);
+				$albums = ArrayUtil::multiGet($allAlbums, $indices);
 				break;
 			case 'starred':
 				$albums = $this->albumBusinessLayer->findAllStarred($userId, $size, $offset);
@@ -1798,7 +1799,7 @@ class SubsonicController extends ApiController {
 		$content['type'] = AppInfo::getFullName();
 		$content['serverVersion'] = AppInfo::getVersion();
 		$content['openSubsonic'] = true;
-		$responseData = ['subsonic-response' => Util::arrayRejectRecursive($content, 'is_null')];
+		$responseData = ['subsonic-response' => ArrayUtil::rejectRecursive($content, 'is_null')];
 
 		if ($this->format == 'json') {
 			$response = new JSONResponse($responseData);

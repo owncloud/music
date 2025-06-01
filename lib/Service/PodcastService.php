@@ -19,9 +19,9 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\FilesUtil;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\Util;
 use OCP\Files\File;
 use OCP\Files\Folder;
 
@@ -105,10 +105,10 @@ class PodcastService {
 		if ($allChannelsIncluded || \count($channels) >= $this->channelBusinessLayer::MAX_SQL_ARGS) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
-			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);
+			$episodes = $this->episodeBusinessLayer->findAllByChannel(ArrayUtil::extractIds($channels), $userId);
 		}
 
-		$episodesPerChannel = Util::arrayGroupBy($episodes, 'getChannelId');
+		$episodesPerChannel = ArrayUtil::groupBy($episodes, 'getChannelId');
 
 		foreach ($channels as &$channel) {
 			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
@@ -196,7 +196,7 @@ class PodcastService {
 				// update the episodes too if channel content has actually changed or update is forced
 				$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $id);
 				$channel->setEpisodes($episodes);
-				$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $userId);
+				$this->episodeBusinessLayer->deleteByChannelExcluding($id, ArrayUtil::extractIds($episodes), $userId);
 				$updated = true;
 			} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
 				// the channel content is not new for the server but it is still new for the client

@@ -485,36 +485,41 @@ class AlbumMapper extends BaseMapper {
 	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
 		// In case of 'recent_played', the MySQL 5.5.62 errored with "1235 This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'" without the extra subquery.
-		switch ($rule) {
-			case 'artist':			return "$conv(`artist`.`name`) $sqlOp $conv(?)";
-			case 'song_artist':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_artists` `ar` ON `t`.`artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))";
-			case 'song':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE $conv(`t`.`title`) $sqlOp $conv(?))";
-			case 'year':			// fall through, we only have one kind of year
-			case 'original_year':	return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MIN(`year`) $sqlOp ?) mysqlhack)";
-			case 'songrating':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`rating` $sqlOp ?)";
-			case 'artistrating':	return "`artist`.rating $sqlOp ?";
-			case 'played_times':	return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`play_count`) $sqlOp ?) mysqlhack)";
-			case 'last_play':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp ?) mysqlhack)";
-			case 'played':			// fall through, we give no access to other people's data; not part of the API spec but Ample uses this
-			case 'myplayed':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
-			case 'myplayedartist':	return "`album_artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
-			case 'song_count':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)";
-			case 'disk_count':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`disk`) $sqlOp ?) mysqlhack)";
-			case 'time':			return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`length`) $sqlOp ?) mysqlhack)";
-			case 'genre':			// fall through, alias
-			case 'album_genre':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";
-			case 'song_genre':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` WHERE $conv(`g`.`name`) $sqlOp $conv(?))";
-			case 'no_genre':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` WHERE `g`.`name` " . (($sqlOp == 'IS NOT NULL') ? '=' : '!=') . ' "")';
-			case 'playlist':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE $sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`t`.`id`", "'|%'") . '))';
-			case 'playlist_name':	return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE $conv(`p`.`name`) $sqlOp $conv(?) AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`t`.`id`", "'|%'") . '))';
-			case 'file':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*filecache` `f` ON `t`.`file_id` = `f`.`fileid` WHERE $conv(`f`.`name`) $sqlOp $conv(?))";
-			case 'recent_played':	return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM (SELECT `album_id`, MAX(`last_played`) FROM `*PREFIX*music_tracks` WHERE `user_id` = ? GROUP BY `album_id` ORDER BY MAX(`last_played`) DESC LIMIT $sqlOp) mysqlhack)";
-			case 'mbid_album':		return parent::advFormatSqlCondition('mbid', $sqlOp, $conv); // alias
-			case 'mbid_song':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`mbid` $sqlOp ?)";
-			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
-			case 'has_image':		return "`*PREFIX*music_albums`.`cover_file_id` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
-			default:				return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-		}
+		$condForRule = [
+			'album_artist'	=> "$conv(`artist`.`name`) $sqlOp $conv(?)",
+			'song_artist'	=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_artists` `ar` ON `t`.`artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))",
+			'song'			=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE $conv(`t`.`title`) $sqlOp $conv(?))",
+			'original_year'	=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MIN(`year`) $sqlOp ?) mysqlhack)",
+			'songrating'	=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`rating` $sqlOp ?)",
+			'artistrating'	=> "`artist`.rating $sqlOp ?",
+			'played_times'	=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`play_count`) $sqlOp ?) mysqlhack)",
+			'last_play'		=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp ?) mysqlhack)",
+			'myplayed'		=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)", // operator "IS NULL" or "IS NOT NULL"
+			'myplayedartist'=> "`album_artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)", // operator "IS NULL" or "IS NOT NULL"
+			'song_count'	=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)",
+			'disk_count'	=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`disk`) $sqlOp ?) mysqlhack)",
+			'time'			=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`length`) $sqlOp ?) mysqlhack)",
+			'album_genre'	=> "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)",
+			'song_genre'	=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` WHERE $conv(`g`.`name`) $sqlOp $conv(?))",
+			'no_genre'		=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` WHERE `g`.`name` " . (($sqlOp == 'IS NOT NULL') ? '=' : '!=') . ' "")',
+			'playlist'		=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE $sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`t`.`id`", "'|%'") . '))',
+			'playlist_name'	=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE $conv(`p`.`name`) $sqlOp $conv(?) AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`t`.`id`", "'|%'") . '))',
+			'file'			=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*filecache` `f` ON `t`.`file_id` = `f`.`fileid` WHERE $conv(`f`.`name`) $sqlOp $conv(?))",
+			'recent_played'	=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM (SELECT `album_id`, MAX(`last_played`) FROM `*PREFIX*music_tracks` WHERE `user_id` = ? GROUP BY `album_id` ORDER BY MAX(`last_played`) DESC LIMIT $sqlOp) mysqlhack)",
+			'mbid_song'		=> "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`mbid` $sqlOp ?)",
+			'mbid_artist'	=> "`artist`.`mbid` $sqlOp ?",
+			'has_image'		=> "`*PREFIX*music_albums`.`cover_file_id` $sqlOp" // operator "IS NULL" or "IS NOT NULL"
+		];
+
+		// Add alias rules
+		$condForRule['year'] = $condForRule['original_year'];	// we only have one kind of year
+		$condForRule['played'] = $condForRule['myplayed'];		// we give no access to other people's data; not part of the API spec but Ample uses this
+		$condForRule['artist'] = $condForRule['album_artist'];
+		$condForRule['genre'] = $condForRule['album_genre'];
+		$condForRule['album'] = parent::advFormatSqlCondition('title', $sqlOp, $conv);
+		$condForRule['mbid_album'] = parent::advFormatSqlCondition('mbid', $sqlOp, $conv);
+
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 	}
 
 	/**

@@ -64,12 +64,13 @@ class PodcastEpisodeMapper extends BaseMapper {
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
 	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
-		switch ($rule) {
-			case 'podcast':	return "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE $conv(`c`.`title`) $sqlOp $conv(?))";
-			case 'time':	return "`duration` $sqlOp ?";
-			case 'pubdate':	return "`published` $sqlOp ?";
-			default:		return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-		}
+		$condForRule = [
+			'podcast'	=> "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE $conv(`c`.`title`) $sqlOp $conv(?))",
+			'time'		=> "`duration` $sqlOp ?",
+			'pubdate'	=> "`published` $sqlOp ?"
+		];
+
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 	}
 
 	/**

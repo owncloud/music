@@ -42,12 +42,13 @@ class PodcastChannelMapper extends BaseMapper {
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
 	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
-		switch ($rule) {
-			case 'podcast_episode':	return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` `e` WHERE $conv(`e`.`title`) $sqlOp $conv(?))";
-			case 'time':			return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT * FROM (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` GROUP BY `channel_id` HAVING SUM(`duration`) $sqlOp ?) mysqlhack)";
-			case 'pubdate':			return "`published` $sqlOp ?";
-			default:				return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-		}
+		$condForRule = [
+			'podcast_episode'	=> "`*PREFIX*music_podcast_channels`.`id` IN (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` `e` WHERE $conv(`e`.`title`) $sqlOp $conv(?))",
+			'time'				=> "`*PREFIX*music_podcast_channels`.`id` IN (SELECT * FROM (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` GROUP BY `channel_id` HAVING SUM(`duration`) $sqlOp ?) mysqlhack)",
+			'pubdate'			=> "`published` $sqlOp ?"
+		];
+
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 	}
 
 	/**

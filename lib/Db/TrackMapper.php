@@ -492,40 +492,44 @@ class TrackMapper extends BaseMapper {
 	 */
 	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
-		switch ($rule) {
-			case 'anywhere':		return self::formatAdvSearchAnywhereCond($sqlOp, $conv); 
-			case 'album':			return "$conv(`album`.`name`) $sqlOp $conv(?)";
-			case 'artist':			return "$conv(`artist`.`name`) $sqlOp $conv(?)";
-			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))";
-			case 'album_artist_id':	return "$sqlOp `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?)"; // our own API extension
-			case 'track':			return "`number` $sqlOp ?";
-			case 'year':			return "`year` $sqlOp ?";
-			case 'albumrating':		return "`album`.`rating` $sqlOp ?";
-			case 'artistrating':	return "`artist`.`rating` $sqlOp ?";
-			case 'favorite_album':	return "$conv(`album`.`name`) $sqlOp $conv(?) AND `album`.`starred` IS NOT NULL";
-			case 'favorite_artist':	return "$conv(`artist`.`name`) $sqlOp $conv(?) AND `artist`.`starred` IS NOT NULL";
-			case 'played_times':	return "`play_count` $sqlOp ?";
-			case 'last_play':		return "`last_played` $sqlOp ?";
-			case 'played':			// fall through, we give no access to other people's data
-			case 'myplayed':		return "`last_played` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
-			case 'myplayedalbum':	return "`album_id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
-			case 'myplayedartist':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
-			case 'time':			return "`length` $sqlOp ?";
-			case 'bitrate':			return "`bitrate` $sqlOp ?";
-			case 'genre':			// fall through
-			case 'song_genre':		return "$conv(`genre`.`name`) $sqlOp $conv(?)";
-			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";
-			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)";
-			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
-			case 'playlist':		return "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')';
-			case 'playlist_name':	return "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE $conv(`p`.`name`) $sqlOp $conv(?) AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')';
-			case 'recent_played':	return "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)";
-			case 'file':			return "$conv(`file`.`name`) $sqlOp $conv(?)";
-			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp, $conv); // alias
-			case 'mbid_album':		return "`album`.`mbid` $sqlOp ?";
-			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
-			default:				return parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-		}
+		$condForRule = [
+			'anywhere'			=> self::formatAdvSearchAnywhereCond($sqlOp, $conv),
+			'album'				=> "$conv(`album`.`name`) $sqlOp $conv(?)",
+			'artist'			=> "$conv(`artist`.`name`) $sqlOp $conv(?)",
+			'album_artist'		=> "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE $conv(`ar`.`name`) $sqlOp $conv(?))",
+			'album_artist_id'	=> "$sqlOp `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?)", // our own API extension
+			'track'				=> "`number` $sqlOp ?",
+			'year'				=> "`year` $sqlOp ?",
+			'albumrating'		=> "`album`.`rating` $sqlOp ?",
+			'artistrating'		=> "`artist`.`rating` $sqlOp ?",
+			'favorite_album'	=> "$conv(`album`.`name`) $sqlOp $conv(?) AND `album`.`starred` IS NOT NULL",
+			'favorite_artist'	=> "$conv(`artist`.`name`) $sqlOp $conv(?) AND `artist`.`starred` IS NOT NULL",
+			'played_times'		=> "`play_count` $sqlOp ?",
+			'last_play'			=> "`last_played` $sqlOp ?",
+			'myplayed'			=> "`last_played` $sqlOp", // operator "IS NULL" or "IS NOT NULL"
+			'myplayedalbum'		=> "`album_id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)", // operator "IS NULL" or "IS NOT NULL"
+			'myplayedartist'	=> "`artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)", // operator "IS NULL" or "IS NOT NULL"
+			'time'				=> "`length` $sqlOp ?",
+			'bitrate'			=> "`bitrate` $sqlOp ?",
+			'song_genre'		=> "$conv(`genre`.`name`) $sqlOp $conv(?)",
+			'album_genre'		=> "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)",
+			'artist_genre'		=> "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING $conv(" . $this->sqlGroupConcat('`g`.`name`') . ") $sqlOp $conv(?)) mysqlhack)",
+			'no_genre'			=> ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""',
+			'playlist'			=> "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')',
+			'playlist_name'		=> "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE $conv(`p`.`name`) $sqlOp $conv(?) AND `p`.`track_ids` LIKE " . $this->sqlConcat("'%|'", "`*PREFIX*music_tracks`.`id`", "'|%'") . ')',
+			'recent_played'		=> "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)",
+			'file'				=> "$conv(`file`.`name`) $sqlOp $conv(?)",
+			'mbid_album'		=> "`album`.`mbid` $sqlOp ?",
+			'mbid_artist'		=> "`artist`.`mbid` $sqlOp ?"
+		];
+
+		// Add alias rules
+		$condForRule['played'] = $condForRule['myplayed'];		// we give no access to other people's data; not part of the API spec but Ample uses this
+		$condForRule['genre'] = $condForRule['song_genre'];
+		$condForRule['song'] = parent::advFormatSqlCondition('title', $sqlOp, $conv);
+		$condForRule['mbid_song'] = parent::advFormatSqlCondition('mbid', $sqlOp, $conv);
+
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 	}
 
 	private static function formatAdvSearchAnywhereCond(string $sqlOp, string $conv) : string {

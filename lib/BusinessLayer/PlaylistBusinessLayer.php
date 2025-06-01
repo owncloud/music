@@ -23,6 +23,7 @@ use OCA\Music\Db\Track;
 use OCA\Music\Db\TrackMapper;
 
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
@@ -94,7 +95,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function create(string $name, string $userId) : Playlist {
 		$playlist = new Playlist();
-		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
 
 		return $this->mapper->insert($playlist);
@@ -102,14 +103,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function rename(string $name, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
-		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
 	public function setComment(string $comment, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
-		$playlist->setComment(Util::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setComment(StringUtil::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}

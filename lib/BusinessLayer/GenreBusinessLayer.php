@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -20,8 +20,7 @@ use OCA\Music\Db\GenreMapper;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
@@ -48,7 +47,7 @@ class GenreBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Genre The added/updated genre
 	 */
 	public function addOrUpdateGenre($name, $userId) {
-		$name = Util::truncate($name, 64); // some DB setups can't truncate automatically to column max size
+		$name = StringUtil::truncate($name, 64); // some DB setups can't truncate automatically to column max size
 
 		$genre = new Genre();
 		$genre->setName($name);

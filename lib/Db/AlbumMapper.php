@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 use OCP\IConfig;
@@ -404,7 +405,7 @@ class AlbumMapper extends BaseMapper {
 			$getImageRank = function($imageName) {
 				$coverNames = ['cover', 'albumart', 'album', 'front', 'folder'];
 				foreach ($coverNames as $i => $coverName) {
-					if (Util::startsWith($imageName, $coverName, /*$ignoreCase=*/true)) {
+					if (StringUtil::startsWith($imageName, $coverName, /*$ignoreCase=*/true)) {
 						return $i;
 					}
 				}

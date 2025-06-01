@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -318,7 +319,7 @@ class Track extends Entity {
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId,
 			'playCount' => $this->getPlayCount(),
 			'played' => Util::formatZuluDateTime($this->getLastPlayed()) ?? '', // OpenSubsonic
-			'sortName' => Util::splitPrefixAndBasename($this->getTitle(), $ignoredArticles)['basename'], // OpenSubsonic
+			'sortName' => StringUtil::splitPrefixAndBasename($this->getTitle(), $ignoredArticles)['basename'], // OpenSubsonic
 		];
 	}
 

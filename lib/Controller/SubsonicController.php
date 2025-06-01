@@ -64,6 +64,7 @@ use OCA\Music\Service\PodcastService;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 class SubsonicController extends ApiController {
@@ -177,7 +178,7 @@ class SubsonicController extends ApiController {
 		$this->logger->log("Subsonic request $method", 'debug');
 
 		// Allow calling all methods with or without the postfix ".view"
-		if (Util::endsWith($method, ".view")) {
+		if (StringUtil::endsWith($method, ".view")) {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
 
@@ -255,13 +256,13 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getMusicDirectory(string $id) {
-		if (Util::startsWith($id, 'folder-')) {
+		if (StringUtil::startsWith($id, 'folder-')) {
 			return $this->getMusicDirectoryForFolder($id);
-		} elseif (Util::startsWith($id, 'artist-')) {
+		} elseif (StringUtil::startsWith($id, 'artist-')) {
 			return $this->getMusicDirectoryForArtist($id);
-		} elseif (Util::startsWith($id, 'album-')) {
+		} elseif (StringUtil::startsWith($id, 'album-')) {
 			return $this->getMusicDirectoryForAlbum($id);
-		} elseif (Util::startsWith($id, 'podcast_channel-')) {
+		} elseif (StringUtil::startsWith($id, 'podcast_channel-')) {
 			return $this->getMusicDirectoryForPodcastChannel($id);
 		} else {
 			throw new SubsonicException("Unsupported id format $id");
@@ -1199,7 +1200,7 @@ class SubsonicController extends ApiController {
 	}
 
 	private function nameWithoutArticle(?string $name) : ?string {
-		return Util::splitPrefixAndBasename($name, $this->ignoredArticles)['basename'];
+		return StringUtil::splitPrefixAndBasename($name, $this->ignoredArticles)['basename'];
 	}
 
 	private static function getIndexingChar(?string $name) {
@@ -1644,12 +1645,12 @@ class SubsonicController extends ApiController {
 	private function doGetSimilarSongs(string $rootName, string $id, int $count) {
 		$userId = $this->user();
 
-		if (Util::startsWith($id, 'artist')) {
+		if (StringUtil::startsWith($id, 'artist')) {
 			$artistId = self::ripIdPrefix($id);
-		} elseif (Util::startsWith($id, 'album')) {
+		} elseif (StringUtil::startsWith($id, 'album')) {
 			$albumId = self::ripIdPrefix($id);
 			$artistId = $this->albumBusinessLayer->find($albumId, $userId)->getAlbumArtistId();
-		} elseif (Util::startsWith($id, 'track')) {
+		} elseif (StringUtil::startsWith($id, 'track')) {
 			$trackId = self::ripIdPrefix($id);
 			$artistId = $this->trackBusinessLayer->find($trackId, $userId)->getArtistId();
 		} else {

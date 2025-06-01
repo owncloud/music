@@ -21,8 +21,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\IL10N;
 use OCP\Files\File;
@@ -126,7 +125,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateArtist(?string $name, string $userId) : Artist {
 		$artist = new Artist();
-		$artist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$artist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$artist->setUserId($userId);
 		$artist->setHash(\hash('md5', \mb_strtolower($name ?? '')));
 		return $this->mapper->updateOrInsert($artist);

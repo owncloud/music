@@ -14,10 +14,9 @@
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\StringUtil;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-
-use OCA\Music\Utility\Util;
 
 /**
  * @method ?string getName()
@@ -264,7 +263,7 @@ class Album extends Entity {
 	public static function compareYearAndName(Album $a, Album $b) : int {
 		$yearResult = \strcmp($a->getYearRange() ?? '', $b->getYearRange() ?? '');
 
-		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
+		return $yearResult ?: StringUtil::caselessCompare($a->getName(), $b->getName());
 	}
 
 	public static function unknownNameString(IL10N $l10n) : string {

@@ -111,14 +111,14 @@ class FilesUtil {
 
 		// In owncloud/Nextcloud, the whole file name must fit 250 characters, including the file extension.
 		$maxLength = 250 - \strlen($ext) - 1;
-		$filename = Util::truncate($filename, $maxLength);
+		$filename = StringUtil::truncate($filename, $maxLength);
 		// Reserve another 5 characters to fit the postfix like " (xx)" on name collisions, unless there is such postfix already.
 		// If there are more than 100 exports of the same playlist with overly long name, then this function will fail but we can live with that :).
 		$matches = null;
 		\assert($filename !== null); // for Scrutinizer, cannot be null
 		if (\preg_match('/.+\(\d+\)$/', $filename, $matches) !== 1) {
 			$maxLength -= 5;
-			$filename = Util::truncate($filename, $maxLength);
+			$filename = StringUtil::truncate($filename, $maxLength);
 		}
 
 		return "$filename.$ext";

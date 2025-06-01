@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -20,8 +20,7 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\PodcastChannelMapper;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 
 /**
@@ -56,7 +55,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		self::parseChannelDataFromXml($xmlNode, $channel);
 
 		$channel->setUserId( $userId );
-		$channel->setRssUrl( Util::truncate($rssUrl, 2048) );
+		$channel->setRssUrl( StringUtil::truncate($rssUrl, 2048) );
 		$channel->setRssHash( \hash('md5', $rssUrl) );
 		$channel->setContentHash( self::calculateContentHash($rssContent) );
 		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
@@ -121,11 +120,11 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 
 		$channel->setPublished( self::parseDateTime($xmlNode->pubDate) );
 		$channel->setLastBuildDate( self::parseDateTime($xmlNode->lastBuildDate) );
-		$channel->setTitle( Util::truncate((string)$xmlNode->title, 256) );
-		$channel->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
-		$channel->setLanguage( Util::truncate((string)$xmlNode->language, 32) );
-		$channel->setCopyright( Util::truncate((string)$xmlNode->copyright, 256) );
-		$channel->setAuthor( Util::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
+		$channel->setTitle( StringUtil::truncate((string)$xmlNode->title, 256) );
+		$channel->setLinkUrl( StringUtil::truncate((string)$xmlNode->link, 2048) );
+		$channel->setLanguage( StringUtil::truncate((string)$xmlNode->language, 32) );
+		$channel->setCopyright( StringUtil::truncate((string)$xmlNode->copyright, 256) );
+		$channel->setAuthor( StringUtil::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
 		$channel->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
 		$channel->setImageUrl( (string)$xmlNode->image->url );
 		$channel->setCategory( \implode(', ', \array_map(

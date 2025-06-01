@@ -21,7 +21,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Utility\FilesUtil;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -267,7 +267,7 @@ class PlaylistFileService {
 		foreach ($entries as $entry) {
 			$path = $entry['path'];
 
-			if (Util::startsWith($path, 'http', /*ignoreCase=*/true)) {
+			if (StringUtil::startsWith($path, 'http', /*ignoreCase=*/true)) {
 				if ($mode !== self::PARSE_LOCAL_FILES_ONLY) {
 					$trackFiles[] = [
 						'url' => $path,
@@ -306,7 +306,7 @@ class PlaylistFileService {
 		 * otherwise they are treated as ISO-8859-1 which was the original encoding used when that file
 		 * type was introduced. There's no any kind of official standard to follow here.
 		 */
-		if (Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true)) {
+		if (StringUtil::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true)) {
 			$fp = $file->fopen('r');
 			$entries = self::parseM3uFilePointer($fp, 'UTF-8');
 			\fclose($fp);
@@ -344,7 +344,7 @@ class PlaylistFileService {
 
 			if ($line === '') {
 				// empty line => skip
-			} elseif (Util::startsWith($line, '#')) {
+			} elseif (StringUtil::startsWith($line, '#')) {
 				// comment or extended format attribute line
 				if ($value = self::extractExtM3uField($line, 'EXTENC')) {
 					// update the used encoding with the explicitly defined one
@@ -401,10 +401,10 @@ class PlaylistFileService {
 				$key = \trim($key);
 				$value = \trim($value);
 				// we are interested only on the File# and Title# lines
-				if (Util::startsWith($key, 'File')) {
+				if (StringUtil::startsWith($key, 'File')) {
 					$idx = \substr($key, \strlen('File'));
 					$files[$idx] = $value;
-				} elseif (Util::startsWith($key, 'Title')) {
+				} elseif (StringUtil::startsWith($key, 'Title')) {
 					$idx = \substr($key, \strlen('Title'));
 					$titles[$idx] = $value;
 				}
@@ -453,7 +453,7 @@ class PlaylistFileService {
 	}
 
 	private static function extractExtM3uField($line, $field) : ?string {
-		if (Util::startsWith($line, "#$field:")) {
+		if (StringUtil::startsWith($line, "#$field:")) {
 			return \trim(\substr($line, \strlen("#$field:")));
 		} else {
 			return null;

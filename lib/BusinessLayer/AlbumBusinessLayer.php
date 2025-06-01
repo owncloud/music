@@ -26,6 +26,7 @@ use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
@@ -311,7 +312,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateAlbum(?string $name, int $albumArtistId, string $userId) : Album {
 		$album = new Album();
-		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$album->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
 

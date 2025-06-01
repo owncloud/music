@@ -22,7 +22,7 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
-
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -398,7 +398,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
 			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
 		$track = new Track();
-		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
+		$track->setTitle(StringUtil::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
 		$track->setDisk($discNumber);
 		$track->setYear($year);

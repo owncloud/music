@@ -21,7 +21,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Track;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\IConfig;
 
@@ -237,7 +237,7 @@ class LastfmService {
 			$args['format'] = 'json';
 
 			// remove args with null or empty values
-			$args = \array_filter($args, [Util::class, 'isNonEmptyString']);
+			$args = \array_filter($args, [StringUtil::class, 'isNonEmptyString']);
 
 			// glue arg keys and values together ...
 			$args = \array_map(fn($key, $value) => ($key . '=' . \urlencode($value)), \array_keys($args), $args);

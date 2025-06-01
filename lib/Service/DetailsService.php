@@ -16,7 +16,7 @@ use OCP\Files\File;
 use OCP\Files\Folder;
 
 use OCA\Music\AppFramework\Core\Logger;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 class DetailsService {
 	private Extractor $extractor;
@@ -151,7 +151,7 @@ class DetailsService {
 
 				// Never try to parse synced lyrics from the "unsync*" tags. The "lyrics" tag, on the other hand,
 				// may contain either synced or unsynced lyrics and a parse attempt is needed to find out.
-				$mayBeSynced = !Util::startsWith($tagKey, 'unsync');
+				$mayBeSynced = !StringUtil::startsWith($tagKey, 'unsync');
 				$syncedLyrics = $mayBeSynced ? LyricsParser::parseSyncedLyrics($tagValue) : null;
 
 				if ($syncedLyrics) {

@@ -110,7 +110,7 @@ class HttpUtil {
 		foreach ($rawHeaders as $row) {
 			// The response usually starts with a header like "HTTP/1.1 200 OK". However, some shoutcast streams
 			// may instead use "ICY 200 OK".
-			if (Util::startsWith($row, 'HTTP/', /*ignoreCase=*/true) || Util::startsWith($row, 'ICY ', /*ignoreCase=*/true)) {
+			if (StringUtil::startsWith($row, 'HTTP/', /*ignoreCase=*/true) || StringUtil::startsWith($row, 'ICY ', /*ignoreCase=*/true)) {
 				// Start of new response. If we have already parsed some headers, then those are from some
 				// intermediate redirect response and those should be discarded.
 				$parts = \explode(' ', $row, 3);
@@ -161,7 +161,7 @@ class HttpUtil {
 		$url = \mb_strtolower($url);
 
 		foreach ($schemes as $scheme) {
-			if (Util::startsWith($url, $scheme . '://')) {
+			if (StringUtil::startsWith($url, $scheme . '://')) {
 				return true;
 			}
 		}

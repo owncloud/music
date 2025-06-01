@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -22,8 +22,7 @@ use OCA\Music\Db\BookmarkMapper;
 use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
@@ -52,7 +51,7 @@ class BookmarkBusinessLayer extends BusinessLayer {
 		$bookmark->setType($type);
 		$bookmark->setEntryId($entryId);
 		$bookmark->setPosition($position);
-		$bookmark->setComment(Util::truncate($comment, 256));
+		$bookmark->setComment(StringUtil::truncate($comment, 256));
 
 		return $this->mapper->insertOrUpdate($bookmark);
 	}

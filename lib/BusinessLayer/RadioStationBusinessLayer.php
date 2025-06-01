@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -20,8 +20,7 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\RadioStationMapper;
 use OCA\Music\Db\RadioStation;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 
 /**
@@ -52,7 +51,7 @@ class RadioStationBusinessLayer extends BusinessLayer {
 		}
 
 		$station->setUserId($userId);
-		$station->setName(Util::truncate($name, 256));
+		$station->setName(StringUtil::truncate($name, 256));
 		$station->setStreamUrl($streamUrl);
 		$station->setHomeUrl($homeUrl);
 

@@ -19,7 +19,7 @@ use OCP\IDBConnection;
 
 use OCA\Music\AppFramework\Db\CompatibleMapper;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Common base class for data access classes of the Music app
@@ -650,7 +650,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		// possibly multiparted query enclosed in quotation marks is handled as a single substring,
 		// while the default interpretation of multipart string is that each of the parts can be found
 		// separately as substring in the given order
-		if (Util::startsWith($input, '"') && Util::endsWith($input, '"')) {
+		if (StringUtil::startsWith($input, '"') && StringUtil::endsWith($input, '"')) {
 			// remove the quotation
 			$pattern = \substr($input, 1, -1);
 		} else {

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Middleware;
@@ -26,7 +26,7 @@ use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Handles the session management on Ampache login/logout.
@@ -185,7 +185,7 @@ class AmpacheMiddleware extends Middleware {
 		$session->setUserId($user);
 		$session->setToken(Random::secure(16));
 		$session->setExpiry($expiryDate);
-		$session->setApiVersion(Util::truncate($apiVersion, 16));
+		$session->setApiVersion(StringUtil::truncate($apiVersion, 16));
 		$session->setAmpacheUserId($apiKeyId);
 
 		// save session to the database
@@ -220,7 +220,7 @@ class AmpacheMiddleware extends Middleware {
 		// on non-Apache servers (e.g. nginx) prior to PHP 7.3.
 		$authHeader = getallheaders()['Authorization'] ?? '';
 		$prefix = 'Bearer ';
-		if (Util::startsWith($authHeader, $prefix)) {
+		if (StringUtil::startsWith($authHeader, $prefix)) {
 			return \substr($authHeader, \strlen($prefix));
 		} else {
 			return null;

@@ -76,6 +76,7 @@ use OCA\Music\Service\PodcastService;
 
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 class AmpacheController extends ApiController {
@@ -479,7 +480,7 @@ class AmpacheController extends ApiController {
 						throw new AmpacheException("Filter '$filter' is not a valid catalog", 400);
 				}
 			} else {
-				$catalogId = Util::startsWith($type, 'podcast') ? 'podcasts' : 'music';
+				$catalogId = StringUtil::startsWith($type, 'podcast') ? 'podcasts' : 'music';
 				$parentId = empty($filter) ? null : (int)$filter;
 
 				switch ($type) {
@@ -1991,7 +1992,7 @@ class AmpacheController extends ApiController {
 	}
 
 	private function prefixAndBaseName(?string $name) : array {
-		return Util::splitPrefixAndBasename($name, $this->namePrefixes);
+		return StringUtil::splitPrefixAndBasename($name, $this->namePrefixes);
 	}
 
 	private function renderAlbumOrArtistRef(int $id, string $name) : array {
@@ -2419,7 +2420,7 @@ class AmpacheController extends ApiController {
 
 				// The actions "user_preference" and "system_preference" are another kind of outliers in APIv5,
 				// their responses are anonymous 1-item arrays. This got fixed in the APIv6.0.1
-				$api5preferenceOddity = ($apiVer === 5 && Util::endsWith($action, 'preference'));
+				$api5preferenceOddity = ($apiVer === 5 && StringUtil::endsWith($action, 'preference'));
 
 				// The action "get_bookmark" works as plural in case the argument all=1 is given
 				$allBookmarks = ($action === 'get_bookmark' && $this->request->getParam('all'));

@@ -14,7 +14,7 @@ namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Utility\FilesUtil;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -113,7 +113,7 @@ class LibrarySettings {
 		$filePath = self::normalizePath($filePath);
 		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());
 
-		return Util::startsWith($filePath, $musicPath)
+		return StringUtil::startsWith($filePath, $musicPath)
 				&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
 	}
 
@@ -122,7 +122,7 @@ class LibrarySettings {
 		$excludedPaths = $this->getExcludedPaths($userId);
 
 		foreach ($excludedPaths as $excludedPath) {
-			if (Util::startsWith($excludedPath, '/')) {
+			if (StringUtil::startsWith($excludedPath, '/')) {
 				$excludedPath = $userRootPath . $excludedPath;
 			} else {
 				$excludedPath = $musicPath . '/' . $excludedPath;
@@ -143,7 +143,7 @@ class LibrarySettings {
 			// no wildcards, beginning of the path should match the pattern exactly
 			// and the next character after the matching part (if any) should be '/'
 			$patternLen = \strlen($pattern);
-			return Util::startsWith($path, $pattern)
+			return StringUtil::startsWith($path, $pattern)
 				&& (\strlen($path) === $patternLen || $path[$patternLen] === '/');
 		} else {
 			// some wildcard characters in the pattern, convert the pattern into regex:

@@ -32,6 +32,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Cache;
 use OCA\Music\Db\Maintenance;
 use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 use Symfony\Component\Console\Output\OutputInterface;
@@ -92,10 +93,10 @@ class Scanner extends PublicEmitter {
 		if (!$this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 		}
-		elseif (Util::startsWith($mimetype, 'image')) {
+		elseif (StringUtil::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
 		}
-		elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
 			$libraryRoot = $this->librarySettings->getFolder($userId);
 			$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
 		}
@@ -105,13 +106,13 @@ class Scanner extends PublicEmitter {
 		$mimetype = $file->getMimeType();
 		$this->logger->log('fileMoved - '. $file->getPath() . " - $mimetype", 'debug');
 
-		if (Util::startsWith($mimetype, 'image')) {
+		if (StringUtil::startsWith($mimetype, 'image')) {
 			// we don't need to track the identity of images and moving a file can be handled as it was 
 			// a file deletion followed by a file addition
 			$this->deleteImage([$file->getId()], [$userId]);
 			$this->updateImage($file, $userId);
 		}
-		elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
 			if ($this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
 				// In the new path, the file (now or still) belongs to the library. Even if it was already in the lib,
 				// the new path may have an influence on the album or artist name (in case of incomplete metadata).
@@ -236,19 +237,19 @@ class Scanner extends PublicEmitter {
 		$meta['albumArtist'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 		// use artist and albumArtist as fallbacks for each other
-		if (!Util::isNonEmptyString($meta['albumArtist'])) {
+		if (!StringUtil::isNonEmptyString($meta['albumArtist'])) {
 			$meta['albumArtist'] = $meta['artist'];
 		}
 
-		if (!Util::isNonEmptyString($meta['artist'])) {
+		if (!StringUtil::isNonEmptyString($meta['artist'])) {
 			$meta['artist'] = $meta['albumArtist'];
 		}
 
-		if (!Util::isNonEmptyString($meta['artist'])) {
+		if (!StringUtil::isNonEmptyString($meta['artist'])) {
 			// neither artist nor albumArtist set in fileinfo, use the second level parent folder name
 			// unless it is the user's library root folder
 			$dirPath = \dirname(\dirname($filePath));
-			if (Util::startsWith($libraryRoot->getPath(), $dirPath)) {
+			if (StringUtil::startsWith($libraryRoot->getPath(), $dirPath)) {
 				$artistName = null;
 			} else {
 				$artistName = \basename($dirPath);
@@ -260,13 +261,13 @@ class Scanner extends PublicEmitter {
 
 		// title
 		$meta['title'] = ExtractorGetID3::getTag($fileInfo, 'title');
-		if (!Util::isNonEmptyString($meta['title'])) {
+		if (!StringUtil::isNonEmptyString($meta['title'])) {
 			$meta['title'] = $fieldsFromFileName['title'];
 		}
 
 		// album
 		$meta['album'] = ExtractorGetID3::getTag($fileInfo, 'album');
-		if (!Util::isNonEmptyString($meta['album'])) {
+		if (!StringUtil::isNonEmptyString($meta['album'])) {
 			// album name not set in fileinfo, use parent folder name as album name unless it is the user's library root folder
 			$dirPath = \dirname($filePath);
 			if ($libraryRoot->getPath() === $dirPath) {

@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Leizh 2014
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 use OCA\Music\AppInfo\Application;
@@ -45,6 +45,18 @@ $application->add(new OCA\Music\Command\PodcastAdd(
 		$c->query('GroupManager'),
 		$c->query('PodcastChannelBusinessLayer'),
 		$c->query('PodcastEpisodeBusinessLayer')
+));
+$application->add(new OCA\Music\Command\PodcastExport(
+	$c->query('UserManager'),
+	$c->query('GroupManager'),
+	$c->query('RootFolder'),
+	$c->query('PodcastService')
+));
+$application->add(new OCA\Music\Command\PodcastImport(
+	$c->query('UserManager'),
+	$c->query('GroupManager'),
+	$c->query('RootFolder'),
+	$c->query('PodcastService')
 ));
 $application->add(new OCA\Music\Command\PodcastReset(
 		$c->query('UserManager'),

@@ -7,10 +7,13 @@
 - Support parsing lyrics from .lrc files in addition to the audio file metadata tags
   [#1221](https://github.com/owncloud/music/issues/1221)
   * The lyrics file must be found in the same folder with the audio file and have the same file name but with the extension `.lrc`.
+- Importing and exporting podcasts channels from/to an OPML file
+  [#904](https://github.com/owncloud/music/issues/904)
+  * Using the web UI or with the `occ` commands `music:podcast-import` and `music:podcast-export`
 
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"
-- Allow manual entry of file name when exporting a playlist or the radio stations
+- Allow manual entry of the file name when exporting a playlist or the radio stations
 - Data stored to DB tables is truncated to max number of bytes instead of characters; this should avoid problems on some DB configurations
 - Subsonic API:
   * Set CORS headers and enable pre-flight to allow web app clients to connect from any domain

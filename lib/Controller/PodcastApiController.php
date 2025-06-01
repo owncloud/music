@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -17,19 +17,22 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 
+use OCP\Files\IRootFolder;
+
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\RelayStreamResponse;
 use OCA\Music\Utility\PodcastService;
-use OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
 	private IConfig $config;
 	private IURLGenerator $urlGenerator;
+	private IRootFolder $rootFolder;
 	private PodcastService $podcastService;
 	private string $userId;
 	private Logger $logger;
@@ -38,12 +41,14 @@ class PodcastApiController extends Controller {
 								IRequest $request,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
+								IRootFolder $rootFolder,
 								PodcastService $podcastService,
 								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
+		$this->rootFolder = $rootFolder;
 		$this->podcastService = $podcastService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->logger = $logger;
@@ -210,5 +215,52 @@ class PodcastApiController extends Controller {
 	public function resetAll() {
 		$this->podcastService->resetAll($this->userId);
 		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	 * export all podcast channels to an OPML file
+	 *
+	 * @param string $name target file name
+	 * @param string $path parent folder path
+	 * @param string $oncollision action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function exportAllToFile(string $name, string $path, string $oncollision) {
+		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
+			$exportedFilePath = $this->podcastService->exportToFile(
+					$this->userId, $userFolder, $path, $name, $oncollision);
+			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
+		} catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
+		} catch (FileExistsException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, 'file already exists', ['path' => $ex->getPath(), 'suggested_name' => $ex->getAltName()]);
+		} catch (\OCP\Files\NotPermittedException $ex) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
+		}
+	}
+
+	/**
+	 * parse an OPML file and return list of contained channels
+	 *
+	 * @param string $filePath path of the file to parse
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function parseListFile(string $filePath) {
+		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
+			$list = $this->podcastService->parseOpml($userFolder, $filePath);
+			return $list;
+		} catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		}
 	}
 }

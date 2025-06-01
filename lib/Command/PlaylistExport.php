@@ -16,7 +16,7 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\Db\Playlist;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\PlaylistFileService;
 
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;

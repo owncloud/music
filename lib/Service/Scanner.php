@@ -12,7 +12,7 @@
  * @copyright Pauli Järvinen 2016 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OC\Hooks\PublicEmitter;
 
@@ -31,6 +31,8 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Cache;
 use OCA\Music\Db\Maintenance;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\Util;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

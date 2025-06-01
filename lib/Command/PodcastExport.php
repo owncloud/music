@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Command;
 
-use OCA\Music\Utility\PodcastService;
+use OCA\Music\Service\PodcastService;
 
 use OCP\Files\IRootFolder;
 

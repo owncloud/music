@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -45,25 +45,25 @@ class MusicApiControllerTest extends ControllerTestUtility {
 		$this->genreBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\GenreBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Service\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->collectionHelper = $this->getMockBuilder('\OCA\Music\Utility\CollectionHelper')
+		$this->collectionHelper = $this->getMockBuilder('\OCA\Music\Service\CollectionHelper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->coverHelper = $this->getMockBuilder('\OCA\Music\Utility\CoverHelper')
+		$this->coverHelper = $this->getMockBuilder('\OCA\Music\Service\CoverHelper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Utility\DetailsHelper')
+		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Service\DetailsHelper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Utility\LastfmService')
+		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Service\LastfmService')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->maintenance = $this->getMockBuilder('\OCA\Music\Db\Maintenance')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->librarySettings = $this->getMockBuilder('\OCA\Music\Utility\LibrarySettings')
+		$this->librarySettings = $this->getMockBuilder('\OCA\Music\Service\LibrarySettings')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')

@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2021 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
@@ -19,6 +19,9 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\Util;
 use OCP\Files\File;
 use OCP\Files\Folder;
 

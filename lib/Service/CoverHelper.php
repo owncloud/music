@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2017 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
@@ -22,7 +22,9 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\RadioStation;
-
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\PlaceholderImage;
+use OCA\Music\Utility\Random;
 use OCP\Files\Folder;
 use OCP\Files\File;
 

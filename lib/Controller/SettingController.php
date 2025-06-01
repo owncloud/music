@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -25,9 +25,9 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Service\LibrarySettings;
+use OCA\Music\Service\Scanner;
 use OCA\Music\Utility\AppInfo;
-use OCA\Music\Utility\LibrarySettings;
-use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
 
 class SettingController extends Controller {

@@ -15,7 +15,7 @@ namespace OCA\Music\BusinessLayer;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
-use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Service\CoverHelper;
 use OCA\Music\Utility\Util;
 
 use OCP\IL10N;

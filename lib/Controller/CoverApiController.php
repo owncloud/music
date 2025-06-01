@@ -30,7 +30,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Service\CoverHelper;
 use OCA\Music\Utility\HttpUtil;
 
 class CoverApiController extends Controller {

@@ -10,12 +10,13 @@
  * @copyright Pauli Järvinen 2018 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCP\Files\File;
 use OCP\Files\Folder;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\Util;
 
 class DetailsHelper {
 	private Extractor $extractor;

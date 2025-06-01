@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2020 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
@@ -20,6 +20,8 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\Util;
 
 use OCP\Files\File;
 use OCP\Files\Folder;

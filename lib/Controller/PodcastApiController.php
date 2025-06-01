@@ -27,7 +27,7 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\RelayStreamResponse;
-use OCA\Music\Utility\PodcastService;
+use OCA\Music\Service\PodcastService;
 
 class PodcastApiController extends Controller {
 	private IConfig $config;

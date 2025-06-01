@@ -24,8 +24,8 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileStreamResponse;
-use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\Scanner;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\Scanner;
 
 /**
  * End-points for shared audio file handling. Methods of this class may be

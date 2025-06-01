@@ -54,14 +54,15 @@ use OCA\Music\Http\XmlResponse;
 
 use OCA\Music\Middleware\SubsonicException;
 
-use OCA\Music\Utility\AmpacheImageService;
+use OCA\Music\Service\AmpacheImageService;
+use OCA\Music\Service\CoverHelper;
+use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\LastfmService;
+use OCA\Music\Service\LibrarySettings;
+use OCA\Music\Service\PodcastService;
+
 use OCA\Music\Utility\AppInfo;
-use OCA\Music\Utility\CoverHelper;
-use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\LastfmService;
-use OCA\Music\Utility\LibrarySettings;
-use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 

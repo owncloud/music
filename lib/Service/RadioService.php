@@ -12,9 +12,11 @@
  * @copyright Pauli Järvinen 2022 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\Util;
 use OCP\IURLGenerator;
 
 /**

@@ -68,19 +68,20 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
-use OCA\Music\Utility\AmpacheImageService;
-use OCA\Music\Utility\CollectionHelper;
-use OCA\Music\Utility\CoverHelper;
-use OCA\Music\Utility\DetailsHelper;
-use OCA\Music\Utility\ExtractorGetID3;
-use OCA\Music\Utility\LastfmService;
-use OCA\Music\Utility\LibrarySettings;
-use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\PodcastService;
-use OCA\Music\Utility\RadioService;
+use OCA\Music\Service\AmpacheImageService;
+use OCA\Music\Service\CollectionHelper;
+use OCA\Music\Service\CoverHelper;
+use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\ExtractorGetID3;
+use OCA\Music\Service\LastfmService;
+use OCA\Music\Service\LibrarySettings;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\PodcastService;
+use OCA\Music\Service\RadioService;
+use OCA\Music\Service\Scanner;
+use OCA\Music\Service\StreamTokenService;
+
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Scanner;
-use OCA\Music\Utility\StreamTokenService;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.

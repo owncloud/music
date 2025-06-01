@@ -29,10 +29,10 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Http\RelayStreamResponse;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\RadioService;
+use OCA\Music\Service\StreamTokenService;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\RadioService;
-use OCA\Music\Utility\StreamTokenService;
 
 class RadioApiController extends Controller {
 	private IConfig $config;

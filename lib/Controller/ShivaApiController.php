@@ -33,9 +33,9 @@ use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
-use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\Scanner;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Scanner;
 
 class ShivaApiController extends Controller {
 

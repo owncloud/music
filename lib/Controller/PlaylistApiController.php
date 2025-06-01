@@ -34,8 +34,8 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\CoverHelper;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\CoverHelper;
+use OCA\Music\Service\PlaylistFileService;
 
 class PlaylistApiController extends Controller {
 	private IURLGenerator $urlGenerator;

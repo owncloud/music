@@ -10,13 +10,15 @@
  * @copyright Pauli Järvinen 2019 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
+
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\Util;
 
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
-
-use OCA\Music\AppFramework\Core\Logger;
 
 /**
  * Manage the user-specific music folder setting

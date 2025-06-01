@@ -7,13 +7,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\AppInfo\Application;
-use OCA\Music\Utility\PodcastService;
+use OCA\Music\Service\PodcastService;
 
 // The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class PodcastUpdateCheck extends TimedJob {

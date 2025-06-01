@@ -57,10 +57,10 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Utility\DetailsHelper')
+		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Service\DetailsHelper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Service\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')

@@ -33,7 +33,7 @@ use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
-use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\Scanner;
 use OCA\Music\Utility\Random;
 
@@ -43,7 +43,7 @@ class ShivaApiController extends Controller {
 	private TrackBusinessLayer $trackBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private AlbumBusinessLayer $albumBusinessLayer;
-	private DetailsHelper $detailsHelper;
+	private DetailsService $detailsService;
 	private Scanner $scanner;
 	private string $userId;
 	private IURLGenerator $urlGenerator;
@@ -55,7 +55,7 @@ class ShivaApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
-								DetailsHelper $detailsHelper,
+								DetailsService $detailsService,
 								Scanner $scanner,
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
@@ -65,7 +65,7 @@ class ShivaApiController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
-		$this->detailsHelper = $detailsHelper;
+		$this->detailsService = $detailsService;
 		$this->scanner = $scanner;
 		$this->userId = $userId ?? '';
 		$this->urlGenerator = $urlGenerator;
@@ -239,7 +239,7 @@ class ShivaApiController extends Controller {
 			$track = $this->trackBusinessLayer->find($id, $this->userId);
 			$fileId = $track->getFileId();
 			$userFolder = $this->scanner->resolveUserFolder($this->userId);
-			if ($this->detailsHelper->hasLyrics($fileId, $userFolder)) {
+			if ($this->detailsService->hasLyrics($fileId, $userFolder)) {
 				/**
 				 * The Shiva API has been designed around the idea that lyrics would be scraped from an external
 				 * source and never stored on the Shiva server. We, on the other hand, support only lyrics embedded

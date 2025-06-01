@@ -18,7 +18,7 @@ use OCP\Files\Folder;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Utility\Util;
 
-class DetailsHelper {
+class DetailsService {
 	private Extractor $extractor;
 	private Logger $logger;
 

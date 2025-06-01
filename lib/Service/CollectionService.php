@@ -35,7 +35,7 @@ use OCP\ICache;
  * (with tens of thousands of tracks, the size of the json may be more than 10 MB and the
  * DB may be configured with maximum object size of e.g. 1 MB).
  */
-class CollectionHelper {
+class CollectionService {
 	private Library $library;
 	private ICache $fileCache;
 	private Cache $dbCache;

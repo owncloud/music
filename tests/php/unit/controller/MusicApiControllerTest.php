@@ -22,14 +22,14 @@ use OCA\Music\DB\Track;
 class MusicApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $genreBusinessLayer;
-	private $collectionHelper;
+	private $collectionService;
 	private $request;
 	private $controller;
 	private $userId = 'john';
 	private $appname = 'music';
 	private $scanner;
-	private $coverHelper;
-	private $detailsHelper;
+	private $coverService;
+	private $detailsService;
 	private $lastfmService;
 	private $maintenance;
 	private $librarySettings;
@@ -48,13 +48,13 @@ class MusicApiControllerTest extends ControllerTestUtility {
 		$this->scanner = $this->getMockBuilder('\OCA\Music\Service\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->collectionHelper = $this->getMockBuilder('\OCA\Music\Service\CollectionHelper')
+		$this->collectionService = $this->getMockBuilder('\OCA\Music\Service\CollectionService')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->coverHelper = $this->getMockBuilder('\OCA\Music\Service\CoverHelper')
+		$this->coverService = $this->getMockBuilder('\OCA\Music\Service\CoverService')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Service\DetailsHelper')
+		$this->detailsService = $this->getMockBuilder('\OCA\Music\Service\DetailsService')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Service\LastfmService')
@@ -75,9 +75,9 @@ class MusicApiControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->genreBusinessLayer,
 			$this->scanner,
-			$this->collectionHelper,
-			$this->coverHelper,
-			$this->detailsHelper,
+			$this->collectionService,
+			$this->coverService,
+			$this->detailsService,
 			$this->lastfmService,
 			$this->maintenance,
 			$this->librarySettings,

@@ -27,9 +27,9 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Maintenance;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileStreamResponse;
-use OCA\Music\Service\CollectionHelper;
-use OCA\Music\Service\CoverHelper;
-use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\CollectionService;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\Scanner;
@@ -41,9 +41,9 @@ class MusicApiController extends Controller {
 	private TrackBusinessLayer $trackBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;
 	private Scanner $scanner;
-	private CollectionHelper $collectionHelper;
-	private CoverHelper $coverHelper;
-	private DetailsHelper $detailsHelper;
+	private CollectionService $collectionService;
+	private CoverService $coverService;
+	private DetailsService $detailsService;
 	private LastfmService $lastfmService;
 	private Maintenance $maintenance;
 	private LibrarySettings $librarySettings;
@@ -55,9 +55,9 @@ class MusicApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								Scanner $scanner,
-								CollectionHelper $collectionHelper,
-								CoverHelper $coverHelper,
-								DetailsHelper $detailsHelper,
+								CollectionService $collectionService,
+								CoverService $coverService,
+								DetailsService $detailsService,
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
@@ -67,9 +67,9 @@ class MusicApiController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->scanner = $scanner;
-		$this->collectionHelper = $collectionHelper;
-		$this->coverHelper = $coverHelper;
-		$this->detailsHelper = $detailsHelper;
+		$this->collectionService = $collectionService;
+		$this->coverService = $coverService;
+		$this->detailsService = $detailsService;
 		$this->lastfmService = $lastfmService;
 		$this->maintenance = $maintenance;
 		$this->librarySettings = $librarySettings;
@@ -82,13 +82,13 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function prepareCollection() {
-		$hash = $this->collectionHelper->getCachedJsonHash();
+		$hash = $this->collectionService->getCachedJsonHash();
 		if ($hash === null) {
 			// build the collection but ignore the data for now
-			$this->collectionHelper->getJson();
-			$hash = $this->collectionHelper->getCachedJsonHash();
+			$this->collectionService->getJson();
+			$hash = $this->collectionService->getCachedJsonHash();
 		}
-		$coverToken = $this->coverHelper->createAccessToken($this->userId);
+		$coverToken = $this->coverService->createAccessToken($this->userId);
 
 		return new JSONResponse([
 			'hash' => $hash,
@@ -102,7 +102,7 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
-		$collectionJson = $this->collectionHelper->getJson();
+		$collectionJson = $this->collectionService->getJson();
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
 
@@ -110,7 +110,7 @@ class MusicApiController extends Controller {
 		// the correct hash. The hash could be incorrect if the collection would have changed
 		// between calls to prepareCollection() and collection().
 		$requestHash = $this->request->getParam('hash');
-		$actualHash = $this->collectionHelper->getCachedJsonHash();
+		$actualHash = $this->collectionService->getCachedJsonHash();
 		if (!empty($actualHash) && $requestHash === $actualHash) {
 			HttpUtil::setClientCachingDays($response, 90);
 		}
@@ -252,7 +252,7 @@ class MusicApiController extends Controller {
 	 */
 	public function fileDetails(int $fileId) {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
-		$details = $this->detailsHelper->getDetails($fileId, $userFolder);
+		$details = $this->detailsService->getDetails($fileId, $userFolder);
 		if ($details) {
 			// metadata extracted, attempt to include also the data from Last.fm
 			$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
@@ -275,12 +275,12 @@ class MusicApiController extends Controller {
 	public function fileLyrics(int $fileId, ?string $format) {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		if ($format == 'plaintext') {
-			$lyrics = $this->detailsHelper->getLyricsAsPlainText($fileId, $userFolder);
+			$lyrics = $this->detailsService->getLyricsAsPlainText($fileId, $userFolder);
 			if (!empty($lyrics)) {
 				return new DataDisplayResponse($lyrics, Http::STATUS_OK, ['Content-Type' => 'text/plain; charset=utf-8']);
 			}
 		} else {
-			$lyrics = $this->detailsHelper->getLyricsAsStructured($fileId, $userFolder);
+			$lyrics = $this->detailsService->getLyricsAsStructured($fileId, $userFolder);
 			if (!empty($lyrics)) {
 				return new JSONResponse($lyrics);
 			}

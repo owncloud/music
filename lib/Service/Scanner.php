@@ -44,7 +44,7 @@ class Scanner extends PublicEmitter {
 	private PlaylistBusinessLayer $playlistBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;
 	private Cache $cache;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private Logger $logger;
 	private Maintenance $maintenance;
 	private LibrarySettings $librarySettings;
@@ -59,7 +59,7 @@ class Scanner extends PublicEmitter {
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								Cache $cache,
-								CoverHelper $coverHelper,
+								CoverService $coverService,
 								Logger $logger,
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
@@ -73,7 +73,7 @@ class Scanner extends PublicEmitter {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->cache = $cache;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->logger = $logger;
 		$this->maintenance = $maintenance;
 		$this->librarySettings = $librarySettings;
@@ -169,7 +169,7 @@ class Scanner extends PublicEmitter {
 		$artistIds = $this->artistBusinessLayer->updateCover($file, $userId, $this->userL10N($userId));
 		foreach ($artistIds as $artistId) {
 			$this->logger->log("updateImage - the image was set as cover for the artist $artistId", 'debug');
-			$this->coverHelper->removeArtistCoverFromCache($artistId, $userId);
+			$this->coverService->removeArtistCoverFromCache($artistId, $userId);
 		}
 	}
 
@@ -205,7 +205,7 @@ class Scanner extends PublicEmitter {
 			// during scanning, don't repeatedly change the file providing the art for the album
 			if ($album->getCoverFileId() === null || !$partOfScan) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
-				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
+				$this->coverService->removeAlbumCoverFromCache($albumId, $userId);
 			}
 		}
 		// if this file is an existing file which previously was used as cover for an album but now
@@ -213,7 +213,7 @@ class Scanner extends PublicEmitter {
 		elseif ($album->getCoverFileId() === $fileId) {
 			$this->albumBusinessLayer->removeCovers([$fileId]);
 			$this->findEmbeddedCoverForAlbum($albumId, $userId, $libraryRoot);
-			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
+			$this->coverService->removeAlbumCoverFromCache($albumId, $userId);
 		}
 
 		if (!$partOfScan) {
@@ -325,14 +325,14 @@ class Scanner extends PublicEmitter {
 			if ($artistCount > 0) {
 				$this->logger->log("Remove covers of $artistCount artist(s) from the cache (if present)", 'debug');
 				foreach ($affectedArtists as $artistId) {
-					$this->coverHelper->removeArtistCoverFromCache($artistId);
+					$this->coverService->removeArtistCoverFromCache($artistId);
 				}
 			}
 
 			if ($albumCount > 0) {
 				$this->logger->log("Remove covers of $albumCount album(s) from the cache (if present)", 'debug');
 				foreach ($affectedAlbums as $albumId) {
-					$this->coverHelper->removeAlbumCoverFromCache($albumId);
+					$this->coverService->removeAlbumCoverFromCache($albumId);
 				}
 			}
 
@@ -365,7 +365,7 @@ class Scanner extends PublicEmitter {
 				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
 					$this->albumBusinessLayer->setCover(null, $albumId);
 					$this->findEmbeddedCoverForAlbum($albumId);
-					$this->coverHelper->removeAlbumCoverFromCache($albumId);
+					$this->coverService->removeAlbumCoverFromCache($albumId);
 				}
 			}
 
@@ -641,7 +641,7 @@ class Scanner extends PublicEmitter {
 			return [
 				'title'      => $track->getTitle(),
 				'artist'     => $artist->getName(),
-				'cover'      => $this->coverHelper->getCover($album, $userId, $userFolder),
+				'cover'      => $this->coverService->getCover($album, $userId, $userFolder),
 				'in_library' => true
 			];
 		}
@@ -654,7 +654,7 @@ class Scanner extends PublicEmitter {
 			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath(), true);
 			$cover = $metadata['picture'];
 			if ($cover != null) {
-				$cover = $this->coverHelper->scaleDownAndCrop([
+				$cover = $this->coverService->scaleDownAndCrop([
 					'mimetype' => $cover['image_mime'],
 					'content' => $cover['data']
 				], 200);

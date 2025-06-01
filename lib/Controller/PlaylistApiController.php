@@ -34,7 +34,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Service\CoverHelper;
+use OCA\Music\Service\CoverService;
 use OCA\Music\Service\PlaylistFileService;
 
 class PlaylistApiController extends Controller {
@@ -44,7 +44,7 @@ class PlaylistApiController extends Controller {
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private TrackBusinessLayer $trackBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private PlaylistFileService $playlistFileService;
 	private string $userId;
 	private Folder $userFolder;
@@ -59,7 +59,7 @@ class PlaylistApiController extends Controller {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
-								CoverHelper $coverHelper,
+								CoverService $coverService,
 								PlaylistFileService $playlistFileService,
 								string $userId,
 								Folder $userFolder,
@@ -72,7 +72,7 @@ class PlaylistApiController extends Controller {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
@@ -231,7 +231,7 @@ class PlaylistApiController extends Controller {
 	public function getCover(int $id) {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-			$cover = $this->coverHelper->getCover($playlist, $this->userId, $this->userFolder);
+			$cover = $this->coverService->getCover($playlist, $this->userId, $this->userFolder);
 
 			if ($cover !== null) {
 				return new FileResponse($cover);

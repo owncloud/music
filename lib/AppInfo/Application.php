@@ -69,9 +69,9 @@ use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
 use OCA\Music\Service\AmpacheImageService;
-use OCA\Music\Service\CollectionHelper;
-use OCA\Music\Service\CoverHelper;
-use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\CollectionService;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\ExtractorGetID3;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
@@ -175,8 +175,8 @@ class Application extends ApplicationBase {
 				$c->query('Library'),
 				$c->query('PodcastService'),
 				$c->query('AmpacheImageService'),
-				$c->query('CoverHelper'),
-				$c->query('DetailsHelper'),
+				$c->query('CoverService'),
+				$c->query('DetailsService'),
 				$c->query('LastfmService'),
 				$c->query('LibrarySettings'),
 				$c->query('Random'),
@@ -189,7 +189,7 @@ class Application extends ApplicationBase {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('AmpacheImageService'),
-				$c->query('CoverHelper'),
+				$c->query('CoverService'),
 				$c->query('LibrarySettings'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
@@ -205,9 +205,9 @@ class Application extends ApplicationBase {
 				$c->query('TrackBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('Scanner'),
-				$c->query('CollectionHelper'),
-				$c->query('CoverHelper'),
-				$c->query('DetailsHelper'),
+				$c->query('CollectionService'),
+				$c->query('CoverService'),
+				$c->query('DetailsService'),
 				$c->query('LastfmService'),
 				$c->query('Maintenance'),
 				$c->query('LibrarySettings'),
@@ -225,7 +225,7 @@ class Application extends ApplicationBase {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('PodcastChannelBusinessLayer'),
-				$c->query('CoverHelper'),
+				$c->query('CoverService'),
 				$c->query('UserId'),
 				$c->query('Logger')
 			);
@@ -263,7 +263,7 @@ class Application extends ApplicationBase {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
-				$c->query('CoverHelper'),
+				$c->query('CoverService'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
@@ -343,7 +343,7 @@ class Application extends ApplicationBase {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
-				$c->query('DetailsHelper'),
+				$c->query('DetailsService'),
 				$c->query(('Scanner')),
 				$c->query('UserId'),
 				$c->query('L10N'),
@@ -368,8 +368,8 @@ class Application extends ApplicationBase {
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('LibrarySettings'),
-				$c->query('CoverHelper'),
-				$c->query('DetailsHelper'),
+				$c->query('CoverService'),
+				$c->query('DetailsService'),
 				$c->query('LastfmService'),
 				$c->query('PodcastService'),
 				$c->query('AmpacheImageService'),
@@ -452,7 +452,7 @@ class Application extends ApplicationBase {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('CoverHelper'),
+				$c->query('CoverService'),
 				$c->query('URLGenerator'),
 				$c->query('L10N'),
 				$c->query('Logger')
@@ -629,8 +629,8 @@ class Application extends ApplicationBase {
 			);
 		});
 
-		$context->registerService('CollectionHelper', function (IAppContainer $c) {
-			return new CollectionHelper(
+		$context->registerService('CollectionService', function (IAppContainer $c) {
+			return new CollectionService(
 				$c->query('Library'),
 				$c->query('FileCache'),
 				$c->query('DbCache'),
@@ -639,8 +639,8 @@ class Application extends ApplicationBase {
 			);
 		});
 
-		$context->registerService('CoverHelper', function (IAppContainer $c) {
-			return new CoverHelper(
+		$context->registerService('CoverService', function (IAppContainer $c) {
+			return new CoverService(
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
 				$c->query('AlbumBusinessLayer'),
@@ -650,8 +650,8 @@ class Application extends ApplicationBase {
 			);
 		});
 
-		$context->registerService('DetailsHelper', function (IAppContainer $c) {
-			return new DetailsHelper(
+		$context->registerService('DetailsService', function (IAppContainer $c) {
+			return new DetailsService(
 				$c->query('ExtractorGetID3'),
 				$c->query('Logger')
 			);
@@ -722,7 +722,7 @@ class Application extends ApplicationBase {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('DbCache'),
-				$c->query('CoverHelper'),
+				$c->query('CoverService'),
 				$c->query('Logger'),
 				$c->query('Maintenance'),
 				$c->query('LibrarySettings'),

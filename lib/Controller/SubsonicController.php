@@ -55,8 +55,8 @@ use OCA\Music\Http\XmlResponse;
 use OCA\Music\Middleware\SubsonicException;
 
 use OCA\Music\Service\AmpacheImageService;
-use OCA\Music\Service\CoverHelper;
-use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
@@ -84,8 +84,8 @@ class SubsonicController extends ApiController {
 	private IUserManager $userManager;
 	private LibrarySettings $librarySettings;
 	private IL10N $l10n;
-	private CoverHelper $coverHelper;
-	private DetailsHelper $detailsHelper;
+	private CoverService $coverService;
+	private DetailsService $detailsService;
 	private LastfmService $lastfmService;
 	private PodcastService $podcastService;
 	private AmpacheImageService $imageService;
@@ -112,8 +112,8 @@ class SubsonicController extends ApiController {
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								LibrarySettings $librarySettings,
-								CoverHelper $coverHelper,
-								DetailsHelper $detailsHelper,
+								CoverService $coverService,
+								DetailsService $detailsService,
 								LastfmService $lastfmService,
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
@@ -134,8 +134,8 @@ class SubsonicController extends ApiController {
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;
 		$this->librarySettings = $librarySettings;
-		$this->coverHelper = $coverHelper;
-		$this->detailsHelper = $detailsHelper;
+		$this->coverService = $coverService;
+		$this->detailsService = $detailsService;
 		$this->lastfmService = $lastfmService;
 		$this->podcastService = $podcastService;
 		$this->imageService = $imageService;
@@ -440,7 +440,7 @@ class SubsonicController extends ApiController {
 
 		if (!empty($entity)) {
 			$rootFolder = $this->librarySettings->getFolder($userId);
-			$coverData = $this->coverHelper->getCover($entity, $userId, $rootFolder, $size);
+			$coverData = $this->coverService->getCover($entity, $userId, $rootFolder, $size);
 			$response = new FileResponse($coverData);
 			HttpUtil::setClientCachingDays($response, 30);
 			return $response;
@@ -469,7 +469,7 @@ class SubsonicController extends ApiController {
 
 			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
 			$rootFolder = $this->librarySettings->getFolder($userId);
-			$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
+			$lyrics = $this->detailsService->getLyricsAsPlainText($track->getFileId(), $rootFolder);
 
 			return $this->subsonicResponse(['lyrics' => [
 					'artist' => $artistObj->getNameString($this->l10n),
@@ -489,7 +489,7 @@ class SubsonicController extends ApiController {
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 		$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
 		$rootFolder = $this->librarySettings->getFolder($userId);
-		$allLyrics = $this->detailsHelper->getLyricsAsStructured($track->getFileId(), $rootFolder);
+		$allLyrics = $this->detailsService->getLyricsAsStructured($track->getFileId(), $rootFolder);
 
 		return $this->subsonicResponse(['lyricsList' => [
 			'structuredLyrics' => \array_map(function ($lyrics) use ($track, $artist) {
@@ -1768,7 +1768,7 @@ class SubsonicController extends ApiController {
 	private function artistImageUrl(int $id) : string {
 		$token = $this->imageService->getToken('artist', $id, $this->keyId);
 		return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image',
-			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverHelper::DO_NOT_CROP_OR_SCALE]);
+			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverService::DO_NOT_CROP_OR_SCALE]);
 	}
 
 	/**

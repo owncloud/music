@@ -34,7 +34,7 @@ use OCP\IL10N;
 /**
  * utility to get cover image for album
  */
-class CoverHelper {
+class CoverService {
 	private Extractor $extractor;
 	private Cache $cache;
 	private AlbumBusinessLayer $albumBusinessLayer;
@@ -465,7 +465,7 @@ class CoverHelper {
 	}
 
 	/**
-	 * @see CoverHelper::createAccessToken
+	 * @see CoverService::createAccessToken
 	 * @throws \OutOfBoundsException if the token is not valid
 	 */
 	public function getUserForAccessToken(?string $token) : string {

@@ -15,7 +15,7 @@ namespace OCA\Music\BusinessLayer;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
-use OCA\Music\Service\CoverHelper;
+use OCA\Music\Service\CoverService;
 use OCA\Music\Utility\Util;
 
 use OCP\IL10N;
@@ -25,7 +25,7 @@ class Library {
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private TrackBusinessLayer $trackBusinessLayer;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private IURLGenerator $urlGenerator;
 	private IL10N $l10n;
 	private Logger $logger;
@@ -34,14 +34,14 @@ class Library {
 			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
-			CoverHelper $coverHelper,
+			CoverService $coverService,
 			IURLGenerator $urlGenerator,
 			IL10N $l10n,
 			Logger $logger) {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
@@ -79,7 +79,7 @@ class Library {
 
 	public function toCollection($userId) {
 		$entities = $this->getTracksAlbumsAndArtists($userId);
-		$coverHashes = $this->coverHelper->getAllCachedAlbumCoverHashes($userId);
+		$coverHashes = $this->coverService->getAllCachedAlbumCoverHashes($userId);
 
 		// Create a multi-level dictionary of tracks where each track can be found
 		// by addressing like $trackDict[artistId][albumId][ordinal]. The tracks are

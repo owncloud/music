@@ -68,8 +68,8 @@ use OCA\Music\Middleware\AmpacheException;
 
 use OCA\Music\Service\AmpacheImageService;
 use OCA\Music\Service\AmpachePreferences;
-use OCA\Music\Service\CoverHelper;
-use OCA\Music\Service\DetailsHelper;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
@@ -95,8 +95,8 @@ class AmpacheController extends ApiController {
 	private Library $library;
 	private PodcastService $podcastService;
 	private AmpacheImageService $imageService;
-	private CoverHelper $coverHelper;
-	private DetailsHelper $detailsHelper;
+	private CoverService $coverService;
+	private DetailsService $detailsService;
 	private LastfmService $lastfmService;
 	private LibrarySettings $librarySettings;
 	private Random $random;
@@ -130,8 +130,8 @@ class AmpacheController extends ApiController {
 								Library $library,
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
-								CoverHelper $coverHelper,
-								DetailsHelper $detailsHelper,
+								CoverService $coverService,
+								DetailsService $detailsService,
 								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
 								Random $random,
@@ -154,8 +154,8 @@ class AmpacheController extends ApiController {
 		$this->library = $library;
 		$this->podcastService = $podcastService;
 		$this->imageService = $imageService;
-		$this->coverHelper = $coverHelper;
-		$this->detailsHelper = $detailsHelper;
+		$this->coverService = $coverService;
+		$this->detailsService = $detailsService;
 		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
@@ -658,7 +658,7 @@ class AmpacheController extends ApiController {
 
 		// parse and include also lyrics when fetching an individual song
 		$rootFolder = $this->librarySettings->getFolder($userId);
-		$lyrics = $this->detailsHelper->getLyricsAsPlainText($track->getFileId(), $rootFolder);
+		$lyrics = $this->detailsService->getLyricsAsPlainText($track->getFileId(), $rootFolder);
 		if ($lyrics !== null) {
 			$lyrics = \mb_ereg_replace("\n", "<br />", $lyrics); // It's not documented but Ampache proper uses HTML line breaks for the lyrics
 			$track->setLyrics($lyrics);
@@ -1891,7 +1891,7 @@ class AmpacheController extends ApiController {
 
 		try {
 			$entity = $businessLayer->find($entityId, $userId);
-			$coverData = $this->coverHelper->getCover($entity, $userId, $userFolder);
+			$coverData = $this->coverService->getCover($entity, $userId, $userFolder);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}

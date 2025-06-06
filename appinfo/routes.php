@@ -19,13 +19,13 @@ use OCA\Music\AppInfo\Application;
 $app = \OC::$server->query(Application::class);
 
 $app->registerRoutes($this, ['routes' => [
-	// page
+	// Page
 	['name' => 'page#index', 'url' => '/',			'verb' => 'GET'],
 	// also the Ampache and Subsonic base URLs are directed to the front page, as several clients provide such links
 	['name' => 'page#index', 'url' => '/subsonic',	'verb' => 'GET',	'postfix' => '_subsonic'],
 	['name' => 'page#index', 'url' => '/ampache',	'verb' => 'GET',	'postfix' => '_ampache'],
 
-	// log
+	// Log
 	['name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'],
 
 	// Music app proprietary API
@@ -47,6 +47,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'musicApi#albumDetails',		'url' => '/api/albums/{albumId}/details',	'verb' => 'GET'],
 	['name' => 'musicApi#scrobble',			'url' => '/api/tracks/{trackId}/scrobble',	'verb' => 'POST'],
 
+	// Search API
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 
 	// Cover art API
@@ -69,11 +70,12 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'shivaApi#randomTrack',	'url' => '/api/random/track',				'verb' => 'GET'],
 	['name' => 'shivaApi#latestItems',	'url' => '/api/whatsnew',					'verb' => 'GET'],
 
+	// Share API
 	['name' => 'share#fileInfo',		'url' => '/api/share/{token}/{fileId}/info',	'verb' => 'GET'],
 	['name' => 'share#download',		'url' => '/api/share/{token}/{fileId}/download','verb' => 'GET'],
 	['name' => 'share#parsePlaylist',	'url' => '/api/share/{token}/{fileId}/parse',	'verb' => 'GET'],
 
-	// playlist API
+	// Playlist API (Shiva-compatible but extended)
 	['name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'],
 	['name' => 'playlistApi#create',		'url' => '/api/playlists',				'verb' => 'POST'],
 	['name' => 'playlistApi#generate',		'url' => '/api/playlists/generate',		'verb' => 'GET'],
@@ -88,7 +90,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'playlistApi#getCover',		'url' => '/api/playlists/{id}/cover',	'verb' => 'GET'],
 	['name' => 'playlistApi#parseFile',		'url' => '/api/playlists/file/{fileId}','verb' => 'GET'],
 
-	// radio API
+	// Radio API
 	['name' => 'radioApi#getAll',			'url' => '/api/radio',					'verb' => 'GET'],
 	['name' => 'radioApi#create',			'url' => '/api/radio',					'verb' => 'POST'],
 	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
@@ -105,7 +107,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#stationStreamUrl',	'url' => '/api/radio/{id}/streamurl',	'verb' => 'GET'],
 	['name' => 'radioApi#stationStream',	'url' => '/api/radio/{id}/stream',		'verb' => 'GET'],
 
-	// podcast API
+	// Podcast API
 	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],
 	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',						'verb' => 'POST'],
 	['name' => 'podcastApi#exportAllToFile','url' => '/api/podcasts/export',				'verb' => 'POST'],
@@ -118,7 +120,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#channelDetails',	'url' => '/api/podcasts/{id}/details',			'verb' => 'GET'],
 	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
 
-	// favorites API
+	// Favorites API
 	['name' => 'favorites#favorites',			'url' => '/api/favorites',						'verb' => 'GET'],
 	['name' => 'favorites#setFavoriteTrack',	'url' => '/api/tracks/{id}/favorite',			'verb' => 'PUT'],
 	['name' => 'favorites#setFavoriteAlbum',	'url' => '/api/albums/{id}/favorite',			'verb' => 'PUT'],
@@ -127,7 +129,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'favorites#setFavoriteChannel',	'url' => '/api/podcasts/{id}/favorite',			'verb' => 'PUT'],
 	['name' => 'favorites#setFavoriteEpisode',	'url' => '/api/podcasts/episodes/{id}/favorite','verb' => 'PUT'],
 
-	// settings API
+	// Settings API
 	['name' => 'setting#getAll',			'url' => '/api/settings',							'verb' => 'GET'],
 	['name' => 'setting#userPath',			'url' => '/api/settings/user/path',					'verb' => 'POST'],
 	['name' => 'setting#userExcludedPaths',	'url' => '/api/settings/user/exclude_paths',		'verb' => 'POST'],
@@ -138,7 +140,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#removeUserKey',		'url' => '/api/settings/user/keys/{id}',			'verb' => 'DELETE'],
 	['name' => 'setting#createUserKeyCors',	'url' => '/api/settings/userkey/generate',			'verb' => 'POST'], # external API, keep inconsistent url to maintain compatibility
 
-	// Ampache API https://github.com/ampache/ampache/wiki/Ampache-API
+	// Ampache API https://ampache.org/api/
 	['name' => 'ampache#xmlApi',			'url' => '/ampache/server/xml.server.php',	'verb' => 'GET'],
 	['name' => 'ampache#jsonApi',			'url' => '/ampache/server/json.server.php',	'verb' => 'GET'],
 	// Ampache API - POST version for JustPlayer. Defining 'postfix' allows binding two routes to the same handler.
@@ -154,7 +156,7 @@ $app->registerRoutes($this, ['routes' => [
 	// Ampache API - Internal API for the dashboard widget
 	['name' => 'ampache#internalApi',		'url' => '/ampache/internal',				'verb' => 'GET'],
 
-	// Subsonic API http://www.subsonic.org/pages/api.jsp
+	// Subsonic API https://opensubsonic.netlify.app/docs/
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.
 	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'GET',	'requirements' => ['method' => '[a-zA-Z0-9\.]+']],
 	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'POST',	'requirements' => ['method' => '[a-zA-Z0-9\.]+'],	'postfix' => '_post'],

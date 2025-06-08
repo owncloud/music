@@ -66,6 +66,10 @@ class StringUtil {
 		return \strcmp(\mb_strtolower($a ?? ''), \mb_strtolower($b ?? ''));
 	}
 
+	public static function caselessEqual(?string $a, ?string $b) : bool {
+		return (self::caselessCompare($a, $b) === 0);
+	}
+
 	/** 
 	 * Convert snake case string (like_this) to camel case (likeThis).
 	 */

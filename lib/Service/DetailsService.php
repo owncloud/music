@@ -208,19 +208,26 @@ class DetailsService {
 	private static function getLyricsFileContent(File $audioFile) : ?string {
 		$audioName = $audioFile->getName();
 		$bareName = \pathinfo($audioName, PATHINFO_FILENAME);
+		\assert(\is_string($bareName)); // for Scrutinizer
 		$parentDir = $audioFile->getParent();
-		
-		// if the audio file is named "someSong.mp3", we allow the lyrics file to be named "someSong.lrc" or "someSong.mp3.lrc"
+
+		$potentialMatches = $parentDir->search($bareName);
+
+		// If the audio file is named "someSong.mp3", we allow the lyrics file to be named "someSong.lrc" or "someSong.mp3.lrc".
+		// The extensions may have any casing.
 		$lrcName1 = "$bareName.lrc";
 		$lrcName2 = "$audioName.lrc";
 
-		if ($parentDir->nodeExists($lrcName1)) {
-			$lrcFile = $parentDir->get($lrcName1);
-		} else if ($parentDir->nodeExists($lrcName2)) {
-			$lrcFile = $parentDir->get($lrcName2);
+		foreach ($potentialMatches as $potential) {
+			if ($potential instanceof File) {
+				$name = $potential->getName();
+				if (StringUtil::caselessEqual($name, $lrcName1) || StringUtil::caselessEqual($name, $lrcName2)) {
+					return $potential->getContent();
+				}
+			}
 		}
 
-		return (isset($lrcFile) && $lrcFile instanceof File) ? $lrcFile->getContent() : null;
+		return null;
 	}
 
 	/**

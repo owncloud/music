@@ -21,6 +21,7 @@
 
 ### Fixed
 - "New files to scan" and "Scanning" bottom panes being slightly misplaced on NC 25+
+- Alphabet navigation not scrolling to quite correct location on first click in long list views like "All tracks" (since v2.0.0)
 
 ## 2.1.4 - 2025-05-10
 

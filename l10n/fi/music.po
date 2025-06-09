@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-05-18 20:22+0300\n"
-"PO-Revision-Date: 2025-05-18 20:24+0300\n"
+"POT-Creation-Date: 2025-06-08 23:39+0300\n"
+"PO-Revision-Date: 2025-06-08 23:43+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -130,11 +130,11 @@ msgstr "<strong>VÄLILYÖNTI</strong> tai <strong>K</strong>"
 msgid "About"
 msgstr "Tietoja"
 
-#: js/app/services/podcastservice.ts:81
+#: js/app/services/podcastservice.ts:132
 msgid "Add a new podcast channel from an RSS feed"
 msgstr "Uuden podcast-kanavan lisääminen RSS-syötteestä"
 
-#: js/app/services/podcastservice.ts:82
+#: js/app/services/podcastservice.ts:133
 msgid "Add channel"
 msgstr "Lisää kanava"
 
@@ -231,14 +231,14 @@ msgstr "Albumit"
 msgid "Albums by {{artist}}"
 msgstr "Albumit esittäjältä {{artist}}"
 
-#: js/app/services/podcastservice.ts:131
+#: js/app/services/podcastservice.ts:267
 msgid "All channels were already up-to-date"
 msgstr "Kaikki kanavat olivat jo ajan tasalla"
 
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1877 musicwidget.ts:57
+#: Controller/AmpacheController.php:1880 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -268,7 +268,7 @@ msgstr "Oletko varma, että haluat pysyvästi poistaa kaikki podcast-kanavat?"
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
-#: js/app/services/podcastservice.ts:175
+#: js/app/services/podcastservice.ts:311
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
 
@@ -313,7 +313,7 @@ msgstr "Esittäjän arvosana"
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:235
+#: Controller/SubsonicController.php:239
 msgid "Artists"
 msgstr "Esittäjät"
 
@@ -346,7 +346,7 @@ msgstr ""
 "Poissuljettuihin polkuihin tehdyt muutokset tulevat voimaan vasta "
 "uudelleenskannauksen yhteydessä."
 
-#: js/app/services/podcastservice.ts:134
+#: js/app/services/podcastservice.ts:270
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Yhdelle kanavalle ladattiin muutoksia"
@@ -392,7 +392,7 @@ msgstr "Sulje"
 msgid "Comment"
 msgstr "Kommentti"
 
-#: templates/partials/navigationitem.php:114
+#: templates/partials/navigationitem.php:120
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
 
@@ -400,7 +400,7 @@ msgstr "Kompakti asettelu"
 msgid "Contains"
 msgstr "Sisältää"
 
-#: js/app/services/podcastservice.ts:158 js/app/services/podcastservice.ts:168
+#: js/app/services/podcastservice.ts:294 js/app/services/podcastservice.ts:304
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
 
@@ -503,16 +503,21 @@ msgstr "Virhe toistettaessa:"
 msgid "Export playlist to a file in the selected folder"
 msgstr "Vie soittolista tiedostoon valitussa kansiossa"
 
+#: js/app/services/podcastservice.ts:160
+msgid "Export podcasts to an OPML file in the selected folder"
+msgstr "Vie podcastit OPML-tiedostoon valitussa kansiossa"
+
 #: js/app/services/playlistfileservice.ts:136
 msgid "Export radio stations to a file in the selected folder"
 msgstr "Vie radio-kanavat tiedostoon valitussa kansiossa"
 
+#: templates/partials/navigationitem.php:103
 #: templates/partials/navigationitem.php:42
 #: templates/partials/navigationitem.php:82
 msgid "Export to file"
 msgstr "Vie tiedostoon"
 
-#: js/app/services/podcastservice.ts:72
+#: js/app/services/podcastservice.ts:114
 msgid "Failed to add the podcast channel"
 msgstr "Podcast-kanavan lisääminen epäonnistui"
 
@@ -535,6 +540,10 @@ msgstr "Ampache/Subsonic-salasanan luominen epäonnistui"
 #: js/app/services/playlistfileservice.ts:192
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr "Soittolistan tuominen tiedostosta {{ file }} epäonnistui"
+
+#: js/app/services/podcastservice.ts:223
+msgid "Failed to import podcasts from the file {{ file }}"
+msgstr "Podcastien tuominen tiedostosta {{ file }} epäonnistui"
 
 #: js/app/services/playlistfileservice.ts:246
 msgid "Failed to import radio stations from the file {{ file }}"
@@ -607,14 +616,15 @@ msgstr "Tiedoston tiedot"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
 #: js/app/services/playlistfileservice.ts:66
+#: js/app/services/podcastservice.ts:80
 msgid "File name"
 msgstr "Tiedoston nimi"
 
-#: templates/partials/navigationitem.php:142
+#: templates/partials/navigationitem.php:148
 msgid "Filters"
 msgstr "Suotimet"
 
-#: templates/partials/navigationitem.php:128
+#: templates/partials/navigationitem.php:134
 msgid "Flat layout"
 msgstr "Litteä asettelu"
 
@@ -623,7 +633,7 @@ msgid "Folder"
 msgstr "Kansio"
 
 #: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:236
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr "Kansiot"
@@ -644,7 +654,7 @@ msgstr "Yleinen"
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: js/app/controllers/navigationcontroller.js:256
+#: js/app/controllers/navigationcontroller.js:282
 msgid "Generated {{ datetime }}"
 msgstr "Generoitu {{ datetime }}"
 
@@ -728,6 +738,7 @@ msgstr ""
 "navigointikohdan \"Internet-radio\" vieressä ja valitse \"Lisää "
 "manuaalisesti\"."
 
+#: templates/partials/navigationitem.php:100
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
@@ -736,6 +747,10 @@ msgstr "Tuo tiedostosta"
 #: js/app/services/playlistfileservice.ts:201
 msgid "Import playlist contents from the selected file"
 msgstr "Tuo soittolistan sisältö valitusta tiedostosta"
+
+#: js/app/services/podcastservice.ts:200
+msgid "Import podcast channels from the selected OPML file"
+msgstr "Tuo podcast-kanavia valitusta OPML-tiedostosta"
 
 #: js/app/services/playlistfileservice.ts:254
 msgid "Import radio stations from the selected file"
@@ -797,7 +812,7 @@ msgstr "Internet radio"
 msgid "Internet radio stations"
 msgstr "Internet radio -asemat"
 
-#: js/app/services/podcastservice.ts:68
+#: js/app/services/podcastservice.ts:110
 msgid "Invalid RSS feed URL"
 msgstr "Epäkelpo RSS-syötteen osoite"
 
@@ -1001,7 +1016,7 @@ msgstr "Ei kappaleita"
 msgid "No tracks matching the filters"
 msgstr "Suodattimia vastaavia kappaleita ei ole"
 
-#: templates/partials/navigationitem.php:111
+#: templates/partials/navigationitem.php:117
 msgid "Normal layout"
 msgstr "Normaali asettelu"
 
@@ -1070,6 +1085,7 @@ msgid "Often played"
 msgstr "Usein soitettu"
 
 #: js/app/services/playlistfileservice.ts:35
+#: js/app/services/podcastservice.ts:73
 msgid "Overwrite existing file"
 msgstr "Ylikirjoita aiempi tiedosto"
 
@@ -1160,6 +1176,7 @@ msgid "Playlist name"
 msgstr "Soittolistan nimi"
 
 #: js/app/services/playlistfileservice.ts:48
+#: js/app/services/podcastservice.ts:53
 msgid "Playlist or folder not found"
 msgstr "Soittolista tai kansio ei löytynyt"
 
@@ -1175,9 +1192,13 @@ msgstr ""
 msgid "Podcast channel"
 msgstr "Podcast-kanava"
 
-#: js/app/services/podcastservice.ts:59
+#: js/app/services/podcastservice.ts:101
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Podcast-kanava \"{{ title }}\" lisättiin"
+
+#: js/app/services/podcastservice.ts:173
+msgid "Podcast channels exported to file {{ path }}"
+msgstr "Podcast-kanavat vietiin tiedostoon {{ path }}"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:293
 msgid "Podcast episode"
@@ -1189,7 +1210,8 @@ msgid "Podcast metadata"
 msgstr "Podcastin tiedot"
 
 #: js/app/controllers/playercontroller.js:757
-#: templates/partials/navigation.php:19 musicwidget.ts:60
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
+#: musicwidget.ts:60
 msgid "Podcasts"
 msgstr "Podcastit"
 
@@ -1267,11 +1289,11 @@ msgstr "Lähiaikoina päivitetty"
 msgid "Refine the filters defined for the smart playlist"
 msgstr "Tarkenna älykkäälle soittolistalle määritettyjä suotimia"
 
-#: templates/fake-template.php:5 templates/partials/navigationitem.php:139
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:145
 msgid "Reload"
 msgstr "Päivitä"
 
-#: templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:106
 msgid "Reload channels"
 msgstr "Päivitä kanavat"
 
@@ -1280,7 +1302,7 @@ msgstr "Päivitä kanavat"
 msgid "Remove"
 msgstr "Poista"
 
-#: js/app/services/podcastservice.ts:176
+#: js/app/services/podcastservice.ts:312
 msgid "Remove channel"
 msgstr "Poista kanava"
 
@@ -1341,11 +1363,12 @@ msgstr "Kumoa API-salasana"
 msgid "Rules"
 msgstr "Säännöt"
 
-#: templates/partials/navigationitem.php:145
+#: templates/partials/navigationitem.php:151
 msgid "Save playlist"
 msgstr "Tallenna soittolista"
 
 #: js/app/services/playlistfileservice.ts:67
+#: js/app/services/podcastservice.ts:81
 msgid "Save with given file name"
 msgstr "Tallenna annetulla tiedostonimellä"
 
@@ -1539,15 +1562,16 @@ msgstr "Tekniset tiedot"
 msgid "Text copied to clipboard"
 msgstr "Teksti kopioitiin leikepöydälle"
 
-#: js/app/services/podcastservice.ts:104
+#: js/app/services/podcastservice.ts:240
 msgid "The channel was already up-to-date"
 msgstr "Kanava oli jo ajan tasalla"
 
-#: js/app/services/podcastservice.ts:101
+#: js/app/services/podcastservice.ts:237
 msgid "The channel was updated from the source"
 msgstr "Kanava päivitettiin lähteestä"
 
 #: js/app/services/playlistfileservice.ts:32
+#: js/app/services/podcastservice.ts:70
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
 "overwrite it. Select \"No\" to save with another name."
@@ -1592,7 +1616,7 @@ msgstr ""
 "Tämä toiminto nollaa kaikki skannatut kappaleet ja kaikki käyttäjän luomat "
 "soittolistat. Tämän jälkeen kokoelma voidaan skannata uudelleen tyhjästä."
 
-#: js/app/services/podcastservice.ts:70
+#: js/app/services/podcastservice.ts:112
 msgid "This channel is already subscribed"
 msgstr "Tämä kanava on jo tilattu"
 
@@ -1681,7 +1705,7 @@ msgstr "Kappaleet esittäjältä {{artist}}"
 msgid "Tracks on {{album}}"
 msgstr "Kappaleet albumilla {{album}}"
 
-#: templates/partials/navigationitem.php:125
+#: templates/partials/navigationitem.php:131
 msgid "Tree layout"
 msgstr "Puumainen asettelu"
 
@@ -1689,11 +1713,12 @@ msgstr "Puumainen asettelu"
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
 
-#: js/app/services/podcastservice.ts:89
+#: js/app/services/podcastservice.ts:146
 msgid "URL"
 msgstr "URL"
 
 #: js/app/services/playlistfileservice.ts:56
+#: js/app/services/podcastservice.ts:61
 msgid "Unexpected error"
 msgstr "Odottamaton virhe"
 
@@ -1767,7 +1792,7 @@ msgstr ""
 "Käytä tätä osoitetta selataksesi musiikkikokoelmaasi Ampache-yhteensopivalta "
 "soittimelta."
 
-#: js/app/controllers/navigationcontroller.js:258
+#: js/app/controllers/navigationcontroller.js:284
 msgid "Used filters: {{ params }}"
 msgstr "Käytetyt suotimet: {{ params }}"
 
@@ -1788,6 +1813,7 @@ msgid "Website"
 msgstr "Verkkosivu"
 
 #: js/app/services/playlistfileservice.ts:52
+#: js/app/services/podcastservice.ts:57
 msgid "Writing to the file is not allowed"
 msgstr "Tiedostoon kirjoittaminen ei ole sallittua"
 
@@ -2067,7 +2093,7 @@ msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 msgid "{{artist}} appears on albums"
 msgstr "{{artist}} esiintyy albumeilla"
 
-#: Db/Album.php:271
+#: Db/Album.php:270
 msgid "Unknown album"
 msgstr "Tuntematon albumi"
 

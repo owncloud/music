@@ -60,7 +60,7 @@ class Scan extends BaseCommand {
 					'rescan-modified',
 					null,
 					InputOption::VALUE_NONE,
-					'rescan files which have mofication time later than the previous scan time (new files not scanned)'
+					'rescan files which have modification time later than the previous scan time (new files not scanned)'
 			)
 			->addOption(
 					'folder',

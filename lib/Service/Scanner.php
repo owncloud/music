@@ -175,12 +175,14 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan) : void {
+	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan, ?array &$timings = null) : void {
 		$this->emit(self::class, 'update', [$filePath]);
 
+		$time1 = \hrtime(true);
 		$analysisEnabled = $this->librarySettings->getScanMetadataEnabled($userId);
 		$meta = $this->extractMetadata($file, $libraryRoot, $filePath, $analysisEnabled);
 		$fileId = $file->getId();
+		$time2 = \hrtime(true);
 
 		// add/update artist and get artist entity
 		$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);
@@ -216,6 +218,12 @@ class Scanner extends PublicEmitter {
 			$this->albumBusinessLayer->removeCovers([$fileId]);
 			$this->findEmbeddedCoverForAlbum($albumId, $userId, $libraryRoot);
 			$this->coverService->removeAlbumCoverFromCache($albumId, $userId);
+		}
+		$time3 = \hrtime(true);
+
+		if (\is_array($timings)) {
+			$timings['analyze'] = $time2 - $time1;
+			$timings['db update'] = $time3 - $time2;
 		}
 
 		if (!$partOfScan) {
@@ -573,14 +581,17 @@ class Scanner extends PublicEmitter {
 			}
 			if ($file instanceof File) {
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
-				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
+				$timings = $debugOutput ? [] : null;
+				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true, $timings);
 				if ($debugOutput) {
 					$memAfter = \memory_get_usage(true);
 					$memDelta = $memAfter - $memBefore;
 					$fmtMemAfter = Util::formatFileSize($memAfter);
-					$fmtMemDelta = Util::formatFileSize($memDelta);
+					$fmtMemDelta = \mb_chr(0x0394) . Util::formatFileSize($memDelta);
 					$path = $file->getPath();
-					$debugOutput->writeln("\e[1m $count \e[0m $fmtMemAfter \e[1m $memDelta \e[0m ($fmtMemDelta) $path");
+					$analyzeTime = 'anlz:' . (int)($timings['analyze'] / 1000000) . 'ms';
+					$dbTime = 'db:' . (int)($timings['db update'] / 1000000) . 'ms';
+					$debugOutput->writeln("\e[1m $count \e[0m $fmtMemAfter \e[1m ($fmtMemDelta) \e[0m $analyzeTime \e[1m $dbTime \e[0m $path");
 				}
 				$count++;
 			} else {

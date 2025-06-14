@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -20,18 +20,7 @@ use OCP\IDBConnection;
  */
 class GenreMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_genres', Genre::class, 'name');
-	}
-
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Genre $genre
-	 * @return Genre
-	 */
-	protected function findUniqueEntity(Entity $genre) : Entity {
-		assert($genre instanceof Genre);
-		$sql = $this->selectGenres('`*PREFIX*music_genres`.`user_id` = ? AND `lower_name` = ?');
-		return $this->findEntity($sql, [$genre->getUserId(), $genre->getLowerName()]);
+		parent::__construct($db, $config, 'music_genres', Genre::class, 'name', ['user_id', 'lower_name']);
 	}
 
 	/**

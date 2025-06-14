@@ -27,7 +27,7 @@ use OCP\IDBConnection;
  */
 class AlbumMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_albums', Album::class, 'name', 'album_artist_id');
+		parent::__construct($db, $config, 'music_albums', Album::class, 'name', ['user_id', 'hash'], 'album_artist_id');
 	}
 
 	/**
@@ -520,17 +520,5 @@ class AlbumMapper extends BaseMapper {
 		$condForRule['mbid_album'] = parent::advFormatSqlCondition('mbid', $sqlOp, $conv);
 
 		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Album $album
-	 * @return Album
-	 */
-	protected function findUniqueEntity(Entity $album) : Entity {
-		assert($album instanceof Album);
-		$sql = $this->selectUserEntities('`*PREFIX*music_albums`.`hash` = ?');
-		return $this->findEntity($sql, [$album->getUserId(), $album->getHash()]);
 	}
 }

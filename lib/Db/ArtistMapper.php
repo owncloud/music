@@ -26,7 +26,7 @@ use OCP\IDBConnection;
  */
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_artists', Artist::class, 'name');
+		parent::__construct($db, $config, 'music_artists', Artist::class, 'name', ['user_id', 'hash']);
 	}
 
 	/**
@@ -239,17 +239,5 @@ class ArtistMapper extends BaseMapper {
 		$condForRule['mbid_artist'] = parent::advFormatSqlCondition('mbid', $sqlOp, $conv);
 
 		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Artist $artist
-	 * @return Artist
-	 */
-	protected function findUniqueEntity(Entity $artist) : Entity {
-		assert($artist instanceof Artist);
-		$sql = $this->selectUserEntities('`hash` = ?');
-		return $this->findEntity($sql, [$artist->getUserId(), $artist->getHash()]);
 	}
 }

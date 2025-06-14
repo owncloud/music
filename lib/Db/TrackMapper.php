@@ -24,7 +24,7 @@ use OCP\IDBConnection;
  */
 class TrackMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_tracks', Track::class, 'title', 'album_id');
+		parent::__construct($db, $config, 'music_tracks', Track::class, 'title', ['file_id', 'user_id'], 'album_id');
 	}
 
 	/**
@@ -546,16 +546,5 @@ class TrackMapper extends BaseMapper {
 		$cond = \implode($negativeOp ? ' AND ' : ' OR ', $parts);
 
 		return "($cond)";
-	}
-
-	/**
-	 * {@inheritdoc}
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Track $track
-	 * @return Track
-	 */
-	protected function findUniqueEntity(Entity $track) : Entity {
-		assert($track instanceof Track);
-		return $this->findByFileId($track->getFileId(), $track->getUserId());
 	}
 }

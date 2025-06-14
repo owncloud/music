@@ -41,17 +41,22 @@ abstract class BaseMapper extends CompatibleMapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected string $nameColumn;
+	protected ?array $uniqueColumns;
 	protected ?string $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
 	protected string $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
+	 * @param ?string[] $uniqueColumns List of column names composing the unique constraint of the table. Null if there's no unique index.
 	 * @phpstan-param class-string<EntityType> $entityClass
 	 */
-	public function __construct(IDBConnection $db, IConfig $config, string $tableName, string $entityClass, string $nameColumn, ?string $parentIdColumn=null) {
+	public function __construct(
+			IDBConnection $db, IConfig $config, string $tableName, string $entityClass,
+			string $nameColumn, ?array $uniqueColumns=null, ?string $parentIdColumn=null) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
+		$this->uniqueColumns = $uniqueColumns;
 		$this->parentIdColumn = $parentIdColumn;
 		// eclipse the base class property to help phpstan
 		$this->entityClass = $entityClass;
@@ -452,9 +457,11 @@ abstract class BaseMapper extends CompatibleMapper {
 		try {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
-			$existingEntity = $this->findUniqueEntity($entity);
-			$entity->setId($existingEntity->getId());
-			$entity->setCreated($existingEntity->getCreated());
+			$existingId = $this->findIdOfConflict($entity);
+			$entity->setId($existingId);
+			// The previous call to $this->insert has set the `created` property of $entity.
+			// Set it again using the data from the existing entry.
+			$entity->setCreated($this->getCreated($existingId));
 			return $this->update($entity);
 		}
 	}
@@ -470,18 +477,11 @@ abstract class BaseMapper extends CompatibleMapper {
 	 */
 	public function updateOrInsert(Entity $entity) : Entity {
 		try {
-			$existingEntity = $this->findUniqueEntity($entity);
-			$entity->setId($existingEntity->getId());
+			$existingId = $this->findIdOfConflict($entity);
+			$entity->setId($existingId);
 			return $this->update($entity);
 		} catch (DoesNotExistException $ex) {
-			try {
-				return $this->insert($entity);
-			} catch (UniqueConstraintViolationException $ex) {
-				// the conflicting entry didn't exist an eyeblink ago but now it does
-				// => this is essentially a concurrent update and it is anyway non-deterministic, which
-				//    update happens last; cancel this update
-				return $this->findUniqueEntity($entity);
-			}
+			return $this->insertOrUpdate($entity);
 		}
 	}
 
@@ -799,10 +799,36 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Find an entity which has the same identity as the supplied entity.
-	 * How the identity of the entity is defined, depends on the derived concrete class.
-	 * @phpstan-param EntityType $entity
-	 * @phpstan-return EntityType
+	 * Find ID of an existing entity which conflicts with the unique constraint of the given entity
 	 */
-	abstract protected function findUniqueEntity(Entity $entity) : Entity;
+	private function findIdOfConflict(Entity $entity) : int {
+		if (empty($this->uniqueColumns)) {
+			throw new \BadMethodCallException('not supported');
+		}
+
+		$properties = \array_map(fn($col) => $entity->columnToProperty($col), $this->uniqueColumns);
+		$values = \array_map(fn($prop) => $entity->$prop, $properties);
+
+		$conds = \array_map(fn($col) => "`$col` = ?", $this->uniqueColumns);
+		$sql = "SELECT `id` FROM {$this->getTableName()} WHERE " . \implode(' AND ', $conds);
+
+		$result = $this->execute($sql, $values);
+		$id = $result->fetchColumn();
+
+		if ($id === false) {
+			throw new DoesNotExistException('Conflicting entity not found');
+		}
+
+		return (int)$id;
+	}
+
+	private function getCreated(int $id) : string {
+		$sql = "SELECT `created` FROM {$this->getTableName()} WHERE `id` = ?";
+		$result = $this->execute($sql, [$id]);
+		$created = $result->fetchColumn();
+		if ($created === false) {
+			throw new DoesNotExistException('ID not found');
+		}
+		return $created;
+	}
 }

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -22,7 +22,7 @@ use OCP\IDBConnection;
  */
 class PodcastChannelMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_podcast_channels', PodcastChannel::class, 'title');
+		parent::__construct($db, $config, 'music_podcast_channels', PodcastChannel::class, 'title', ['user_id', 'rss_hash']);
 	}
 
 	/**
@@ -49,16 +49,5 @@ class PodcastChannelMapper extends BaseMapper {
 		];
 
 		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
-	}
-
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param PodcastChannel $channel
-	 * @return PodcastChannel
-	 */
-	protected function findUniqueEntity(Entity $channel) : Entity {
-		assert($channel instanceof PodcastChannel);
-		$sql = $this->selectUserEntities("`rss_hash` = ?");
-		return $this->findEntity($sql, [$channel->getUserId(), $channel->getRssHash()]);
 	}
 }

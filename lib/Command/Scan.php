@@ -122,8 +122,10 @@ class Scan extends BaseCommand {
 		$output->writeln('Found ' . \count($filesToScan) . ' music files to scan' . ($folder ? " in '$folder'" : ''));
 
 		if (\count($filesToScan)) {
-			$processedCount = $this->scanner->scanFiles($user, $filesToScan, $debug ? $output : null);
-			$output->writeln("Added $processedCount files to database of <info>$user</info>");
+			$stats = $this->scanner->scanFiles($user, $filesToScan, $debug ? $output : null);
+			$output->writeln("Added {$stats['count']} files to database of <info>$user</info>");
+			$output->writeln('Time consumed to analyze files: ' . ($stats['anlz_time'] / 1000) . ' s');
+			$output->writeln('Time consumed to update DB: ' . ($stats['db_time'] / 1000) . ' s');
 		}
 
 		$output->writeln("Searching cover images for albums with no cover art set...");

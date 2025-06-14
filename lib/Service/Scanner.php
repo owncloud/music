@@ -175,7 +175,10 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan, ?array &$timings = null) : void {
+	/**
+	 * @return array Information about consumed time: ['analyze' => int|float, 'db update' => int|float]
+	 */
+	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan) : array {
 		$this->emit(self::class, 'update', [$filePath]);
 
 		$time1 = \hrtime(true);
@@ -221,11 +224,6 @@ class Scanner extends PublicEmitter {
 		}
 		$time3 = \hrtime(true);
 
-		if (\is_array($timings)) {
-			$timings['analyze'] = $time2 - $time1;
-			$timings['db update'] = $time3 - $time2;
-		}
-
 		if (!$partOfScan) {
 			// invalidate the cache as the music collection was changed
 			$this->cache->remove($userId, 'collection');
@@ -234,6 +232,11 @@ class Scanner extends PublicEmitter {
 		$this->logger->log('imported entities - ' .
 				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
 				'debug');
+
+		return [
+			'analyze' => $time2 - $time1,
+			'db update' => $time3 - $time2
+		];
 	}
 
 	private function extractMetadata(File $file, Folder $libraryRoot, string $filePath, bool $analyzeFile) : array {
@@ -559,7 +562,10 @@ class Scanner extends PublicEmitter {
 		return \array_values($fileIds); // make the array non-sparse
 	}
 
-	public function scanFiles(string $userId, array $fileIds, ?OutputInterface $debugOutput = null) : int {
+	/**
+	 * @return array ['count' => int, 'anlz_time' => int, 'db_time' => int], times in milliseconds
+	 */
+	public function scanFiles(string $userId, array $fileIds, ?OutputInterface $debugOutput = null) : array {
 		$count = \count($fileIds);
 		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
@@ -571,6 +577,8 @@ class Scanner extends PublicEmitter {
 		$libraryRoot = $this->librarySettings->getFolder($userId);
 
 		$count = 0;
+		$totalAnalyzeTime = 0;
+		$totalDbTime = 0;
 		foreach ($fileIds as $fileId) {
 			$this->cache->set($userId, 'scanning', (string)\time()); // update scanning status to prevent simultaneous background cleanup execution
 
@@ -581,19 +589,21 @@ class Scanner extends PublicEmitter {
 			}
 			if ($file instanceof File) {
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
-				$timings = $debugOutput ? [] : null;
-				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true, $timings);
+				list('analyze' => $analyzeTime, 'db update' => $dbTime)
+					= $this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
 				if ($debugOutput) {
 					$memAfter = \memory_get_usage(true);
 					$memDelta = $memAfter - $memBefore;
 					$fmtMemAfter = Util::formatFileSize($memAfter);
 					$fmtMemDelta = \mb_chr(0x0394) . Util::formatFileSize($memDelta);
 					$path = $file->getPath();
-					$analyzeTime = 'anlz:' . (int)($timings['analyze'] / 1000000) . 'ms';
-					$dbTime = 'db:' . (int)($timings['db update'] / 1000000) . 'ms';
-					$debugOutput->writeln("\e[1m $count \e[0m $fmtMemAfter \e[1m ($fmtMemDelta) \e[0m $analyzeTime \e[1m $dbTime \e[0m $path");
+					$fmtAnalyzeTime = 'anlz:' . (int)($analyzeTime / 1000000) . 'ms';
+					$fmtDbTime = 'db:' . (int)($dbTime / 1000000) . 'ms';
+					$debugOutput->writeln("\e[1m $count \e[0m $fmtMemAfter \e[1m ($fmtMemDelta) \e[0m $fmtAnalyzeTime \e[1m $fmtDbTime \e[0m $path");
 				}
 				$count++;
+				$totalAnalyzeTime += $analyzeTime;
+				$totalDbTime += $dbTime;
 			} else {
 				$this->logger->log("File with id $fileId not found for user $userId, removing it from the library if present", 'info');
 				$this->deleteAudio([$fileId], [$userId]);
@@ -607,7 +617,11 @@ class Scanner extends PublicEmitter {
 		$this->cache->remove($userId, 'collection');
 		$this->cache->remove($userId, 'scanning'); // this isn't completely thread-safe, in case there would be multiple simultaneous scan jobs for the same user for some bizarre reason
 
-		return $count;
+		return [
+			'count' => $count,
+			'anlz_time' => (int)($totalAnalyzeTime / 1000000),
+			'db_time' => (int)($totalDbTime / 1000000)
+		];
 	}
 
 	/**

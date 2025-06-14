@@ -176,7 +176,7 @@ class MusicApiController extends Controller {
 		$fileIds = \array_map('intval', \explode(',', $files));
 		$finalize = \filter_var($finalize, FILTER_VALIDATE_BOOLEAN);
 
-		$filesScanned = $this->scanner->scanFiles($this->userId, $fileIds);
+		list('count' => $filesScanned) = $this->scanner->scanFiles($this->userId, $fileIds);
 
 		$albumCoversUpdated = false;
 		if ($finalize) {

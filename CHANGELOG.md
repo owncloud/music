@@ -27,7 +27,7 @@
 - Command `occ music:scan --rescan` failing if the DB contains any track with invalid `artist_id` or `album_id`
   [#1228](https://github.com/owncloud/music/issues/1228)
 
-## 2.1.4 - 2025-05-10
+## 2.1.4 - 2025-04-10
 
 ### Fixed
 - Subsonic API not working on PHP versions 7.4 and 8.0 (since v2.1.3)

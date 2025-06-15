@@ -28,8 +28,8 @@ use OCA\Music\Utility\StringUtil;
 /**
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:
  * @method Playlist find(int $playlistId, string $userId)
- * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property PlaylistMapper $mapper
  * @phpstan-extends BusinessLayer<Playlist>
  */

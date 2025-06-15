@@ -32,8 +32,8 @@ use OCP\Files\Folder;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Track find(int $trackId, string $userId)
- * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property TrackMapper $mapper
  * @phpstan-extends BusinessLayer<Track>
  */

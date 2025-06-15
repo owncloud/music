@@ -25,8 +25,8 @@ use OCA\Music\Utility\StringUtil;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Genre find(int $genreId, string $userId)
- * @method Genre[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Genre[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Genre[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Genre[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property GenreMapper $mapper
  * @phpstan-extends BusinessLayer<Genre>
  */

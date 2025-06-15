@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.2.0 - 2025-06-15
 
 ### Added
 - Support for importing WPL playlist files and play them within Files
@@ -14,7 +14,7 @@
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"
 - Allow manual entry of the file name when exporting a playlist or the radio stations
-- Data stored to DB tables is truncated to max number of bytes instead of characters; this should avoid problems on some DB configurations
+- Data stored to DB tables is truncated to max number of bytes instead of characters; this should avoid problems with non-ASCII characters on some DB configurations
 - Command `occ music:scan` shows the time consumed to analyze files and update DB. With option `--debug`, this is shown per file.
 - Improved scan performance, especially on MariaDB
 - Subsonic API:
@@ -24,7 +24,7 @@
 ### Fixed
 - "New files to scan" and "Scanning" bottom panes being slightly misplaced on NC 25+
 - Alphabet navigation not scrolling to quite correct location on first click in long list views like "All tracks" (since v2.0.0)
-- Command `occ music:scan --rescan` failing if the DB contains any track with invalid `artist_id` or `album_id`
+- Command `occ music:scan --rescan` failing if the DB contains any track with an invalid `artist_id` or `album_id`
   [#1228](https://github.com/owncloud/music/issues/1228)
 
 ## 2.1.4 - 2025-04-10

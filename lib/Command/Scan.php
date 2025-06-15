@@ -42,7 +42,7 @@ class Scan extends BaseCommand {
 					'debug',
 					null,
 					InputOption::VALUE_NONE,
-					'will run the scan in debug mode (memory usage)'
+					'will run the scan in debug mode, showing memory and time consumption'
 			)
 			->addOption(
 					'clean-obsolete',

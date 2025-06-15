@@ -16,8 +16,10 @@ use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
+use OCP\Files\Node;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUserManager;
@@ -1116,7 +1118,7 @@ class SubsonicController extends ApiController {
 	 * -------------------------------------------------------------------------
 	 */
 
-	private static function ensureParamHasValue(string $paramName, /*mixed*/ $paramValue) {
+	private static function ensureParamHasValue(string $paramName, /*mixed*/ $paramValue) : void {
 		if ($paramValue === null || $paramValue === '') {
 			throw new SubsonicException("Required parameter '$paramName' missing", 10);
 		}
@@ -1139,7 +1141,7 @@ class SubsonicController extends ApiController {
 	/**
 	 * Parse parameters used in the `star` and `unstar` API methods
 	 */
-	private static function parseStarringParameters(array $ids, array $albumIds, array $artistIds) {
+	private static function parseStarringParameters(array $ids, array $albumIds, array $artistIds) : array {
 		// album IDs from newer clients
 		$albumIds = \array_map('self::ripIdPrefix', $albumIds);
 
@@ -1189,7 +1191,7 @@ class SubsonicController extends ApiController {
 		return $this->userId;
 	}
 
-	private function getFilesystemNode($id) {
+	private function getFilesystemNode(int $id) : Node {
 		$rootFolder = $this->librarySettings->getFolder($this->user());
 		$nodes = $rootFolder->getById($id);
 
@@ -1204,7 +1206,7 @@ class SubsonicController extends ApiController {
 		return StringUtil::splitPrefixAndBasename($name, $this->ignoredArticles)['basename'];
 	}
 
-	private static function getIndexingChar(?string $name) {
+	private static function getIndexingChar(?string $name) : string {
 		// For unknown artists, use '?'
 		$char = '?';
 
@@ -1230,7 +1232,7 @@ class SubsonicController extends ApiController {
 		return [$subFolders, $tracks];
 	}
 
-	private function getIndexesForFolders() {
+	private function getIndexesForFolders() : Response {
 		$rootFolder = $this->librarySettings->getFolder($this->user());
 
 		list($subFolders, $tracks) = $this->getSubFoldersAndTracks($rootFolder);
@@ -1261,7 +1263,7 @@ class SubsonicController extends ApiController {
 		]]);
 	}
 
-	private function getMusicDirectoryForFolder($id) {
+	private function getMusicDirectoryForFolder(string $id) : Response {
 		$folderId = self::ripIdPrefix($id); // get rid of 'folder-' prefix
 		$folder = $this->getFilesystemNode($folderId);
 
@@ -1294,7 +1296,7 @@ class SubsonicController extends ApiController {
 		return $this->subsonicResponse($content);
 	}
 
-	private function getIndexesForArtists($rootElementName = 'indexes') {
+	private function getIndexesForArtists(string $rootElementName = 'indexes') : Response {
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->user(), SortBy::Name);
 
 		$indexes = [];
@@ -1316,7 +1318,7 @@ class SubsonicController extends ApiController {
 		]]);
 	}
 
-	private function getMusicDirectoryForArtist($id) {
+	private function getMusicDirectoryForArtist(string $id) : Response {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->user());
@@ -1331,7 +1333,7 @@ class SubsonicController extends ApiController {
 		]);
 	}
 
-	private function getMusicDirectoryForAlbum($id) {
+	private function getMusicDirectoryForAlbum(string $id) : Response {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
 		$album = $this->albumBusinessLayer->find($albumId, $this->user());
@@ -1348,7 +1350,7 @@ class SubsonicController extends ApiController {
 		]);
 	}
 
-	private function getMusicDirectoryForPodcastChannel($id) {
+	private function getMusicDirectoryForPodcastChannel(string $id) : Response {
 		$channelId = self::ripIdPrefix($id); // get rid of 'podcast_channel-' prefix
 		$channel = $this->podcastService->getChannel($channelId, $this->user(), /*$includeEpisodes=*/ true);
 
@@ -1365,11 +1367,7 @@ class SubsonicController extends ApiController {
 		]);
 	}
 
-	/**
-	 * @param Folder $folder
-	 * @return array
-	 */
-	private function folderToApi($folder) {
+	private function folderToApi(Folder $folder) : array {
 		return [
 			'id' => 'folder-' . $folder->getId(),
 			'title' => $folder->getName(),
@@ -1377,11 +1375,7 @@ class SubsonicController extends ApiController {
 		];
 	}
 
-	/**
-	 * @param Artist $artist
-	 * @return array
-	 */
-	private function artistToApi($artist) {
+	private function artistToApi(Artist $artist) : array {
 		$id = $artist->getId();
 		$result = [
 			'name' => $artist->getNameString($this->l10n),
@@ -1551,7 +1545,7 @@ class SubsonicController extends ApiController {
 	/**
 	 * Common logic for getArtistInfo and getArtistInfo2
 	 */
-	private function doGetArtistInfo(string $rootName, string $id, bool $includeNotPresent) {
+	private function doGetArtistInfo(string $rootName, string $id, bool $includeNotPresent) : Response {
 		$content = [];
 
 		$userId = $this->user();
@@ -1614,7 +1608,7 @@ class SubsonicController extends ApiController {
 	/**
 	 * Common logic for getAlbumInfo and getAlbumInfo2
 	 */
-	private function doGetAlbumInfo(string $id) {
+	private function doGetAlbumInfo(string $id) : Response {
 		$content = [];
 
 		$albumId = $this->getAlbumIdFromEntityId($id);
@@ -1643,7 +1637,7 @@ class SubsonicController extends ApiController {
 	/**
 	 * Common logic for getSimilarSongs and getSimilarSongs2
 	 */
-	private function doGetSimilarSongs(string $rootName, string $id, int $count) {
+	private function doGetSimilarSongs(string $rootName, string $id, int $count) : Response {
 		$userId = $this->user();
 
 		if (StringUtil::startsWith($id, 'artist')) {
@@ -1696,9 +1690,8 @@ class SubsonicController extends ApiController {
 
 	/**
 	 * Common logic for getStarred and getStarred2
-	 * @return array
 	 */
-	private function doGetStarred() {
+	private function doGetStarred() : array {
 		$userId = $this->user();
 		return [
 			'artists' => $this->artistBusinessLayer->findAllStarred($userId),
@@ -1711,11 +1704,10 @@ class SubsonicController extends ApiController {
 	 * Common response building logic for search2, search3, getStarred, and getStarred2
 	 * @param string $title Name of the main node in the response message
 	 * @param array $results Search results with keys 'artists', 'albums', and 'tracks'
-	 * @param boolean $useNewApi Set to true for search3 and getStarred2. There is a difference
-	 *                           in the formatting of the album nodes.
-	 * @return \OCP\AppFramework\Http\Response
+	 * @param bool $useNewApi Set to true for search3 and getStarred2. There is a difference
+	 *                        in the formatting of the album nodes.
 	 */
-	private function searchResponse($title, $results, $useNewApi) {
+	private function searchResponse(string $title, array $results, bool $useNewApi) : Response {
 		$albumMapFunc = $useNewApi ? 'albumToNewApi' : 'albumToOldApi';
 
 		return $this->subsonicResponse([$title => [
@@ -1727,12 +1719,9 @@ class SubsonicController extends ApiController {
 
 	/**
 	 * Find tracks by genre name
-	 * @param string $genreName
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Track[]
 	 */
-	private function findTracksByGenre($genreName, $limit=null, $offset=null) {
+	private function findTracksByGenre(string $genreName, ?int $limit=null, ?int $offset=null) : array {
 		$genre = $this->findGenreByName($genreName);
 
 		if ($genre) {
@@ -1744,12 +1733,9 @@ class SubsonicController extends ApiController {
 
 	/**
 	 * Find albums by genre name
-	 * @param string $genreName
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Album[]
 	 */
-	private function findAlbumsByGenre($genreName, $limit=null, $offset=null) {
+	private function findAlbumsByGenre(string $genreName, ?int $limit=null, ?int $offset=null) : array {
 		$genre = $this->findGenreByName($genreName);
 
 		if ($genre) {
@@ -1759,7 +1745,7 @@ class SubsonicController extends ApiController {
 		}
 	}
 
-	private function findGenreByName($name) {
+	private function findGenreByName(string $name) : ?Genre {
 		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->user());
 		if (\count($genreArr) == 0 && $name == Genre::unknownNameString($this->l10n)) {
 			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->user());
@@ -1793,7 +1779,10 @@ class SubsonicController extends ApiController {
 		return self::parseEntityId($id)[1];
 	}
 
-	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
+	/**
+	 * @param bool|string[] $useAttributes
+	 */
+	private function subsonicResponse(array $content, /*mixed*/ $useAttributes=true, string $status = 'ok') : Response {
 		$content['status'] = $status;
 		$content['version'] = self::API_VERSION;
 		$content['type'] = AppInfo::getFullName();
@@ -1818,7 +1807,7 @@ class SubsonicController extends ApiController {
 		return $response;
 	}
 
-	public function subsonicErrorResponse($errorCode, $errorMessage) {
+	public function subsonicErrorResponse(int $errorCode, string $errorMessage) : Response {
 		return $this->subsonicResponse([
 				'error' => [
 					'code' => $errorCode,

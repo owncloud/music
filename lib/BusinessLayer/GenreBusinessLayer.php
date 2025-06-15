@@ -42,11 +42,8 @@ class GenreBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Adds a genre if it does not exist already (in case insensitive sense) or updates an existing genre
-	 * @param string $name the name of the genre
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Genre The added/updated genre
 	 */
-	public function addOrUpdateGenre($name, $userId) {
+	public function addOrUpdateGenre(string $name, string $userId) : Genre {
 		$name = StringUtil::truncate($name, 64); // some DB setups can't truncate automatically to column max size
 
 		$genre = new Genre();
@@ -58,12 +55,9 @@ class GenreBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all genres of the user, along with the contained track IDs
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Genre[] where each instance has also the trackIds property set
 	 */
-	public function findAllWithTrackIds($userId, $limit=null, $offset=null) {
+	public function findAllWithTrackIds(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$genres = $this->findAll($userId, SortBy::Name, $limit, $offset);
 		$tracksByGenre = $this->trackMapper->mapGenreIdsToTrackIds($userId);
 

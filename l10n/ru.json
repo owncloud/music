@@ -63,7 +63,7 @@
     "Genres" : "Жанры",
     "Getting started" : "Инструкция",
     "Has no genre" : "Без жанра",
-    "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." : "Здесь вы можете генерировать пароли для использования API Ampache, так как они не могут быть сохранены действительно безопасным способом из-за особенностей API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время.",
+    "Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime." : "Здесь вы можете генерировать пароли для использования API Ampache или Subsonic, так как они не могут быть сохранены действительно безопасным способом из-за особенностей API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время.",
     "Hint: To list tracks with more refined criteria, try <a href=\"#search\">Advanced search</a>" : "Для более точного поиска треков воспользуйтесь <a href=\"#search\">расширенным поиском</a>",
     "History" : "История воспроизведений",
     "If you know the stream URL to add, then press the … symbol next to the navigation item \"Internet radio\", and select \"Add manually\"." : "Если вам известен URL потока, вы можете добавить его, нажав \"…\" рядом с \"Радио\" и выбрав \"Добавить вручную\".",

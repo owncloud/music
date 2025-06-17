@@ -20,7 +20,7 @@
     "Ampache and Subsonic" : "Ampache и Subsonic",
     "Any searcheable text" : "Любое свойство",
     "Artist name" : "Название исполнителя",
-    "Are you sure to remove the playlist \"{{ playlistName }}\"?" : "Вы действительно хотите удалить плейлист \"{{ playlistName }}\"?", //please check if variable for playlist name is correct and replace it if need
+    "Are you sure to remove the playlist \"{{ playlistName }}\"?" : "Вы действительно хотите удалить плейлист \"{{ playlistName }}\"?",
     "Articles to ignore on artist names:" : "Игнорировать артикли в названиях исполнителей:",
     "Artists" : "Исполнители",
     "artists" : "исполнителей",
@@ -136,8 +136,8 @@
     "Settings" : "Настройки",
     "Setting up radio stations" : "Настройка интернет-радио",
     "Show all…" : "Подробнее…",
-    "Show all {{ episodeCount }} episodes …" : "Показать все {{ episodeCount }} эпизодов", //please check if variable for episode count is correct and replace it if need
-    "Show all {{ songCount }} songs …" : "Показать все {{ songCount }} треков", //please check if variable for songs count is correct and replace it if need
+    "Show all {{ episodeCount }} episodes …" : "Показать все {{ episodeCount }} эпизодов",
+    "Show all {{ songCount }} songs …" : "Показать все {{ songCount }} треков",
     "Show less …" : "Показать меньше …",
     "Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site." : "Показывает уведомление на рабочем столе при смене воспроизводимого трека. Для работы этой функции разрешите уведомления в браузере.",
     "Shuffle" : "Перемешать",

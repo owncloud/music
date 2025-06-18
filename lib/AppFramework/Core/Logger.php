@@ -33,7 +33,7 @@ class Logger {
 	 * @param string $msg the message to be logged
 	 * @param string $level the severity of the logged event, defaults to 'error'
 	 */
-	public function log(string $msg, ?string $level=null) {
+	public function log(string $msg, ?string $level=null) : void {
 		$context = ['app' => $this->appName];
 		switch ($level) {
 			case 'debug':

@@ -47,7 +47,7 @@ class Library {
 		$this->logger = $logger;
 	}
 
-	public function getTracksAlbumsAndArtists($userId) {
+	public function getTracksAlbumsAndArtists(string $userId) : array {
 		// Get all the entities from the DB first. The order of queries is important if we are in
 		// the middle of a scanning process: we don't want to get tracks which do not yet have
 		// an album entry or albums which do not yet have artist entry.
@@ -77,7 +77,7 @@ class Library {
 		];
 	}
 
-	public function toCollection($userId) {
+	public function toCollection(string $userId) : array {
 		$entities = $this->getTracksAlbumsAndArtists($userId);
 		$coverHashes = $this->coverService->getAllCachedAlbumCoverHashes($userId);
 

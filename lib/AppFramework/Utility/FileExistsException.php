@@ -14,8 +14,8 @@ namespace OCA\Music\AppFramework\Utility;
 
 class FileExistsException extends \RuntimeException {
 
-	private $path;
-	private $altName;
+	private string $path;
+	private string $altName;
 
 	public function __construct(string $path, string $altName) {
 		$this->path = $path;
@@ -25,14 +25,14 @@ class FileExistsException extends \RuntimeException {
 	/**
 	 * Get conflicting file path
 	 */
-	public function getPath() {
+	public function getPath() : string {
 		return $this->path;
 	}
 
 	/**
 	 * Get suggested alternative file name to avoid the conflict
 	 */
-	public function getAltName() {
+	public function getAltName() : string {
 		return $this->altName;
 	}
 }

@@ -795,16 +795,18 @@ class Application extends ApplicationBase {
 
 	/**
 	 * This gets called on Nextcloud but not on ownCloud
+	 * @param \OCP\AppFramework\Bootstrap\IRegistrationContext $context
 	 */
-	public function register(/*\OCP\AppFramework\Bootstrap\IRegistrationContext*/ $context) : void {
+	public function register($context) : void {
 		$this->registerServices($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 
 	/**
 	 * This gets called on Nextcloud but not on ownCloud
+	 * @param \OCP\AppFramework\Bootstrap\IBootContext $context
 	 */
-	public function boot(/*\OCP\AppFramework\Bootstrap\IBootContext*/ $context) : void {
+	public function boot($context) : void {
 		$this->init();
 		$this->registerEmbeddedPlayer();
 	}

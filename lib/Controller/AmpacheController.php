@@ -802,7 +802,7 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function user_smartlists() {
+	protected function user_smartlists() : array {
 		// the only "smart list" currently supported is "All tracks", hence supporting any kind of filtering criteria
 		// isn't worthwhile
 		return $this->renderPlaylists([$this->getAllTracksPlaylist()]);
@@ -1686,7 +1686,7 @@ class AmpacheController extends ApiController {
 		}
 	}
 
-	private function renderEntitiesIndex($entities, $type) : array {
+	private function renderEntitiesIndex(array $entities, string $type) : array {
 		switch ($type) {
 			case 'song':			return $this->renderSongsIndex($entities);
 			case 'album':			return $this->renderAlbumsIndex($entities);
@@ -1855,7 +1855,7 @@ class AmpacheController extends ApiController {
 		}
 	}
 
-	private static function advSearchConvertInput(string $input, string $rule) {
+	private static function advSearchConvertInput(string $input, string $rule) : string {
 		switch ($rule) {
 			case 'last_play':
 				// days diff to ISO date
@@ -1871,7 +1871,7 @@ class AmpacheController extends ApiController {
 
 	private function getAllTracksPlaylist() : Playlist {
 		$pl = new class extends Playlist {
-			public $trackCount;
+			public int $trackCount = 0;
 			public function getTrackCount() : int {
 				return $this->trackCount;
 			}

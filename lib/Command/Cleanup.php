@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -21,11 +21,14 @@ class Cleanup extends Command {
 
 	private Maintenance $maintenance;
 
-	public function __construct($maintenance) {
+	public function __construct(Maintenance $maintenance) {
 		$this->maintenance = $maintenance;
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->setName('music:cleanup')
@@ -33,6 +36,9 @@ class Cleanup extends Command {
 		;
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln('Running cleanup task...');
 		$removedEntries = $this->maintenance->cleanUp();

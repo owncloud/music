@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\BackgroundJob;
@@ -21,6 +21,8 @@ class Cleanup extends TimedJob {
 
 	/**
 	 * Run background cleanup task
+	 * @param mixed $arguments
+	 * @return void
 	 */
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);

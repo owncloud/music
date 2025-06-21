@@ -9,7 +9,7 @@
  * @author Gregory Baudet <gregory.baudet@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -35,6 +35,7 @@ class BogusTrackRemoval implements IRepairStep {
 
 	/**
 	 * @inheritdoc
+	 * @return void
 	 */
 	public function run(IOutput $output) {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
@@ -49,7 +50,7 @@ class BogusTrackRemoval implements IRepairStep {
 		}
 	}
 
-	private function removePlaylistFiles() {
+	private function removePlaylistFiles() : int {
 		// Find and delete tracks with mime audio/mpegurl and audio/x-scpls.
 		// This may leave some stray albums and artists in the DB but that is not a major probelm
 		// since the background cleanup task should get rid of those, eventually.

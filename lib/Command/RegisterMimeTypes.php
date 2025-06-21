@@ -21,7 +21,7 @@ class RegisterMimeTypes extends Command {
 
 	private IMimeTypeLoader $mimeTypeLoader;
 
-	private $mimeMappings = [
+	private array $mimeMappings = [
 		'aac'	=> ['audio/aac'],
 		'aif'	=> ['audio/aiff'],
 		'aifc'	=> ['audio/aiff'],
@@ -36,6 +36,9 @@ class RegisterMimeTypes extends Command {
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->setName('music:register-mime-types')
@@ -43,6 +46,9 @@ class RegisterMimeTypes extends Command {
 		;
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		try {
 			$output->writeln('Registering MIME types for existing files...');
@@ -56,7 +62,7 @@ class RegisterMimeTypes extends Command {
 		return 0;
 	}
 
-	private function registerForExistingFiles(OutputInterface $output) {
+	private function registerForExistingFiles(OutputInterface $output) : void {
 		// The needed function is not part of the public API but we know it should exist
 		if (\method_exists($this->mimeTypeLoader, 'updateFilecache')) {
 			foreach ($this->mimeMappings as $ext => $mimetypes) {
@@ -71,7 +77,7 @@ class RegisterMimeTypes extends Command {
 		}
 	}
 
-	private function registerForNewFiles(OutputInterface $output) {
+	private function registerForNewFiles(OutputInterface $output) : void {
 		$mappingFile = \OC::$configDir . 'mimetypemapping.json';
 		$mappings = $this->mimeMappings;
 		$existingMappings = [];

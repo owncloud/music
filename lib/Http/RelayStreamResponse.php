@@ -80,6 +80,9 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function callback(IOutput $output) {
 		// The content length is absent for stream-like sources. 0-length indicates that
 		// there is no body to transfer.

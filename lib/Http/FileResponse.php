@@ -22,7 +22,7 @@ use OCP\Files\File;
  * A renderer for files
  */
 class FileResponse extends Response {
-	/* @var File|string $file */
+	/** @var File|string $file */
 	protected $file;
 	protected int $start;
 	protected int $end;
@@ -89,14 +89,14 @@ class FileResponse extends Response {
 			: $this->renderFromFile();
 	}
 
-	private function renderFromString() {
+	private function renderFromString() : string {
 		assert(\is_string($this->file));
 		return $this->rangeRequest
 			? \substr($this->file, $this->start, $this->partialSize())
 			: $this->file;
 	}
 
-	private function renderFromFile() {
+	private function renderFromFile() : string {
 		if ($this->rangeRequest) {
 			$handle = $this->file->fopen('r');
 			\fseek($handle, $this->start);
@@ -115,7 +115,7 @@ class FileResponse extends Response {
 		return $this->file->getContent();
 	}
 
-	private function partialSize() {
+	private function partialSize() : int {
 		return $this->end - $this->start + 1;
 	}
 }

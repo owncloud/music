@@ -22,14 +22,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use OCP\IGroupManager;
+use OCP\IUserManager;
+
 use OCA\Music\Service\Scanner;
 
 class Scan extends BaseCommand {
 
 	private Scanner $scanner;
 
-	public function __construct(\OCP\IUserManager $userManager,
-			\OCP\IGroupManager $groupManager, $scanner) {
+	public function __construct(IUserManager $userManager, IGroupManager $groupManager, Scanner $scanner) {
 		$this->scanner = $scanner;
 		parent::__construct($userManager, $groupManager);
 	}

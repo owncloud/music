@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Http;
@@ -30,7 +30,7 @@ use OCP\AppFramework\Http\Response;
 class XmlResponse extends Response {
 	private array $content;
 	private \DOMDocument $doc;
-	/* @var bool|string[] $attributeKeys */
+	/** @var bool|string[] $attributeKeys */
 	private $attributeKeys;
 	private bool $boolAsInt;
 	private bool $nullAsEmpty;
@@ -68,7 +68,7 @@ class XmlResponse extends Response {
 	}
 
 	public function render() {
-		$rootName = \array_keys($this->content)[0];
+		$rootName = (string)\array_keys($this->content)[0];
 		// empty content is a special case which cannot be handled by the standard recursive manner
 		if (empty($this->content[$rootName])) {
 			$this->doc->appendChild($this->doc->createElement($rootName));
@@ -78,7 +78,10 @@ class XmlResponse extends Response {
 		return $this->doc->saveXML();
 	}
 
-	private function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
+	/**
+	 * @param string|int|float|bool|array|\stdClass|null $value
+	 */
+	private function addChildElement($parentNode, string $key, /*mixed*/ $value, bool $allowAttribute=true) : void {
 		if (\is_bool($value)) {
 			if ($this->boolAsInt) {
 				$value = $value ? '1' : '0';
@@ -110,7 +113,7 @@ class XmlResponse extends Response {
 				$element = $this->doc->createElement($key);
 				$parentNode->appendChild($element);
 				foreach ($value as $childKey => $childValue) {
-					$this->addChildElement($element, $childKey, $childValue);
+					$this->addChildElement($element, (string)$childKey, $childValue);
 				}
 			}
 		} elseif ($value instanceof \stdClass) {
@@ -124,7 +127,7 @@ class XmlResponse extends Response {
 		}
 	}
 
-	private function keyMayDefineAttribute($key) {
+	private function keyMayDefineAttribute(string $key) : bool {
 		if (\is_array($this->attributeKeys)) {
 			return \in_array($key, $this->attributeKeys);
 		} else {
@@ -135,9 +138,8 @@ class XmlResponse extends Response {
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
 	 * Empty array is considered to be "indexed".
-	 * @param array $array
 	 */
-	private static function arrayIsIndexed(array $array) {
+	private static function arrayIsIndexed(array $array) : bool {
 		\reset($array);
 		return empty($array) || \is_int(\key($array));
 	}

@@ -22,7 +22,7 @@ use OCP\Files\File;
  * an extractor class for getID3
  */
 class ExtractorGetID3 implements Extractor {
-	private $getID3;
+	private ?\getID3 $getID3;
 	private Logger $logger;
 
 	public function __construct(Logger $logger) {
@@ -36,7 +36,7 @@ class ExtractorGetID3 implements Extractor {
 	 * Music app commands.
 	 * See https://github.com/nextcloud/server/issues/17027.
 	 */
-	private function initGetID3() {
+	private function initGetID3() : void {
 		if ($this->getID3 === null) {
 			require_once __DIR__ . '/../../3rdparty/getID3/getid3/getid3.php';
 			$this->getID3 = new \getID3();
@@ -76,6 +76,7 @@ class ExtractorGetID3 implements Extractor {
 	}
 
 	private function doExtract(File $file) : array {
+		\assert($this->getID3 !== null, 'initGetID3 must be called first');
 		$fp = $file->fopen('r');
 
 		if (empty($fp)) {

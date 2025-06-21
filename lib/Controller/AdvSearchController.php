@@ -112,7 +112,7 @@ class AdvSearchController extends Controller {
 		}
 	}
 
-	private function businessLayerForType($type) : ?BusinessLayer {
+	private function businessLayerForType(string $type) : ?BusinessLayer {
 		$map = [
 			'album' => $this->albumBusinessLayer,
 			'artist' => $this->artistBusinessLayer,

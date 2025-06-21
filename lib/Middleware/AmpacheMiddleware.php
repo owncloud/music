@@ -68,6 +68,7 @@ class AmpacheMiddleware extends Middleware {
 	 *
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method
+	 * @return void
 	 * @throws AmpacheException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
@@ -142,7 +143,7 @@ class AmpacheMiddleware extends Middleware {
 		return $credentials;
 	}
 
-	private function credentialsForApiKey($auth) : ?array {
+	private function credentialsForApiKey(string $auth) : ?array {
 		$usersAndHashes = $this->ampacheUserMapper->getUsersAndPasswordHashes();
 
 		foreach ($usersAndHashes as $keyId => $row) {

@@ -9,22 +9,26 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Hooks;
 
-use OCA\Music\AppInfo\Application;;
+use OCA\Music\AppInfo\Application;
+use OCA\Music\Service\Scanner;
+use OCP\Files\Folder;
 
 class ShareHooks {
-	private static function removeSharedItem($app, $itemType, $nodeId, $owner, $removeFromUsers) {
+	private static function removeSharedItem(
+			Application $app, string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
+		/** @var Scanner $scanner */
 		$scanner = $app->getContainer()->query('Scanner');
 
 		if ($itemType === 'folder') {
 			$ownerHome = $scanner->resolveUserFolder($owner);
 			$nodes = $ownerHome->getById($nodeId);
-			if (\count($nodes) > 0) {
-				$sharedFolder = $nodes[0];
+			$sharedFolder = $nodes[0] ?? null;
+			if ($sharedFolder instanceof Folder) {
 				$scanner->deleteFolder($sharedFolder, $removeFromUsers);
 			}
 		} elseif ($itemType === 'file') {
@@ -36,8 +40,9 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnshared(array $params) {
+	public static function itemUnshared(array $params) : void {
 		$shareType = $params['shareType'];
+		/** @var Application $app */
 		$app = \OC::$server->query(Application::class);
 
 		// react only on user and group shares
@@ -60,7 +65,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared by the share recipient
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnsharedFromSelf(array $params) {
+	public static function itemUnsharedFromSelf(array $params) : void {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
 		$app = \OC::$server->query(Application::class);
@@ -73,7 +78,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets shared
 	 * @param array $params contains the params of the added share
 	 */
-	public static function itemShared(array $params) {
+	public static function itemShared(array $params) : void {
 		// Do not auto-update database when a folder is shared. The folder might contain
 		// thousands of audio files, and indexing them could take minutes or hours. The sharee
 		// user will be prompted to update database the next time she opens the Music app.
@@ -91,7 +96,7 @@ class ShareHooks {
 		}
 	}
 
-	public function register() {
+	public function register() : void {
 		// FIXME: this is temporarily static because core emitters are not future
 		// proof, therefore legacy code in here
 		\OCP\Util::connectHook('OCP\Share', 'post_unshare', __CLASS__, 'itemUnshared');

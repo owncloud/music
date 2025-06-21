@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -37,6 +37,7 @@ class DiskNumberMigration implements IRepairStep {
 
 	/**
 	 * @inheritdoc
+	 * @return void
 	 */
 	public function run(IOutput $output) {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
@@ -51,7 +52,7 @@ class DiskNumberMigration implements IRepairStep {
 		}
 	}
 
-	private function executeMigrationSteps(IOutput $output) {
+	private function executeMigrationSteps(IOutput $output) : void {
 		$n = $this->copyDiskNumberToTracks();
 		$output->info("$n tracks were updated with a disk number");
 

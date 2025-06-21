@@ -49,6 +49,7 @@ class SubsonicMiddleware extends Middleware {
 	 *
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method
+	 * @return void
 	 * @throws SubsonicException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
@@ -65,7 +66,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function setupResponseFormat(SubsonicController $controller) {
+	private function setupResponseFormat(SubsonicController $controller) : void {
 		$format = $this->request->getParam('f', 'xml');
 		$callback = $this->request->getParam('callback');
 
@@ -87,7 +88,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function checkAuthentication(SubsonicController $controller) {
+	private function checkAuthentication(SubsonicController $controller) : void {
 		if ($this->request->getParam('t') !== null) {
 			throw new SubsonicException('Token-based authentication not supported', 41);
 		}

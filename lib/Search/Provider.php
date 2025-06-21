@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Search;
@@ -20,6 +20,7 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppInfo\Application;
 use OCA\Music\Db\AlbumMapper;
 use OCA\Music\Db\ArtistMapper;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\TrackMapper;
 
@@ -71,14 +72,14 @@ class Provider extends \OCP\Search\Provider {
 		];
 	}
 
-	private function createResult($entity, $title, $type) {
+	private function createResult(Entity $entity, string $title, string $type) : Result {
 		$link = $this->resultTypePaths[$type] . $entity->id;
 		$titlePrefix = $this->l10n->t('Music') . ' - ' . $this->resultTypeNames[$type] . ': ';
 		return new Result($entity->id, $titlePrefix . $title, $link, $type);
 	}
 
 	public function search($query) {
-		$results=[];
+		$results = [];
 
 		$artists = $this->artistMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($artists as $artist) {

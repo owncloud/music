@@ -127,7 +127,7 @@ class Track extends Entity {
 		return $this->numberOnPlaylist;
 	}
 
-	public function setNumberOnPlaylist(int $number) {
+	public function setNumberOnPlaylist(int $number) : void {
 		$this->numberOnPlaylist = $number;
 	}
 

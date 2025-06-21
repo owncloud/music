@@ -695,7 +695,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 	}
 
-	protected static function sanitizeNumericOp($comparisonOperator) {
+	protected static function sanitizeNumericOp(string $comparisonOperator) : string {
 		if (\in_array($comparisonOperator, ['>=', '<=', '=', '!=', '>', '<'])) {
 			return $comparisonOperator;
 		} else {
@@ -759,7 +759,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
 	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.
 	 */
-	private function registerRegexpFuncForSqlite() {
+	private function registerRegexpFuncForSqlite() : void {
 		// skip if the function already exists
 		if (!$this->funcExistsInSqlite('regexp')) {
 			// We need to use a private interface here to drill down to the native DB connection. The interface is

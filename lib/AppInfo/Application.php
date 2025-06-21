@@ -101,16 +101,6 @@ class Application extends ApplicationBase {
 
 		\mb_internal_encoding('UTF-8');
 
-		// NC26+ no longer ships OCP\AppFramework\Db\Mapper. Create a class alias which refers to this OCP class if available
-		// or to our own ponyfill if not (created by copying the said class from NC25).
-		if (!\class_exists('\OCA\Music\AppFramework\Db\CompatibleMapper')) {
-			if (\class_exists('\OCP\AppFramework\Db\Mapper')) {
-				\class_alias(\OCP\AppFramework\Db\Mapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
-			} else {
-				\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
-			}
-		}
-
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
 			$this->registerServices($this->getContainer());

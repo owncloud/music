@@ -17,27 +17,19 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IConfig;
 use OCP\IDBConnection;
 
-use OCA\Music\AppFramework\Db\CompatibleMapper;
+use OCA\Music\AppFramework\Db\Mapper;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use OCA\Music\Utility\StringUtil;
 
 /**
  * Common base class for data access classes of the Music app
  * 
- * Annotate the relevant base class methods since VSCode doesn't understand the dynamically defined base class:
- * @method string getTableName()
- * @method Entity delete(Entity $entity)
- * We need to annotate also a few protected methods as "public" since PHPDoc doesn't have any syntax to declare protected methods:
- * @method \PDOStatement execute(string $sql, array $params = [], ?int $limit = null, ?int $offset = null)
- * @method Entity findEntity(string $sql, array $params)
- * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
- * 
  * @phpstan-template EntityType of Entity
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-method EntityType delete(EntityType $entity)
  */
-abstract class BaseMapper extends CompatibleMapper {
+abstract class BaseMapper extends Mapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected string $nameColumn;
@@ -408,7 +400,7 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::insert()
+	 * @see Mapper::insert()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
@@ -434,7 +426,7 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::update()
+	 * @see Mapper::update()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */

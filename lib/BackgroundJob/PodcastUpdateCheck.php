@@ -12,10 +12,10 @@
 
 namespace OCA\Music\BackgroundJob;
 
+use OCA\Music\AppFramework\BackgroundJob\TimedJob;
 use OCA\Music\AppInfo\Application;
 use OCA\Music\Service\PodcastService;
 
-// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class PodcastUpdateCheck extends TimedJob {
 
 	/**

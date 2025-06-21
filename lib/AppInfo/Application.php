@@ -111,16 +111,6 @@ class Application extends ApplicationBase {
 			}
 		}
 
-		// Create a class alias which refers to the TimedJob either from OC or OCP namespace. The OC version is available
-		// on ownCloud and on Nextcloud versions <29. The OCP version is available on NC15+.
-		if (!\class_exists('\OCA\Music\BackgroundJob\TimedJob')) {
-			if (\class_exists('\OCP\BackgroundJob\TimedJob')) {
-				\class_alias(\OCP\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
-			} else {
-				\class_alias(\OC\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
-			}
-		}
-
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
 			$this->registerServices($this->getContainer());

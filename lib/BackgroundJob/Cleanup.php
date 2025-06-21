@@ -14,9 +14,9 @@
 
 namespace OCA\Music\BackgroundJob;
 
+use OCA\Music\AppFramework\BackgroundJob\TimedJob;
 use OCA\Music\AppInfo\Application;
 
-// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class Cleanup extends TimedJob {
 
 	/**

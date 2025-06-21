@@ -6,8 +6,3 @@
  */
 require_once('lib/AppFramework/Db/OldNextcloudMapper.php');
 \class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
-
-require_once('vendor/nextcloud/ocp/OCP/BackgroundJob/IJob.php');
-require_once('stubs/OC/BackgroundJob/Job.php');
-require_once('stubs/OC/BackgroundJob/TimedJob.php');
-\class_alias(\OC\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');

@@ -765,9 +765,8 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * @param int|float|string|null $ordinal
-	 * @return int|float|null
 	 */
-	private static function normalizeOrdinal(/*mixed*/ $ordinal) {
+	private static function normalizeOrdinal(/*mixed*/ $ordinal) : ?int {
 		if (\is_string($ordinal)) {
 			// convert format '1/10' to '1'
 			$ordinal = \explode('/', $ordinal)[0];
@@ -775,12 +774,12 @@ class Scanner extends PublicEmitter {
 
 		// check for numeric values - cast them to int and verify it's a natural number above 0
 		if (\is_numeric($ordinal) && ((int)$ordinal) > 0) {
-			$ordinal = (int)$ordinal;
+			$ordinal = (int)Util::limit((int)$ordinal, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
 		} else {
 			$ordinal = null;
 		}
 
-		return Util::limit($ordinal, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
+		return $ordinal;
 	}
 
 	private static function parseFileName(string $fileName) : array {
@@ -798,9 +797,8 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * @param int|float|string|null $date
-	 * @return int|float|null
 	 */
-	private static function normalizeYear(/*mixed*/ $date) {
+	private static function normalizeYear(/*mixed*/ $date) : ?int {
 		$year = null;
 		$matches = null;
 
@@ -812,20 +810,20 @@ class Scanner extends PublicEmitter {
 			$year = null;
 		}
 
-		return Util::limit($year, Util::SINT32_MIN, Util::SINT32_MAX);
+		return ($year === null) ? null : (int)Util::limit($year, Util::SINT32_MIN, Util::SINT32_MAX);
 	}
 
 	/**
 	 * @param int|float|string|null $value
-	 * @return int|float|null
 	 */
-	private static function normalizeUnsigned(/*mixed*/ $value) {
+	private static function normalizeUnsigned(/*mixed*/ $value) : ?int {
 		if (\is_numeric($value)) {
 			$value = (int)\round((float)$value);
+			$value = (int)Util::limit($value, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
 		} else {
 			$value = null;
 		}
-		return Util::limit($value, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
+		return $value;
 	}
 
 	/**

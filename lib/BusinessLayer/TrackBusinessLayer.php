@@ -395,8 +395,8 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
-			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
+			string $title, ?int $number, ?int $discNumber, ?int $year, int $genreId, int $artistId, int $albumId,
+			int $fileId, string $mimetype, string $userId, ?int $length=null, ?int $bitrate=null) : Track {
 		$track = new Track();
 		$track->setTitle(StringUtil::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);

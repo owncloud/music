@@ -19,15 +19,15 @@ use OCP\IL10N;
  * 
  * @method string getUserId()
  * @method void setUserId(string $userId)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
+ * @method ?string getCreated()
+ * @method setCreated(?string $timestamp)
+ * @method ?string getUpdated()
+ * @method setUpdated(?string $timestamp)
  */
 class Entity extends \OCP\AppFramework\Db\Entity {
-	public $userId;
-	public $created;
-	public $updated;
+	public string $userId = '';
+	public ?string $created = null;
+	public ?string $updated = null;
 
 	/**
 	 * All entities have a non-empty human-readable name, although the exact name of the

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -93,7 +93,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->method('insertOrUpdate')
 			->will($this->returnValue($track));
 
-		$result = $this->trackBusinessLayer->addOrUpdateTrack(null, null, null, null, null, null, null, $fileId, null, $this->userId);
+		$result = $this->trackBusinessLayer->addOrUpdateTrack('test', null, null, null, 1, 1, 1, $fileId, 'audio/mpeg', $this->userId);
 		$this->assertEquals($track, $result);
 	}
 

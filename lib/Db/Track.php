@@ -64,32 +64,32 @@ use OCP\IURLGenerator;
  * @method int getFolderId()
  */
 class Track extends Entity {
-	public $title;
-	public $number;
-	public $disk;
-	public $year;
-	public $artistId;
-	public $albumId;
-	public $length;
-	public $fileId;
-	public $bitrate;
-	public $mimetype;
-	public $mbid;
-	public $starred;
-	public $rating;
-	public $genreId;
-	public $playCount;
-	public $lastPlayed;
-	public $dirty;
+	public string $title = '';
+	public ?int $number = null;
+	public ?int $disk = null;
+	public ?int $year = null;
+	public ?int $artistId = null;
+	public ?int $albumId = null;
+	public ?int $length = null;
+	public int $fileId = 0;
+	public ?int $bitrate = null;
+	public string $mimetype = '';
+	public ?string $mbid = null;
+	public ?string $starred = null;
+	public int $rating = 0;
+	public ?int $genreId = null;
+	public int $playCount = 0;
+	public ?string $lastPlayed = null;
+	public int $dirty = 0;
 
 	// not from the music_tracks table but still part of the standard content of this entity:
-	public $filename;
-	public $size;
-	public $fileModTime;
-	public $albumName;
-	public $artistName;
-	public $genreName;
-	public $folderId;
+	public string $filename = '';
+	public int $size = 0;
+	public int $fileModTime = 0;
+	public ?string $albumName = null;
+	public ?string $artistName = null;
+	public ?string $genreName = null;
+	public int $folderId = 0;
 
 	// the rest of the variables are injected separately when needed
 	private ?Album $album = null;

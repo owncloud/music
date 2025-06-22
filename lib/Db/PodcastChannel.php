@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -24,51 +24,52 @@ use OCP\IURLGenerator;
  * @method void setContentHash(string $hash)
  * @method string getUpdateChecked()
  * @method void setUpdateChecked(string $timestamp)
- * @method string getPublished()
- * @method void setPublished(string $timestamp)
- * @method string getLastBuildDate()
- * @method void setLastBuildDate(string $timestamp)
- * @method string getTitle()
- * @method void setTitle(string $title)
- * @method string getLinkUrl()
- * @method void setLinkUrl(string $url)
- * @method string getLanguage()
- * @method void setLanguage(string $language)
- * @method string getCopyright()
- * @method void setCopyright(string $copyright)
- * @method string getAuthor()
- * @method void setAuthor(string $author)
- * @method string getDescription()
- * @method void setDescription(string $description)
- * @method string getImageUrl()
- * @method void setImageUrl(string $url)
- * @method string getCategory()
- * @method void setCategory(string $category)
- * @method string getStarred()
- * @method void setStarred(string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method ?string getPublished()
+ * @method void setPublished(?string $timestamp)
+ * @method ?string getLastBuildDate()
+ * @method void setLastBuildDate(?string $timestamp)
+ * @method ?string getTitle()
+ * @method void setTitle(?string $title)
+ * @method ?string getLinkUrl()
+ * @method void setLinkUrl(?string $url)
+ * @method ?string getLanguage()
+ * @method void setLanguage(?string $language)
+ * @method ?string getCopyright()
+ * @method void setCopyright(?string $copyright)
+ * @method ?string getAuthor()
+ * @method void setAuthor(?string $author)
+ * @method ?string getDescription()
+ * @method void setDescription(?string $description)
+ * @method ?string getImageUrl()
+ * @method void setImageUrl(?string $url)
+ * @method ?string getCategory()
+ * @method void setCategory(?string $category)
+ * @method ?string getStarred()
+ * @method void setStarred(?string $timestamp)
+ * @method int getRating()
+ * @method setRating(int $rating)
  */
 class PodcastChannel extends Entity {
-	public $rssUrl;
-	public $rssHash;
-	public $contentHash;
-	public $updateChecked;
-	public $published;
-	public $lastBuildDate;
-	public $title;
-	public $linkUrl;
-	public $language;
-	public $copyright;
-	public $author;
-	public $description;
-	public $imageUrl;
-	public $category;
-	public $starred;
-	public $rating;
+	public string $rssUrl = '';
+	public string $rssHash = '';
+	public string $contentHash = '';
+	public string $updateChecked = '';
+	public ?string $published = null;
+	public ?string $lastBuildDate = null;
+	public ?string $title = null;
+	public ?string $linkUrl = null;
+	public ?string $language = null;
+	public ?string $copyright = null;
+	public ?string $author = null;
+	public ?string $description = null;
+	public ?string $imageUrl = null;
+	public ?string $category = null;
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	// not part of the default content, may be injected separately
-	private $episodes;
+	/** @var ?PodcastEpisode[] $episodes */
+	private ?array $episodes = null;
 
 	public function __construct() {
 		$this->addType('rating', 'int');

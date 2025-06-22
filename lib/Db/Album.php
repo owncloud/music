@@ -33,30 +33,34 @@ use OCP\IURLGenerator;
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method setRating(int $rating)
  * @method ?string getAlbumArtistName()
  */
 class Album extends Entity {
-	public $name;
-	public $mbid;
-	public $mbidGroup;
-	public $coverFileId;
-	public $albumArtistId;
-	public $hash;
-	public $starred;
-	public $rating;
-	public $albumArtistName; // not from music_albums table but still part of the standard content
-	public $disk; // deprecated
+	public ?string $name = null;
+	public ?string $mbid = null;
+	public ?string $mbidGroup = null;
+	public ?int $coverFileId = null;
+	public ?int $albumArtistId = null;
+	public string $hash = '';
+	public ?string $starred = null;
+	public int $rating = 0;
+	public ?string $albumArtistName = null; // not from music_albums table but still part of the standard content
+	public ?int $disk = 0; // deprecated
 
 	// extra fields injected separately by AlbumBusinessLayer
+	/** @var ?int[] $years */
 	private ?array $years = null;
-	private ?array $genres = null; // *partial* Genre objects, not all properties are set
+	/** @var ?Genre[] $genres - AlbumBusinessLayer injects *partial* Genre objects, not all properties are set */
+	private ?array $genres = null;
+	/** @var ?int[] $artistIds */
 	private ?array $artistIds = null;
 	private ?int $numberOfDisks = null;
 
 	// injected separately when needed
-	private $tracks;
+	/** @var ?Track[] $tracks */
+	private ?array $tracks = null;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
@@ -65,26 +69,44 @@ class Album extends Entity {
 		$this->addType('rating', 'int');
 	}
 
+	/**
+	 * @return ?int[]
+	 */
 	public function getYears() : ?array {
 		return $this->years;
 	}
 
+	/**
+	 * @param ?int[] $years
+	 */
 	public function setYears(?array $years) : void {
 		$this->years = $years;
 	}
 
+	/**
+	 * @return ?Genre[]
+	 */
 	public function getGenres() : ?array {
 		return $this->genres;
 	}
 
+	/**
+	 * @param ?Genre[] $genres
+	 */
 	public function setGenres(?array $genres) : void {
 		$this->genres = $genres;
 	}
 
+	/**
+	 * @return ?int[]
+	 */
 	public function getArtistIds() : ?array {
 		return $this->artistIds;
 	}
 
+	/**
+	 * @param ?int[] $artistIds
+	 */
 	public function setArtistIds(?array $artistIds) : void {
 		$this->artistIds = $artistIds;
 	}

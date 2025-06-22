@@ -28,20 +28,22 @@ use OCP\IURLGenerator;
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method setRating(int $rating)
  */
 class Artist extends Entity {
-	public $name;
-	public $coverFileId;
-	public $mbid;
-	public $hash;
-	public $starred;
-	public $rating;
+	public ?string $name = null;
+	public ?int $coverFileId = null;
+	public ?string $mbid = null;
+	public string $hash = '';
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	// not part of the standard content, injected separately when needed
 	private ?string $lastfmUrl = null;
+	/** @var ?Album[] $albums */
 	private ?array $albums = null;
+	/** @var ?Track[] $tracks */
 	private ?array $tracks = null;
 
 	public function __construct() {

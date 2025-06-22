@@ -607,7 +607,7 @@ class SubsonicController extends ApiController {
 		$userId = $this->user();
 		$playlists = $this->playlistBusinessLayer->findAll($userId);
 
-		foreach ($playlists as &$playlist) {
+		foreach ($playlists as $playlist) {
 			$playlist->setDuration($this->playlistBusinessLayer->getDuration($playlist->getId(), $userId));
 		}
 
@@ -1760,6 +1760,7 @@ class SubsonicController extends ApiController {
 	}
 
 	private function artistImageUrl(int $id) : string {
+		\assert($this->keyId !== null, 'function should not get called without authenticated user');
 		$token = $this->imageService->getToken('artist', $id, $this->keyId);
 		return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image',
 			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverService::DO_NOT_CROP_OR_SCALE]);

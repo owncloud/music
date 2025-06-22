@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -34,7 +34,7 @@ class LogController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function log($message) {
+	public function log(?string $message) : JSONResponse {
 		$this->logger->log('JS: ' . $message, 'debug');
 		return new JSONResponse(['success' => true]);
 	}

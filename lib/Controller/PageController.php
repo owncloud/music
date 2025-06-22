@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2019 - 2023
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -33,7 +33,7 @@ class PageController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function index() {
+	public function index() : TemplateResponse {
 		$userLang = $this->l10n->getLanguageCode();
 		return new TemplateResponse($this->appName, 'main', ['lang' => $userLang]);
 	}

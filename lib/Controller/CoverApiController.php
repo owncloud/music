@@ -27,6 +27,7 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
@@ -69,7 +70,7 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function albumCover(int $albumId, $originalSize, $coverToken) {
+	public function albumCover(int $albumId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
 			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$album = $this->albumBusinessLayer->find($albumId, $userId);
@@ -84,7 +85,7 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function artistCover(int $artistId, $originalSize, $coverToken) {
+	public function artistCover(int $artistId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
 			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
@@ -99,7 +100,7 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function podcastCover(int $channelId, $originalSize, $coverToken) {
+	public function podcastCover(int $channelId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
 			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$channel = $this->podcastChannelBusinessLayer->find($channelId, $userId);
@@ -114,7 +115,7 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function cachedCover(string $hash, ?string $coverToken) {
+	public function cachedCover(string $hash, ?string $coverToken) : Response {
 		try {
 			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$coverData = $this->coverService->getCoverFromCache($hash, $userId);
@@ -135,7 +136,7 @@ class CoverApiController extends Controller {
 	/**
 	 * @param Artist|Album|PodcastChannel $entity
 	 */
-	private function cover($entity, string $userId, $originalSize) {
+	private function cover(Entity $entity, string $userId, ?string $originalSize) : Response {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
 		$userFolder = $this->rootFolder->getUserFolder($userId);
 

@@ -78,7 +78,7 @@ class PlaylistFileService {
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
-		$filename = $filename ?: $playlist->getName();
+		$filename = $filename ?: $playlist->getName() ?: 'playlist';
 		$filename = FilesUtil::sanitizeFileName($filename, ['m3u8', 'm3u']);
 
 		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);

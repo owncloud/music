@@ -251,12 +251,14 @@ class CoverService {
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
+		$response = null;
+
 		if ($entity instanceof PodcastChannel) {
-			list('content' => $image, 'content_type' => $mime) = HttpUtil::loadFromUrl($entity->getImageUrl());
-			if ($image !== false) {
-				$response = ['mimetype' => $mime, 'content' => $image];
-			} else {
-				$response = null;
+			if ($entity->getImageUrl() !== null) {
+				list('content' => $image, 'content_type' => $mime) = HttpUtil::loadFromUrl($entity->getImageUrl());
+				if ($image !== false) {
+					$response = ['mimetype' => $mime, 'content' => $image];
+				}
 			}
 		} else {
 			$response = $this->readCoverFromLocalFile($entity, $rootFolder);

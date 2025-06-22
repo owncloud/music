@@ -72,9 +72,10 @@ class Provider extends \OCP\Search\Provider {
 		];
 	}
 
-	private function createResult(Entity $entity, string $title, string $type) : Result {
+	private function createResult(Entity $entity, string $type) : Result {
 		$link = $this->resultTypePaths[$type] . $entity->id;
 		$titlePrefix = $this->l10n->t('Music') . ' - ' . $this->resultTypeNames[$type] . ': ';
+		$title = $entity->getNameString($this->l10n);
 		return new Result($entity->id, $titlePrefix . $title, $link, $type);
 	}
 
@@ -83,17 +84,17 @@ class Provider extends \OCP\Search\Provider {
 
 		$artists = $this->artistMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($artists as $artist) {
-			$results[] = $this->createResult($artist, $artist->name, 'music_artist');
+			$results[] = $this->createResult($artist, 'music_artist');
 		}
 
 		$albums = $this->albumMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($albums as $album) {
-			$results[] = $this->createResult($album, $album->name, 'music_album');
+			$results[] = $this->createResult($album, 'music_album');
 		}
 
 		$tracks = $this->trackMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($tracks as $track) {
-			$results[] = $this->createResult($track, $track->title, 'music_track');
+			$results[] = $this->createResult($track, 'music_track');
 		}
 
 		return $results;

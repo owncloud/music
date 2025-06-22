@@ -24,6 +24,10 @@ use OCA\Music\Utility\StringUtil;
 /**
  * Common base class for data access classes of the Music app
  * 
+ * @method Entity findEntity(string $sql, array $params)
+ * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
+ * @method Entity delete(Entity $entity)
+ * 
  * @phpstan-template EntityType of Entity
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
@@ -35,8 +39,6 @@ abstract class BaseMapper extends Mapper {
 	protected string $nameColumn;
 	protected ?array $uniqueColumns;
 	protected ?string $parentIdColumn;
-	/** @phpstan-var class-string<EntityType> $entityClass */
-	protected $entityClass;
 	protected string $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
@@ -50,8 +52,6 @@ abstract class BaseMapper extends Mapper {
 		$this->nameColumn = $nameColumn;
 		$this->uniqueColumns = $uniqueColumns;
 		$this->parentIdColumn = $parentIdColumn;
-		// eclipse the base class property to help phpstan
-		$this->entityClass = $entityClass;
 		$this->dbType = $config->getSystemValue('dbtype');
 	}
 
@@ -401,6 +401,8 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * {@inheritDoc}
 	 * @see Mapper::insert()
+	 * @param Entity $entity
+	 * @return Entity
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
@@ -427,6 +429,8 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * {@inheritDoc}
 	 * @see Mapper::update()
+	 * @param Entity $entity
+	 * @return Entity
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
@@ -463,6 +467,7 @@ abstract class BaseMapper extends Mapper {
 	 * a new entity is inserted.
 	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
 	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
+	 * @param Entity $entity
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType

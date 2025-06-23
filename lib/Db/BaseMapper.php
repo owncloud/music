@@ -401,12 +401,17 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * {@inheritDoc}
 	 * @see Mapper::insert()
-	 * @param Entity $entity
-	 * @return Entity
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function insert(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function insert(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$nowStr = $now->format(self::SQL_DATE_FORMAT);
 		$entity->setCreated($nowStr);
@@ -429,12 +434,17 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * {@inheritDoc}
 	 * @see Mapper::update()
-	 * @param Entity $entity
-	 * @return Entity
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function update(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function update(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
 		return parent::update($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type

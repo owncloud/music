@@ -47,7 +47,7 @@ use OCP\IURLGenerator;
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method int getRating()
- * @method setRating(int $rating)
+ * @method void setRating(int $rating)
  */
 class PodcastChannel extends Entity {
 	public string $rssUrl = '';

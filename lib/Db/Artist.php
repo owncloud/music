@@ -29,7 +29,7 @@ use OCP\IURLGenerator;
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method int getRating()
- * @method setRating(int $rating)
+ * @method void setRating(int $rating)
  */
 class Artist extends Entity {
 	public ?string $name = null;

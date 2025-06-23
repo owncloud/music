@@ -19,15 +19,15 @@ use OCP\IURLGenerator;
 
 /**
  * @method ?string getName()
- * @method setName(?string $name)
+ * @method void setName(?string $name)
  * @method ?string getTrackIds()
- * @method setTrackIds(?string $trackIds)
+ * @method void setTrackIds(?string $trackIds)
  * @method ?string getComment()
- * @method setComment(?string $comment)
+ * @method void setComment(?string $comment)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method int getRating()
- * @method setRating(int $rating)
+ * @method void setRating(int $rating)
  */
 class Playlist extends Entity {
 	public ?string $name = null;

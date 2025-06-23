@@ -16,9 +16,9 @@ namespace OCA\Music\Db;
  * @method ?string getName()
  * @method void setName(?string $name)
  * @method string getStreamUrl()
- * @method setStreamUrl(string $url)
+ * @method void setStreamUrl(string $url)
  * @method ?string getHomeUrl()
- * @method setHomeUrl(?string $url)
+ * @method void setHomeUrl(?string $url)
  */
 class RadioStation extends Entity {
 	public ?string $name = null;

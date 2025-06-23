@@ -20,9 +20,9 @@ use OCP\IL10N;
  * @method string getUserId()
  * @method void setUserId(string $userId)
  * @method ?string getCreated()
- * @method setCreated(?string $timestamp)
+ * @method void setCreated(?string $timestamp)
  * @method ?string getUpdated()
- * @method setUpdated(?string $timestamp)
+ * @method void setUpdated(?string $timestamp)
  */
 class Entity extends \OCP\AppFramework\Db\Entity {
 	public string $userId = '';

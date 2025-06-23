@@ -45,7 +45,7 @@ use OCP\IURLGenerator;
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method void setRating(?int $rating)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
  * @method int getPlayCount()

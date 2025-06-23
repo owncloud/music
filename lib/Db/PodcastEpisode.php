@@ -19,9 +19,9 @@ use OCP\IURLGenerator;
  * @method int getChannelId()
  * @method void setChannelId(int $id)
  * @method ?string getStreamUrl()
- * @method setStreamUrl(?string $url)
+ * @method void setStreamUrl(?string $url)
  * @method ?string getMimetype()
- * @method setMimetype(?string $mime)
+ * @method void setMimetype(?string $mime)
  * @method ?int getSize()
  * @method void setSize(?int $size)
  * @method ?int getDuration()
@@ -51,7 +51,7 @@ use OCP\IURLGenerator;
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method void setRating(?int $rating)
  */
 class PodcastEpisode extends Entity {
 	public int $channelId = 0;

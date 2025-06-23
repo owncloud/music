@@ -43,14 +43,14 @@ use OCP\IDBConnection;
  * We use this copy of ours both on NC and OC.
  */
 abstract class Mapper {
-	protected $tableName;
-	protected $entityClass;
-	protected $db;
+	protected string $tableName;
+	protected string $entityClass;
+	protected IDBConnection $db;
 
 	/**
 	 * @param IDBConnection $db Instance of the Db abstraction layer
 	 * @param string $tableName the name of the table. set this to allow entity
-	 * @param string $entityClass the name of the entity that the sql should be
+	 * @param ?string $entityClass the name of the entity that the sql should be
 	 * mapped to queries without using sql
 	 * @since 7.0.0
 	 */
@@ -202,7 +202,7 @@ abstract class Mapper {
 
 	/**
 	 * Returns the correct PDO constant based on the value type
-	 * @param $value
+	 * @param mixed $value
 	 * @return int PDO constant
 	 * @since 8.1.0
 	 */
@@ -223,7 +223,7 @@ abstract class Mapper {
 	 * @param array $params the params which should replace the ? in the sql query
 	 * @param int $limit the maximum number of rows
 	 * @param int $offset from which row we want to start
-	 * @return \PDOStatement the database query result
+	 * @return \Doctrine\DBAL\Driver\Statement the database query result
 	 * @since 7.0.0
 	 */
 	protected function execute($sql, array $params=[], $limit=null, $offset=null) {
@@ -297,6 +297,7 @@ abstract class Mapper {
 	 * Builds an error message by prepending the $msg to an error message which
 	 * has the parameters
 	 * @see findEntity
+	 * @param string $msg
 	 * @param string $sql the sql query
 	 * @param array $params the parameters of the sql query
 	 * @param int $limit the maximum number of rows

@@ -196,7 +196,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectFolderPathsToTracks(array &$tracks, string $userId, Folder $musicFolder) : void {
+	public function injectFolderPathsToTracks(array $tracks, string $userId, Folder $musicFolder) : void {
 		$folderIds = \array_map(fn($t) => $t->getFolderId(), $tracks);
 		$folderIds = \array_unique($folderIds);
 		$trackIdsByFolder = \array_fill_keys($folderIds, []); // track IDs are not actually used here so we can use empty arrays
@@ -217,7 +217,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			return $foldersLut[$id]['path'];
 		};
 
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setFolderPath($getFolderPath($track->getFolderId(), $foldersLut));
 		}
 	}

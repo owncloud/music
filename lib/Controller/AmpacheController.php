@@ -850,7 +850,7 @@ class AmpacheController extends ApiController {
 		$userId = $this->userId();
 		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
 			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Parent, $limit, $offset);
-			foreach ($tracks as $index => &$track) {
+			foreach ($tracks as $index => $track) {
 				$track->setNumberOnPlaylist($index + 1);
 			}
 		} else {
@@ -1933,9 +1933,9 @@ class AmpacheController extends ApiController {
 	}
 
 	/**
-	 * @param PodcastChannel[] &$channels
+	 * @param PodcastChannel[] $channels
 	 */
-	private function injectEpisodesToChannels(array &$channels) : void {
+	private function injectEpisodesToChannels(array $channels) : void {
 		$userId = $this->userId();
 		$allChannelsIncluded = (\count($channels) === $this->podcastChannelBusinessLayer->count($userId));
 		$this->podcastService->injectEpisodes($channels, $userId, $allChannelsIncluded);

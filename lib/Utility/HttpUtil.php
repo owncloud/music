@@ -169,7 +169,7 @@ class HttpUtil {
 		return false;
 	}
 
-	public static function setClientCachingDays(Response &$httpResponse, int $days) : void {
+	public static function setClientCachingDays(Response $httpResponse, int $days) : void {
 		$httpResponse->cacheFor($days * 24 * 60 * 60);
 		$httpResponse->addHeader('Pragma', 'cache');
 	}

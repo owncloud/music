@@ -101,7 +101,7 @@ class PodcastService {
 	 * @param bool $allChannelsIncluded Set this to true if $channels contains all the podcasts of the user.
 	 *									This helps in optimizing the DB query.
 	 */
-	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
+	public function injectEpisodes(array $channels, string $userId, bool $allChannelsIncluded) : void {
 		if ($allChannelsIncluded || \count($channels) >= $this->channelBusinessLayer::MAX_SQL_ARGS) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
@@ -110,7 +110,7 @@ class PodcastService {
 
 		$episodesPerChannel = ArrayUtil::groupBy($episodes, 'getChannelId');
 
-		foreach ($channels as &$channel) {
+		foreach ($channels as $channel) {
 			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
 		}
 	}

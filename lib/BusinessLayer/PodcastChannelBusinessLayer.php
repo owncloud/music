@@ -71,7 +71,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	 * 						if there appears to be no changes since the previous update
 	 * @return boolean true if the new content differed from the previously cached content or update was forced
 	 */
-	public function updateChannel(PodcastChannel &$channel, string $rssContent, \SimpleXMLElement $xmlNode, bool $force = false) {
+	public function updateChannel(PodcastChannel $channel, string $rssContent, \SimpleXMLElement $xmlNode, bool $force = false) {
 		$contentChanged = false;
 		$contentHash = self::calculateContentHash($rssContent);
 
@@ -90,7 +90,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	 * Indicate that the channel has been checked for updates without updating any content.
 	 * This may be used e.g. in case the channel RSS feed cannot be reached.
 	 */
-	public function markUpdateChecked(PodcastChannel &$channel) : void {
+	public function markUpdateChecked(PodcastChannel $channel) : void {
 		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
 		$this->update($channel);
 	}
@@ -115,7 +115,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		return \hash_final($ctx);
 	}
 
-	private static function parseChannelDataFromXml(\SimpleXMLElement $xmlNode, PodcastChannel &$channel) : void {
+	private static function parseChannelDataFromXml(\SimpleXMLElement $xmlNode, PodcastChannel $channel) : void {
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
 
 		$channel->setPublished( self::parseDateTime($xmlNode->pubDate) );

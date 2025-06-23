@@ -140,7 +140,7 @@ class Library {
 	 * Inject tracks to the given albums. Sets also the album reference of each injected track.
 	 * @param Album[] $albums input/output
 	 */
-	public function injectTracksToAlbums(array &$albums, string $userId) : void {
+	public function injectTracksToAlbums(array $albums, string $userId) : void {
 		$alBussLayer = $this->albumBusinessLayer;
 		$trBussLayer = $this->trackBusinessLayer;
 
@@ -152,10 +152,10 @@ class Library {
 
 		$tracksPerAlbum = ArrayUtil::groupBy($tracks, 'getAlbumId');
 
-		foreach ($albums as &$album) {
+		foreach ($albums as $album) {
 			$albumTracks = $tracksPerAlbum[$album->getId()] ?? [];
 			$album->setTracks($albumTracks);
-			foreach ($albumTracks as &$track) {
+			foreach ($albumTracks as $track) {
 				$track->setAlbum($album);
 			}
 		}
@@ -165,7 +165,7 @@ class Library {
 	 * Inject tracks to the given artists
 	 * @param Artist[] $artists input/output
 	 */
-	public function injectTracksToArtists(array &$artists, string $userId) : void {
+	public function injectTracksToArtists(array $artists, string $userId) : void {
 		$arBussLayer = $this->artistBusinessLayer;
 		$trBussLayer = $this->trackBusinessLayer;
 
@@ -177,7 +177,7 @@ class Library {
 
 		$tracksPerArtist = ArrayUtil::groupBy($tracks, 'getArtistId');
 
-		foreach ($artists as &$artist) {
+		foreach ($artists as $artist) {
 			$artistTracks = $tracksPerArtist[$artist->getId()] ?? [];
 			$artist->setTracks($artistTracks);
 		}
@@ -187,7 +187,7 @@ class Library {
 	 * Inject albums to the given artists
 	 * @param Artist[] $artists input/output
 	 */
-	public function injectAlbumsToArtists(array &$artists, string $userId) : void {
+	public function injectAlbumsToArtists(array $artists, string $userId) : void {
 		$arBussLayer = $this->artistBusinessLayer;
 		$alBussLayer = $this->albumBusinessLayer;
 
@@ -199,7 +199,7 @@ class Library {
 
 		$albumsPerArtist = ArrayUtil::groupBy($albums, 'getAlbumArtistId');
 
-		foreach ($artists as &$artist) {
+		foreach ($artists as $artist) {
 			$artistAlbums = $albumsPerArtist[$artist->getId()] ?? [];
 			$artist->setAlbums($artistAlbums);
 		}

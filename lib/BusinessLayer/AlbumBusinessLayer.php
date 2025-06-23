@@ -264,7 +264,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
 			$genres = $this->mapper->getGenresByAlbumId($albumIds, $userId);
 
-			foreach ($albums as &$album) {
+			foreach ($albums as $album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($artists[$albumId] ?? []);
 				$album->setNumberOfDisks($diskCounts[$albumId] ?? 1);
@@ -409,7 +409,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Given an array of Track objects, inject the corresponding Album object to each of them
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectAlbumsToTracks(array &$tracks, string $userId) : void {
+	public function injectAlbumsToTracks(array $tracks, string $userId) : void {
 		$albumIds = [];
 
 		// get unique album IDs
@@ -429,7 +429,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$albumMap = ArrayUtil::createIdLookupTable($albums);
 
 		// finally, set the references on the tracks
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setAlbum($albumMap[$track->getAlbumId()] ?? new Album());
 		}
 	}

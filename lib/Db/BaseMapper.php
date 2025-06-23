@@ -418,7 +418,7 @@ abstract class BaseMapper extends Mapper {
 		$entity->setUpdated($nowStr);
 
 		try {
-			return parent::insert($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+			return parent::insert($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 		} catch (\OCP\DB\Exception $e) {
@@ -447,7 +447,7 @@ abstract class BaseMapper extends Mapper {
 
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
-		return parent::update($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+		return parent::update($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
 	}
 
 	/**

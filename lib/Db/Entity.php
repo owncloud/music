@@ -37,7 +37,7 @@ class Entity extends \OCP\AppFramework\Db\Entity {
 	 * The derived classes may override this as needed.
 	 */
 	public function getNameString(IL10N $l10n) : string {
-		($l10n); // @phpstan-ignore-line // unused in this base implementation
+		($l10n); // @phpstan-ignore expr.resultUnused (unused in this base implementation)
 
 		if (\property_exists($this, 'name')) {
 			return $this->name ?? '';

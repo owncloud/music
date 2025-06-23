@@ -1442,7 +1442,7 @@ class AmpacheController extends ApiController {
 		$entity = $businessLayer->find($id, $this->userId());
 		if (\property_exists($entity, 'rating')) {
 			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
-			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore-line
+			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore method.notFound
 			$businessLayer->update($entity);
 		} else {
 			throw new AmpacheException("Unsupported type $type", 400);

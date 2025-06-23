@@ -202,7 +202,7 @@ class PodcastApiController extends Controller {
 			'success' => ($updateResult['status'] === PodcastService::STATUS_OK),
 			'updated' => $updateResult['updated']
 		];
-		if ($updateResult['updated']) {
+		if ($updateResult['updated'] && $updateResult['channel']) {
 			$response['channel'] = $updateResult['channel']->toApi($this->urlGenerator);
 		}
 

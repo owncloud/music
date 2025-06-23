@@ -29,6 +29,7 @@ use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Utility\ArrayUtil;
@@ -112,6 +113,7 @@ class AdvSearchController extends Controller {
 		}
 	}
 
+	/** @phpstan-return ?BusinessLayer<covariant Entity> */
 	private function businessLayerForType(string $type) : ?BusinessLayer {
 		$map = [
 			'album' => $this->albumBusinessLayer,

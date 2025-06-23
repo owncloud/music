@@ -18,6 +18,7 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\Entity;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Service\AmpacheImageService;
@@ -100,6 +101,7 @@ class AmpacheImageController extends Controller {
 		return $response;
 	}
 
+	/** @phpstan-return ?BusinessLayer<covariant Entity> */
 	private function getBusinessLayer(string $object_type) : ?BusinessLayer {
 		switch ($object_type) {
 			case 'album':		return $this->albumBusinessLayer;

@@ -120,6 +120,7 @@ class FavoritesController extends Controller {
 		return $this->setFavorite($this->podcastEpisodeBusinessLayer, $id, $status);
 	}
 
+	/** @phpstan-param BusinessLayer<*> $businessLayer */
 	private function setFavorite(BusinessLayer $businessLayer, int $id, ?string $status) : JSONResponse {
 		if ($status === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "argument 'status' is required");

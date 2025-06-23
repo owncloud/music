@@ -31,7 +31,6 @@ use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
-use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Service\DetailsService;
 use OCA\Music\Service\Scanner;
@@ -284,6 +283,7 @@ class ShivaApiController extends Controller {
 		return $this->randomItem($this->trackBusinessLayer, 'track');
 	}
 
+	/** @phpstan-param BusinessLayer<*> $businessLayer */
 	private function randomItem(BusinessLayer $businessLayer, string $type) : JSONResponse {
 		$ids = $businessLayer->findAllIds($this->userId);
 		$id = Random::pickItem($ids);

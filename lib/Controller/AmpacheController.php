@@ -1615,6 +1615,7 @@ class AmpacheController extends ApiController {
 		return $this->session->getUserId();
 	}
 
+	/** @phpstan-return BusinessLayer<covariant Entity> */
 	private function getBusinessLayer(string $type) : BusinessLayer {
 		switch ($type) {
 			case 'song':			return $this->trackBusinessLayer;
@@ -1860,6 +1861,7 @@ class AmpacheController extends ApiController {
 		return $pl;
 	}
 
+	/** @phpstan-param BusinessLayer<covariant Entity> $businessLayer */
 	private function getCover(int $entityId, BusinessLayer $businessLayer) : Response {
 		$userId = $this->userId();
 		$userFolder = $this->librarySettings->getFolder($userId);
@@ -1890,6 +1892,7 @@ class AmpacheController extends ApiController {
 		return [$addMin, $addMax, $updateMin, $updateMax];
 	}
 
+	/** @phpstan-param BusinessLayer<covariant Entity> $businessLayer */
 	private function findEntities(
 			BusinessLayer $businessLayer, ?string $filter, bool $exact, ?int $limit=null, ?int $offset=null, ?string $add=null, ?string $update=null) : array {
 

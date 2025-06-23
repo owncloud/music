@@ -884,10 +884,9 @@ class AmpacheController extends ApiController {
 	protected function playlist_edit(int $filter, ?string $name, ?string $items, ?string $tracks) : array {
 		$edited = false;
 		$userId = $this->userId();
-		$playlist = $this->playlistBusinessLayer->find($filter, $userId);
 
 		if (!empty($name)) {
-			$playlist->setName($name);
+			$this->playlistBusinessLayer->rename($name, $filter, $userId);
 			$edited = true;
 		}
 
@@ -897,7 +896,7 @@ class AmpacheController extends ApiController {
 		if (\count($newTrackIds) != \count($newTrackOrdinals)) {
 			throw new AmpacheException("Arguments 'items' and 'tracks' must contain equal amount of elements", 400);
 		} elseif (\count($newTrackIds) > 0) {
-			$trackIds = $playlist->getTrackIdsAsArray();
+			$trackIds = $this->playlistBusinessLayer->getPlaylistTrackIds($filter, $userId);
 
 			for ($i = 0, $count = \count($newTrackIds); $i < $count; ++$i) {
 				$trackId = $newTrackIds[$i];
@@ -907,12 +906,11 @@ class AmpacheController extends ApiController {
 				$trackIds[$newTrackOrdinals[$i]-1] = $trackId;
 			}
 
-			$playlist->setTrackIdsFromArray($trackIds);
+			$this->playlistBusinessLayer->setTracks($trackIds, $filter, $userId);
 			$edited = true;
 		}
 
 		if ($edited) {
-			$this->playlistBusinessLayer->update($playlist);
 			return ['success' => 'playlist changes saved'];
 		} else {
 			throw new AmpacheException('Nothing was changed', 400);
@@ -936,16 +934,14 @@ class AmpacheController extends ApiController {
 			throw new AmpacheException("Invalid song ID $song", 404);
 		}
 
-		$playlist = $this->playlistBusinessLayer->find($filter, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = $this->playlistBusinessLayer->getPlaylistTrackIds($filter, $userId);
 
 		if ($check && \in_array($song, $trackIds)) {
 			throw new AmpacheException("Can't add a duplicate item when check is enabled", 400);
 		}
 
 		$trackIds[] = $song;
-		$playlist->setTrackIdsFromArray($trackIds);
-		$this->playlistBusinessLayer->update($playlist);
+		$this->playlistBusinessLayer->setTracks($trackIds, $filter, $userId);
 		return ['success' => 'song added to playlist'];
 	}
 
@@ -959,14 +955,12 @@ class AmpacheController extends ApiController {
 			throw new AmpacheException("Invalid $type ID $id", 404);
 		}
 
-		$playlist = $this->playlistBusinessLayer->find($filter, $userId);
+		$trackIds = $this->playlistBusinessLayer->getPlaylistTrackIds($filter, $userId);
 
-		$trackIds = $playlist->getTrackIdsAsArray();
 		$newIds = $this->trackIdsForEntity($id, $type);
 		$trackIds = \array_merge($trackIds, $newIds);
 
-		$playlist->setTrackIdsFromArray($trackIds);
-		$this->playlistBusinessLayer->update($playlist);
+		$this->playlistBusinessLayer->setTracks($trackIds, $filter, $userId);
 		return ['success' => "songs added to playlist"];
 	}
 
@@ -979,20 +973,19 @@ class AmpacheController extends ApiController {
 	 * @param ?int $clear Value 1 erases all the songs from the playlist
 	 */
 	protected function playlist_remove_song(int $filter, ?int $song, ?int $track, ?int $clear) : array {
-		$playlist = $this->playlistBusinessLayer->find($filter, $this->userId());
+		$userId = $this->userId();
+		$trackIds = $this->playlistBusinessLayer->getPlaylistTrackIds($filter, $userId);
 
 		if ($clear === 1) {
 			$trackIds = [];
 			$message = 'all songs removed from playlist';
 		} elseif ($song !== null) {
-			$trackIds = $playlist->getTrackIdsAsArray();
 			if (!\in_array($song, $trackIds)) {
 				throw new AmpacheException("Song $song not found in playlist", 404);
 			}
 			$trackIds = ArrayUtil::diff($trackIds, [$song]);
 			$message = 'song removed from playlist';
 		} elseif ($track !== null) {
-			$trackIds = $playlist->getTrackIdsAsArray();
 			if ($track < 1 || $track > \count($trackIds)) {
 				throw new AmpacheException("Track ordinal $track is out of bounds", 404);
 			}
@@ -1002,8 +995,7 @@ class AmpacheController extends ApiController {
 			throw new AmpacheException("One of the arguments 'clear', 'song', 'track' is required", 400);
 		}
 
-		$playlist->setTrackIdsFromArray($trackIds);
-		$this->playlistBusinessLayer->update($playlist);
+		$this->playlistBusinessLayer->setTracks($trackIds, $filter, $userId);
 		return ['success' => $message];
 	}
 
@@ -1185,19 +1177,7 @@ class AmpacheController extends ApiController {
 	 * @AmpacheAPI
 	 */
 	protected function live_stream_edit(int $filter, ?string $name, ?string $url, ?string $site_url) : array {
-		$station = $this->radioStationBusinessLayer->find($filter, $this->userId());
-
-		if ($name !== null) {
-			$station->setName($name);
-		}
-		if ($url !== null) {
-			$station->setStreamUrl($url);
-		}
-		if ($site_url !== null) {
-			$station->setHomeUrl($site_url);
-		}
-		$station = $this->radioStationBusinessLayer->update($station);
-
+		$station = $this->radioStationBusinessLayer->updateStation($filter, $this->userId(), $name, $url, $site_url);
 		return $this->renderLiveStreams([$station]);
 	}
 
@@ -1347,12 +1327,8 @@ class AmpacheController extends ApiController {
 	protected function bookmark_edit(int $filter, string $type, int $position, ?string $client, int $include=0) : array {
 		// Note: the optional argument 'date' is not supported and is disregarded
 		$entryType = self::mapBookmarkType($type);
-		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->userId());
-		$bookmark->setPosition($position * 1000); // seconds to milliseconds
-		if ($client !== null) {
-			$bookmark->setComment($client);
-		}
-		$bookmark = $this->bookmarkBusinessLayer->update($bookmark);
+		$position *= 1000; // seconds to milliseconds
+		$bookmark = $this->bookmarkBusinessLayer->updateByEntry($this->userId(), $entryType, $filter, $position, $client);
 		return $this->renderBookmarks([$bookmark], $include);
 	}
 
@@ -1437,14 +1413,11 @@ class AmpacheController extends ApiController {
 	 * @AmpacheAPI
 	 */
 	protected function rate(string $type, int $id, int $rating) : array {
-		$rating = Util::limit($rating, 0, 5);
+		$rating = (int)Util::limit($rating, 0, 5);
 		$businessLayer = $this->getBusinessLayer($type);
-		$entity = $businessLayer->find($id, $this->userId());
-		if (\property_exists($entity, 'rating')) {
-			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
-			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore method.notFound
-			$businessLayer->update($entity);
-		} else {
+		try {
+			$businessLayer->setRating($id, $rating, $this->userId());
+		} catch (\BadMethodCallException $ex) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 

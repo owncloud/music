@@ -82,7 +82,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		}
 		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
 
-		$this->update($channel);
+		$this->mapper->update($channel);
 		return $contentChanged;
 	}
 
@@ -92,7 +92,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	 */
 	public function markUpdateChecked(PodcastChannel $channel) : void {
 		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
-		$this->update($channel);
+		$this->mapper->update($channel);
 	}
 
 	private static function calculateContentHash(string $rssContent) : string {

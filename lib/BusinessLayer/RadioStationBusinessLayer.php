@@ -39,15 +39,18 @@ class RadioStationBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
+	/**
+	 * @throws \DomainException if one of the provided URLs is overly long
+	 */
 	public function create(string $userId, ?string $name, string $streamUrl, ?string $homeUrl = null) : RadioStation {
 		$station = new RadioStation();
 
 		if (\strlen($streamUrl) > 2048) {
-			throw new BusinessLayerException("URL maximum length (2048) exceeded: $streamUrl");
+			throw new \DomainException("URL maximum length (2048) exceeded: $streamUrl");
 		}
 
 		if ($homeUrl !== null && \strlen($homeUrl) > 2048) {
-			throw new BusinessLayerException("URL maximum length (2048) exceeded: $homeUrl");
+			throw new \DomainException("URL maximum length (2048) exceeded: $homeUrl");
 		}
 
 		$station->setUserId($userId);
@@ -58,4 +61,30 @@ class RadioStationBusinessLayer extends BusinessLayer {
 		return $this->mapper->insert($station);
 	}
 
+	/**
+	 * Modify an existing radio station. Null-valued arguments are ignored and the corresponding properties are not modified.
+	 * @throws BusinessLayerException if the station does not exist
+	 * @throws \DomainException if one of the provided URLs is overly long
+	 */
+	public function updateStation(int $id, string $userId, ?string $name = null, ?string $streamUrl = null, ?string $homeUrl = null) : RadioStation {
+		$station = $this->find($id, $userId);
+
+		if ($name !== null) {
+			$station->setName(StringUtil::truncate($name, 256));
+		}
+		if ($streamUrl !== null) {
+			if (\strlen($streamUrl) > 2048) {
+				throw new \DomainException("URL maximum length (2048) exceeded: $streamUrl");
+			}
+			$station->setStreamUrl($streamUrl);
+		}
+		if ($homeUrl !== null) {
+			if (\strlen($homeUrl) > 2048) {
+				throw new \DomainException("URL maximum length (2048) exceeded: $homeUrl");
+			}
+			$station->setHomeUrl($homeUrl);
+		}
+
+		return $this->mapper->update($station);
+	}
 }

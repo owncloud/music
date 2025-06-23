@@ -642,17 +642,17 @@ class SubsonicController extends ApiController {
 		// If playlist ID has been passed, then this method actually updates an existing list instead of creating a new one.
 		// The updating can't be used to rename the list, even if both ID and name are given (this is how the real Subsonic works, too).
 		if (!empty($playlistId)) {
-			$playlist = $this->playlistBusinessLayer->find((int)$playlistId, $this->user());
+			$playlistId = (int)$playlistId;
 		} elseif (!empty($name)) {
 			$playlist = $this->playlistBusinessLayer->create($name, $this->user());
+			$playlistId = $playlist->getId();
 		} else {
 			throw new SubsonicException('Playlist ID or name must be specified.', 10);
 		}
 
-		$playlist->setTrackIdsFromArray($songIds);
-		$this->playlistBusinessLayer->update($playlist);
+		$this->playlistBusinessLayer->setTracks($songIds, $playlistId, $this->user());
 
-		return $this->getPlaylist($playlist->getId());
+		return $this->getPlaylist($playlistId);
 	}
 
 	/**
@@ -718,11 +718,7 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function updateInternetRadioStation(int $id, string $streamUrl, string $name, ?string $homepageUrl) : array {
-		$station = $this->radioStationBusinessLayer->find($id, $this->user());
-		$station->setStreamUrl($streamUrl);
-		$station->setName($name);
-		$station->setHomeUrl($homepageUrl);
-		$this->radioStationBusinessLayer->update($station);
+		$this->radioStationBusinessLayer->updateStation($id, $this->user(), $name, $streamUrl, $homepageUrl);
 		return [];
 	}
 
@@ -886,9 +882,7 @@ class SubsonicController extends ApiController {
 				throw new SubsonicException("Unexpected ID format: $id", 0);
 		}
 
-		$entity = $bLayer->find($entityId, $this->user());
-		$entity->setRating($rating);
-		$bLayer->update($entity);
+		$bLayer->setRating($entityId, $rating, $this->user());
 
 		return [];
 	}

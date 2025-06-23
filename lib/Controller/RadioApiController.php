@@ -91,9 +91,13 @@ class RadioApiController extends Controller {
 	public function create(?string $name, ?string $streamUrl, ?string $homeUrl) : JSONResponse {
 		if ($streamUrl === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'streamUrl' not given");
-		} else {
+		}
+		
+		try {
 			$station = $this->businessLayer->create($this->userId, $name, $streamUrl, $homeUrl);
 			return new JSONResponse($station->toApi());
+		} catch (\DomainException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
 		}
 	}
 
@@ -139,21 +143,12 @@ class RadioApiController extends Controller {
 		}
 
 		try {
-			$station = $this->businessLayer->find($id, $this->userId);
-			if ($name !== null) {
-				$station->setName($name);
-			}
-			if ($streamUrl !== null) {
-				$station->setStreamUrl($streamUrl);
-			}
-			if ($homeUrl !== null) {
-				$station->setHomeUrl($homeUrl);
-			}
-			$this->businessLayer->update($station);
-
+			$station = $this->businessLayer->updateStation($id, $this->userId, $name, $streamUrl, $homeUrl);
 			return new JSONResponse($station->toApi());
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		} catch (\DomainException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
 		}
 	}
 

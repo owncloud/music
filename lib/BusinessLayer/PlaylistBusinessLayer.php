@@ -131,12 +131,19 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @return int[]
+	 */
+	public function getPlaylistTrackIds(int $playlistId, string $userId) : array {
+		$playlist = $this->find($playlistId, $userId);
+		return $playlist->getTrackIdsAsArray();
+	}
+
+	/**
 	 * get list of Track objects belonging to a given playlist
 	 * @return Track[]
 	 */
 	public function getPlaylistTracks(int $playlistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$playlist = $this->find($playlistId, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = $this->getPlaylistTrackIds($playlistId, $userId);
 
 		$trackIds = \array_slice($trackIds, \intval($offset), $limit);
 
@@ -173,8 +180,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @return int duration in seconds
 	 */
 	public function getDuration(int $playlistId, string $userId) : int {
-		$playlist = $this->find($playlistId, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = $this->getPlaylistTrackIds($playlistId, $userId);
 		$durations = $this->trackMapper->getDurations($trackIds);
 
 		// We can't simply sum up the values of $durations array, because the playlist may

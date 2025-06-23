@@ -44,15 +44,6 @@ abstract class BusinessLayer {
 	}
 
 	/**
-	 * Update an entity in the database
-	 * @phpstan-param EntityType $entity
-	 * @phpstan-return EntityType
-	 */
-	public function update(Entity $entity) : Entity {
-		return $this->mapper->update($entity);
-	}
-
-	/**
 	 * Delete an entity
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
@@ -332,6 +323,23 @@ abstract class BusinessLayer {
 			return $this->mapper->setStarredDate(null, $ids, $userId);
 		} else {
 			return 0;
+		}
+	}
+
+	/**
+	 * Set rating for the entity by id
+	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
+	 * @throws \BadMethodCallException if the entity type of this business layer doesn't support rating
+	 * @phpstan-return EntityType
+	 */
+	public function setRating(int $id, int $rating, string $userId) : Entity {
+		$entity = $this->find($id, $userId);
+		if (\property_exists($entity, 'rating')) {
+			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
+			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore method.notFound
+			return $this->mapper->update($entity);
+		} else {
+			throw new \BadMethodCallException('rating not supported on the entity type ' . \get_class($entity));
 		}
 	}
 

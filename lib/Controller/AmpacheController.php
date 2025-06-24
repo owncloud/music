@@ -236,8 +236,9 @@ class AmpacheController extends ApiController {
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool $xml
 	 */
-	public function internalApi(string $action, string $xml='0') : Response {
+	public function internalApi(string $action, /*mixed*/ $xml='0') : Response {
 		$this->setJsonMode(!\filter_var($xml, FILTER_VALIDATE_BOOLEAN));
 		return $this->dispatch($action);
 	}
@@ -2343,7 +2344,7 @@ class AmpacheController extends ApiController {
 
 	/**
 	 * Render the way used by `action=index` when `include=1`
-	 * @param array $idsWithChildren Array like [int => int[]]
+	 * @param array<int, int[]> $idsWithChildren
 	 */
 	private function renderIdsWithChildren(array $idsWithChildren, string $type, string $childType) : array {
 		// the structure is quite different for JSON compared to XML

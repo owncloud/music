@@ -168,11 +168,13 @@ class MusicApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $finalize
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function scan(string $files, ?string $finalize) : JSONResponse {
+	public function scan(string $files, /*mixed*/ $finalize) : JSONResponse {
 		// extract the parameters
 		$fileIds = \array_map('intval', \explode(',', $files));
 		$finalize = \filter_var($finalize, FILTER_VALIDATE_BOOLEAN);

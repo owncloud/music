@@ -135,8 +135,9 @@ class CoverApiController extends Controller {
 
 	/**
 	 * @param Artist|Album|PodcastChannel $entity
+	 * @param string|int|bool|null $originalSize
 	 */
-	private function cover(Entity $entity, string $userId, ?string $originalSize) : Response {
+	private function cover(Entity $entity, string $userId, /*mixed*/ $originalSize) : Response {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
 		$userFolder = $this->rootFolder->getUserFolder($userId);
 

@@ -132,12 +132,13 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * lists a single playlist
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
+	 * @param string|int|bool $fulltree
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get(int $id, string $type = 'shiva', string $fulltree = 'false') : JSONResponse {
+	public function get(int $id, string $type = 'shiva', /*mixed*/ $fulltree = 'false') : JSONResponse {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
@@ -172,13 +173,14 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * generate a smart playlist according to the given rules
+ 	 * @param string|int|bool|null $historyStrict
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function generate(
 			?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists,
-			?int $fromYear, ?int $toYear, ?string $favorite=null, int $size=100, string $historyStrict='false') : JSONResponse {
+			?int $fromYear, ?int $toYear, ?string $favorite=null, int $size=100, /*mixed*/ $historyStrict='false') : JSONResponse {
 
 		if ($useLatestParams) {
 			$history = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history') ?: null;

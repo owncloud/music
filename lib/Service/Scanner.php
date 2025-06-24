@@ -89,31 +89,34 @@ class Scanner extends PublicEmitter {
 	 */
 	public function update(File $file, string $userId, string $filePath) : void {
 		$mimetype = $file->getMimeType();
-		$this->logger->log("update - $filePath - $mimetype", 'debug');
+		$isImage = StringUtil::startsWith($mimetype, 'image');
+		$isAudio = (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype));
 
-		if (!$this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
-			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
-		}
-		elseif (StringUtil::startsWith($mimetype, 'image')) {
-			$this->updateImage($file, $userId);
-		}
-		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
-			$libraryRoot = $this->librarySettings->getFolder($userId);
-			$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
+		if (($isImage || $isAudio) && $this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
+			$this->logger->log("audio or image file within lib path updated: $filePath", 'debug');
+
+			if ($isImage) {
+				$this->updateImage($file, $userId);
+			}
+			elseif ($isAudio) {
+				$libraryRoot = $this->librarySettings->getFolder($userId);
+				$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
+			}
 		}
 	}
 
 	public function fileMoved(File $file, string $userId) : void {
 		$mimetype = $file->getMimeType();
-		$this->logger->log('fileMoved - '. $file->getPath() . " - $mimetype", 'debug');
 
 		if (StringUtil::startsWith($mimetype, 'image')) {
+			$this->logger->log('image file moved: '. $file->getPath(), 'debug');
 			// we don't need to track the identity of images and moving a file can be handled as it was 
 			// a file deletion followed by a file addition
 			$this->deleteImage([$file->getId()], [$userId]);
 			$this->updateImage($file, $userId);
 		}
 		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+			$this->logger->log('audio file moved: '. $file->getPath(), 'debug');
 			if ($this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
 				// In the new path, the file (now or still) belongs to the library. Even if it was already in the lib,
 				// the new path may have an influence on the album or artist name (in case of incomplete metadata).
@@ -128,16 +131,17 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function folderMoved(Folder $folder, string $userId) : void {
-		$this->logger->log('folderMoved - '. $folder->getPath(), 'debug');
-
 		$audioFiles = $folder->searchByMime('audio');
+		$audioCount = \count($audioFiles);
 
-		if (\count($audioFiles) > 0) {
+		if ($audioCount > 0) {
+			$this->logger->log("folder with $audioCount audio files moved: ". $folder->getPath(), 'debug');
+
 			if ($this->librarySettings->pathBelongsToMusicLibrary($folder->getPath(), $userId)) {
 				// The new path of the folder belongs to the library but this doesn't necessarily mean
 				// that all the file paths below belong to the library, because of the path exclusions.
 				// Each file needs to be checked and updated separately.
-				if (\count($audioFiles) <= 15) {
+				if ($audioCount <= 15) {
 					foreach ($audioFiles as $file) {
 						\assert($file instanceof File); // a clue for PHPStan
 						$this->fileMoved($file, $userId);
@@ -363,11 +367,11 @@ class Scanner extends PublicEmitter {
 	 * @return boolean true if anything was removed
 	 */
 	private function deleteAudio(array $fileIds, ?array $userIds=null) : bool {
-		$this->logger->log('deleteAudio - '. \implode(', ', $fileIds), 'debug');
-
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userIds);
 
 		if ($result) { // one or more tracks were removed
+			$this->logger->log('library updated when audio file(s) removed: '. \implode(', ', $fileIds), 'debug');
+
 			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
@@ -385,7 +389,7 @@ class Scanner extends PublicEmitter {
 			$this->invalidateCacheOnDelete(
 					$result['affectedUsers'], $result['obsoleteAlbums'], $result['obsoleteArtists']);
 
-			$this->logger->log('removed entities - ' . \json_encode($result), 'debug');
+			$this->logger->log('removed entities: ' . \json_encode($result), 'debug');
 			$this->emit(self::class, 'delete', [$result['deletedTracks'], $result['affectedUsers']]);
 		}
 
@@ -398,21 +402,25 @@ class Scanner extends PublicEmitter {
 	 * @return boolean true if anything was removed
 	 */
 	private function deleteImage(array $fileIds, ?array $userIds=null) : bool {
-		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
-
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
 		$affectedArtists = $this->artistBusinessLayer->removeCovers($fileIds, $userIds);
 
-		$affectedUsers = \array_merge(
-			ArrayUtil::extractUserIds($affectedAlbums),
-			ArrayUtil::extractUserIds($affectedArtists)
-		);
-		$affectedUsers = \array_unique($affectedUsers);
+		$anythingAffected = (\count($affectedAlbums) + \count($affectedArtists) > 0);
 
-		$this->invalidateCacheOnDelete(
-				$affectedUsers, ArrayUtil::extractIds($affectedAlbums), ArrayUtil::extractIds($affectedArtists));
+		if ($anythingAffected) {
+			$this->logger->log('library covers updated when image file(s) removed: '. \implode(', ', $fileIds), 'debug');
 
-		return (\count($affectedAlbums) + \count($affectedArtists) > 0);
+			$affectedUsers = \array_merge(
+				ArrayUtil::extractUserIds($affectedAlbums),
+				ArrayUtil::extractUserIds($affectedArtists)
+			);
+			$affectedUsers = \array_unique($affectedUsers);
+
+			$this->invalidateCacheOnDelete(
+					$affectedUsers, ArrayUtil::extractIds($affectedAlbums), ArrayUtil::extractIds($affectedArtists));
+		}
+
+		return $anythingAffected;
 	}
 
 	/**
@@ -423,9 +431,11 @@ class Scanner extends PublicEmitter {
 	 *                               the file is removed from all users (ie. owner and sharees)
 	 */
 	public function delete(int $fileId, ?array $userIds=null) : void {
-		if (!$this->deleteAudio([$fileId], $userIds) && !$this->deleteImage([$fileId], $userIds)) {
-			$this->logger->log("deleted file $fileId was not an indexed " .
-					'audio file or a cover image', 'debug');
+		// The removed file may or may not be of interesting type and belong to the library. It's
+		// most efficient just to try to remove it as audio or image. It will take just a few simple
+		// DB queries to notice if the file had nothing to do with our library.
+		if (!$this->deleteAudio([$fileId], $userIds)) {
+			$this->deleteImage([$fileId], $userIds);
 		}
 	}
 

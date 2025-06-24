@@ -57,7 +57,7 @@ class AmpacheUserMapper {
 
 	/**
 	 * @param string $hash Password hash
-	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if not found
+	 * @return ?array{key_id: int, user_id: string} - null if not found
 	 */
 	public function getUserByPasswordHash(string $hash) : ?array {
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_ampache_users` WHERE `hash` = ?';

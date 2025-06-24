@@ -117,7 +117,7 @@ class PodcastService {
 
 	/**
 	 * Add a followed podcast for a user from an RSS feed
-	 * @return array like ['status' => int, 'channel' => ?PodcastChannel]
+	 * @return array{status: int, channel: ?PodcastChannel}
 	 */
 	public function subscribe(string $url, string $userId) : array {
 		$content = HttpUtil::loadFromUrl($url)['content'];
@@ -165,7 +165,7 @@ class PodcastService {
 	 * @param bool $force Value true will cause the channel to be parsed and updated to the database even
 	 *					in case the RSS hasn't been changed at all since the previous update. This might be
 	 *					useful during the development or if the previous update was unexpectedly aborted.
-	 * @return array like ['status' => int, 'updated' => bool, 'channel' => ?PodcastChannel]
+	 * @return array{status: int, updated: bool, channel: ?PodcastChannel}
 	 */
 	public function updateChannel(int $id, string $userId, ?string $prevHash = null, bool $force = false) : array {
 		$updated = false;
@@ -214,8 +214,7 @@ class PodcastService {
 
 	/**
 	 * Check updates for all channels of the user, one-by-one
-	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
-	 *			where each int represent number of channels in that category
+	 * @return array{changed: int, unchanged: int, failed: int} where each int represent number of channels in that category
 	 */
 	public function updateAllChannels(
 			string $userId, ?float $olderThan = null, bool $force = false, ?callable $progressCallback = null) : array {

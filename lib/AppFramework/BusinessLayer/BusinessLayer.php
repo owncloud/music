@@ -255,7 +255,7 @@ abstract class BusinessLayer {
 	/**
 	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
 	 * @param int[] $parentIds
-	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
 	 * @throws BusinessLayerException if the entity type handled by this business layer doesn't have a parent relation
 	 */
 	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {

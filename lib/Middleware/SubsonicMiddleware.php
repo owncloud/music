@@ -133,7 +133,7 @@ class SubsonicMiddleware extends Middleware {
 
 	/**
 	 * @param string $pass Password aka API key
-	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if $pass was not valid
+	 * @return ?array{key_id: int, user_id: string} - null if $pass was not valid
 	 */
 	private function userAndKeyIdForPass(string $pass) : ?array {
 		$hash = \hash('sha256', $pass);

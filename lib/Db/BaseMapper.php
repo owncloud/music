@@ -249,7 +249,7 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
 	 * @param int[] $parentIds
-	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
 	 * @throws \DomainException if the entity type handled by this mapper doesn't have a parent relation
 	 */
 	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
@@ -671,7 +671,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
+	 * @return array{op: string, conv: string, param: string|int|null}
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		if ($this->dbType == 'sqlite3' && ($ruleOperator == 'regexp' || $ruleOperator == 'notregexp')) {

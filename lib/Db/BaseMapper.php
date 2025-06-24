@@ -820,6 +820,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "SELECT `id` FROM {$this->getTableName()} WHERE " . \implode(' AND ', $conds);
 
 		$result = $this->execute($sql, $values);
+		/** @var string|false $id */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$id = $result->fetchColumn();
 
 		if ($id === false) {
@@ -832,6 +833,7 @@ abstract class BaseMapper extends Mapper {
 	private function getCreated(int $id) : string {
 		$sql = "SELECT `created` FROM {$this->getTableName()} WHERE `id` = ?";
 		$result = $this->execute($sql, [$id]);
+		/** @var string|false $created */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$created = $result->fetchColumn();
 		if ($created === false) {
 			throw new DoesNotExistException('ID not found');

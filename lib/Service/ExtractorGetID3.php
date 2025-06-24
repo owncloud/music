@@ -77,6 +77,7 @@ class ExtractorGetID3 implements Extractor {
 
 	private function doExtract(File $file) : array {
 		\assert($this->getID3 !== null, 'initGetID3 must be called first');
+		/** @var ?resource $fp */ // null value has been seen at least on some cloud versions although phpdoc of File::fopen doesn't allow it
 		$fp = $file->fopen('r');
 
 		if (empty($fp)) {

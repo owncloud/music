@@ -240,8 +240,12 @@ class PodcastEpisode extends Entity {
 			return null;
 		} else {
 			$path = \parse_url($url, PHP_URL_PATH);
-			$ext = (string)\pathinfo($path, PATHINFO_EXTENSION);
-			return !empty($ext) ? $ext : null;
+			if (\is_string($path)) {
+				$ext = (string)\pathinfo($path, PATHINFO_EXTENSION);
+				return !empty($ext) ? $ext : null;
+			} else {
+				return null;
+			}
 		}
 	}
 }

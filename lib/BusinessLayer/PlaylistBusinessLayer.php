@@ -231,7 +231,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		if ($sortBy !== SortBy::None && !$historyStrict) {
 			// When generating by non-strict history, use a pool of tracks at maximum twice the size of final list.
 			// However, don't use more than half of the matching tracks unless that is required to satisfy the required list size.
-			$poolSize = max($size, \count($tracks) / 2);
+			$poolSize = (int)max($size, \count($tracks) / 2);
 			$tracks = \array_slice($tracks, 0, $poolSize);
 		}
 

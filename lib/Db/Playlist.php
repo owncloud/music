@@ -122,7 +122,7 @@ class Playlist extends Entity {
 			'owner' => $this->getUserId(),
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
-			'rating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
 			'type' => 'Private',
 			'has_access' => !$this->getReadOnly(),
 			'has_collaborate' => !$this->getReadOnly(),

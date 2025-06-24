@@ -44,8 +44,8 @@ use OCP\IURLGenerator;
  * @method void setMbid(?string $mbid)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method void setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
  * @method int getPlayCount()
@@ -243,8 +243,8 @@ class Track extends Entity {
 			'stream_mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
-			'rating' => $this->getRating() ?? 0,
-			'preciserating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
+			'preciserating' => $this->getRating(),
 			'playcount' => $this->getPlayCount(),
 			'flag' => !empty($this->getStarred()),
 			'language' => null,

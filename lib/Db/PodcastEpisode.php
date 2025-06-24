@@ -50,8 +50,8 @@ use OCP\IURLGenerator;
  * @method void setDescription(?string $description)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method void setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  */
 class PodcastEpisode extends Entity {
 	public int $channelId = 0;
@@ -137,8 +137,8 @@ class PodcastEpisode extends Entity {
 			'art' => $imageUrl,
 			'has_art' => !empty($imageUrl),
 			'flag' => !empty($this->getStarred()),
-			'rating' => $this->getRating() ?? 0,
-			'preciserating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
+			'preciserating' => $this->getRating(),
 		];
 	}
 

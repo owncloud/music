@@ -30,7 +30,7 @@ interface Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param File $file the media file
-	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
+	 * @return ?array{image_mime: string, data: string}
 	 */
 	public function parseEmbeddedCoverArt(File $file) : ?array;
 }

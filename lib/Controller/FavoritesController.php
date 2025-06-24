@@ -7,12 +7,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 namespace OCA\Music\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
@@ -23,6 +24,7 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Http\ErrorResponse;
 
 class FavoritesController extends Controller {
 	private AlbumBusinessLayer $albumBusinessLayer;
@@ -59,7 +61,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function favorites() {
+	public function favorites() : JSONResponse {
 		return new JSONResponse([
 			'tracks' => $this->trackBusinessLayer->findAllStarredIds($this->userId),
 			'albums' => $this->albumBusinessLayer->findAllStarredIds($this->userId),
@@ -74,7 +76,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoriteTrack(int $id, $status) {
+	public function setFavoriteTrack(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->trackBusinessLayer, $id, $status);
 	}
 
@@ -82,7 +84,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoriteAlbum(int $id, $status) {
+	public function setFavoriteAlbum(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->albumBusinessLayer, $id, $status);
 	}
 
@@ -90,7 +92,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoriteArtist(int $id, $status) {
+	public function setFavoriteArtist(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->artistBusinessLayer, $id, $status);
 	}
 
@@ -98,7 +100,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoritePlaylist(int $id, $status) {
+	public function setFavoritePlaylist(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->playlistBusinessLayer, $id, $status);
 	}
 
@@ -106,7 +108,7 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoriteChannel(int $id, $status) {
+	public function setFavoriteChannel(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->podcastChannelBusinessLayer, $id, $status);
 	}
 
@@ -114,17 +116,22 @@ class FavoritesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function setFavoriteEpisode(int $id, $status) {
+	public function setFavoriteEpisode(int $id, ?string $status) : JSONResponse {
 		return $this->setFavorite($this->podcastEpisodeBusinessLayer, $id, $status);
 	}
 
-	private function setFavorite(BusinessLayer $businessLayer, int $id, $status) {
-		$status = \filter_var($status, FILTER_VALIDATE_BOOLEAN);
-		if ($status) {
-			$businessLayer->setStarred([$id], $this->userId);
+	/** @phpstan-param BusinessLayer<*> $businessLayer */
+	private function setFavorite(BusinessLayer $businessLayer, int $id, ?string $status) : JSONResponse {
+		if ($status === null) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "argument 'status' is required");
 		} else {
-			$businessLayer->unsetStarred([$id], $this->userId);
+			$status = \filter_var($status, FILTER_VALIDATE_BOOLEAN);
+			if ($status) {
+				$businessLayer->setStarred([$id], $this->userId);
+			} else {
+				$businessLayer->unsetStarred([$id], $this->userId);
+			}
+			return new JSONResponse(['favorite' => ($status != 0)]);
 		}
-		return new JSONResponse(['favorite' => ($status != 0)]);
 	}
 }

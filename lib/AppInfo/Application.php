@@ -101,26 +101,6 @@ class Application extends ApplicationBase {
 
 		\mb_internal_encoding('UTF-8');
 
-		// NC26+ no longer ships OCP\AppFramework\Db\Mapper. Create a class alias which refers to this OCP class if available
-		// or to our own ponyfill if not (created by copying the said class from NC25).
-		if (!\class_exists('\OCA\Music\AppFramework\Db\CompatibleMapper')) {
-			if (\class_exists('\OCP\AppFramework\Db\Mapper')) {
-				\class_alias(\OCP\AppFramework\Db\Mapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
-			} else {
-				\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, '\OCA\Music\AppFramework\Db\CompatibleMapper');
-			}
-		}
-
-		// Create a class alias which refers to the TimedJob either from OC or OCP namespace. The OC version is available
-		// on ownCloud and on Nextcloud versions <29. The OCP version is available on NC15+.
-		if (!\class_exists('\OCA\Music\BackgroundJob\TimedJob')) {
-			if (\class_exists('\OCP\BackgroundJob\TimedJob')) {
-				\class_alias(\OCP\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
-			} else {
-				\class_alias(\OC\BackgroundJob\TimedJob::class, '\OCA\Music\BackgroundJob\TimedJob');
-			}
-		}
-
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
 			$this->registerServices($this->getContainer());
@@ -795,16 +775,18 @@ class Application extends ApplicationBase {
 
 	/**
 	 * This gets called on Nextcloud but not on ownCloud
+	 * @param \OCP\AppFramework\Bootstrap\IRegistrationContext $context
 	 */
-	public function register(/*\OCP\AppFramework\Bootstrap\IRegistrationContext*/ $context) : void {
+	public function register($context) : void {
 		$this->registerServices($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 
 	/**
 	 * This gets called on Nextcloud but not on ownCloud
+	 * @param \OCP\AppFramework\Bootstrap\IBootContext $context
 	 */
-	public function boot(/*\OCP\AppFramework\Bootstrap\IBootContext*/ $context) : void {
+	public function boot($context) : void {
 		$this->init();
 		$this->registerEmbeddedPlayer();
 	}

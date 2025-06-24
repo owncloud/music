@@ -141,7 +141,7 @@ class LastfmService {
 				$matchingLibArtists = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
 
 				if (!empty($matchingLibArtists)) {
-					foreach ($matchingLibArtists as &$matchArtist) { // loop although there really shouldn't be more than one
+					foreach ($matchingLibArtists as $matchArtist) { // loop although there really shouldn't be more than one
 						$matchArtist->setLastfmUrl($lastfmArtist['url']);
 					}
 					$result = \array_merge($result, $matchingLibArtists);

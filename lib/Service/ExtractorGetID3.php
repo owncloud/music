@@ -22,7 +22,7 @@ use OCP\Files\File;
  * an extractor class for getID3
  */
 class ExtractorGetID3 implements Extractor {
-	private $getID3;
+	private ?\getID3 $getID3;
 	private Logger $logger;
 
 	public function __construct(Logger $logger) {
@@ -36,7 +36,7 @@ class ExtractorGetID3 implements Extractor {
 	 * Music app commands.
 	 * See https://github.com/nextcloud/server/issues/17027.
 	 */
-	private function initGetID3() {
+	private function initGetID3() : void {
 		if ($this->getID3 === null) {
 			require_once __DIR__ . '/../../3rdparty/getID3/getid3/getid3.php';
 			$this->getID3 = new \getID3();
@@ -76,6 +76,8 @@ class ExtractorGetID3 implements Extractor {
 	}
 
 	private function doExtract(File $file) : array {
+		\assert($this->getID3 !== null, 'initGetID3 must be called first');
+		/** @var ?resource $fp */ // null value has been seen at least on some cloud versions although phpdoc of File::fopen doesn't allow it
 		$fp = $file->fopen('r');
 
 		if (empty($fp)) {
@@ -104,7 +106,7 @@ class ExtractorGetID3 implements Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param File $file the media file
-	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
+	 * @return ?array{image_mime: string, data: string}
 	 */
 	public function parseEmbeddedCoverArt(File $file) : ?array {
 		$fileInfo = $this->extract($file);

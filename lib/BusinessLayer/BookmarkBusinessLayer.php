@@ -57,6 +57,19 @@ class BookmarkBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @param ?string $comment Property is not updated if null passed
+	 * @throws BusinessLayerException if such bookmark does not exist
+	 */
+	public function updateByEntry(string $userId, int $type, int $entryId, int $position, ?string $comment) : Bookmark {
+		$bookmark = $this->findByEntry($type, $entryId, $userId);
+		$bookmark->setPosition($position);
+		if ($comment !== null) {
+			$bookmark->setComment(StringUtil::truncate($comment, 256));
+		}
+		return $this->mapper->update($bookmark);
+	}
+
+	/**
 	 * @param int $type One of [Bookmark::TYPE_TRACK, Bookmark::TYPE_PODCAST_EPISODE]
 	 * @throws BusinessLayerException if such bookmark does not exist
 	 */

@@ -15,25 +15,26 @@ namespace OCA\Music\Db;
 use OCP\IL10N;
 
 /**
- * @method string getName()
- * @method void setName(string $name)
- * @method string getLowerName()
- * @method void setLowerName(string $lowerName)
+ * @method ?string getName()
+ * @method void setName(?string $name)
+ * @method ?string getLowerName()
+ * @method void setLowerName(?string $lowerName)
  *
  * @method int getTrackCount()
  * @method int getAlbumCount()
  * @method int getArtistCount()
  */
 class Genre extends Entity {
-	public $name;
-	public $lowerName;
+	public ?string $name = null;
+	public ?string $lowerName = null;
 	// not from the music_genres table but still part of the standard content of this entity
-	public $trackCount;
-	public $albumCount;
-	public $artistCount;
+	public int $trackCount = 0;
+	public int $albumCount = 0;
+	public int $artistCount = 0;
 
 	// not part of the standard content, injected separately when needed
-	public $trackIds;
+	/** @var ?int[] $trackIds */
+	public ?array $trackIds = null;
 
 	public function __construct() {
 		$this->addType('trackCount', 'int');

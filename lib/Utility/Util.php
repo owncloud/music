@@ -28,7 +28,7 @@ class Util {
 	 * an empty string.
 	 * @param string $delimiter
 	 * @param string|null $string
-	 * @return array
+	 * @return string[]
 	 */
 	public static function explode(string $delimiter, ?string $string) : array {
 		if ($delimiter === '') {
@@ -99,6 +99,7 @@ class Util {
 	/**
 	 * Compose URL from parts as returned by the system function parse_url.
 	 * From https://stackoverflow.com/a/35207936
+	 * @param string[] $parts
 	 */
 	public static function buildUrl(array $parts) : string {
 		return (isset($parts['scheme']) ? "{$parts['scheme']}:" : '') .

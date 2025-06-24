@@ -18,6 +18,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\IRequest;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -81,7 +82,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function prepareCollection() {
+	public function prepareCollection() : JSONResponse {
 		$hash = $this->collectionService->getCachedJsonHash();
 		if ($hash === null) {
 			// build the collection but ignore the data for now
@@ -101,7 +102,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function collection() {
+	public function collection() : DataDisplayResponse {
 		$collectionJson = $this->collectionService->getJson();
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
@@ -122,7 +123,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function folders() {
+	public function folders() : JSONResponse {
 		$musicFolder = $this->librarySettings->getFolder($this->userId);
 		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $musicFolder);
 		return new JSONResponse($folders);
@@ -132,7 +133,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function genres() {
+	public function genres() : JSONResponse {
 		$genres = $this->genreBusinessLayer->findAllWithTrackIds($this->userId);
 		$unscanned =  $this->trackBusinessLayer->findFilesWithoutScannedGenre($this->userId);
 		return new JSONResponse([
@@ -145,7 +146,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function trackByFileId(int $fileId) {
+	public function trackByFileId(int $fileId) : JSONResponse {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {
 			return new JSONResponse($track->toCollection());
@@ -158,7 +159,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getScanState() {
+	public function getScanState() : JSONResponse {
 		return new JSONResponse([
 			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId),
 			'dirtyFiles' => $this->scanner->getDirtyMusicFileIds($this->userId),
@@ -171,7 +172,7 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function scan(string $files, $finalize) {
+	public function scan(string $files, ?string $finalize) : JSONResponse {
 		// extract the parameters
 		$fileIds = \array_map('intval', \explode(',', $files));
 		$finalize = \filter_var($finalize, FILTER_VALIDATE_BOOLEAN);
@@ -197,7 +198,7 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function resetScanned() {
+	public function resetScanned() : JSONResponse {
 		$this->maintenance->resetLibrary($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
@@ -206,7 +207,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function download(int $fileId) {
+	public function download(int $fileId) : Response {
 		$nodes = $this->scanner->resolveUserFolder($this->userId)->getById($fileId);
 		$node = $nodes[0] ?? null;
 		if ($node instanceof \OCP\Files\File) {
@@ -220,7 +221,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function filePath(int $fileId) {
+	public function filePath(int $fileId) : JSONResponse {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		$nodes = $userFolder->getById($fileId);
 		if (\count($nodes) == 0) {
@@ -236,7 +237,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileInfo(int $fileId) {
+	public function fileInfo(int $fileId) : JSONResponse {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		$info = $this->scanner->getFileInfo($fileId, $this->userId, $userFolder);
 		if ($info) {
@@ -250,7 +251,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileDetails(int $fileId) {
+	public function fileDetails(int $fileId) : JSONResponse {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		$details = $this->detailsService->getDetails($fileId, $userFolder);
 		if ($details) {
@@ -272,7 +273,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileLyrics(int $fileId, ?string $format) {
+	public function fileLyrics(int $fileId, ?string $format) : Response {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		if ($format == 'plaintext') {
 			$lyrics = $this->detailsService->getLyricsAsPlainText($fileId, $userFolder);
@@ -292,7 +293,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function scrobble(int $trackId) {
+	public function scrobble(int $trackId) : JSONResponse {
 		try {
 			$this->trackBusinessLayer->recordTrackPlayed($trackId, $this->userId);
 			return new JSONResponse(['success' => true]);
@@ -305,7 +306,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albumDetails(int $albumId) {
+	public function albumDetails(int $albumId) : JSONResponse {
 		try {
 			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
 			return new JSONResponse($info);
@@ -318,7 +319,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artistDetails(int $artistId) {
+	public function artistDetails(int $artistId) : JSONResponse {
 		try {
 			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 			return new JSONResponse($info);
@@ -331,7 +332,7 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function similarArtists(int $artistId) {
+	public function similarArtists(int $artistId) : JSONResponse {
 		try {
 			$similar = $this->lastfmService->getSimilarArtists($artistId, $this->userId, /*includeNotPresent=*/true);
 			return new JSONResponse(\array_map(fn($artist) => [

@@ -79,6 +79,7 @@ class StringUtil {
 
 	/**
 	 * Test if $item is a string and not empty or only consisting of whitespace
+	 * @param mixed $item
 	 */
 	public static function isNonEmptyString(/*mixed*/ $item) : bool {
 		return \is_string($item) && \trim($item) !== '';
@@ -89,6 +90,7 @@ class StringUtil {
 	 * prefixes given as an array. If none of the prefixes match, the returned basename will be the original string
 	 * and the prefix will be null.
 	 * @param string[] $potentialPrefixes
+	 * @return array{prefix: ?string, basename: ?string}
 	 */
 	public static function splitPrefixAndBasename(?string $name, array $potentialPrefixes) : array {
 		$parts = ['prefix' => null, 'basename' => $name];

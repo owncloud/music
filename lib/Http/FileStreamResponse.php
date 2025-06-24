@@ -64,6 +64,9 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function callback(IOutput $output) {
 		$status = $this->getStatus();
 
@@ -81,7 +84,10 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		}
 	}
 
-	private function streamDataToOutput($fp) {
+	/**
+	 * @param resource $fp File handle
+	 */
+	private function streamDataToOutput($fp) : bool {
 		// Request Range Not Satisfiable
 		if ($this->start > $this->end) {
 			return false;

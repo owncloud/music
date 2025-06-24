@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\IRequest;
@@ -55,7 +56,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function fileInfo(string $token, int $fileId) {
+	public function fileInfo(string $token, int $fileId) : JSONResponse {
 		$share = $this->shareManager->getShareByToken($token);
 		$fileOwner = $share->getShareOwner();
 		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
@@ -87,7 +88,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function download(string $token, int $fileId) {
+	public function download(string $token, int $fileId) : Response {
 		try {
 			$sharedFolder = $this->getSharedFolder($token);
 			$file = $sharedFolder->getById($fileId)[0] ?? null;
@@ -107,7 +108,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function parsePlaylist(string $token, int $fileId) {
+	public function parsePlaylist(string $token, int $fileId) : JSONResponse {
 		try {
 			$sharedFolder = $this->getSharedFolder($token);
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);

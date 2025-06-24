@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -26,6 +26,7 @@ class RegisterBackgroundJobs implements IRepairStep {
 
 	/**
 	 * @inheritdoc
+	 * @return void
 	 */
 	public function run(IOutput $output) {
 		$jobList = \OC::$server->getJobList();

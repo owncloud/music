@@ -78,7 +78,7 @@ class PlaylistFileService {
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
 
-		$filename = $filename ?: $playlist->getName();
+		$filename = $filename ?: $playlist->getName() ?: 'playlist';
 		$filename = FilesUtil::sanitizeFileName($filename, ['m3u8', 'm3u']);
 
 		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);
@@ -317,7 +317,7 @@ class PlaylistFileService {
 		return $entries;
 	}
 
-	public static function parseM3uContent(string $content) {
+	public static function parseM3uContent(string $content) : array {
 		$fp = \fopen("php://temp", 'r+');
 		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
 
@@ -333,6 +333,9 @@ class PlaylistFileService {
 		return $entries;
 	}
 
+	/**
+	 * @param resource $fp File handle
+	 */
 	private static function parseM3uFilePointer($fp, string $encoding) : array {
 		$entries = [];
 
@@ -452,7 +455,7 @@ class PlaylistFileService {
 		return empty($artist) ? $title : "$artist - $title";
 	}
 
-	private static function extractExtM3uField($line, $field) : ?string {
+	private static function extractExtM3uField(string $line, string $field) : ?string {
 		if (StringUtil::startsWith($line, "#$field:")) {
 			return \trim(\substr($line, \strlen("#$field:")));
 		} else {

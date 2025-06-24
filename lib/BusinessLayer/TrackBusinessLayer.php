@@ -196,7 +196,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectFolderPathsToTracks(array &$tracks, string $userId, Folder $musicFolder) : void {
+	public function injectFolderPathsToTracks(array $tracks, string $userId, Folder $musicFolder) : void {
 		$folderIds = \array_map(fn($t) => $t->getFolderId(), $tracks);
 		$folderIds = \array_unique($folderIds);
 		$trackIdsByFolder = \array_fill_keys($folderIds, []); // track IDs are not actually used here so we can use empty arrays
@@ -217,7 +217,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			return $foldersLut[$id]['path'];
 		};
 
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setFolderPath($getFolderPath($track->getFolderId(), $foldersLut));
 		}
 	}
@@ -395,8 +395,8 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
-			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
+			string $title, ?int $number, ?int $discNumber, ?int $year, int $genreId, int $artistId, int $albumId,
+			int $fileId, string $mimetype, string $userId, ?int $length=null, ?int $bitrate=null) : Track {
 		$track = new Track();
 		$track->setTitle(StringUtil::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);

@@ -18,27 +18,27 @@ use OCA\Music\Utility\Util;
 use OCP\IURLGenerator;
 
 /**
- * @method string getName()
- * @method setName(string $name)
- * @method string getTrackIds()
- * @method setTrackIds(string $trackIds)
- * @method string getComment()
- * @method setComment(string $comment)
+ * @method ?string getName()
+ * @method void setName(?string $name)
+ * @method ?string getTrackIds()
+ * @method void setTrackIds(?string $trackIds)
+ * @method ?string getComment()
+ * @method void setComment(?string $comment)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  */
 class Playlist extends Entity {
-	public $name;
-	public $trackIds;
-	public $comment;
-	public $starred;
-	public $rating;
+	public ?string $name = null;
+	public ?string $trackIds = null;
+	public ?string $comment = null;
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	// injected separately when needed
-	private $duration;
-	private $readOnly;
+	private ?int $duration = null;
+	private bool $readOnly = false;
 
 	public function __construct() {
 		$this->addType('rating', 'int');
@@ -53,7 +53,7 @@ class Playlist extends Entity {
 	}
 
 	public function getReadOnly() : bool {
-		return $this->readOnly ?? false;
+		return $this->readOnly;
 	}
 
 	public function setReadOnly(bool $readOnly) : void {
@@ -85,7 +85,7 @@ class Playlist extends Entity {
 	}
 
 	public function getTrackIdsHash() : ?string {
-		return $this->isEmpty() ? null : \md5($this->getTrackIds());
+		return $this->isEmpty() ? null : \md5((string)$this->getTrackIds());
 	}
 
 	public function toApi(IURLGenerator $urlGenerator) : array {
@@ -122,11 +122,11 @@ class Playlist extends Entity {
 			'owner' => $this->getUserId(),
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
-			'rating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
 			'type' => 'Private',
 			'has_access' => !$this->getReadOnly(),
 			'has_collaborate' => !$this->getReadOnly(),
-			'last_update' => \strtotime($this->getUpdated()),
+			'last_update' => \strtotime($this->getUpdated() ?? ''),
 			'md5' => $this->getTrackIdsHash()
 		];
 		$result['has_art'] = !empty($result['art']);

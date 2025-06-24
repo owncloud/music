@@ -23,7 +23,6 @@ use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Utility\StringUtil;
 
-
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method PodcastEpisode find(int $episodeId, string $userId)
@@ -72,6 +71,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$episode = new PodcastEpisode();
 
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+		\assert($itunesNodes !== null); // children() returns null only if the SimpleXMLElement represents an attribute
 
 		if (!$xmlNode->enclosure || !$xmlNode->enclosure->attributes()) {
 			$logger->log("No stream URL for the episode " . $xmlNode->title, 'debug');
@@ -108,7 +108,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		return $episode;
 	}
 
-	private static function parseTitle($itunesTitle, $title, $episode) : ?string {
+	private static function parseTitle(?\SimpleXMLElement $itunesTitle, ?\SimpleXMLElement $title, ?\SimpleXMLElement $episode) : ?string {
 		// Prefer to use the iTunes title over the standard title, because sometimes,
 		// the generic title contains the episode number which is also provided separately
 		// while the iTunes title does not.

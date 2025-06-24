@@ -17,34 +17,29 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IConfig;
 use OCP\IDBConnection;
 
-use OCA\Music\AppFramework\Db\CompatibleMapper;
+use OCA\Music\AppFramework\Db\Mapper;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use OCA\Music\Utility\StringUtil;
 
 /**
  * Common base class for data access classes of the Music app
  * 
- * Annotate the relevant base class methods since VSCode doesn't understand the dynamically defined base class:
- * @method string getTableName()
- * @method Entity delete(Entity $entity)
- * We need to annotate also a few protected methods as "public" since PHPDoc doesn't have any syntax to declare protected methods:
- * @method \PDOStatement execute(string $sql, array $params = [], ?int $limit = null, ?int $offset = null)
  * @method Entity findEntity(string $sql, array $params)
  * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
+ * @method Entity delete(Entity $entity)
  * 
  * @phpstan-template EntityType of Entity
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-method EntityType delete(EntityType $entity)
+ * @phpstan-property class-string<EntityType> $entityClass
  */
-abstract class BaseMapper extends CompatibleMapper {
+abstract class BaseMapper extends Mapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected string $nameColumn;
 	protected ?array $uniqueColumns;
 	protected ?string $parentIdColumn;
-	/** @phpstan-var class-string<EntityType> $entityClass */
-	protected $entityClass;
 	protected string $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
@@ -58,8 +53,6 @@ abstract class BaseMapper extends CompatibleMapper {
 		$this->nameColumn = $nameColumn;
 		$this->uniqueColumns = $uniqueColumns;
 		$this->parentIdColumn = $parentIdColumn;
-		// eclipse the base class property to help phpstan
-		$this->entityClass = $entityClass;
 		$this->dbType = $config->getSystemValue('dbtype');
 	}
 
@@ -257,7 +250,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
 	 * @param int[] $parentIds
-	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
 	 * @throws \DomainException if the entity type handled by this mapper doesn't have a parent relation
 	 */
 	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
@@ -408,18 +401,25 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::insert()
+	 * @see Mapper::insert()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function insert(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function insert(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$nowStr = $now->format(self::SQL_DATE_FORMAT);
 		$entity->setCreated($nowStr);
 		$entity->setUpdated($nowStr);
 
 		try {
-			return parent::insert($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+			return parent::insert($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 		} catch (\OCP\DB\Exception $e) {
@@ -434,14 +434,21 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::update()
+	 * @see Mapper::update()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function update(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function update(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
-		return parent::update($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+		return parent::update($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
 	}
 
 	/**
@@ -471,6 +478,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * a new entity is inserted.
 	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
 	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
+	 * @param Entity $entity
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
@@ -664,7 +672,7 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
+	 * @return array{op: string, conv: string, param: string|int|null}
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		if ($this->dbType == 'sqlite3' && ($ruleOperator == 'regexp' || $ruleOperator == 'notregexp')) {
@@ -695,7 +703,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 	}
 
-	protected static function sanitizeNumericOp($comparisonOperator) {
+	protected static function sanitizeNumericOp(string $comparisonOperator) : string {
 		if (\in_array($comparisonOperator, ['>=', '<=', '=', '!=', '>', '<'])) {
 			return $comparisonOperator;
 		} else {
@@ -759,7 +767,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
 	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.
 	 */
-	private function registerRegexpFuncForSqlite() {
+	private function registerRegexpFuncForSqlite() : void {
 		// skip if the function already exists
 		if (!$this->funcExistsInSqlite('regexp')) {
 			// We need to use a private interface here to drill down to the native DB connection. The interface is
@@ -813,6 +821,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$sql = "SELECT `id` FROM {$this->getTableName()} WHERE " . \implode(' AND ', $conds);
 
 		$result = $this->execute($sql, $values);
+		/** @var string|false $id */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$id = $result->fetchColumn();
 
 		if ($id === false) {
@@ -825,6 +834,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	private function getCreated(int $id) : string {
 		$sql = "SELECT `created` FROM {$this->getTableName()} WHERE `id` = ?";
 		$result = $this->execute($sql, [$id]);
+		/** @var string|false $created */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$created = $result->fetchColumn();
 		if ($created === false) {
 			throw new DoesNotExistException('ID not found');

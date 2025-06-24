@@ -18,6 +18,7 @@ class Version020100Date20241114220300 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -39,6 +40,7 @@ class Version020100Date20241114220300 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -46,11 +48,14 @@ class Version020100Date20241114220300 extends SimpleMigrationStep {
 	/**
 	 * Add the new field 'dirty' to the table 'music_tracks'
 	 */
-	private function addDirtyFieldToTrack(ISchemaWrapper $schema) {
+	private function addDirtyFieldToTrack(ISchemaWrapper $schema) : void {
 		$table = $schema->getTable('music_tracks');
 		$this->setColumn($table, 'dirty', 'smallint', ['notnull' => true, 'default' => 0]);
 	}
 
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
 	private function setColumn($table, string $name, string $type, array $args) : void {
 		if (!$table->hasColumn($name)) {
 			$table->addColumn($name, $type, $args);

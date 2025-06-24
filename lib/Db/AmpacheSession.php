@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2023
+ * @copyright Pauli Järvinen 2023 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -27,11 +27,11 @@ namespace OCA\Music\Db;
  * @method setAmpacheUserId(int $id)
  */
 class AmpacheSession extends \OCP\AppFramework\Db\Entity {
-	public $userId;
-	public $token;
-	public $expiry;
-	public $apiVersion;
-	public $ampacheUserId;
+	public string $userId = '';
+	public string $token = '';
+	public int $expiry = 0;
+	public ?string $apiVersion = null;
+	public int $ampacheUserId = 0;
 
 	public function __construct() {
 		$this->addType('expiry', 'int');

@@ -16,6 +16,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 
 use OCP\Files\IRootFolder;
 
@@ -60,9 +61,11 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getAll() {
+	public function getAll() : JSONResponse {
 		$channels = $this->podcastService->getAllChannels($this->userId, /*$includeEpisodes=*/ true);
-		return \array_map(fn($c) => $c->toApi($this->urlGenerator), $channels);
+		return new JSONResponse(
+			\array_map(fn($c) => $c->toApi($this->urlGenerator), $channels)
+		);
 	}
 
 	/**
@@ -71,7 +74,7 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function subscribe(?string $url) {
+	public function subscribe(?string $url) : JSONResponse {
 		if ($url === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'url' not given");
 		}
@@ -80,7 +83,7 @@ class PodcastApiController extends Controller {
 
 		switch ($result['status']) {
 			case PodcastService::STATUS_OK:
-				return $result['channel']->toApi($this->urlGenerator);
+				return new JSONResponse($result['channel']->toApi($this->urlGenerator));
 			case PodcastService::STATUS_INVALID_URL:
 				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Invalid URL $url");
 			case PodcastService::STATUS_INVALID_RSS:
@@ -98,7 +101,7 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function unsubscribe(int $id) {
+	public function unsubscribe(int $id) : JSONResponse {
 		$status = $this->podcastService->unsubscribe($id, $this->userId);
 
 		switch ($status) {
@@ -117,11 +120,11 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get(int $id) {
+	public function get(int $id) : JSONResponse {
 		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ true);
 
 		if ($channel !== null) {
-			return $channel->toApi($this->urlGenerator);
+			return new JSONResponse($channel->toApi($this->urlGenerator));
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
@@ -133,11 +136,11 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function channelDetails(int $id) {
+	public function channelDetails(int $id) : JSONResponse {
 		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ false);
 
 		if ($channel !== null) {
-			return $channel->detailsToApi($this->urlGenerator);
+			return new JSONResponse($channel->detailsToApi($this->urlGenerator));
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
@@ -149,11 +152,11 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function episodeDetails(int $id) {
+	public function episodeDetails(int $id) : JSONResponse {
 		$episode = $this->podcastService->getEpisode($id, $this->userId);
 
 		if ($episode !== null) {
-			return $episode->detailsToApi();
+			return new JSONResponse($episode->detailsToApi());
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
@@ -165,7 +168,7 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function episodeStream(int $id) {
+	public function episodeStream(int $id) : Response {
 		$episode = $this->podcastService->getEpisode($id, $this->userId);
 
 		if ($episode !== null) {
@@ -192,14 +195,14 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function updateChannel(int $id, ?string $prevHash) {
+	public function updateChannel(int $id, ?string $prevHash) : JSONResponse {
 		$updateResult = $this->podcastService->updateChannel($id, $this->userId, $prevHash);
 
 		$response = [
 			'success' => ($updateResult['status'] === PodcastService::STATUS_OK),
 			'updated' => $updateResult['updated']
 		];
-		if ($updateResult['updated']) {
+		if ($updateResult['updated'] && $updateResult['channel']) {
 			$response['channel'] = $updateResult['channel']->toApi($this->urlGenerator);
 		}
 
@@ -212,7 +215,7 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function resetAll() {
+	public function resetAll() : JSONResponse {
 		$this->podcastService->resetAll($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
@@ -231,7 +234,7 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportAllToFile(string $name, string $path, string $oncollision) {
+	public function exportAllToFile(string $name, string $path, string $oncollision) : JSONResponse {
 		try {
 			$userFolder = $this->rootFolder->getUserFolder($this->userId);
 			$exportedFilePath = $this->podcastService->exportToFile(
@@ -254,11 +257,11 @@ class PodcastApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function parseListFile(string $filePath) {
+	public function parseListFile(string $filePath) : JSONResponse {
 		try {
 			$userFolder = $this->rootFolder->getUserFolder($this->userId);
 			$list = $this->podcastService->parseOpml($userFolder, $filePath);
-			return $list;
+			return new JSONResponse($list);
 		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}

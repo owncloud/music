@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -27,14 +27,14 @@ class TimestampInit implements IRepairStep {
 		$this->config = $config;
 	}
 
-	public function getName() {
+	public function getName() : string {
 		return 'Set creation and update dates for the library entities without one';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function run(IOutput $output) {
+	public function run(IOutput $output) : void {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
 
 		// Music version 0.18.0 added the `created` and `updated` columns to all library entity tables
@@ -52,12 +52,12 @@ class TimestampInit implements IRepairStep {
 		}
 	}
 
-	private function setCreated(string $table, string $timestamp) {
+	private function setCreated(string $table, string $timestamp) : int {
 		$sql = "UPDATE `$table` SET `created` = ? WHERE `created` IS NULL";
 		return $this->db->executeUpdate($sql, [$timestamp]);
 	}
 
-	private function setUpdated(string $table, string $timestamp) {
+	private function setUpdated(string $table, string $timestamp) : int {
 		$sql = "UPDATE `$table` SET `updated` = ? WHERE `updated` IS NULL";
 		return $this->db->executeUpdate($sql, [$timestamp]);
 	}

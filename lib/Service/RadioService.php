@@ -77,6 +77,9 @@ class RadioService {
 		return $ret;
 	}
 
+	/**
+	 * @param resource $fp File handle
+	 */
 	private static function parseTitleFromStreamMetadata($fp) : ?string {
 		$meta_length = \ord(\fread($fp, 1)) * 16;
 		if ($meta_length) {
@@ -256,7 +259,7 @@ class RadioService {
 		return $result;
 	}
 
-	private static function convertUrlOnPlaylistToAbsolute($containedUrl, $playlistUrlParts) {
+	private static function convertUrlOnPlaylistToAbsolute(string $containedUrl, array $playlistUrlParts) : string {
 		if (!StringUtil::startsWith($containedUrl, 'http://', true) && !StringUtil::startsWith($containedUrl, 'https://', true)) {
 			$urlParts = $playlistUrlParts;
 			$path = $urlParts['path'];

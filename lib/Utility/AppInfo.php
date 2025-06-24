@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022, 2023
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -16,7 +16,7 @@ class AppInfo {
 
 	public const APP_ID = 'music';
 
-	public static function getVersion() {
+	public static function getVersion() : string {
 		// Nextcloud 14 introduced a new API for this which is not available on ownCloud.
 		// Nextcloud 25 removed the old API for good.
 		$appManager = \OC::$server->getAppManager();
@@ -27,13 +27,13 @@ class AppInfo {
 		}
 	}
 
-	public static function getVendor() {
+	public static function getVendor() : string {
 		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
 		include \OC::$SERVERROOT . '/version.php';
 		return $vendor;
 	}
 
-	public static function getFullName() {
+	public static function getFullName() : string {
 		return self::getVendor() . ' ' . self::APP_ID;
 	}
 }

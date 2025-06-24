@@ -18,6 +18,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -52,11 +53,12 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
 
-	private function migrateMusicArtists(ISchemaWrapper $schema) {
+	private function migrateMusicArtists(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_artists');
 		$this->setColumns($table, [
 			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -75,7 +77,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'user_id_hash_idx', ['user_id', 'hash']);
 	}
 
-	private function migrateMusicAlbums(ISchemaWrapper $schema) {
+	private function migrateMusicAlbums(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_albums');
 		$this->setColumns($table, [
 			[ 'id',					'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -99,7 +101,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'ma_user_id_hash_idx', ['user_id', 'hash']);
 	}
 
-	private function migrateMusicTracks(ISchemaWrapper $schema) {
+	private function migrateMusicTracks(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_tracks');
 		$this->setColumns($table, [
 			[ 'id',			'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true, ] ],
@@ -128,7 +130,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_tracks_file_user_id_idx', ['file_id', 'user_id']);
 	}
 
-	private function migrateMusicPlaylists(ISchemaWrapper $schema) {
+	private function migrateMusicPlaylists(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_playlists');
 		$this->setColumns($table, [
 			[ 'id',			'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -143,7 +145,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setPrimaryKey($table, ['id']);
 	}
 
-	private function migrateMusicGenres(ISchemaWrapper $schema) {
+	private function migrateMusicGenres(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_genres');
 		$this->setColumns($table, [
 			[ 'id',			'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -158,7 +160,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'mg_lower_name_user_id_idx', ['lower_name', 'user_id']);
 	}
 
-	private function migrateMusicRadioStations(ISchemaWrapper $schema) {
+	private function migrateMusicRadioStations(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_radio_stations');
 		$this->setColumns($table, [
 			[ 'id', 		'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -173,7 +175,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setPrimaryKey($table, ['id']);
 	}
 
-	private function migrateMusicAmpacheSessions(ISchemaWrapper $schema) {
+	private function migrateMusicAmpacheSessions(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_ampache_sessions');
 		$this->setColumns($table, [
 			[ 'id',			'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -186,7 +188,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_ampache_sessions_index', ['token']);
 	}
 
-	private function migrateAmpacheUsers(ISchemaWrapper $schema) {
+	private function migrateAmpacheUsers(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_ampache_users');
 		$this->setColumns($table, [
 			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true] ],
@@ -199,7 +201,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_ampache_users_index', ['hash', 'user_id']);
 	}
 
-	private function migrateMusicCache(ISchemaWrapper $schema) {
+	private function migrateMusicCache(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_cache');
 		$this->setColumns($table, [
 			[ 'id',			'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -212,7 +214,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_cache_index', ['user_id', 'key']);
 	}
 
-	private function migrateMusicBookmarks(ISchemaWrapper $schema) {
+	private function migrateMusicBookmarks(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_bookmarks');
 		$this->setColumns($table, [
 			[ 'id',			'integer',		['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -232,7 +234,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->dropObsoleteColumn($table, 'track_id');
 	}
 
-	private function migratePodcastChannels(ISchemaWrapper $schema) {
+	private function migratePodcastChannels(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_podcast_channels');
 		$this->setColumns($table, [
 			[ 'id',					'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -260,7 +262,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_podcast_channels_index', ['rss_hash', 'user_id']);
 	}
 
-	private function migratePodcastEpisodes(ISchemaWrapper $schema) {
+	private function migratePodcastEpisodes(ISchemaWrapper $schema) : void {
 		$table = $this->getOrCreateTable($schema, 'music_podcast_episodes');
 		$this->setColumns($table, [
 			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
@@ -290,6 +292,9 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		$this->setUniqueIndex($table, 'music_podcast_episodes_index', ['guid_hash', 'channel_id', 'user_id']);
 	}
 
+	/**
+	 * @return \Doctrine\DBAL\Schema\Table
+	 */
 	private function getOrCreateTable(ISchemaWrapper $schema, string $name) {
 		if (!$schema->hasTable($name)) {
 			return $schema->createTable($name);
@@ -298,44 +303,65 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 		}
 	}
 
-	private function setColumn($table, string $name, string $type, array $args) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setColumn($table, string $name, string $type, array $args) : void {
 		if (!$table->hasColumn($name)) {
 			$table->addColumn($name, $type, $args);
 		}
 	}
 
-	private function setColumns($table, array $nameTypeArgsPerCol) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setColumns($table, array $nameTypeArgsPerCol) : void {
 		foreach ($nameTypeArgsPerCol as $nameTypeArgs) {
 			list($name, $type, $args) = $nameTypeArgs;
 			$this->setColumn($table, $name, $type, $args);
 		}
 	}
 
-	private function dropObsoleteColumn($table, string $name) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function dropObsoleteColumn($table, string $name) : void {
 		if ($table->hasColumn($name)) {
 			$table->dropColumn($name);
 		}
 	}
 
-	private function dropObsoleteIndex($table, string $name) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function dropObsoleteIndex($table, string $name) : void {
 		if ($table->hasIndex($name)) {
 			$table->dropIndex($name);
 		}
 	}
 
-	private function setIndex($table, string $name, array $columns) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setIndex($table, string $name, array $columns) : void {
 		if (!$table->hasIndex($name)) {
 			$table->addIndex($columns, $name);
 		}
 	}
 
-	private function setUniqueIndex($table, string $name, array $columns) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setUniqueIndex($table, string $name, array $columns) : void {
 		if (!$table->hasIndex($name)) {
 			$table->addUniqueIndex($columns, $name);
 		}
 	}
 
-	private function setPrimaryKey($table, array $columns) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setPrimaryKey($table, array $columns) : void {
 		if (!$table->hasPrimaryKey()) {
 			$table->setPrimaryKey($columns);
 		}

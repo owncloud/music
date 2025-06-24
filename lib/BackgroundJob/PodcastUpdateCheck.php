@@ -12,14 +12,16 @@
 
 namespace OCA\Music\BackgroundJob;
 
+use OCA\Music\AppFramework\BackgroundJob\TimedJob;
 use OCA\Music\AppInfo\Application;
 use OCA\Music\Service\PodcastService;
 
-// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class PodcastUpdateCheck extends TimedJob {
 
 	/**
 	 * Check podcast updates on the background
+	 * @param mixed $arguments
+	 * @return void
 	 */
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
@@ -61,6 +63,5 @@ class PodcastUpdateCheck extends TimedJob {
 		else {
 			$logger->log('Automatic podcast updating is disabled via config.php', 'debug');
 		}
-
 	}
 }

@@ -24,7 +24,7 @@ class HttpUtil {
 
 	/**
 	 * Use HTTP GET to load the requested URL
-	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string, 'content_type' => string]
+	 * @return array{content: string|false, status_code: int, message: string, content_type: string}
 	 */
 	public static function loadFromUrl(string $url, ?int $maxLength=null, ?int $timeout_s=null) : array {
 		$status_code = 0;
@@ -59,6 +59,7 @@ class HttpUtil {
 	}
 
 	/**
+	 * @param array<string, mixed> $extraHeaders
 	 * @return resource
 	 */
 	public static function createContext(?int $timeout_s = null, array $extraHeaders = [], ?int $maxRedirects = null) {
@@ -76,7 +77,7 @@ class HttpUtil {
 	 * @param resource $context
 	 * @param bool $convertKeysToLower When true, the header names used as keys of the result array are
 	 * 				converted to lower case. According to RFC 2616, HTTP headers are case-insensitive.
-	 * @return array The headers from the URL, after any redirections. The header names will be array keys.
+	 * @return array<string, string|int> The headers from the URL, after any redirections. The header names will be array keys.
 	 * 					In addition to the named headers from the server, the key 'status_code' will contain
 	 * 					the status code number of the HTTP request (like 200, 302, 404) and 'status_msg'
 	 * 					the textual status following the code (like 'OK' or 'Not Found').
@@ -104,6 +105,10 @@ class HttpUtil {
 		return $result;
 	}
 
+	/**
+	 * @param string[] $rawHeaders
+	 * @return array<string, string|int>
+	 */
 	private static function parseHeaders(array $rawHeaders, bool $convertKeysToLower) : array {
 		$result = [];
 
@@ -141,6 +146,10 @@ class HttpUtil {
 		return 'User-Agent: OCMusic/' . AppInfo::getVersion();
 	}
 
+	/**
+	 * @param array<string, mixed> $extraHeaders
+	 * @return array{http: array<string, mixed>}
+	 */
 	private static function contextOptions(array $extraHeaders = []) : array {
 		$opts = [
 			'http' => [
@@ -157,6 +166,7 @@ class HttpUtil {
 		return $opts;
 	}
 
+	/** @param string[] $schemes */
 	private static function isUrlSchemeOneOf(string $url, array $schemes) : bool {
 		$url = \mb_strtolower($url);
 

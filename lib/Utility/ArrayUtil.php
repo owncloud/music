@@ -20,6 +20,8 @@ class ArrayUtil {
 	/**
 	 * Extract ID of each array element by calling getId and return
 	 * the IDs as an array
+	 * @param mixed[] $arr
+	 * @return int[]
 	 */
 	public static function extractIds(array $arr) : array {
 		return \array_map(fn($i) => $i->getId(), $arr);
@@ -28,6 +30,8 @@ class ArrayUtil {
 	/**
 	 * Extract User ID of each array element by calling getUserId and return
 	 * the IDs as an array
+	 * @param mixed[] $arr
+	 * @return string[]
 	 */
 	public static function extractUserIds(array $arr) : array {
 		return \array_map(fn($i) => $i->getUserId(), $arr);
@@ -35,7 +39,8 @@ class ArrayUtil {
 
 	/**
 	 * Create a look-up table from given array of items which have a `getId` function.
-	 * @return array where keys are the values returned by `getId` of each item
+	 * @param mixed[] $array
+	 * @return mixed[] where keys are the values returned by `getId` of each item
 	 */
 	public static function createIdLookupTable(array $array) : array {
 		$lut = [];
@@ -49,8 +54,9 @@ class ArrayUtil {
 	 * Create a look-up table from given array so that keys of the table are obtained by calling
 	 * the given method on each array entry and the values are arrays of entries having the same
 	 * value returned by that method.
+	 * @param mixed[] $array
 	 * @param string $getKeyMethod Name of a method found on $array entries which returns a string or an int
-	 * @return array [int|string => array]
+	 * @return array<int|string, mixed[]>
 	 */
 	public static function groupBy(array $array, string $getKeyMethod) : array {
 		$lut = [];
@@ -66,6 +72,9 @@ class ArrayUtil {
 	 * at the expense of higher RAM usage and can be used only for arrays of
 	 * integers or strings.
 	 * From https://stackoverflow.com/a/8827033
+	 * @param mixed[] $a
+	 * @param mixed[] $b
+	 * @return mixed[]
 	 */
 	public static function diff(array $b, array $a) : array {
 		$at = \array_flip($a);
@@ -82,6 +91,9 @@ class ArrayUtil {
 	 * Get multiple items from @a $array, as indicated by a second array @a $keys.
 	 * If @a $preserveKeys is given as true, the result will have the original keys, otherwise
 	 * the result is re-indexed with keys 0, 1, 2, ...
+	 * @param array<int|string, mixed> $array
+	 * @param array<int|string> $keys
+	 * @return array<int|string, mixed>
 	 */
 	public static function multiGet(array $array, array $keys, bool $preserveKeys=false) : array {
 		$result = [];
@@ -98,7 +110,10 @@ class ArrayUtil {
 	/**
 	 * Get multiple columns from the multidimensional @a $array. This is similar to the built-in
 	 * function \array_column except that this can return multiple columns and not just one.
+	 * @param array<array<int|string, mixed>> $array
+	 * @param array<int|string> $columns
 	 * @param int|string|null $indexColumn
+	 * @return array<array<int|string, mixed>>
 	 */
 	public static function columns(array $array, array $columns, $indexColumn=null) : array {
 		if ($indexColumn !== null) {
@@ -112,6 +127,8 @@ class ArrayUtil {
 	 * Like the built-in function \array_filter but this one works recursively on nested arrays.
 	 * Another difference is that this function always requires an explicit callback condition.
 	 * Both inner nodes and leafs nodes are passed to the $condition.
+	 * @param mixed[] $array
+	 * @return mixed[]
 	 */
 	public static function filterRecursive(array $array, callable $condition) : array {
 		$result = [];
@@ -132,6 +149,8 @@ class ArrayUtil {
 	/**
 	 * Inverse operation of self::filterRecursive, keeping only those items where
 	 * the $condition evaluates to *false*.
+	 * @param mixed[] $array
+	 * @return mixed[]
 	 */
 	public static function rejectRecursive(array $array, callable $condition) : array {
 		$invCond = fn($item) => !$condition($item);
@@ -142,6 +161,9 @@ class ArrayUtil {
 	 * Convert the given array $arr so that keys of the potentially multi-dimensional array
 	 * are converted using the mapping given in $dictionary. Keys not found from $dictionary
 	 * are not altered.
+	 * @param array<int|string, mixed> $arr
+	 * @param array<int|string, int|string> $dictionary
+	 * @return array<int|string, mixed>
 	 */
 	public static function convertKeys(array $arr, array $dictionary) : array {
 		$newArr = [];
@@ -158,6 +180,7 @@ class ArrayUtil {
 	 * Walk through the given, potentially multi-dimensional, array and cast all leaf nodes
 	 * to integer type. The array is modified in-place. Optionally, apply the conversion only
 	 * on the leaf nodes matching the given predicate.
+	 * @param mixed[] $arr Input/output array to operate on
 	 */
 	public static function intCastValues(array &$arr, ?callable $predicate=null) : void {
 		\array_walk_recursive($arr, function(&$value) use($predicate) {
@@ -170,6 +193,7 @@ class ArrayUtil {
 	/**
 	 * Given a two-dimensional array, sort the outer dimension according to values in the
 	 * specified column of the inner dimension.
+	 * @param array<array<string, mixed>> $arr Input/output array to operate on
 	 */
 	public static function sortByColumn(array &$arr, string $column) : void {
 		\usort($arr, fn($a, $b) => StringUtil::caselessCompare($a[$column], $b[$column]));

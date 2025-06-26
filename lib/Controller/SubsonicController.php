@@ -1609,25 +1609,27 @@ class SubsonicController extends ApiController {
 	 * Common logic for getAlbumInfo and getAlbumInfo2
 	 */
 	private function doGetAlbumInfo(string $id) : Response {
-		$content = [];
-
 		$albumId = $this->getAlbumIdFromEntityId($id);
-		if ($albumId !== null) {
-			$info = $this->lastfmService->getAlbumInfo($albumId, $this->user());
+		if ($albumId === null) {
+			throw new SubsonicException("Unexpected ID format: $id", 0);
+		}
+		
+		$info = $this->lastfmService->getAlbumInfo($albumId, $this->user());
 
-			if (isset($info['album'])) {
-				$content = [
-					'notes' => $info['album']['wiki']['summary'] ?? null,
-					'lastFmUrl' => $info['album']['url'],
-					'musicBrainzId' => $info['album']['mbid'] ?? null
-				];
+		if (isset($info['album'])) {
+			$content = [
+				'notes' => $info['album']['wiki']['summary'] ?? null,
+				'lastFmUrl' => $info['album']['url'],
+				'musicBrainzId' => $info['album']['mbid'] ?? null
+			];
 
-				foreach ($info['album']['image'] ?? [] as $imageInfo) {
-					if (!empty($imageInfo['size'])) {
-						$content[$imageInfo['size'] . 'ImageUrl'] = $imageInfo['#text'];
-					}
+			foreach ($info['album']['image'] ?? [] as $imageInfo) {
+				if (!empty($imageInfo['size'])) {
+					$content[$imageInfo['size'] . 'ImageUrl'] = $imageInfo['#text'];
 				}
 			}
+		} else {
+			$content = new \stdClass;
 		}
 
 		// This method is unusual in how it uses non-attribute elements in the response.

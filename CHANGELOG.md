@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+- Subsonic API: In methods `getAlbumInfo` and `getAlbumInfo2` with no info found, an empty array was returned instead of an empty object
+  [#1233](https://github.com/owncloud/music/issues/1233)
+
 ## 2.2.0 - 2025-06-15
 
 ### Added

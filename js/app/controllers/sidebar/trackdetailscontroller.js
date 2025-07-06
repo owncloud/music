@@ -140,12 +140,25 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.$watch('selectedTab', $scope.$parent.adjustFixedPositions);
 
-		$scope.formatDetailValue = function(value) {
-			if (isFloat(value)) {
+		$scope.formatDetailValue = function(value, key=null) {
+			if (key == 'sample_rate') {
+				return (value/1000).toFixed(1) + ' kHz';
+			} else if (key == 'bitrate') {
+				return (value/1000).toFixed(0) + ' kbps';
+			} else if (isFloat(value)) {
 				// limit the number of shown digits on floating point numbers
 				return Number(value.toPrecision(6));
 			} else {
 				return value;
+			}
+		};
+
+		$scope.valueTooltip = function(value, key) {
+			// Show the original value in the tooltip on those entries where some formatting is applied
+			if (key == 'sample_rate' || key == 'bitrate' || isFloat(value)) {
+				return value;
+			} else {
+				return '';
 			}
 		};
 

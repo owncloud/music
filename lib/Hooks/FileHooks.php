@@ -32,7 +32,7 @@ class FileHooks {
 	 * Invoke auto update of music database after file or folder deletion
 	 * @param Node $node pointing to the file or folder
 	 */
-	public static function deleted(Node $node) : void {
+	private static function deleted(Node $node) : void {
 		$container = self::getContainer();
 		$scanner = $container->query('Scanner');
 
@@ -47,7 +47,7 @@ class FileHooks {
 	 * Invoke auto update of music database after file update or file creation
 	 * @param Node $node pointing to the file
 	 */
-	public static function updated(Node $node) : void {
+	private static function updated(Node $node) : void {
 		// At least on Nextcloud 13, it sometimes happens that this hook is triggered
 		// when the core creates some temporary file and trying to access the provided
 		// node throws an exception, probably because the temp file is already removed
@@ -139,7 +139,7 @@ class FileHooks {
 		return 0 < $trackBusinessLayer->count($userId);
 	}
 
-	public static function postRenamed(Node $source, Node $target) : void {
+	private static function postRenamed(Node $source, Node $target) : void {
 		// Beware: the $source describes the past state of the file and some of its functions will throw upon calling
 
 		if ($source->getParent()->getId() != $target->getParent()->getId()) {
@@ -149,9 +149,40 @@ class FileHooks {
 		}
 	}
 
+	private static function safeExecute(callable $func) : void {
+		// Don't let any exceptions or errors leak out of this method, no matter what unforeseen oddities happen.
+		// We never want to prevent the actual file operation since our reactions to them are anyway non-crucial.
+		// Especially during a server version update involving also Music app version update, the system may be
+		// running a partially updated application version and that may lead to unexpected fatal errors, see
+		// https://github.com/owncloud/music/issues/1231.
+		try {
+			try {
+				$func();
+			} catch (\Throwable $error) {
+				$container = self::getContainer();
+				$logger = $container->query('Logger');
+				$logger->log("Error occurred while executing Music app file hook: {$error->getMessage()}. Stack trace: {$error->getTraceAsString()}", 'error');
+			}
+		} catch (\Throwable $error) {
+			// even logging the error failed so just ignore
+		}
+	}
+
+	public static function safeUpdated(Node $node) : void {
+		self::safeExecute(fn() => self::updated($node));
+	}
+
+	public static function safeDeleted(Node $node) : void {
+		self::safeExecute(fn() => self::deleted($node));
+	}
+
+	public static function safePostRenamed(Node $source, Node $target) : void {
+		self::safeExecute(fn() => self::postRenamed($source, $target));
+	}
+
 	public function register() : void {
-		$this->filesystemRoot->listen('\OC\Files', 'postWrite', [__CLASS__, 'updated']);
-		$this->filesystemRoot->listen('\OC\Files', 'preDelete', [__CLASS__, 'deleted']);
-		$this->filesystemRoot->listen('\OC\Files', 'postRename', [__CLASS__, 'postRenamed']);
+		$this->filesystemRoot->listen('\OC\Files', 'postWrite', [__CLASS__, 'safeUpdated']);
+		$this->filesystemRoot->listen('\OC\Files', 'preDelete', [__CLASS__, 'safeDeleted']);
+		$this->filesystemRoot->listen('\OC\Files', 'postRename', [__CLASS__, 'safePostRenamed']);
 	}
 }

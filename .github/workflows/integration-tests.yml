@@ -1,0 +1,64 @@
+name: Integration tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Restore cached SW package
+      id: server-cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: /tmp/oc_music_ci/server
+        key: nextcloud-31.0.7
+
+    - name: Download the cloud SW package
+      if: steps.server-cache-restore.outputs.cache-hit != 'true'
+      run: tests/scripts/downloadServerForCi.sh nextcloud 31.0.7
+
+    - name: Save SW package to cache
+      id: server-cache-save
+      if: steps.server-cache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: /tmp/oc_music_ci/server
+        key: nextcloud-31.0.7
+
+    - name: Setup CI env
+      run: tests/scripts/setupEnvForCi.sh
+
+    - name: Run integration tests
+      run: |
+          cd /tmp/oc_music_ci/server/apps/music
+          composer run-script integration-tests
+
+    - name: Run behat tests
+      run: |
+          php -S localhost:8888 -t /tmp/oc_music_ci/server &
+          cp tests/behat.yml.travis tests/behat.yml
+          composer run-script behat
+
+    - name: Check log
+      run: cat /tmp/oc_music_ci/data/nextcloud.log

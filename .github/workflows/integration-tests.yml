@@ -1,4 +1,4 @@
-name: Integration tests
+name: PHP Integration Tests
 
 on:
   push:
@@ -21,6 +21,12 @@ jobs:
           - cloud: nextcloud
             version: 31.0.7
             php: 8.4
+          - cloud: owncloud
+            version: 10.5.0
+            php: 7.4
+          - cloud: owncloud
+            version: 10.15.3
+            php: 7.4
 
     steps:
     - name: Checkout repository
@@ -63,7 +69,7 @@ jobs:
         key: ${{ matrix.cloud }}-${{ matrix.version }}
 
     - name: Setup CI env
-      run: tests/scripts/setupEnvForCi.sh
+      run: tests/scripts/setupEnvForCi.sh ${{ matrix.cloud }}
 
     - name: Run integration tests
       run: |

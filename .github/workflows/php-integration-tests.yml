@@ -72,9 +72,8 @@ jobs:
       run: tests/scripts/setupEnvForCi.sh ${{ matrix.cloud }}
 
     - name: Run integration tests
-      run: |
-          cd /tmp/oc_music_ci/server/apps/music
-          composer run-script integration-tests
+      working-directory: /tmp/oc_music_ci/server/apps/music
+      run: composer run-script integration-tests
 
     - name: Run behat tests
       run: |

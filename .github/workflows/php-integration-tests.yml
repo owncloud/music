@@ -22,7 +22,7 @@ jobs:
           - cloud: nextcloud
             version: 31.0.7
             php: 8.4
-            db: mysql
+            db: pgsql
           - cloud: owncloud
             version: 10.5.0
             php: 7.4

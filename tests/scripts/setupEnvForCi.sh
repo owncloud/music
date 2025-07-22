@@ -8,12 +8,13 @@
 
 # Prerequisite: The server to use is downloaded and extracted to /tmp/oc_music_ci/server
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <owncloud|nextcloud>"
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <owncloud|nextcloud> <sqlite|mysql>"
     exit 1
 fi
 
 CLOUD=$1
+DB=$2
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_DIR=$SCRIPT_DIR/../..
 
@@ -21,13 +22,21 @@ REPO_DIR=$SCRIPT_DIR/../..
 rm -rf /tmp/oc_music_ci/server/apps/music
 cp -r $REPO_DIR /tmp/oc_music_ci/server/apps/music
 
+# prepare the DB if necessary
+if [[ $DB == 'mysql' ]]; then
+    sudo /etc/init.d/mysql start
+    mysql -uroot -proot -e 'CREATE DATABASE owncloud;'
+    mysql -uroot -proot -e "CREATE USER 'oc_autotest'@'localhost' IDENTIFIED BY '';"
+    mysql -uroot -proot -e "GRANT ALL ON owncloud.* TO 'oc_autotest'@'localhost';"
+fi
+
 # install the cloud
 cd /tmp/oc_music_ci
 rm -rf data
 mkdir data
 cd server
 touch config/CAN_INSTALL
-php occ maintenance:install --database-name owncloud --database-user oc_autotest --admin-user admin --admin-pass 0aVnqOWH1rurCrNdTJTM --database sqlite --database-pass='' --data-dir=/tmp/oc_music_ci/data
+php occ maintenance:install --database-name owncloud --database-user oc_autotest --admin-user admin --admin-pass 0aVnqOWH1rurCrNdTJTM --database $DB --database-pass='' --data-dir=/tmp/oc_music_ci/data
 OC_PASS=ampache123456 php occ user:add ampache --password-from-env
 
 # set log level as 'info'
@@ -48,4 +57,12 @@ php occ files:scan ampache
 php occ music:scan ampache
 
 # setup the API key
-sqlite3 /tmp/oc_music_ci/data/owncloud.db 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES ("ampache", "3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18");'
+SQL_QUERY='INSERT INTO oc_music_ampache_users (user_id, hash) VALUES ("ampache", "3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18");'
+if [ $DB == 'sqlite' ]; then
+    sqlite3 /tmp/oc_music_ci/data/owncloud.db "$SQL_QUERY"
+elif [ $DB == 'mysql' ]; then
+    mysql -u oc_autotest -e "$SQL_QUERY" owncloud
+else
+    echo "Unsupported DB type $DB"
+    exit 2
+fi

@@ -18,15 +18,19 @@ jobs:
           - cloud: nextcloud
             version: 20.0.5
             php: 7.4
+            db: sqlite
           - cloud: nextcloud
             version: 31.0.7
             php: 8.4
+            db: mysql
           - cloud: owncloud
             version: 10.5.0
             php: 7.4
+            db: sqlite
           - cloud: owncloud
             version: 10.15.3
             php: 7.4
+            db: mysql
 
     steps:
     - name: Checkout repository
@@ -69,7 +73,7 @@ jobs:
         key: ${{ matrix.cloud }}-${{ matrix.version }}
 
     - name: Setup CI env
-      run: tests/scripts/setupEnvForCi.sh ${{ matrix.cloud }}
+      run: tests/scripts/setupEnvForCi.sh ${{ matrix.cloud }} ${{ matrix.db }}
 
     - name: Run integration tests
       working-directory: /tmp/oc_music_ci/server/apps/music

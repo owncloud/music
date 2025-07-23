@@ -82,7 +82,7 @@ jobs:
     - name: Run behat tests
       run: |
           php -S localhost:8888 -t /tmp/oc_music_ci/server &
-          cp tests/behat.yml.travis tests/behat.yml
+          cp tests/behat.yml.ci_tests tests/behat.yml
           composer run-script behat
 
     - name: Check log

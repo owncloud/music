@@ -72,9 +72,9 @@ class ArrayUtil {
 	 * at the expense of higher RAM usage and can be used only for arrays of
 	 * integers or strings.
 	 * From https://stackoverflow.com/a/8827033
-	 * @param mixed[] $a
-	 * @param mixed[] $b
-	 * @return mixed[]
+	 * @param array<int|string> $a
+	 * @param array<int|string> $b
+	 * @return array<int|string>
 	 */
 	public static function diff(array $b, array $a) : array {
 		$at = \array_flip($a);
@@ -85,6 +85,20 @@ class ArrayUtil {
 			}
 		}
 		return $d;
+	}
+
+	/**
+	 * Get a value matching a key from a dictionary, comparing the key in case-insensitive manner.
+	 * @param array<string, mixed> $dictionary
+	 * @return ?mixed Value matching the key or null if not found
+	 */
+	public static function getCaseInsensitive(array $dictionary, string $key) {
+		foreach ($dictionary as $k => $v) {
+			if (StringUtil::caselessEqual((string)$k, $key)) {
+				return $v;
+			}
+		}
+		return null;
 	}
 
 	/**

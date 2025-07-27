@@ -46,7 +46,7 @@ class CoverService {
 	const DO_NOT_CROP_OR_SCALE = -1;
 
 	public function __construct(
-			Extractor $extractor,
+			ExtractorGetID3 $extractor,
 			Cache $cache,
 			AlbumBusinessLayer $albumBusinessLayer,
 			IConfig $config,

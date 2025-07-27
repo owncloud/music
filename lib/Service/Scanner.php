@@ -54,7 +54,7 @@ class Scanner extends PublicEmitter {
 	private IConfig $config;
 	private IFactory $l10nFactory;
 
-	public function __construct(Extractor $extractor,
+	public function __construct(ExtractorGetID3 $extractor,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,

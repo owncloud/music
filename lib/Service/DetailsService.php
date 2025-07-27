@@ -23,7 +23,7 @@ class DetailsService {
 	private Logger $logger;
 
 	public function __construct(
-			Extractor $extractor,
+			ExtractorGetID3 $extractor,
 			Logger $logger) {
 		$this->extractor = $extractor;
 		$this->logger = $logger;

@@ -36,7 +36,7 @@ class FavoritesController extends Controller {
 	private string $userId;
 
 	public function __construct(
-			string $appname,
+			string $appName,
 			IRequest $request,
 			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
@@ -46,7 +46,7 @@ class FavoritesController extends Controller {
 			TrackBusinessLayer $trackBusinessLayer,
 			string $userId) {
 
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;

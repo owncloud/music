@@ -52,7 +52,7 @@ class PlaylistApiController extends Controller {
 	private IConfig $configManager;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								PlaylistBusinessLayer $playlistBusinessLayer,
@@ -66,7 +66,7 @@ class PlaylistApiController extends Controller {
 								Folder $userFolder,
 								IConfig $configManager,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;

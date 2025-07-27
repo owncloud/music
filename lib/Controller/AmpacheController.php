@@ -114,7 +114,7 @@ class AmpacheController extends ApiController {
 	const API6_VERSION = '6.6.1';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IConfig $config,
 								IL10N $l10n,
@@ -138,7 +138,7 @@ class AmpacheController extends ApiController {
 								LibrarySettings $librarySettings,
 								Random $random,
 								Logger $logger) {
-		parent::__construct($appname, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
+		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->config = $config;
 		$this->l10n = $l10n;

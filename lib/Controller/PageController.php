@@ -22,10 +22,10 @@ use OCP\IRequest;
 class PageController extends Controller {
 	private IL10N $l10n;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IL10N $l10n) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 	}
 

@@ -51,7 +51,7 @@ class MusicApiController extends Controller {
 	private string $userId;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								TrackBusinessLayer $trackBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
@@ -64,7 +64,7 @@ class MusicApiController extends Controller {
 								LibrarySettings $librarySettings,
 								?string $userId,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->scanner = $scanner;

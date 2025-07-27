@@ -46,7 +46,7 @@ class RadioApiController extends Controller {
 	private ?Folder $userFolder;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
@@ -57,7 +57,7 @@ class RadioApiController extends Controller {
 								?string $userId,
 								?Folder $userFolder,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->businessLayer = $businessLayer;

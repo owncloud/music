@@ -41,7 +41,7 @@ class AmpacheImageController extends Controller {
 	private Logger $logger;
 
 	public function __construct(
-			string $appname,
+			string $appName,
 			IRequest $request,
 			AmpacheImageService $service,
 			CoverService $coverService,
@@ -50,7 +50,7 @@ class AmpacheImageController extends Controller {
 			ArtistBusinessLayer $artistBusinessLayer,
 			PlaylistBusinessLayer $playlistBusinessLayer,
 			Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->service = $service;
 		$this->coverService = $coverService;
 		$this->librarySettings = $librarySettings;

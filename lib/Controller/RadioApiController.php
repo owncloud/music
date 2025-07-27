@@ -19,6 +19,7 @@ use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 
 use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -43,7 +44,7 @@ class RadioApiController extends Controller {
 	private StreamTokenService $tokenService;
 	private PlaylistFileService $playlistFileService;
 	private string $userId;
-	private ?Folder $userFolder;
+	private IRootFolder $rootFolder;
 	private Logger $logger;
 
 	public function __construct(string $appName,
@@ -55,7 +56,7 @@ class RadioApiController extends Controller {
 								StreamTokenService $tokenService,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
-								?Folder $userFolder,
+								IRootFolder $rootFolder,
 								Logger $logger) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
@@ -65,7 +66,7 @@ class RadioApiController extends Controller {
 		$this->tokenService = $tokenService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; may be null when resolveStreamUrl used on public share
-		$this->userFolder = $userFolder;
+		$this->rootFolder = $rootFolder;
 		$this->logger = $logger;
 	}
 
@@ -167,14 +168,10 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function exportAllToFile(string $name, string $path, string $oncollision='abort') : JSONResponse {
-		if ($this->userFolder === null) {
-			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
-			// But in that case, the framework should block the execution before it reaches here.
-			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
-		}
 		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
 			$exportedFilePath = $this->playlistFileService->exportRadioStationsToFile(
-					$this->userId, $this->userFolder, $path, $name, $oncollision);
+					$this->userId, $userFolder, $path, $name, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
@@ -193,13 +190,9 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function importFromFile(string $filePath) : JSONResponse {
-		if ($this->userFolder === null) {
-			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
-			// But in that case, the framework should block the execution before it reaches here.
-			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
-		}
 		try {
-			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
+			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $userFolder, $filePath);
 			$result['stations'] = \array_map(fn($s) => $s->toApi(), $result['stations']);
 			return new JSONResponse($result);
 		} catch (\OCP\Files\NotFoundException $ex) {

@@ -23,7 +23,6 @@ use OCA\Music\Middleware\SubsonicMiddleware;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
-use OCP\Files\Folder;
 use OCP\Files\IMimeTypeLoader;
 use OCP\IConfig;
 
@@ -60,11 +59,6 @@ class Application extends ApplicationBase {
 		// this is not registered by the ownCloud core
 		$context->registerService(IMimeTypeLoader::class, function (IAppContainer $c) {
 			return $c->getServer()->getMimeTypeLoader();
-		});
-
-		// this is a bit silly but this is how Nextcloud server does it, too
-		$context->registerService(Folder::class, function (IAppContainer $c) {
-			return $c->getServer()->getUserFolder();
 		});
 
 		// unlike Nextcloud, ownCloud is not able to autoload the classes directly within registerMiddleWare

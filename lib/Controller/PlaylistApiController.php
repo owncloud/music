@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Response;
 
 use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -63,7 +64,7 @@ class PlaylistApiController extends Controller {
 								CoverService $coverService,
 								PlaylistFileService $playlistFileService,
 								string $userId,
-								Folder $userFolder,
+								IRootFolder $rootFolder,
 								IConfig $configManager,
 								Logger $logger) {
 		parent::__construct($appName, $request);
@@ -76,7 +77,7 @@ class PlaylistApiController extends Controller {
 		$this->coverService = $coverService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
-		$this->userFolder = $userFolder;
+		$this->userFolder = $rootFolder->getUserFolder($userId);
 		$this->configManager = $configManager;
 		$this->logger = $logger;
 	}

@@ -46,7 +46,18 @@ class Application extends ApplicationBase {
 
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
-			$this->registerServices($this->getContainer());
+			$container = $this->getContainer();
+			// this is not registered by the ownCloud core
+			$container->registerService(IMimeTypeLoader::class, function (IAppContainer $c) {
+				return $c->getServer()->getMimeTypeLoader();
+			});
+
+			// Unlike Nextcloud, ownCloud is not able to autoload the classes directly within registerMiddleWare.
+			// We have to fetch each middleware once so that the instances are already cached when registerMiddleWare is called.
+			$container->query(AmpacheMiddleware::class);
+			$container->query(SubsonicMiddleware::class);
+
+			$this->registerMiddleWares($container);
 		}
 	}
 
@@ -54,17 +65,7 @@ class Application extends ApplicationBase {
 	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
 	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
 	 */
-	private function registerServices($context) : void {
-
-		// this is not registered by the ownCloud core
-		$context->registerService(IMimeTypeLoader::class, function (IAppContainer $c) {
-			return $c->getServer()->getMimeTypeLoader();
-		});
-
-		// unlike Nextcloud, ownCloud is not able to autoload the classes directly within registerMiddleWare
-		$context->query(AmpacheMiddleware::class);
-		$context->query(SubsonicMiddleware::class);
-
+	private function registerMiddleWares($context) : void {
 		$context->registerMiddleWare(AmpacheMiddleware::class);
 		$context->registerMiddleWare(SubsonicMiddleware::class);
 	}
@@ -74,7 +75,7 @@ class Application extends ApplicationBase {
 	 * @param \OCP\AppFramework\Bootstrap\IRegistrationContext $context
 	 */
 	public function register($context) : void {
-		$this->registerServices($context);
+		$this->registerMiddleWares($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 

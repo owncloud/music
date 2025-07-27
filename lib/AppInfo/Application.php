@@ -109,8 +109,22 @@ class Application extends ApplicationBase {
 		$this->adjustCsp();
 	}
 
+	/**
+	 * Wrapper to get a service from the container, hiding the differences between the cloud versions.
+	 * @param string $id A fully-qualified class name of an autoloadable class or other registered service ID
+	 * @return mixed
+	 */
+	public function get(string $id) {
+		$container = $this->getContainer();
+		if (\method_exists($container, 'get')) { // @phpstan-ignore function.alreadyNarrowedType
+			return $container->get($id); // IAppContainer::get exists on NC20+
+		} else {
+			return $container->query($id); // On ownCloud, we use IAppContainer::query which is deprecated on NC20+
+		}
+	}
+
 	private function getRequestUrl() : string {
-		$request = $this->getContainer()->query(IRequest::class);
+		$request = $this->get(IRequest::class);
 		$url = $request->server['REQUEST_URI'] ?? '';
 		$url = \explode('?', $url)[0]; // get rid of any query args
 		$url = \explode('#', $url)[0]; // get rid of any hash part
@@ -118,14 +132,13 @@ class Application extends ApplicationBase {
 	}
 
 	private function registerHooks() : void {
-		$container = $this->getContainer();
-		$container->query(FileHooks::class)->register();
-		$container->query(ShareHooks::class)->register();
-		$container->query(UserHooks::class)->register();
+		$this->get(FileHooks::class)->register();
+		$this->get(ShareHooks::class)->register();
+		$this->get(UserHooks::class)->register();
 	}
 
 	private function registerEmbeddedPlayer() : void {
-		$dispatcher = $this->getContainer()->query(\OCP\EventDispatcher\IEventDispatcher::class);
+		$dispatcher = $this->get(\OCP\EventDispatcher\IEventDispatcher::class);
 
 		// Files app
 		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, function() {
@@ -146,10 +159,8 @@ class Application extends ApplicationBase {
 	 * Set content security policy to allow streaming media from the configured external sources
 	 */
 	private function adjustCsp() : void {
-		$container = $this->getContainer();
-
 		/** @var IConfig $config */
-		$config = $container->query(IConfig::class);
+		$config = $this->get(IConfig::class);
 		$radioSources = $config->getSystemValue('music.allowed_stream_src', []);
 
 		if (\is_string($radioSources)) {
@@ -163,12 +174,12 @@ class Application extends ApplicationBase {
 		}
 
 		// The media sources 'data:' and 'blob:' are needed for HLS streaming
-		if (self::hlsEnabled($config, $container->query('userId'))) {
+		if (self::hlsEnabled($config, $this->get('userId'))) {
 			$policy->addAllowedMediaDomain('data:');
 			$policy->addAllowedMediaDomain('blob:');
 		}
 
-		$container->query(IContentSecurityPolicyManager::class)->addDefaultPolicy($policy);
+		$this->get(IContentSecurityPolicyManager::class)->addDefaultPolicy($policy);
 	}
 
 	private static function hlsEnabled(IConfig $config, ?string $userId) : bool {

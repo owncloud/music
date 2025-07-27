@@ -29,16 +29,14 @@ class PodcastUpdateCheck extends TimedJob {
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
 
-		$container = $app->getContainer();
-
-		$logger = $container->query(Logger::class);
+		$logger = $app->get(Logger::class);
 		$logger->log('Run ' . \get_class(), 'debug');
 
-		$minInterval = (float)$container->query(IConfig::class)->getSystemValue('music.podcast_auto_update_interval', 24); // hours
+		$minInterval = (float)$app->get(IConfig::class)->getSystemValue('music.podcast_auto_update_interval', 24); // hours
 		// negative interval values can be used to disable the auto-update
 		if ($minInterval >= 0) {
-			$users = $container->query(PodcastChannelBusinessLayer::class)->findAllUsers();
-			$podcastService = $container->query(PodcastService::class);
+			$users = $app->get(PodcastChannelBusinessLayer::class)->findAllUsers();
+			$podcastService = $app->get(PodcastService::class);
 			$channelsChecked = 0;
 
 			foreach ($users as $userId) {

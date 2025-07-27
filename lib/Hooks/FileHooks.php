@@ -15,7 +15,6 @@
 namespace OCA\Music\Hooks;
 
 use OCA\Music\AppFramework\Core\Logger;
-use OCP\AppFramework\IAppContainer;
 use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
 use OCP\Files\Node;
@@ -36,8 +35,7 @@ class FileHooks {
 	 * @param Node $node pointing to the file or folder
 	 */
 	private static function deleted(Node $node) : void {
-		$container = self::getContainer();
-		$scanner = $container->query(Scanner::class);
+		$scanner = self::inject(Scanner::class);
 
 		if ($node->getType() == FileInfo::TYPE_FILE) {
 			$scanner->delete($node->getId());
@@ -59,51 +57,49 @@ class FileHooks {
 		// File::fopen, this hook gets triggered immediately after the opening succeeds,
 		// before anything is actually written and while the file is *exclusively locked
 		// because of the write mode*. See #638.
-		$container = self::getContainer();
 		try {
-			self::handleUpdated($node, $container);
+			self::handleUpdated($node);
 		} catch (\OCP\Files\NotFoundException $e) {
-			$logger = $container->query(Logger::class);
+			$logger = self::inject(Logger::class);
 			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
 		} catch (\OCP\Lock\LockedException $e) {
-			$logger = $container->query(Logger::class);
+			$logger = self::inject(Logger::class);
 			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
 
-	private static function handleUpdated(Node $node, IAppContainer $container) : void {
+	private static function handleUpdated(Node $node) : void {
 		// we are interested only about updates on files, not on folders
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$scanner = $container->query(Scanner::class);
-			$userId = self::getUser($node, $container);
+			$scanner = self::inject(Scanner::class);
+			$userId = self::getUser($node);
 
 			// Ignore event if we got no user or folder or the user has not yet scanned the music
 			// collection. The last condition is especially to prevent problems when creating new user
 			// and the default file set contains one or more audio files (see the discussion in #638).
-			if (!empty($userId) && self::userHasMusicLib($userId, $container)) {
+			if (!empty($userId) && self::userHasMusicLib($userId)) {
 				$scanner->update($node, $userId, $node->getPath());
 			}
 		}
 	}
 
 	private static function moved(Node $node) : void {
-		$container = self::getContainer();
 		try {
-			self::handleMoved($node, $container);
+			self::handleMoved($node);
 		} catch (\OCP\Files\NotFoundException $e) {
-			$logger = $container->query(Logger::class);
+			$logger = self::inject(Logger::class);
 			$logger->log('FileHooks::moved triggered for a non-existing file', 'warn');
 		} catch (\OCP\Lock\LockedException $e) {
-			$logger = $container->query(Logger::class);
+			$logger = self::inject(Logger::class);
 			$logger->log('FileHooks::moved triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
 
-	private static function handleMoved(Node $node, IAppContainer $container) : void {
-		$scanner = $container->query(Scanner::class);
-		$userId = self::getUser($node, $container);
+	private static function handleMoved(Node $node) : void {
+		$scanner = self::inject(Scanner::class);
+		$userId = self::getUser($node);
 
-		if (!empty($userId) && self::userHasMusicLib($userId, $container)) {
+		if (!empty($userId) && self::userHasMusicLib($userId)) {
 			if ($node->getType() == FileInfo::TYPE_FILE) {
 				$scanner->fileMoved($node, $userId);
 			} else {
@@ -112,8 +108,8 @@ class FileHooks {
 		}
 	}
 
-	private static function getUser(Node $node, IAppContainer $container) : ?string {
-		$userId = $container->query('userId');
+	private static function getUser(Node $node) : ?string {
+		$userId = self::inject('userId');
 
 		// When a file is uploaded to a folder shared by link, we end up here without current user.
 		// In that case, fall back to using file owner
@@ -127,18 +123,20 @@ class FileHooks {
 		return $userId;
 	}
 
-	private static function getContainer() : IAppContainer {
+	/**
+	 * Get the dependency identified by the given name
+	 * @return mixed
+	 */
+	private static function inject(string $id) {
 		$app = \OC::$server->query(Application::class);
-		return $app->getContainer();
+		return $app->get($id);
 	}
 
 	/**
 	 * Check if user has any scanned tracks in his/her music library
-	 * @param string $userId
-	 * @param IAppContainer $container
 	 */
-	private static function userHasMusicLib(string $userId, IAppContainer $container) : bool {
-		$trackBusinessLayer = $container->query(TrackBusinessLayer::class);
+	private static function userHasMusicLib(string $userId) : bool {
+		$trackBusinessLayer = self::inject(TrackBusinessLayer::class);
 		return 0 < $trackBusinessLayer->count($userId);
 	}
 
@@ -162,8 +160,7 @@ class FileHooks {
 			try {
 				$func();
 			} catch (\Throwable $error) {
-				$container = self::getContainer();
-				$logger = $container->query(Logger::class);
+				$logger = self::inject(Logger::class);
 				$logger->log("Error occurred while executing Music app file hook: {$error->getMessage()}. Stack trace: {$error->getTraceAsString()}", 'error');
 			}
 		} catch (\Throwable $error) {

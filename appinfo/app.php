@@ -48,7 +48,7 @@ $server->getNavigationManager()->add(function () use ($c, $appName) {
  * register search provider
  */
 $server->getSearch()->registerProvider(
-		'OCA\Music\Search\Provider',
+		\OCA\Music\Search\Provider::class,
 		['app' => $appName, 'apps' => ['files']]
 );
 

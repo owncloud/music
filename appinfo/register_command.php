@@ -20,17 +20,16 @@ use OCA\Music\AppInfo\Application;
 
 /** @var Application $app */
 $app = \OC::$server->query(Application::class);
-$c = $app->getContainer();
 
-$application->add($c->query(Scan::class));
-$application->add($c->query(ResetDatabase::class));
-$application->add($c->query(ResetCache::class));
-$application->add($c->query(Cleanup::class));
-$application->add($c->query(RegisterMimeTypes::class));
-$application->add($c->query(PodcastAdd::class));
-$application->add($c->query(PodcastExport::class));
-$application->add($c->query(PodcastImport::class));
-$application->add($c->query(PodcastReset::class));
-$application->add($c->query(PodcastUpdate::class));
-$application->add($c->query(PlaylistExport::class));
-$application->add($c->query(PlaylistImport::class));
+$application->add($app->get(Scan::class));
+$application->add($app->get(ResetDatabase::class));
+$application->add($app->get(ResetCache::class));
+$application->add($app->get(Cleanup::class));
+$application->add($app->get(RegisterMimeTypes::class));
+$application->add($app->get(PodcastAdd::class));
+$application->add($app->get(PodcastExport::class));
+$application->add($app->get(PodcastImport::class));
+$application->add($app->get(PodcastReset::class));
+$application->add($app->get(PodcastUpdate::class));
+$application->add($app->get(PlaylistExport::class));
+$application->add($app->get(PlaylistImport::class));

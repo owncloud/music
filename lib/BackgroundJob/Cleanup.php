@@ -31,18 +31,16 @@ class Cleanup extends TimedJob {
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
 
-		$container = $app->getContainer();
-
-		$logger = $container->query(Logger::class);
+		$logger = $app->get(Logger::class);
 		$logger->log('Run ' . \get_class(), 'debug');
 
 		// remove orphaned entities
-		$container->query(Maintenance::class)->cleanUp();
+		$app->get(Maintenance::class)->cleanUp();
 
 		// remove expired sessions
-		$container->query(AmpacheSessionMapper::class)->cleanUp();
+		$app->get(AmpacheSessionMapper::class)->cleanUp();
 
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query(Scanner::class)->findAlbumCovers();
+		$app->get(Scanner::class)->findAlbumCovers();
 	}
 }

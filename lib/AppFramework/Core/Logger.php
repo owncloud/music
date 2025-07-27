@@ -29,7 +29,7 @@ class Logger {
 		if (\method_exists($container, 'getLogger')) { // @phpstan-ignore function.alreadyNarrowedType
 			$this->logger = $container->getLogger();
 		} else {
-			$this->logger = $container->query(\Psr\Log\LoggerInterface::class);
+			$this->logger = $container->get(\Psr\Log\LoggerInterface::class);
 		}
 	}
 

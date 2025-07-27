@@ -39,13 +39,13 @@ class ShareController extends Controller {
 	private PlaylistFileService $playlistFileService;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								Scanner $scanner,
 								PlaylistFileService $playlistFileService,
 								Logger $logger,
 								IManager $shareManager) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;
 		$this->playlistFileService = $playlistFileService;

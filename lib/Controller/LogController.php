@@ -23,10 +23,10 @@ use OCA\Music\AppFramework\Core\Logger;
 class LogController extends Controller {
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->logger = $logger;
 	}
 

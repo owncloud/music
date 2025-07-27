@@ -101,7 +101,7 @@ class SubsonicController extends ApiController {
 	private string $format;
 	private ?string $callback;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IL10N $l10n,
 								IURLGenerator $urlGenerator,
@@ -123,7 +123,7 @@ class SubsonicController extends ApiController {
 								AmpacheImageService $imageService,
 								Random $random,
 								Logger $logger) {
-		parent::__construct($appname, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
+		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;

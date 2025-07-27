@@ -17,12 +17,13 @@ namespace OCA\Music\Hooks;
 use OCA\Music\AppInfo\Application;
 use OCA\Music\Service\Scanner;
 use OCP\Files\Folder;
+use OCP\IGroupManager;
 
 class ShareHooks {
 	private static function removeSharedItem(
-			Application $app, string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
+			string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
 		/** @var Scanner $scanner */
-		$scanner = $app->getContainer()->query('Scanner');
+		$scanner = self::inject(Scanner::class);
 
 		if ($itemType === 'folder') {
 			$ownerHome = $scanner->resolveUserFolder($owner);
@@ -42,22 +43,20 @@ class ShareHooks {
 	 */
 	public static function itemUnshared(array $params) : void {
 		$shareType = $params['shareType'];
-		/** @var Application $app */
-		$app = \OC::$server->query(Application::class);
 
 		// react only on user and group shares
 		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
-			$userIds = [ $params['shareWith'] ];
+			$receivingUserIds = [ $params['shareWith'] ];
 		} elseif ($shareType == \OCP\Share::SHARE_TYPE_GROUP) {
-			$groupManager = $app->getContainer()->query('ServerContainer')->getGroupManager();
+			$groupManager = self::inject(IGroupManager::class);
 			$groupMembers = $groupManager->displayNamesInGroup($params['shareWith']);
-			$userIds = \array_keys($groupMembers);
+			$receivingUserIds = \array_keys($groupMembers);
 			// remove the item owner from the list of targeted users if present
-			$userIds = \array_diff($userIds, [ $params['uidOwner'] ]);
+			$receivingUserIds = \array_diff($receivingUserIds, [ $params['uidOwner'] ]);
 		}
 
-		if (!empty($userIds)) {
-			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $userIds);
+		if (!empty($receivingUserIds)) {
+			self::removeSharedItem($params['itemType'], $params['itemSource'], $params['uidOwner'], $receivingUserIds);
 		}
 	}
 
@@ -68,10 +67,9 @@ class ShareHooks {
 	public static function itemUnsharedFromSelf(array $params) : void {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
-		$app = \OC::$server->query(Application::class);
-		$removeFromUsers = [ $app->getContainer()->query('UserId') ];
+		$removeFromUsers = [ self::inject('receivingUserId') ];
 
-		self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
+		self::removeSharedItem($params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 	}
 
 	/**
@@ -84,16 +82,26 @@ class ShareHooks {
 		// user will be prompted to update database the next time she opens the Music app.
 		// Similarly, do not auto-update on group shares.
 		if ($params['itemType'] === 'file' && $params['shareType'] == \OCP\Share::SHARE_TYPE_USER) {
-			$app = \OC::$server->query(Application::class);
-			$container = $app->getContainer();
-			$scanner = $container->query('Scanner');
-			$sharerFolder = $container->query('UserFolder');
-			$file = $sharerFolder->getById($params['itemSource'])[0]; // file object with sharer path
-			$userId = $params['shareWith'];
-			$userFolder = $scanner->resolveUserFolder($userId);
-			$filePath = $userFolder->getPath() . $params['itemTarget']; // file path for sharee
-			$scanner->update($file, $userId, $filePath);
+			$scanner = self::inject(Scanner::class);
+
+			$sharingUser = self::inject('userId');
+			$sharingUserFolder = $scanner->resolveUserFolder($sharingUser);
+			$file = $sharingUserFolder->getById($params['itemSource'])[0]; // file object with sharing user path
+
+			$receivingUserId = $params['shareWith'];
+			$receivingUserFolder = $scanner->resolveUserFolder($receivingUserId);
+			$receivingUserFilePath = $receivingUserFolder->getPath() . $params['itemTarget'];
+			$scanner->update($file, $receivingUserId, $receivingUserFilePath);
 		}
+	}
+
+	/**
+	 * Get the dependency identified by the given name
+	 * @return mixed
+	 */
+	private static function inject(string $id) {
+		$app = \OC::$server->query(Application::class);
+		return $app->get($id);
 	}
 
 	public function register() : void {

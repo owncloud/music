@@ -14,71 +14,22 @@
  * @copyright Pauli Järvinen 2017 - 2025
  */
 
+namespace OCA\Music\Command;
+
 use OCA\Music\AppInfo\Application;
 
+/** @var Application $app */
 $app = \OC::$server->query(Application::class);
-$c = $app->getContainer();
 
-$application->add(new OCA\Music\Command\Scan(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('Scanner')
-));
-$application->add(new OCA\Music\Command\ResetDatabase(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('Maintenance')
-));
-$application->add(new OCA\Music\Command\ResetCache(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('DbCache')
-));
-$application->add(new OCA\Music\Command\Cleanup(
-		$c->query('Maintenance')
-));
-$application->add(new OCA\Music\Command\RegisterMimeTypes(
-		$c->query('MimeTypeLoader')
-));
-$application->add(new OCA\Music\Command\PodcastAdd(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastChannelBusinessLayer'),
-		$c->query('PodcastEpisodeBusinessLayer')
-));
-$application->add(new OCA\Music\Command\PodcastExport(
-	$c->query('UserManager'),
-	$c->query('GroupManager'),
-	$c->query('RootFolder'),
-	$c->query('PodcastService')
-));
-$application->add(new OCA\Music\Command\PodcastImport(
-	$c->query('UserManager'),
-	$c->query('GroupManager'),
-	$c->query('RootFolder'),
-	$c->query('PodcastService')
-));
-$application->add(new OCA\Music\Command\PodcastReset(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastService')
-));
-$application->add(new OCA\Music\Command\PodcastUpdate(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastService')
-));
-$application->add(new OCA\Music\Command\PlaylistExport(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('RootFolder'),
-		$c->query('PlaylistBusinessLayer'),
-		$c->query('PlaylistFileService')
-));
-$application->add(new OCA\Music\Command\PlaylistImport(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('RootFolder'),
-		$c->query('PlaylistBusinessLayer'),
-		$c->query('PlaylistFileService')
-));
+$application->add($app->get(Scan::class));
+$application->add($app->get(ResetDatabase::class));
+$application->add($app->get(ResetCache::class));
+$application->add($app->get(Cleanup::class));
+$application->add($app->get(RegisterMimeTypes::class));
+$application->add($app->get(PodcastAdd::class));
+$application->add($app->get(PodcastExport::class));
+$application->add($app->get(PodcastImport::class));
+$application->add($app->get(PodcastReset::class));
+$application->add($app->get(PodcastUpdate::class));
+$application->add($app->get(PlaylistExport::class));
+$application->add($app->get(PlaylistImport::class));

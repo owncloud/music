@@ -48,7 +48,7 @@ class ShivaApiController extends Controller {
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								TrackBusinessLayer $trackBusinessLayer,
@@ -59,7 +59,7 @@ class ShivaApiController extends Controller {
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;

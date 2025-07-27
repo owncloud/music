@@ -13,8 +13,11 @@
 namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\AppFramework\BackgroundJob\TimedJob;
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppInfo\Application;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\Service\PodcastService;
+use OCP\IConfig;
 
 class PodcastUpdateCheck extends TimedJob {
 
@@ -26,16 +29,14 @@ class PodcastUpdateCheck extends TimedJob {
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
 
-		$container = $app->getContainer();
-
-		$logger = $container->query('Logger');
+		$logger = $app->get(Logger::class);
 		$logger->log('Run ' . \get_class(), 'debug');
 
-		$minInterval = (float)$container->query('Config')->getSystemValue('music.podcast_auto_update_interval', 24); // hours
+		$minInterval = (float)$app->get(IConfig::class)->getSystemValue('music.podcast_auto_update_interval', 24); // hours
 		// negative interval values can be used to disable the auto-update
 		if ($minInterval >= 0) {
-			$users = $container->query('PodcastChannelBusinessLayer')->findAllUsers();
-			$podcastService = $container->query('PodcastService');
+			$users = $app->get(PodcastChannelBusinessLayer::class)->findAllUsers();
+			$podcastService = $app->get(PodcastService::class);
 			$channelsChecked = 0;
 
 			foreach ($users as $userId) {

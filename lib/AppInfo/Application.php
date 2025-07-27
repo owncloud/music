@@ -539,26 +539,6 @@ class Application extends ApplicationBase {
 		 * Core
 		 */
 
-		$context->registerService(IConfig::class, function (IAppContainer $c) {
-			return $c->getServer()->getConfig();
-		});
-
-		$context->registerService(IDBConnection::class, function (IAppContainer $c) {
-			return $c->getServer()->getDatabaseConnection();
-		});
-
-		$context->registerService(ICache::class, function (IAppContainer $c) {
-			return $c->getServer()->getCache();
-		});
-
-		$context->registerService(IL10N::class, function (IAppContainer $c) {
-			return $c->getServer()->getL10N($c->query('appName'));
-		});
-
-		$context->registerService(\OCP\L10N\IFactory::class, function (IAppContainer $c) {
-			return $c->getServer()->getL10NFactory();
-		});
-
 		$context->registerService(Logger::class, function (IAppContainer $c) {
 			return new Logger(
 				$c->query('appName'),
@@ -570,37 +550,8 @@ class Application extends ApplicationBase {
 			return $c->getServer()->getMimeTypeLoader();
 		});
 
-		$context->registerService(IURLGenerator::class, function (IAppContainer $c) {
-			return $c->getServer()->getURLGenerator();
-		});
-
 		$context->registerService('userFolder', function (IAppContainer $c) {
 			return $c->getServer()->getUserFolder();
-		});
-
-		$context->registerService(IRootFolder::class, function (IAppContainer $c) {
-			return $c->getServer()->getRootFolder();
-		});
-
-		$context->registerService('userId', function (IAppContainer $c) {
-			$user = $c->getServer()->getUserSession()->getUser();
-			return $user ? $user->getUID() : null;
-		});
-
-		$context->registerService(ISecureRandom::class, function (IAppContainer $c) {
-			return $c->getServer()->getSecureRandom();
-		});
-
-		$context->registerService(IUserManager::class, function (IAppContainer $c) {
-			return $c->getServer()->getUserManager();
-		});
-
-		$context->registerService(IGroupManager::class, function (IAppContainer $c) {
-			return $c->getServer()->getGroupManager();
-		});
-
-		$context->registerService(\OCP\Share\IManager::class, function (IAppContainer $c) {
-			return $c->getServer()->getShareManager();
 		});
 
 		/**

@@ -15,70 +15,82 @@
  */
 
 use OCA\Music\AppInfo\Application;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\Db\Cache;
+use OCA\Music\Db\Maintenance;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\PodcastService;
+use OCA\Music\Service\Scanner;
+use OCP\Files\IMimeTypeLoader;
+use OCP\Files\IRootFolder;
+use OCP\IGroupManager;
+use OCP\IUserManager;
 
 $app = \OC::$server->query(Application::class);
 $c = $app->getContainer();
 
 $application->add(new OCA\Music\Command\Scan(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('Scanner')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(Scanner::class)
 ));
 $application->add(new OCA\Music\Command\ResetDatabase(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('Maintenance')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(Maintenance::class)
 ));
 $application->add(new OCA\Music\Command\ResetCache(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('DbCache')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(Cache::class)
 ));
 $application->add(new OCA\Music\Command\Cleanup(
-		$c->query('Maintenance')
+		$c->query(Maintenance::class)
 ));
 $application->add(new OCA\Music\Command\RegisterMimeTypes(
-		$c->query('MimeTypeLoader')
+		$c->query(IMimeTypeLoader::class)
 ));
 $application->add(new OCA\Music\Command\PodcastAdd(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastChannelBusinessLayer'),
-		$c->query('PodcastEpisodeBusinessLayer')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(PodcastChannelBusinessLayer::class),
+		$c->query(PodcastEpisodeBusinessLayer::class)
 ));
 $application->add(new OCA\Music\Command\PodcastExport(
-	$c->query('UserManager'),
-	$c->query('GroupManager'),
-	$c->query('RootFolder'),
-	$c->query('PodcastService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(IRootFolder::class),
+		$c->query(PodcastService::class)
 ));
 $application->add(new OCA\Music\Command\PodcastImport(
-	$c->query('UserManager'),
-	$c->query('GroupManager'),
-	$c->query('RootFolder'),
-	$c->query('PodcastService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(IRootFolder::class),
+		$c->query(PodcastService::class)
 ));
 $application->add(new OCA\Music\Command\PodcastReset(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(PodcastService::class)
 ));
 $application->add(new OCA\Music\Command\PodcastUpdate(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('PodcastService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(PodcastService::class)
 ));
 $application->add(new OCA\Music\Command\PlaylistExport(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('RootFolder'),
-		$c->query('PlaylistBusinessLayer'),
-		$c->query('PlaylistFileService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(IRootFolder::class),
+		$c->query(PlaylistBusinessLayer::class),
+		$c->query(PlaylistFileService::class)
 ));
 $application->add(new OCA\Music\Command\PlaylistImport(
-		$c->query('UserManager'),
-		$c->query('GroupManager'),
-		$c->query('RootFolder'),
-		$c->query('PlaylistBusinessLayer'),
-		$c->query('PlaylistFileService')
+		$c->query(IUserManager::class),
+		$c->query(IGroupManager::class),
+		$c->query(IRootFolder::class),
+		$c->query(PlaylistBusinessLayer::class),
+		$c->query(PlaylistFileService::class)
 ));

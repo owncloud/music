@@ -15,7 +15,11 @@
 namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\AppFramework\BackgroundJob\TimedJob;
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppInfo\Application;
+use OCA\Music\Db\AmpacheSessionMapper;
+use OCA\Music\Db\Maintenance;
+use OCA\Music\Service\Scanner;
 
 class Cleanup extends TimedJob {
 
@@ -29,16 +33,16 @@ class Cleanup extends TimedJob {
 
 		$container = $app->getContainer();
 
-		$logger = $container->query('Logger');
+		$logger = $container->query(Logger::class);
 		$logger->log('Run ' . \get_class(), 'debug');
 
 		// remove orphaned entities
-		$container->query('Maintenance')->cleanUp();
+		$container->query(Maintenance::class)->cleanUp();
 
 		// remove expired sessions
-		$container->query('AmpacheSessionMapper')->cleanUp();
+		$container->query(AmpacheSessionMapper::class)->cleanUp();
 
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query('Scanner')->findAlbumCovers();
+		$container->query(Scanner::class)->findAlbumCovers();
 	}
 }

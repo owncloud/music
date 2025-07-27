@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 /**
@@ -19,19 +19,22 @@
 
 namespace OCA\Music\AppInfo;
 
+use OCP\IL10N;
+use OCP\IURLGenerator;
+
 $app = \OC::$server->query(Application::class);
 $app->init();
 
 $c = $app->getContainer();
 $server = $c->getServer();
-$appName = $c->query('AppName');
+$appName = $c->query('appName');
 
 /**
  * add navigation
  */
 $server->getNavigationManager()->add(function () use ($c, $appName) {
-	$l10n = $c->query('L10N');
-	$urlGenerator = $c->query('URLGenerator');
+	$l10n = $c->query(IL10N::class);
+	$urlGenerator = $c->query(IURLGenerator::class);
 	return [
 		'id' => $appName,
 		'order' => 10,

@@ -50,13 +50,13 @@ class Provider extends \OCP\Search\Provider {
 		$app = \OC::$server->query(Application::class);
 		$c = $app->getContainer();
 
-		$this->artistMapper = $c->query('ArtistMapper');
-		$this->albumMapper = $c->query('AlbumMapper');
-		$this->trackMapper = $c->query('TrackMapper');
-		$this->urlGenerator = $c->query('URLGenerator');
-		$this->userId = $c->query('UserId');
-		$this->l10n = $c->query('L10N');
-		$this->logger = $c->query('Logger');
+		$this->artistMapper = $c->query(ArtistMapper::class);
+		$this->albumMapper = $c->query(AlbumMapper::class);
+		$this->trackMapper = $c->query(TrackMapper::class);
+		$this->urlGenerator = $c->query(IURLGenerator::class);
+		$this->userId = $c->query('userId');
+		$this->l10n = $c->query(IL10N::class);
+		$this->logger = $c->query(Logger::class);
 
 		$this->resultTypeNames = [
 			'music_artist' => $this->l10n->t('Artist'),

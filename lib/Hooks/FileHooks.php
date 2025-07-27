@@ -14,12 +14,15 @@
 
 namespace OCA\Music\Hooks;
 
+use OCA\Music\AppFramework\Core\Logger;
 use OCP\AppFramework\IAppContainer;
 use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
 use OCP\Files\Node;
 
 use OCA\Music\AppInfo\Application;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Service\Scanner;
 
 class FileHooks {
 	private IRootFolder $filesystemRoot;
@@ -34,7 +37,7 @@ class FileHooks {
 	 */
 	private static function deleted(Node $node) : void {
 		$container = self::getContainer();
-		$scanner = $container->query('Scanner');
+		$scanner = $container->query(Scanner::class);
 
 		if ($node->getType() == FileInfo::TYPE_FILE) {
 			$scanner->delete($node->getId());
@@ -60,10 +63,10 @@ class FileHooks {
 		try {
 			self::handleUpdated($node, $container);
 		} catch (\OCP\Files\NotFoundException $e) {
-			$logger = $container->query('Logger');
+			$logger = $container->query(Logger::class);
 			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
 		} catch (\OCP\Lock\LockedException $e) {
-			$logger = $container->query('Logger');
+			$logger = $container->query(Logger::class);
 			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
@@ -71,7 +74,7 @@ class FileHooks {
 	private static function handleUpdated(Node $node, IAppContainer $container) : void {
 		// we are interested only about updates on files, not on folders
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$scanner = $container->query('Scanner');
+			$scanner = $container->query(Scanner::class);
 			$userId = self::getUser($node, $container);
 
 			// Ignore event if we got no user or folder or the user has not yet scanned the music
@@ -88,16 +91,16 @@ class FileHooks {
 		try {
 			self::handleMoved($node, $container);
 		} catch (\OCP\Files\NotFoundException $e) {
-			$logger = $container->query('Logger');
+			$logger = $container->query(Logger::class);
 			$logger->log('FileHooks::moved triggered for a non-existing file', 'warn');
 		} catch (\OCP\Lock\LockedException $e) {
-			$logger = $container->query('Logger');
+			$logger = $container->query(Logger::class);
 			$logger->log('FileHooks::moved triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
 
 	private static function handleMoved(Node $node, IAppContainer $container) : void {
-		$scanner = $container->query('Scanner');
+		$scanner = $container->query(Scanner::class);
 		$userId = self::getUser($node, $container);
 
 		if (!empty($userId) && self::userHasMusicLib($userId, $container)) {
@@ -110,7 +113,7 @@ class FileHooks {
 	}
 
 	private static function getUser(Node $node, IAppContainer $container) : ?string {
-		$userId = $container->query('UserId');
+		$userId = $container->query('userId');
 
 		// When a file is uploaded to a folder shared by link, we end up here without current user.
 		// In that case, fall back to using file owner
@@ -135,7 +138,7 @@ class FileHooks {
 	 * @param IAppContainer $container
 	 */
 	private static function userHasMusicLib(string $userId, IAppContainer $container) : bool {
-		$trackBusinessLayer = $container->query('TrackBusinessLayer');
+		$trackBusinessLayer = $container->query(TrackBusinessLayer::class);
 		return 0 < $trackBusinessLayer->count($userId);
 	}
 
@@ -160,7 +163,7 @@ class FileHooks {
 				$func();
 			} catch (\Throwable $error) {
 				$container = self::getContainer();
-				$logger = $container->query('Logger');
+				$logger = $container->query(Logger::class);
 				$logger->log("Error occurred while executing Music app file hook: {$error->getMessage()}. Stack trace: {$error->getTraceAsString()}", 'error');
 			}
 		} catch (\Throwable $error) {

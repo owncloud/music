@@ -17,12 +17,13 @@ namespace OCA\Music\Hooks;
 use OCA\Music\AppInfo\Application;
 use OCA\Music\Service\Scanner;
 use OCP\Files\Folder;
+use OCP\IGroupManager;
 
 class ShareHooks {
 	private static function removeSharedItem(
 			Application $app, string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
 		/** @var Scanner $scanner */
-		$scanner = $app->getContainer()->query('Scanner');
+		$scanner = $app->getContainer()->query(Scanner::class);
 
 		if ($itemType === 'folder') {
 			$ownerHome = $scanner->resolveUserFolder($owner);
@@ -49,7 +50,7 @@ class ShareHooks {
 		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
 			$userIds = [ $params['shareWith'] ];
 		} elseif ($shareType == \OCP\Share::SHARE_TYPE_GROUP) {
-			$groupManager = $app->getContainer()->query('ServerContainer')->getGroupManager();
+			$groupManager = $app->getContainer()->query(IGroupManager::class);
 			$groupMembers = $groupManager->displayNamesInGroup($params['shareWith']);
 			$userIds = \array_keys($groupMembers);
 			// remove the item owner from the list of targeted users if present
@@ -69,7 +70,7 @@ class ShareHooks {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
 		$app = \OC::$server->query(Application::class);
-		$removeFromUsers = [ $app->getContainer()->query('UserId') ];
+		$removeFromUsers = [ $app->getContainer()->query('userId') ];
 
 		self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 	}
@@ -86,8 +87,8 @@ class ShareHooks {
 		if ($params['itemType'] === 'file' && $params['shareType'] == \OCP\Share::SHARE_TYPE_USER) {
 			$app = \OC::$server->query(Application::class);
 			$container = $app->getContainer();
-			$scanner = $container->query('Scanner');
-			$sharerFolder = $container->query('UserFolder');
+			$scanner = $container->query(Scanner::class);
+			$sharerFolder = $container->query('userFolder');
 			$file = $sharerFolder->getById($params['itemSource'])[0]; // file object with sharer path
 			$userId = $params['shareWith'];
 			$userFolder = $scanner->resolveUserFolder($userId);

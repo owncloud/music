@@ -25,6 +25,8 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Files\IMimeTypeLoader;
 use OCP\IConfig;
+use OCP\IRequest;
+use OCP\Security\IContentSecurityPolicyManager;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
@@ -108,7 +110,7 @@ class Application extends ApplicationBase {
 	}
 
 	private function getRequestUrl() : string {
-		$request = $this->getContainer()->getServer()->getRequest();
+		$request = $this->getContainer()->query(IRequest::class);
 		$url = $request->server['REQUEST_URI'] ?? '';
 		$url = \explode('?', $url)[0]; // get rid of any query args
 		$url = \explode('#', $url)[0]; // get rid of any hash part
@@ -166,7 +168,7 @@ class Application extends ApplicationBase {
 			$policy->addAllowedMediaDomain('blob:');
 		}
 
-		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+		$container->query(IContentSecurityPolicyManager::class)->addDefaultPolicy($policy);
 	}
 
 	private static function hlsEnabled(IConfig $config, ?string $userId) : bool {

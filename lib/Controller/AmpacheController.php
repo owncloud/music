@@ -186,7 +186,7 @@ class AmpacheController extends ApiController {
 	}
 
 	public function ampacheErrorResponse(int $code, string $message) : Response {
-		$this->logger->log($message, 'debug');
+		$this->logger->debug($message);
 
 		if ($this->apiMajorVersion() > 4) {
 			$code = $this->mapApiV4ErrorToV5($code);
@@ -244,7 +244,7 @@ class AmpacheController extends ApiController {
 	}
 
 	protected function dispatch(string $action) : Response {
-		$this->logger->log("Ampache action '$action' requested", 'debug');
+		$this->logger->debug("Ampache action '$action' requested");
 
 		// Allow calling any functions annotated to be part of the API
 		if (\method_exists($this, $action)) {
@@ -278,7 +278,7 @@ class AmpacheController extends ApiController {
 		}
 
 		// No method was found for this action
-		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
+		$this->logger->warning("Unsupported Ampache action '$action' requested");
 		throw new AmpacheException('Action not supported', 405);
 	}
 

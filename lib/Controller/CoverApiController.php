@@ -76,7 +76,7 @@ class CoverApiController extends Controller {
 			$album = $this->albumBusinessLayer->find($albumId, $userId);
 			return $this->cover($album, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -91,7 +91,7 @@ class CoverApiController extends Controller {
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			return $this->cover($artist, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -106,7 +106,7 @@ class CoverApiController extends Controller {
 			$channel = $this->podcastChannelBusinessLayer->find($channelId, $userId);
 			return $this->cover($channel, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -128,7 +128,7 @@ class CoverApiController extends Controller {
 			HttpUtil::setClientCachingDays($response, 365);
 			return $response;
 		} catch (\OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}

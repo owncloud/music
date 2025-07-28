@@ -171,8 +171,8 @@ class PlaylistFileService {
 		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $userId);
 
 		if (\count($invalidPaths) > 0) {
-			$this->logger->log('Some files were not found from the user\'s music library: '
-								. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+			$this->logger->warning('Some files were not found from the user\'s music library: '
+								. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR));
 		}
 
 		return [
@@ -205,8 +205,8 @@ class PlaylistFileService {
 		}
 
 		if (\count($invalidPaths) > 0) {
-			$this->logger->log('Some entries in the file were not valid streaming URLs: '
-					. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+			$this->logger->warning('Some entries in the file were not valid streaming URLs: '
+					. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR));
 		}
 
 		return [

@@ -62,8 +62,8 @@ class Library {
 			$album = $albumsById[$track->getAlbumId()];
 
 			if (empty($album)) {
-				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
-				"album with ID {$track->albumId} not found. Skipping the track.", 'warn');
+				$this->logger->warning("DB error on track {$track->id} '{$track->title}': ".
+					"album with ID {$track->albumId} not found. Skipping the track.");
 				unset($tracks[$idx]);
 			} else {
 				$track->setAlbum($album);

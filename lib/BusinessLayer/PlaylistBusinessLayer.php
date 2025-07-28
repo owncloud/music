@@ -164,7 +164,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 				}
 				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
 			} else {
-				$this->logger->log("Invalid track ID $trackId found on playlist $playlistId", 'debug');
+				$this->logger->debug("Invalid track ID $trackId found on playlist $playlistId");
 				$track = Track::emptyInstance();
 				$track->setId($trackId);
 			}

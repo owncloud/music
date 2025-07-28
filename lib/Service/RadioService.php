@@ -101,7 +101,7 @@ class RadioService {
 		if ($status_code == 200) {
 			return $parseResult($content);
 		} else {
-			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
+			$this->logger->debug("Failed to read $metaUrl: $status_code $message");
 			return null;
 		}
 	}
@@ -292,9 +292,9 @@ class RadioService {
 			list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($url, $maxLength);
 
 			if ($status_code != 200) {
-				$this->logger->log("Could not read radio playlist from $url: $status_code $message", 'debug');
+				$this->logger->debug("Could not read radio playlist from $url: $status_code $message");
 			} elseif (\strlen($content) >= $maxLength) {
-				$this->logger->log("The URL $url seems to be the stream although the extension suggests it's a playlist", 'debug');
+				$this->logger->debug("The URL $url seems to be the stream although the extension suggests it's a playlist");
 			} else if ($isPls) {
 				$entries = PlaylistFileService::parsePlsContent($content);
 			} else {
@@ -355,7 +355,7 @@ class RadioService {
 
 			\fclose($fp);
 		} else {
-			$this->logger->log("Failed to read manifest from $url: {$result['status_code']} {$result['message']}", 'warn');
+			$this->logger->warning("Failed to read manifest from $url: {$result['status_code']} {$result['message']}");
 		}
 
 		return $result;

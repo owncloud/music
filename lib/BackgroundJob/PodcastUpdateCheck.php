@@ -30,7 +30,7 @@ class PodcastUpdateCheck extends TimedJob {
 		$app = \OC::$server->query(Application::class);
 
 		$logger = $app->get(Logger::class);
-		$logger->log('Run ' . \get_class(), 'debug');
+		$logger->debug('Run ' . \get_class());
 
 		$minInterval = (float)$app->get(IConfig::class)->getSystemValue('music.podcast_auto_update_interval', 24); // hours
 		// negative interval values can be used to disable the auto-update
@@ -44,11 +44,11 @@ class PodcastUpdateCheck extends TimedJob {
 					$id = (isset($channelResult['channel'])) ? $channelResult['channel']->getId() : -1;
 
 					if ($channelResult['updated']) {
-						$logger->log("Channel $id of user $userId was updated", 'debug');
+						$logger->debug("Channel $id of user $userId was updated");
 					} elseif ($channelResult['status'] === PodcastService::STATUS_OK) {
-						$logger->log("Channel $id of user $userId had no changes", 'debug');
+						$logger->debug("Channel $id of user $userId had no changes");
 					} else {
-						$logger->log("Channel $id of user $userId update failed", 'debug');
+						$logger->debug("Channel $id of user $userId update failed");
 					}
 
 					$channelsChecked++;
@@ -56,13 +56,13 @@ class PodcastUpdateCheck extends TimedJob {
 			}
 
 			if ($channelsChecked === 0) {
-				$logger->log('No podcast channels were due to check for updates', 'debug');
+				$logger->debug('No podcast channels were due to check for updates');
 			} else {
-				$logger->log("$channelsChecked podcast channels in total were checked for updates", 'debug');
+				$logger->debug("$channelsChecked podcast channels in total were checked for updates");
 			}
 		}
 		else {
-			$logger->log('Automatic podcast updating is disabled via config.php', 'debug');
+			$logger->debug('Automatic podcast updating is disabled via config.php');
 		}
 	}
 }

@@ -93,7 +93,7 @@ class Scanner extends PublicEmitter {
 		$isAudio = (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype));
 
 		if (($isImage || $isAudio) && $this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
-			$this->logger->log("audio or image file within lib path updated: $filePath", 'debug');
+			$this->logger->debug("audio or image file within lib path updated: $filePath");
 
 			if ($isImage) {
 				$this->updateImage($file, $userId);
@@ -109,14 +109,14 @@ class Scanner extends PublicEmitter {
 		$mimetype = $file->getMimeType();
 
 		if (StringUtil::startsWith($mimetype, 'image')) {
-			$this->logger->log('image file moved: '. $file->getPath(), 'debug');
+			$this->logger->debug('image file moved: '. $file->getPath());
 			// we don't need to track the identity of images and moving a file can be handled as it was 
 			// a file deletion followed by a file addition
 			$this->deleteImage([$file->getId()], [$userId]);
 			$this->updateImage($file, $userId);
 		}
 		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
-			$this->logger->log('audio file moved: '. $file->getPath(), 'debug');
+			$this->logger->debug('audio file moved: '. $file->getPath());
 			if ($this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
 				// In the new path, the file (now or still) belongs to the library. Even if it was already in the lib,
 				// the new path may have an influence on the album or artist name (in case of incomplete metadata).
@@ -135,7 +135,7 @@ class Scanner extends PublicEmitter {
 		$audioCount = \count($audioFiles);
 
 		if ($audioCount > 0) {
-			$this->logger->log("folder with $audioCount audio files moved: ". $folder->getPath(), 'debug');
+			$this->logger->debug("folder with $audioCount audio files moved: ". $folder->getPath());
 
 			if ($this->librarySettings->pathBelongsToMusicLibrary($folder->getPath(), $userId)) {
 				// The new path of the folder belongs to the library but this doesn't necessarily mean
@@ -168,13 +168,13 @@ class Scanner extends PublicEmitter {
 		$coverFileId = $file->getId();
 		$parentFolderId = $file->getParent()->getId();
 		if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
-			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
+			$this->logger->debug('updateImage - the image was set as cover for some album(s)');
 			$this->cache->remove($userId, 'collection');
 		}
 
 		$artistIds = $this->artistBusinessLayer->updateCover($file, $userId, $this->userL10N($userId));
 		foreach ($artistIds as $artistId) {
-			$this->logger->log("updateImage - the image was set as cover for the artist $artistId", 'debug');
+			$this->logger->debug("updateImage - the image was set as cover for the artist $artistId");
 			$this->coverService->removeArtistCoverFromCache($artistId, $userId);
 		}
 	}
@@ -233,9 +233,8 @@ class Scanner extends PublicEmitter {
 			$this->cache->remove($userId, 'collection');
 		}
 
-		$this->logger->log('imported entities - ' .
-				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
-				'debug');
+		$this->logger->debug('imported entities - ' .
+				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}");
 
 		return [
 			'analyze' => $time2 - $time1,
@@ -332,22 +331,22 @@ class Scanner extends PublicEmitter {
 		$userCount = \count($affectedUsers);
 
 		if ($albumCount + $artistCount > 100) {
-			$this->logger->log("Delete operation affected $albumCount albums and $artistCount artists. " .
-								"Invalidate the whole cache of all affected users ($userCount).", 'debug');
+			$this->logger->debug("Delete operation affected $albumCount albums and $artistCount artists. " .
+								"Invalidate the whole cache of all affected users ($userCount).");
 			foreach ($affectedUsers as $user) {
 				$this->cache->remove($user);
 			}
 		} else {
 			// remove the cached covers
 			if ($artistCount > 0) {
-				$this->logger->log("Remove covers of $artistCount artist(s) from the cache (if present)", 'debug');
+				$this->logger->debug("Remove covers of $artistCount artist(s) from the cache (if present)");
 				foreach ($affectedArtists as $artistId) {
 					$this->coverService->removeArtistCoverFromCache($artistId);
 				}
 			}
 
 			if ($albumCount > 0) {
-				$this->logger->log("Remove covers of $albumCount album(s) from the cache (if present)", 'debug');
+				$this->logger->debug("Remove covers of $albumCount album(s) from the cache (if present)");
 				foreach ($affectedAlbums as $albumId) {
 					$this->coverService->removeAlbumCoverFromCache($albumId);
 				}
@@ -370,7 +369,7 @@ class Scanner extends PublicEmitter {
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userIds);
 
 		if ($result) { // one or more tracks were removed
-			$this->logger->log('library updated when audio file(s) removed: '. \implode(', ', $fileIds), 'debug');
+			$this->logger->debug('library updated when audio file(s) removed: '. \implode(', ', $fileIds));
 
 			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
@@ -389,7 +388,7 @@ class Scanner extends PublicEmitter {
 			$this->invalidateCacheOnDelete(
 					$result['affectedUsers'], $result['obsoleteAlbums'], $result['obsoleteArtists']);
 
-			$this->logger->log('removed entities: ' . \json_encode($result), 'debug');
+			$this->logger->debug('removed entities: ' . \json_encode($result));
 			$this->emit(self::class, 'delete', [$result['deletedTracks'], $result['affectedUsers']]);
 		}
 
@@ -408,7 +407,7 @@ class Scanner extends PublicEmitter {
 		$anythingAffected = (\count($affectedAlbums) + \count($affectedArtists) > 0);
 
 		if ($anythingAffected) {
-			$this->logger->log('library covers updated when image file(s) removed: '. \implode(', ', $fileIds), 'debug');
+			$this->logger->debug('library covers updated when image file(s) removed: '. \implode(', ', $fileIds));
 
 			$affectedUsers = \array_merge(
 				ArrayUtil::extractUserIds($affectedAlbums),
@@ -542,9 +541,9 @@ class Scanner extends PublicEmitter {
 
 		$count = \count($unscannedIds);
 		if ($count) {
-			$this->logger->log("Found $count unscanned music files for user $userId", 'info');
+			$this->logger->info("Found $count unscanned music files for user $userId");
 		} else {
-			$this->logger->log("No unscanned music files for user $userId", 'debug');
+			$this->logger->debug("No unscanned music files for user $userId");
 		}
 
 		return $unscannedIds;
@@ -577,7 +576,7 @@ class Scanner extends PublicEmitter {
 	 */
 	public function scanFiles(string $userId, array $fileIds, ?OutputInterface $debugOutput = null) : array {
 		$count = \count($fileIds);
-		$this->logger->log("Scanning $count files of user $userId", 'debug');
+		$this->logger->debug("Scanning $count files of user $userId");
 
 		// back up the execution time limit
 		$executionTime = \intval(\ini_get('max_execution_time'));
@@ -615,7 +614,7 @@ class Scanner extends PublicEmitter {
 				$totalAnalyzeTime += $analyzeTime;
 				$totalDbTime += $dbTime;
 			} else {
-				$this->logger->log("File with id $fileId not found for user $userId, removing it from the library if present", 'info');
+				$this->logger->info("File with id $fileId not found for user $userId, removing it from the library if present");
 				$this->deleteAudio([$fileId], [$userId]);
 			}
 		}
@@ -646,8 +645,8 @@ class Scanner extends PublicEmitter {
 
 		$count = \count($unavailableFiles);
 		if ($count > 0) {
-			$this->logger->log('The following files are no longer available within the library of the '.
-				"user $userId, removing: " . (string)\json_encode($unavailableFiles), 'info');
+			$this->logger->info('The following files are no longer available within the library of the '.
+				"user $userId, removing: " . (string)\json_encode($unavailableFiles));
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
 		return $count;
@@ -710,7 +709,7 @@ class Scanner extends PublicEmitter {
 	 * Update music path
 	 */
 	public function updatePath(string $oldPath, string $newPath, string $userId) : void {
-		$this->logger->log("Changing music collection path of user $userId from $oldPath to $newPath", 'info');
+		$this->logger->info("Changing music collection path of user $userId from $oldPath to $newPath");
 
 		$userHome = $this->resolveUserFolder($userId);
 
@@ -719,18 +718,18 @@ class Scanner extends PublicEmitter {
 			$newFolder = FilesUtil::getFolderFromRelativePath($userHome, $newPath);
 
 			if ($newFolder->getPath() === $oldFolder->getPath()) {
-				$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');
+				$this->logger->debug('New collection path is the same as the old path, nothing to do');
 			} elseif ($newFolder->isSubNode($oldFolder)) {
-				$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
+				$this->logger->debug('New collection path is (grand) parent of old path, previous content is still valid');
 			} elseif ($oldFolder->isSubNode($newFolder)) {
-				$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
+				$this->logger->debug('Old collection path is (grand) parent of new path, checking the validity of previous content');
 				$this->removeUnavailableFiles($userId);
 			} else {
-				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
+				$this->logger->debug('Old and new collection paths are unrelated, erasing the previous collection content');
 				$this->maintenance->resetLibrary($userId);
 			}
 		} catch (\OCP\Files\NotFoundException $e) {
-			$this->logger->log('One of the paths was invalid, erasing the previous collection content', 'warn');
+			$this->logger->warning('One of the paths was invalid, erasing the previous collection content');
 			$this->maintenance->resetLibrary($userId);
 		}
 	}
@@ -746,7 +745,7 @@ class Scanner extends PublicEmitter {
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
 			$this->cache->remove($user, 'collection');
-			$this->logger->log('album cover(s) were found for user '. $user, 'debug');
+			$this->logger->debug('album cover(s) were found for user '. $user);
 		}
 		return !empty($affectedUsers);
 	}

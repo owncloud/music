@@ -56,7 +56,7 @@ class PodcastService {
 			}
 			return $channel;
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Requested channel $id not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Requested channel $id not found: " . $ex->getMessage());
 			return null;
 		}
 	}
@@ -82,7 +82,7 @@ class PodcastService {
 		try {
 			return $this->episodeBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Requested episode $id not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Requested episode $id not found: " . $ex->getMessage());
 			return null;
 		}
 	}
@@ -152,7 +152,7 @@ class PodcastService {
 			$this->episodeBusinessLayer->deleteByChannel($channelId, $userId); // does not throw
 			return self::STATUS_OK;
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Channel $channelId to be unsubscribed not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Channel $channelId to be unsubscribed not found: " . $ex->getMessage());
 			return self::STATUS_NOT_FOUND;
 		}
 	}
@@ -174,7 +174,7 @@ class PodcastService {
 		try {
 			$channel = $this->channelBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Channel $id to be updated not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Channel $id to be updated not found: " . $ex->getMessage());
 			$status = self::STATUS_NOT_FOUND;
 			$channel = null;
 		}
@@ -189,7 +189,7 @@ class PodcastService {
 			}
 
 			if (!$xmlTree || !$xmlTree->channel) {
-				$this->logger->log("RSS feed for the channel {$channel->id} was invalid", 'warn');
+				$this->logger->warning("RSS feed for the channel {$channel->id} was invalid");
 				$this->channelBusinessLayer->markUpdateChecked($channel);
 				$status = self::STATUS_INVALID_RSS;
 			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {

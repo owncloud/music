@@ -207,18 +207,18 @@ class CoverService {
 				try {
 					$this->cache->add($userId, 'cover_' . $hash, $mime . '|' . \base64_encode($content));
 				} catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Cover with hash $hash is already cached", 'debug');
+					$this->logger->debug("Cover with hash $hash is already cached");
 				}
 				// cache the hash with hashKey as a key
 				try {
 					$this->cache->add($userId, $hashKey, $hash);
 				} catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Cover hash with key $hashKey is already cached", 'debug');
+					$this->logger->debug("Cover hash with key $hashKey is already cached");
 				}
 				// collection.json needs to be regenerated the next time it's fetched
 				$this->cache->remove($userId, 'collection');
 			} else {
-				$this->logger->log("Cover image of entity with key $hashKey is large ($size B), skip caching", 'debug');
+				$this->logger->debug("Cover image of entity with key $hashKey is large ($size B), skip caching");
 			}
 		}
 
@@ -303,7 +303,7 @@ class CoverService {
 
 			if ($response === null) {
 				$class = \get_class($entity);
-				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
+				$this->logger->error("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId");
 			}
 		}
 
@@ -327,7 +327,7 @@ class CoverService {
 			$srcHeight = $meta[1];
 		} else {
 			$srcWidth = $srcHeight = 0;
-			$this->logger->log('Failed to extract size of the image, skip downscaling', 'warn');
+			$this->logger->warning('Failed to extract size of the image, skip downscaling');
 		}
 
 		// only process picture if it's larger than target size or not perfect square
@@ -335,7 +335,7 @@ class CoverService {
 			$img = \imagecreatefromstring($image['content']);
 
 			if ($img === false) {
-				$this->logger->log('Failed to open cover image for downscaling', 'warn');
+				$this->logger->warning('Failed to open cover image for downscaling');
 			} else {
 				$srcCropSize = \min($srcWidth, $srcHeight);
 				$srcX = (int)(($srcWidth - $srcCropSize) / 2);
@@ -345,7 +345,7 @@ class CoverService {
 				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);
 
 				if ($scaledImg === false) {
-					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warn');
+					$this->logger->warning("Failed to create scaled image of size $dstSize x $dstSize");
 					\imagedestroy($img);
 				} else {
 					\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
@@ -368,7 +368,7 @@ class CoverService {
 							$image['content'] = \ob_get_contents();
 							break;
 						default:
-							$this->logger->log("Cover image type {$image['mimetype']} not supported for downscaling", 'warn');
+							$this->logger->warning("Cover image type {$image['mimetype']} not supported for downscaling");
 							break;
 					}
 					\ob_end_clean();
@@ -384,7 +384,7 @@ class CoverService {
 		$pieceSize = $size/2;
 		$mosaicImg = \imagecreatetruecolor($size, $size);
 		if ($mosaicImg === false) {
-			$this->logger->log("Failed to create mosaic image of size $size x $size", 'warn');
+			$this->logger->warning("Failed to create mosaic image of size $size x $size");
 		}
 		else {
 			$scaleAndCopyPiece = function($pieceData, $dstImage, $dstX, $dstY, $dstSize) {
@@ -395,7 +395,7 @@ class CoverService {
 				$piece = imagecreatefromstring($pieceData['content']);
 
 				if ($piece === false) {
-					$this->logger->log('Failed to open cover image to create a mosaic', 'warn');
+					$this->logger->warning('Failed to open cover image to create a mosaic');
 				} else {
 					\imagecopyresampled($dstImage, $piece, $dstX, $dstY, 0, 0, $dstSize, $dstSize, $srcWidth, $srcHeight);
 					\imagedestroy($piece);

@@ -273,9 +273,9 @@ class Maintenance {
 		}
 
 		if ($allUsers) {
-			$this->logger->log("Erased music databases of all users", 'info');
+			$this->logger->info("Erased music databases of all users");
 		} else {
-			$this->logger->log("Erased music database of user $userId", 'info');
+			$this->logger->info("Erased music database of user $userId");
 		}
 	}
 

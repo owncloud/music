@@ -76,7 +76,7 @@ class SubsonicMiddleware extends Middleware {
 
 		if ($format === 'jsonp' && empty($callback)) {
 			$format = 'xml';
-			$this->logger->log("'jsonp' format requested but no arg 'callback' supplied, falling back to 'xml' format", 'debug');
+			$this->logger->debug("'jsonp' format requested but no arg 'callback' supplied, falling back to 'xml' format");
 		}
 
 		$controller->setResponseFormat($format, $callback);
@@ -159,7 +159,7 @@ class SubsonicMiddleware extends Middleware {
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
-				$this->logger->log($exception->getMessage(), 'debug');
+				$this->logger->debug($exception->getMessage());
 				return $controller->subsonicErrorResponse(
 						$exception->getCode(),
 						$exception->getMessage()

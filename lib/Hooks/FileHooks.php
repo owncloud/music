@@ -61,10 +61,10 @@ class FileHooks {
 			self::handleUpdated($node);
 		} catch (\OCP\Files\NotFoundException $e) {
 			$logger = self::inject(Logger::class);
-			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
+			$logger->warning('FileHooks::updated triggered for a non-existing file');
 		} catch (\OCP\Lock\LockedException $e) {
 			$logger = self::inject(Logger::class);
-			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
+			$logger->warning('FileHooks::updated triggered for a locked file ' . $node->getName());
 		}
 	}
 
@@ -88,10 +88,10 @@ class FileHooks {
 			self::handleMoved($node);
 		} catch (\OCP\Files\NotFoundException $e) {
 			$logger = self::inject(Logger::class);
-			$logger->log('FileHooks::moved triggered for a non-existing file', 'warn');
+			$logger->warning('FileHooks::moved triggered for a non-existing file');
 		} catch (\OCP\Lock\LockedException $e) {
 			$logger = self::inject(Logger::class);
-			$logger->log('FileHooks::moved triggered for a locked file ' . $node->getName(), 'warn');
+			$logger->warning('FileHooks::moved triggered for a locked file ' . $node->getName());
 		}
 	}
 
@@ -161,7 +161,7 @@ class FileHooks {
 				$func();
 			} catch (\Throwable $error) {
 				$logger = self::inject(Logger::class);
-				$logger->log("Error occurred while executing Music app file hook: {$error->getMessage()}. Stack trace: {$error->getTraceAsString()}", 'error');
+				$logger->error("Error occurred while executing Music app file hook: {$error->getMessage()}. Stack trace: {$error->getTraceAsString()}");
 			}
 		} catch (\Throwable $error) {
 			// even logging the error failed so just ignore

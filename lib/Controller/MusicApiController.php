@@ -186,7 +186,7 @@ class MusicApiController extends Controller {
 			$albumCoversUpdated = $this->scanner->findAlbumCovers($this->userId);
 			$this->scanner->findArtistCovers($this->userId);
 			$totalCount = $this->trackBusinessLayer->count($this->userId);
-			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
+			$this->logger->info("Scanning finished, user $this->userId has $totalCount scanned tracks in total");
 		}
 
 		return new JSONResponse([
@@ -262,7 +262,7 @@ class MusicApiController extends Controller {
 			if ($track) {
 				$details['lastfm'] = $this->lastfmService->getTrackInfo($track->getId(), $this->userId);
 			} else {
-				$this->logger->log("Track with file ID $fileId was not found => can't fetch info from Last.fm", 'warn');
+				$this->logger->warning("Track with file ID $fileId was not found => can't fetch info from Last.fm");
 			}
 
 			return new JSONResponse($details);

@@ -74,7 +74,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		\assert($itunesNodes !== null); // children() returns null only if the SimpleXMLElement represents an attribute
 
 		if (!$xmlNode->enclosure || !$xmlNode->enclosure->attributes()) {
-			$logger->log("No stream URL for the episode " . $xmlNode->title, 'debug');
+			$logger->debug("No stream URL for the episode " . $xmlNode->title);
 			$streamUrl = null;
 			$mimetype = null;
 			$size = null;

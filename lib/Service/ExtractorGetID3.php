@@ -68,8 +68,8 @@ class ExtractorGetID3 implements Extractor {
 			}
 		} catch (\Throwable $e) {
 			$eClass = \get_class($e);
-			$this->logger->log("Exception/Error $eClass when analyzing file {$file->getPath()}\n"
-						. "Message: {$e->getMessage()}, Stack trace: {$e->getTraceAsString()}", 'error');
+			$this->logger->error("Exception/Error $eClass when analyzing file {$file->getPath()}\n"
+						. "Message: {$e->getMessage()}, Stack trace: {$e->getTraceAsString()}");
 		}
 
 		return $metadata;
@@ -82,7 +82,7 @@ class ExtractorGetID3 implements Extractor {
 
 		if (empty($fp)) {
 			// note: some of the file opening errors throw and others return a null fp
-			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
+			$this->logger->error("Failed to open file {$file->getPath()} for metadata extraction");
 			$metadata = [];
 		} else {
 			\mb_substitute_character(0x3F);
@@ -92,9 +92,9 @@ class ExtractorGetID3 implements Extractor {
 
 			if (\array_key_exists('error', $metadata)) {
 				foreach ($metadata['error'] as $error) {
-					$this->logger->log('getID3 error occurred', 'debug');
+					$this->logger->debug('getID3 error occurred');
 					// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
-					$this->logger->log('getID3 error message: '. $error, 'debug');
+					$this->logger->debug('getID3 error message: '. $error);
 				}
 			}
 		}

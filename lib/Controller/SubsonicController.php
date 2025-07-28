@@ -178,7 +178,7 @@ class SubsonicController extends ApiController {
 	 * @CORS
 	 */
 	public function handleRequest(string $method) : Response {
-		$this->logger->log("Subsonic request $method", 'debug');
+		$this->logger->debug("Subsonic request $method");
 
 		// Allow calling all methods with or without the postfix ".view"
 		if (StringUtil::endsWith($method, ".view")) {
@@ -209,7 +209,7 @@ class SubsonicController extends ApiController {
 			}
 		}
 
-		$this->logger->log("Request $method not supported", 'warn');
+		$this->logger->warning("Request $method not supported");
 		return $this->subsonicErrorResponse(0, "Requested action $method is not supported");
 	}
 
@@ -467,12 +467,12 @@ class SubsonicController extends ApiController {
 		$matchingCount = \count($matches);
 
 		if ($matchingCount === 0) {
-			$this->logger->log("No matching track for title '$title' and artist '$artist'", 'debug');
+			$this->logger->debug("No matching track for title '$title' and artist '$artist'");
 			return ['lyrics' => new \stdClass];
 		} else {
 			if ($matchingCount > 1) {
-				$this->logger->log("Found $matchingCount tracks matching title ".
-								"'$title' and artist '$artist'; using the first", 'debug');
+				$this->logger->debug("Found $matchingCount tracks matching title ".
+								"'$title' and artist '$artist'; using the first");
 			}
 			$track = $matches[0];
 
@@ -1032,11 +1032,11 @@ class SubsonicController extends ApiController {
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
 					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $userId)->toSubsonicApi();
 				} else {
-					$this->logger->log("Bookmark {$bookmark->getId()} had unexpected entry type $type", 'warn');
+					$this->logger->warning("Bookmark {$bookmark->getId()} had unexpected entry type $type");
 				}
 				$bookmarkNodes[] = $node;
 			} catch (BusinessLayerException $e) {
-				$this->logger->log("Bookmarked entry with type $type and id $entryId not found", 'warn');
+				$this->logger->warning("Bookmarked entry with type $type and id $entryId not found");
 			}
 		}
 
@@ -1505,7 +1505,7 @@ class SubsonicController extends ApiController {
 				$albums = $this->albumBusinessLayer->findAllRated($userId, $size, $offset);
 				break;
 			default:
-				$this->logger->log("Album list type '$type' is not supported", 'debug');
+				$this->logger->debug("Album list type '$type' is not supported");
 				break;
 		}
 

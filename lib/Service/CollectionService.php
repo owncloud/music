@@ -63,8 +63,7 @@ class CollectionService {
 			try {
 				$this->addJsonToCache($collectionJson);
 			} catch (UniqueConstraintViolationException $ex) {
-				$this->logger->log("Race condition: collection.json for user {$this->userId} ".
-						"cached twice, ignoring latter.", 'warn');
+				$this->logger->warning("Race condition: collection.json for user {$this->userId} cached twice, ignoring latter.");
 			}
 		}
 
@@ -81,9 +80,9 @@ class CollectionService {
 		if ($hash !== null) {
 			$json = $this->fileCache->get('music_collection.json');
 			if ($json === null) {
-				$this->logger->log("Inconsistent collection state for user {$this->userId}: ".
+				$this->logger->debug("Inconsistent collection state for user {$this->userId}: ".
 						"Hash found from DB-backed cache but data not found from the ".
-						"file-backed cache. Removing also the hash.", 'debug');
+						"file-backed cache. Removing also the hash.");
 				$this->dbCache->remove($this->userId, 'collection');
 			}
 		}

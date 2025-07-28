@@ -190,9 +190,7 @@ class AmpacheMiddleware extends Middleware {
 		$session->setAmpacheUserId($apiKeyId);
 
 		// save session to the database
-		$this->ampacheSessionMapper->insert($session);
-
-		return $session;
+		return $this->ampacheSessionMapper->insert($session);
 	}
 
 	private function handleNonHandshakeAction(AmpacheController $controller, ?string $action) : void {

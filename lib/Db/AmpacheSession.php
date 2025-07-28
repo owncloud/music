@@ -16,15 +16,15 @@ namespace OCA\Music\Db;
 
 /**
  * @method string getUserId()
- * @method setUserId(string $userId)
+ * @method void setUserId(string $userId)
  * @method string getToken()
- * @method setToken(string $token)
+ * @method void setToken(string $token)
  * @method int getExpiry()
- * @method setExpiry(int $expiry)
+ * @method void setExpiry(int $expiry)
  * @method ?string getApiVersion()
- * @method setApiVersion(?string $version)
+ * @method void setApiVersion(?string $version)
  * @method int getAmpacheUserId()
- * @method setAmpacheUserId(int $id)
+ * @method void setAmpacheUserId(int $id)
  */
 class AmpacheSession extends \OCP\AppFramework\Db\Entity {
 	public string $userId = '';

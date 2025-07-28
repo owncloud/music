@@ -123,19 +123,9 @@ class AmpacheUserMapper {
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users`
 				(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
 		$params = [$userId, $hash, $description];
-		$this->db->executeUpdate($sql, $params);
+		$affectedRows = $this->db->executeUpdate($sql, $params);
 
-		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users`
-				WHERE `user_id` = ? AND `hash` = ?';
-		$params = [$userId, $hash];
-		$result = $this->db->executeQuery($sql, $params);
-		$row = $result->fetch();
-
-		if ($row === false) {
-			return null;
-		}
-
-		return (int)$row['id'];
+		return ($affectedRows > 0) ? $this->db->lastInsertId('*PREFIX*music_ampache_users') : null;
 	}
 
 	public function removeUserKey(string $userId, int $id) : void {

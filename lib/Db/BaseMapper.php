@@ -29,10 +29,10 @@ use OCA\Music\Utility\StringUtil;
  * @method Entity delete(Entity $entity)
  * 
  * @phpstan-template EntityType of Entity
+ * @phpstan-extends Mapper<EntityType>
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-method EntityType delete(EntityType $entity)
- * @phpstan-property class-string<EntityType> $entityClass
  */
 abstract class BaseMapper extends Mapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
@@ -419,7 +419,7 @@ abstract class BaseMapper extends Mapper {
 		$entity->setUpdated($nowStr);
 
 		try {
-			return parent::insert($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
+			return parent::insert($entity);
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 		} catch (\OCP\DB\Exception $e) {
@@ -448,7 +448,7 @@ abstract class BaseMapper extends Mapper {
 
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
-		return parent::update($entity); // @phpstan-ignore return.type (no way to tell phpstan that the parent uses the template type)
+		return parent::update($entity);
 	}
 
 	/**

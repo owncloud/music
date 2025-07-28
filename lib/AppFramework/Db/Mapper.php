@@ -41,6 +41,9 @@ use OCP\IDBConnection;
  * the difference is just that the OC version still accepts also IDb type of handle in the constructor.
  * However, IDBConnection has been available since OC 8.1 and that's what we always use.
  * We use this copy of ours both on NC and OC.
+ * 
+ * @phpstan-template EntityType of Entity
+ * @phpstan-property class-string<EntityType> $entityClass
  */
 abstract class Mapper {
 	protected string $tableName;
@@ -50,8 +53,8 @@ abstract class Mapper {
 	/**
 	 * @param IDBConnection $db Instance of the Db abstraction layer
 	 * @param string $tableName the name of the table. set this to allow entity
-	 * @param ?string $entityClass the name of the entity that the sql should be
-	 * mapped to queries without using sql
+	 * @param ?string $entityClass the name of the entity that the sql should be mapped to queries without using sql
+	 * @phpstan-param class-string<EntityType> $entityClass
 	 * @since 7.0.0
 	 */
 	public function __construct(IDBConnection $db, $tableName, $entityClass=null) {
@@ -79,6 +82,8 @@ abstract class Mapper {
 	 * Deletes an entity from the table
 	 * @param Entity $entity the entity that should be deleted
 	 * @return Entity the deleted entity
+	 * @phpstan-param EntityType $entity
+	 * @phpstan-return EntityType
 	 * @since 7.0.0 - return value added in 8.1.0
 	 */
 	public function delete(Entity $entity) {
@@ -92,6 +97,8 @@ abstract class Mapper {
 	 * Creates a new entry in the db from an entity
 	 * @param Entity $entity the entity that should be created
 	 * @return Entity the saved entity with the set id
+	 * @phpstan-param EntityType $entity
+	 * @phpstan-return EntityType
 	 * @since 7.0.0
 	 */
 	public function insert(Entity $entity) {
@@ -138,6 +145,8 @@ abstract class Mapper {
 	 * @throws \InvalidArgumentException if entity has no id
 	 * @param Entity $entity the entity that should be created
 	 * @return Entity the saved entity with the set id
+	 * @phpstan-param EntityType $entity
+	 * @phpstan-return EntityType
 	 * @since 7.0.0 - return value was added in 8.0.0
 	 */
 	public function update(Entity $entity) {
@@ -318,6 +327,7 @@ abstract class Mapper {
 	 * from the current mapper name (MyEntityMapper -> MyEntity)
 	 * @param array $row the row which should be converted to an entity
 	 * @return Entity the entity
+	 * @phpstan-return EntityType
 	 * @since 7.0.0
 	 */
 	protected function mapRowToEntity($row) {
@@ -330,7 +340,8 @@ abstract class Mapper {
 	 * @param array $params the params which should replace the ? in the sql query
 	 * @param int $limit the maximum number of rows
 	 * @param int $offset from which row we want to start
-	 * @return array all fetched entities
+	 * @return Entity[] all fetched entities
+	 * @phpstan-return EntityType[]
 	 * @since 7.0.0
 	 */
 	protected function findEntities($sql, array $params=[], $limit=null, $offset=null) {
@@ -357,6 +368,7 @@ abstract class Mapper {
 	 * @throws DoesNotExistException if the item does not exist
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return Entity the entity
+	 * @phpstan-return EntityType
 	 * @since 7.0.0
 	 */
 	protected function findEntity($sql, array $params=[], $limit=null, $offset=null) {

@@ -10,6 +10,8 @@
   [#1233](https://github.com/owncloud/music/issues/1233)
 - File hooks potentially breaking the cloud update process when Music app is updated at the same time and the cloud runs partially updated app instance
   [#1231](https://github.com/owncloud/music/issues/1231)
+- Album cover from Last.fm failing to be loaded in the album details pane (since v2.1.0)
+  [#1238](https://github.com/owncloud/music/issues/1238)
 
 ## 2.2.0 - 2025-06-15
 

@@ -305,12 +305,24 @@ class MusicApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $embedCoverArt
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albumDetails(int $albumId) : JSONResponse {
+	public function albumDetails(int $albumId, /*mixed*/ $embedCoverArt=false) : JSONResponse {
+		$embedCoverArt = \filter_var($embedCoverArt, FILTER_VALIDATE_BOOLEAN);
 		try {
 			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
+			if ($embedCoverArt && isset($info['album']['image'])) {
+				$lastImage = \end($info['album']['image']);
+				$imageSrc = $lastImage['#text'] ?? null;
+				if (\is_string($imageSrc)) {
+					$image = HttpUtil::loadFromUrl($imageSrc);
+					if ($image['content']) {
+						$info['album']['imageData'] = 'data:' . $image['content_type'] . ';base64,' . \base64_encode($image['content']);
+					}
+				}
+			}
 			return new JSONResponse($info);
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

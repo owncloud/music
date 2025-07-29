@@ -48,47 +48,46 @@ angular.module('Music').controller('AlbumDetailsController', [
 					}
 
 					$scope.featuredArtists = _($scope.album.tracks).map('artist').uniq().sortBy('name').value();
-				});
 
-				// Because of the asynchronous nature of teh REST queries, it is possible that the
-				// current album has already changed again by the time we get the result. If that has
-				// happened, then the result should be ignored.
-				Restangular.one('albums', albumId).one('details').get().then(
-					function(result) {
-						if ($scope.album && $scope.album.id == albumId) {
-							$scope.lastfmInfo = result;
+					// Because of the asynchronous nature of teh REST queries, it is possible that the
+					// current album has already changed again by the time we get the result. If that has
+					// happened, then the result should be ignored.
+					Restangular.one('albums', albumId).one('details').get({embedCoverArt: !$scope.album.cover}).then(
+						function(result) {
+							if ($scope.album && $scope.album.id == albumId) {
+								$scope.lastfmInfo = result;
 
-							if ('album' in result) {
-								if ('wiki' in result.album) {
-									$scope.albumInfo = result.album.wiki.content || result.album.wiki.summary;
-									// modify all links in the info so that they will open to a new tab
-									$scope.albumInfo = $scope.albumInfo.replace(/<a href=/g, '<a target="_blank" href=');
-								}
-								else {
-									let linkText = gettextCatalog.getString('See the album on Last.fm');
-									$scope.albumInfo = `<a target="_blank" href="${result.album.url}">${linkText}</a>`;
+								if ('album' in result) {
+									if ('wiki' in result.album) {
+										$scope.albumInfo = result.album.wiki.content || result.album.wiki.summary;
+										// modify all links in the info so that they will open to a new tab
+										$scope.albumInfo = $scope.albumInfo.replace(/<a href=/g, '<a target="_blank" href=');
+									}
+									else {
+										let linkText = gettextCatalog.getString('See the album on Last.fm');
+										$scope.albumInfo = `<a target="_blank" href="${result.album.url}">${linkText}</a>`;
+									}
+
+									if ('tags' in result.album) {
+										$scope.albumTags = $scope.formatLastfmTags(result.album.tags.tag);
+									}
+
+									const mbid = result.album.mbid;
+									if (mbid) {
+										$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/release/${mbid}">${mbid}</a>`;
+									}
+
+									if (!$scope.album.cover && 'imageData' in result.album) {
+										// there are usually many image sizes provided but the last one should be the largest
+										setImageUrl(result.album.imageData);
+									}
 								}
 
-								if ('tags' in result.album) {
-									$scope.albumTags = $scope.formatLastfmTags(result.album.tags.tag);
-								}
-
-								const mbid = result.album.mbid;
-								if (mbid) {
-									$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/release/${mbid}">${mbid}</a>`;
-								}
-
-								if (!$scope.album.cover && 'image' in result.album) {
-									// there are usually many image sizes provided but the last one should be the largest
-									setImageUrl(result.album.image.at(-1)['#text']);
-								}
+								$scope.$parent.adjustFixedPositions();
 							}
-
-							$scope.$parent.adjustFixedPositions();
 						}
-					}
-				);
-
+					);
+				});
 			}
 		}
 

@@ -131,6 +131,21 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @return int[]
+	 */
+	public function findDirtyFileIds(string $userId) : array {
+		$updatedEpoch = $this->sqlDateToEpoch('`track`.`updated`');
+		$sql = "SELECT `track`.`file_id`
+				FROM `*PREFIX*music_tracks` `track`
+				INNER JOIN `*PREFIX*filecache` `file`
+				ON `track`.`file_id` = `file`.`fileid`
+				WHERE `track`.`user_id` = ?
+				AND (`track`.`dirty` = '1' OR $updatedEpoch < `file`.`mtime`)";
+		$result = $this->execute($sql, [$userId]);
+		return $result->fetchAll(\PDO::FETCH_COLUMN);
+	}
+
+	/**
 	 * Find a track of user matching a file ID
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
 	 */

@@ -763,6 +763,23 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * @param string $datetime Date-and-time string in UTC
+	 */
+	protected function sqlDateToEpoch(string $datetime) : string {
+		if ($this->dbType == 'pgsql') {
+			return "DATE_PART('EPOCH', $datetime)";
+		} else if ($this->dbType == 'sqlite3') {
+			return "CAST(strftime('%s', $datetime) AS INT)";
+		} else { // 'mysql'
+			// MySQL function UNIX_TIMESTAMP "helpfully" converts given datetime from session timezone to UTC
+			// and there's no way to prevent this. Hence, we need to convert the UTC first to the session time zone.
+			// In addition to being stupid, this is ambiguous for one hour per year when the DST ends. As result, this
+			// function is slightly bugged and the result is off-by-one-hour during this DST shift hour.
+			return "UNIX_TIMESTAMP(CONVERT_TZ($datetime, '+00:00', @@session.time_zone))";
+		}
+	}
+
+	/**
 	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
 	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.

@@ -555,8 +555,7 @@ class Scanner extends PublicEmitter {
 	 * @return int[]
 	 */
 	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
-		$tracks = $this->trackBusinessLayer->findAllDirty($userId);
-		$fileIds = \array_map(fn($t) => $t->getFileId(), $tracks);
+		$fileIds = $this->trackBusinessLayer->findDirtyFileIds($userId);
 
 		// filter by path if given
 		if (!empty($path)) {

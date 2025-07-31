@@ -4,6 +4,7 @@
 
 ### Changed
 - Human-friendly formatting for bitrate and sample rate in the track details pane
+- Improved performance for "dirty" file checking on huge music collections
 
 ### Fixed
 - Subsonic API: In methods `getAlbumInfo` and `getAlbumInfo2` with no info found, an empty array was returned instead of an empty object

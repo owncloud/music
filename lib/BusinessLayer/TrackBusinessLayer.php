@@ -120,21 +120,6 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks of the user which should be rescanned to ensure that the library details are up-to-date.
-	 * The track may be considered "dirty" for on of two reasons:
-	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
-	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
-	 * @return Track[]
-	 */
-	public function findAllDirty(string $userId) : array {
-		$tracks = $this->findAll($userId);
-		return \array_filter($tracks, function (Track $track) {
-			$dbModTime = new \DateTime($track->getUpdated());
-			return ($track->getDirty() || $dbModTime->getTimestamp() < $track->getFileModTime());
-		});
-	}
-
-	/**
 	 * Find most frequently played tracks
 	 * @return Track[]
 	 */
@@ -176,6 +161,17 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllFileIds(string $userId) : array {
 		return $this->mapper->findAllFileIds($userId);
+	}
+
+	/**
+	 * Returns file IDs of all indexed tracks of the user which should be rescanned to ensure that the library details are up-to-date.
+	 * The track may be considered "dirty" for one of two reasons:
+	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
+	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
+	 * @return int[]
+	 */
+	public function findDirtyFileIds(string $userId) : array {
+		return $this->mapper->findDirtyFileIds($userId);
 	}
 
 	/**

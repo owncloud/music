@@ -31,14 +31,14 @@ HtmlUtil::addWebpackStyle('app');
 
 		<div id="app-content">
 
+			<div id="app-view" ng-view resize-notifier
+				ng-class="{started: started, 'icon-loading': loadIndicatorVisible()}">
+			</div>
+
 			<?php
 			HtmlUtil::printPartial('controls');
 			HtmlUtil::printPartial('sidebar/sidebar');
 			?>
-
-			<div id="app-view" ng-view resize-notifier
-				ng-class="{started: started, 'icon-loading': loadIndicatorVisible()}">
-			</div>
 
 			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && viewingLibrary()">
 				<div class="icon-audio svg"></div>

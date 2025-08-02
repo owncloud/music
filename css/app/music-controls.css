@@ -17,7 +17,7 @@
 	position: fixed;
 	overflow: visible;
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
-	z-index: 1;
+	z-index: unset;
 }
 
 body:not(.snapjs-left) .app-music.nc14to24 #controls {

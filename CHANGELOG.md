@@ -15,6 +15,8 @@
   [#1231](https://github.com/owncloud/music/issues/1231)
 - Album cover from Last.fm failing to be loaded in the album details pane (since v2.1.0)
   [#1238](https://github.com/owncloud/music/issues/1238)
+- Music controls pane overlapping the scrollbar with Firefox on Windows 11
+- Not being able to drag the scrollbar on ownCloud with Firefox on Windows 11
 
 ## 2.2.0 - 2025-06-15
 

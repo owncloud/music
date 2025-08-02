@@ -5,11 +5,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 .alphabet-navigation {
-	z-index: 5;
 	position: fixed;
 	right: 0;
 	bottom: 0;

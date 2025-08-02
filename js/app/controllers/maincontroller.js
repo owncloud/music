@@ -511,22 +511,24 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	}
 
 	$rootScope.$on('resize', function(event, appView) {
-		let appViewWidth = appView.outerWidth();
+		const appViewWidth = appView.outerWidth();
 
 		// Adjust controls bar width to not overlap with the scroll bar.
 		// Subtract one pixel from the width because outerWidth() seems to
 		// return rounded integer value which may sometimes be slightly larger
 		// than the actual width of the #app-view.
-		let controlsWidth = appViewWidth - 1;
+		const controlsWidth = appViewWidth - 1;
 		$('#controls').css('width', controlsWidth);
 		$('#controls').css('min-width', controlsWidth);
 
-		// the "no content"/"click to scan"/"scanning" banner has the same width as controls 
-		$('#app-content .emptycontent').css('width', controlsWidth);
-		$('#app-content .emptycontent').css('min-width', controlsWidth);
+		// the "no content"/"click to scan"/"scanning" banner has the same width as controls,
+		// subtracting the alphabet-navigation width
+		const aphaNaviWidth = 50;
+		$('#app-content .emptycontent').css('width', controlsWidth - aphaNaviWidth);
+		$('#app-content .emptycontent').css('min-width', controlsWidth - aphaNaviWidth);
 
 		// Set the app-content class according to window and view width. This has
-		// impact on the overall layout of the app. See mobile.css and tablet.css.
+		// impact on the overall layout of the app. See music-mobile.css and music-tablet.css.
 		if (appViewWidth <= 280) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow', 'min-width']);
 		}

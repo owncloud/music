@@ -207,7 +207,6 @@ div:hover > .play-pause,
 	top: 0;
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	padding: 20px 50px;
-	z-index: 1;
 }
 
 #app-content .emptycontent.collapsed {

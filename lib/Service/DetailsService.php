@@ -10,19 +10,20 @@
  * @copyright Pauli Järvinen 2018 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCP\Files\File;
 use OCP\Files\Folder;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\StringUtil;
 
-class DetailsHelper {
+class DetailsService {
 	private Extractor $extractor;
 	private Logger $logger;
 
 	public function __construct(
-			Extractor $extractor,
+			ExtractorGetID3 $extractor,
 			Logger $logger) {
 		$this->extractor = $extractor;
 		$this->logger = $logger;
@@ -62,7 +63,7 @@ class DetailsHelper {
 			}
 
 			// special handling for lyrics tags
-			$lyricsNode = self::transformLyrics($result['tags']);
+			$lyricsNode = self::transformLyrics($result['tags'], self::getLyricsFileContent($file));
 			if ($lyricsNode !== null) {
 				$result['lyrics'] = $lyricsNode;
 				unset(
@@ -93,7 +94,8 @@ class DetailsHelper {
 		$fileNode = $userFolder->getById($fileId)[0] ?? null;
 		if ($fileNode instanceof File) {
 			$data = $this->extractor->extract($fileNode);
-			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics'])
+				?? self::getLyricsFileContent($fileNode);
 			return ($lyrics !== null);
 		}
 		return false;
@@ -113,7 +115,7 @@ class DetailsHelper {
 
 			if ($lyrics === null) {
 				// no unsynchronized lyrics, try to get and convert the potentially synchronized lyrics
-				$lyrics = ExtractorGetID3::getFirstOfTags($data, ['LYRICS', 'lyrics']);
+				$lyrics = ExtractorGetID3::getFirstOfTags($data, ['LYRICS', 'lyrics']) ?? self::getLyricsFileContent($fileNode);
 				self::sanitizeString($lyrics);
 				$parsed = LyricsParser::parseSyncedLyrics($lyrics);
 				if ($parsed) {
@@ -138,12 +140,18 @@ class DetailsHelper {
 			$data = $this->extractor->extract($fileNode);
 			$lyricsTags = ExtractorGetID3::getTags($data, ['LYRICS', 'lyrics', 'unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
 
+			$lrcFileContent = self::getLyricsFileContent($fileNode);
+			if ($lrcFileContent !== null) {
+				// prepend the LRC file content to make it the preferred option for the clients
+				$lyricsTags = \array_merge(['lyrics_file' => $lrcFileContent], $lyricsTags);
+			}
+
 			foreach ($lyricsTags as $tagKey => $tagValue) {
 				self::sanitizeString($tagValue);
 
 				// Never try to parse synced lyrics from the "unsync*" tags. The "lyrics" tag, on the other hand,
 				// may contain either synced or unsynced lyrics and a parse attempt is needed to find out.
-				$mayBeSynced = !Util::startsWith($tagKey, 'unsync');
+				$mayBeSynced = !StringUtil::startsWith($tagKey, 'unsync');
 				$syncedLyrics = $mayBeSynced ? LyricsParser::parseSyncedLyrics($tagValue) : null;
 
 				if ($syncedLyrics) {
@@ -171,14 +179,15 @@ class DetailsHelper {
 	 * hold the time-synced lyrics. These are presented as an array of arrays of form
 	 * ['time' => int (ms), 'text' => string].
 	 */
-	private static function transformLyrics(array $tags) : ?array {
+	private static function transformLyrics(array $tags, ?string $lrcFileContent) : ?array {
 		$lyrics = $tags['LYRICS'] ?? $tags['lyrics'] ?? null; // may be synced or unsynced
-		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
+		$syncedLyrics = LyricsParser::parseSyncedLyrics($lrcFileContent) ?? LyricsParser::parseSyncedLyrics($lyrics);
 		$unsyncedLyrics = $tags['unsynchronised_lyric']
 						?? $tags['unsynced lyrics']
 						?? $tags['unsynced_lyrics']
 						?? $tags['unsyncedlyrics']
 						?? LyricsParser::syncedToUnsynced($syncedLyrics)
+						?? $lrcFileContent
 						?? $lyrics;
 
 		if ($unsyncedLyrics !== null) {
@@ -194,6 +203,31 @@ class DetailsHelper {
 		}
 
 		return $result;
+	}
+
+	private static function getLyricsFileContent(File $audioFile) : ?string {
+		$audioName = $audioFile->getName();
+		$bareName = \pathinfo($audioName, PATHINFO_FILENAME);
+		\assert(\is_string($bareName)); // for Scrutinizer
+		$parentDir = $audioFile->getParent();
+
+		$potentialMatches = $parentDir->search($bareName);
+
+		// If the audio file is named "someSong.mp3", we allow the lyrics file to be named "someSong.lrc" or "someSong.mp3.lrc".
+		// The extensions may have any casing.
+		$lrcName1 = "$bareName.lrc";
+		$lrcName2 = "$audioName.lrc";
+
+		foreach ($potentialMatches as $potential) {
+			if ($potential instanceof File) {
+				$name = $potential->getName();
+				if (StringUtil::caselessEqual($name, $lrcName1) || StringUtil::caselessEqual($name, $lrcName2)) {
+					return $potential->getContent();
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**

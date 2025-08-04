@@ -21,15 +21,13 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\PodcastEpisodeMapper;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
-
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method PodcastEpisode find(int $episodeId, string $userId)
- * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
- * @method PodcastEpisode[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @method PodcastEpisode[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @property PodcastEpisodeMapper $mapper
  * @phpstan-extends BusinessLayer<PodcastEpisode>
  */
@@ -73,9 +71,10 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$episode = new PodcastEpisode();
 
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+		\assert($itunesNodes !== null); // children() returns null only if the SimpleXMLElement represents an attribute
 
 		if (!$xmlNode->enclosure || !$xmlNode->enclosure->attributes()) {
-			$logger->log("No stream URL for the episode " . $xmlNode->title, 'debug');
+			$logger->debug("No stream URL for the episode " . $xmlNode->title);
 			$streamUrl = null;
 			$mimetype = null;
 			$size = null;
@@ -90,26 +89,26 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 			throw new BusinessLayerException('Invalid episode, neither <guid> nor <enclosure url> is included');
 		}
 
-		$episode->setStreamUrl( Util::truncate($streamUrl, 2048) );
-		$episode->setMimetype( Util::truncate($mimetype, 256) );
+		$episode->setStreamUrl( StringUtil::truncate($streamUrl, 2048) );
+		$episode->setMimetype( StringUtil::truncate($mimetype, 256) );
 		$episode->setSize( $size );
 		$episode->setDuration( self::parseDuration((string)$itunesNodes->duration) );
-		$episode->setGuid( Util::truncate($guid, 2048) );
+		$episode->setGuid( StringUtil::truncate($guid, 2048) );
 		$episode->setGuidHash( \hash('md5', $guid) );
 		$episode->setTitle( self::parseTitle($itunesNodes->title, $xmlNode->title, $itunesNodes->episode) );
 		$episode->setEpisode( (int)$itunesNodes->episode ?: null );
 		$episode->setSeason( (int)$itunesNodes->season ?: null );
-		$episode->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
+		$episode->setLinkUrl( StringUtil::truncate((string)$xmlNode->link, 2048) );
 		$episode->setPublished( \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)($xmlNode->pubDate))) );
-		$episode->setKeywords( Util::truncate((string)$itunesNodes->keywords, 256) );
-		$episode->setCopyright( Util::truncate((string)$xmlNode->copyright, 256) );
-		$episode->setAuthor( Util::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
+		$episode->setKeywords( StringUtil::truncate((string)$itunesNodes->keywords, 256) );
+		$episode->setCopyright( StringUtil::truncate((string)$xmlNode->copyright, 256) );
+		$episode->setAuthor( StringUtil::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
 		$episode->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
 
 		return $episode;
 	}
 
-	private static function parseTitle($itunesTitle, $title, $episode) : ?string {
+	private static function parseTitle(?\SimpleXMLElement $itunesTitle, ?\SimpleXMLElement $title, ?\SimpleXMLElement $episode) : ?string {
 		// Prefer to use the iTunes title over the standard title, because sometimes,
 		// the generic title contains the episode number which is also provided separately
 		// while the iTunes title does not.
@@ -124,7 +123,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 			}
 		}
 
-		return Util::truncate($result, 256);
+		return StringUtil::truncate($result, 256);
 	}
 
 	private static function parseDuration(string $data) :?int {

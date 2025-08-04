@@ -230,6 +230,32 @@ angular.module('Music').controller('NavigationController', [
 			);
 		};
 
+		$scope.exportPodcastsToFile = function(event) {
+			if ($scope.anyPodcastChannels()) {
+				podcastService.exportToFile().then(
+					() => $scope.podcastsBusy = false, // success
+					() => $scope.podcastsBusy = false, // failure
+					(state) => { // notification about state change
+						if (state == 'started') {
+							$scope.podcastsBusy = true;
+						} else if (state == 'stopped') {
+							$scope.podcastsBusy = false;
+						}
+					}
+				);
+			} else {
+				event.stopPropagation();
+			}
+		};
+
+		$scope.importPodcastsFromFile = function() {
+			podcastService.importFromFile().then(
+				() => $scope.podcastsBusy = false, // success
+				() => $scope.podcastsBusy = false, // failure
+				() => $scope.podcastsBusy = true   // notification about import actually starting
+			);
+		};
+
 		$scope.reloadPodcasts = function(event) {
 			if ($scope.anyPodcastChannels()) {
 				$scope.podcastsBusy = true;

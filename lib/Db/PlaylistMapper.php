@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
  * @copyright Volkan Gezer 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -35,16 +35,5 @@ class PlaylistMapper extends BaseMapper {
 		$sql = $this->selectEntities('`track_ids` LIKE ?');
 		$params = ['%|' . $trackId . '|%'];
 		return $this->findEntities($sql, $params);
-	}
-
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Playlist $playlist
-	 * @return Playlist
-	 */
-	protected function findUniqueEntity(Entity $playlist) : Entity {
-		// The playlist table has no unique constraints, and hence, this function
-		// should never be called.
-		throw new \BadMethodCallException('not supported');
 	}
 }

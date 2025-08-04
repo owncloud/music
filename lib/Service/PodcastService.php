@@ -7,10 +7,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
@@ -19,7 +19,11 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
-
+use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\HttpUtil;
+use OCP\Files\File;
+use OCP\Files\Folder;
 
 class PodcastService {
 	private PodcastChannelBusinessLayer $channelBusinessLayer;
@@ -52,7 +56,7 @@ class PodcastService {
 			}
 			return $channel;
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Requested channel $id not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Requested channel $id not found: " . $ex->getMessage());
 			return null;
 		}
 	}
@@ -78,7 +82,7 @@ class PodcastService {
 		try {
 			return $this->episodeBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Requested episode $id not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Requested episode $id not found: " . $ex->getMessage());
 			return null;
 		}
 	}
@@ -97,23 +101,23 @@ class PodcastService {
 	 * @param bool $allChannelsIncluded Set this to true if $channels contains all the podcasts of the user.
 	 *									This helps in optimizing the DB query.
 	 */
-	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
+	public function injectEpisodes(array $channels, string $userId, bool $allChannelsIncluded) : void {
 		if ($allChannelsIncluded || \count($channels) >= $this->channelBusinessLayer::MAX_SQL_ARGS) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
-			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);
+			$episodes = $this->episodeBusinessLayer->findAllByChannel(ArrayUtil::extractIds($channels), $userId);
 		}
 
-		$episodesPerChannel = Util::arrayGroupBy($episodes, 'getChannelId');
+		$episodesPerChannel = ArrayUtil::groupBy($episodes, 'getChannelId');
 
-		foreach ($channels as &$channel) {
+		foreach ($channels as $channel) {
 			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
 		}
 	}
 
 	/**
 	 * Add a followed podcast for a user from an RSS feed
-	 * @return array like ['status' => int, 'channel' => ?PodcastChannel]
+	 * @return array{status: int, channel: ?PodcastChannel}
 	 */
 	public function subscribe(string $url, string $userId) : array {
 		$content = HttpUtil::loadFromUrl($url)['content'];
@@ -148,7 +152,7 @@ class PodcastService {
 			$this->episodeBusinessLayer->deleteByChannel($channelId, $userId); // does not throw
 			return self::STATUS_OK;
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Channel $channelId to be unsubscribed not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Channel $channelId to be unsubscribed not found: " . $ex->getMessage());
 			return self::STATUS_NOT_FOUND;
 		}
 	}
@@ -161,7 +165,7 @@ class PodcastService {
 	 * @param bool $force Value true will cause the channel to be parsed and updated to the database even
 	 *					in case the RSS hasn't been changed at all since the previous update. This might be
 	 *					useful during the development or if the previous update was unexpectedly aborted.
-	 * @return array like ['status' => int, 'updated' => bool, 'channel' => ?PodcastChannel]
+	 * @return array{status: int, updated: bool, channel: ?PodcastChannel}
 	 */
 	public function updateChannel(int $id, string $userId, ?string $prevHash = null, bool $force = false) : array {
 		$updated = false;
@@ -170,7 +174,7 @@ class PodcastService {
 		try {
 			$channel = $this->channelBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
-			$this->logger->log("Channel $id to be updated not found: " . $ex->getMessage(), 'warn');
+			$this->logger->warning("Channel $id to be updated not found: " . $ex->getMessage());
 			$status = self::STATUS_NOT_FOUND;
 			$channel = null;
 		}
@@ -185,14 +189,14 @@ class PodcastService {
 			}
 
 			if (!$xmlTree || !$xmlTree->channel) {
-				$this->logger->log("RSS feed for the channel {$channel->id} was invalid", 'warn');
+				$this->logger->warning("RSS feed for the channel {$channel->id} was invalid");
 				$this->channelBusinessLayer->markUpdateChecked($channel);
 				$status = self::STATUS_INVALID_RSS;
 			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
 				// update the episodes too if channel content has actually changed or update is forced
 				$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $id);
 				$channel->setEpisodes($episodes);
-				$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $userId);
+				$this->episodeBusinessLayer->deleteByChannelExcluding($id, ArrayUtil::extractIds($episodes), $userId);
 				$updated = true;
 			} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
 				// the channel content is not new for the server but it is still new for the client
@@ -210,8 +214,7 @@ class PodcastService {
 
 	/**
 	 * Check updates for all channels of the user, one-by-one
-	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
-	 *			where each int represent number of channels in that category
+	 * @return array{changed: int, unchanged: int, failed: int} where each int represent number of channels in that category
 	 */
 	public function updateAllChannels(
 			string $userId, ?float $olderThan = null, bool $force = false, ?callable $progressCallback = null) : array {
@@ -260,5 +263,145 @@ class PodcastService {
 		}
 		// return the episodes in inverted chronological order (newest first)
 		return \array_reverse($episodes);
+	}
+
+	/**
+	 * export all the podcast channels of a user to an OPML file
+	 * @param string $userId user
+	 * @param Folder $userFolder home dir of the user
+	 * @param string $folderPath target parent folder path
+	 * @param string $filename target file name
+	 * @param string $collisionMode action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 * @return string path of the written file
+	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
+	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
+	 */
+	public function exportToFile(
+		string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
+		$targetFolder = FilesUtil::getFolderFromRelativePath($userFolder, $folderPath);
+
+		$filename = FilesUtil::sanitizeFileName($filename, ['opml']);
+
+		$file = FilesUtil::createFile($targetFolder, $filename, $collisionMode);
+
+		$channels = $this->channelBusinessLayer->findAll($userId, SortBy::Name);
+
+		$content = self::channelsToOpml($channels);
+		$file->putContent($content);
+
+		return $userFolder->getRelativePath($file->getPath());
+	}
+
+	/**
+	 * @param PodcastChannel[] $channels
+	 */
+	private static function channelsToOpml(array $channels) : string {
+		$dom = new \DOMDocument('1.0', 'UTF-8');
+		$dom->formatOutput = true;
+
+		$rootElem = $dom->createElement('opml');
+		$rootElem->setAttribute('version', '1.0');
+		$dom->appendChild($rootElem);
+
+		$headElem = $dom->createElement('head');
+		$titleElem = $dom->createElement('title', 'Podcast channels from ownCloud/Nextcloud Music');
+		$now = new \DateTime();
+		$dateCreatedElem = $dom->createElement('dateCreated', $now->format(\DateTime::RFC822));
+		$headElem->appendChild($titleElem);
+		$headElem->appendChild($dateCreatedElem);
+		$rootElem->appendChild($headElem);
+
+		$bodyElem = $dom->createElement('body');
+		foreach ($channels as $channel) {
+			$outlineElem = $dom->createElement('outline');
+			$outlineElem->setAttribute('type', 'rss');
+			$outlineElem->setAttribute('text', $channel->getTitle());
+			$outlineElem->setAttribute('title', $channel->getTitle());
+			$outlineElem->setAttribute('xmlUrl', $channel->getRssUrl());
+			$outlineElem->setAttribute('htmlUrl', $channel->getLinkUrl());
+			$bodyElem->appendChild($outlineElem);
+		}
+		$rootElem->appendChild($bodyElem);
+
+		return $dom->saveXML();
+	}
+
+	/**
+	 * import podcast channels from an OPML file
+	 * @param string $userId user
+	 * @param Folder $userFolder user home dir
+	 * @param string $filePath path of the file to import
+	 * @return array with three keys:
+	 * 			- 'channels': Array of PodcastChannel objects imported from the file
+	 * 			- 'not_changed_count': An integer showing the number of channels in the file which were already subscribed by the user
+	 * 			- 'failed_count': An integer showing the number of entries in the file which were not valid URLs
+	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
+	 */
+	public function importFromFile(string $userId, Folder $userFolder, string $filePath, ?callable $progressCallback = null) : array {
+		$channelUrls = self::parseOpml($userFolder, $filePath);
+
+		$channels = [];
+		$existingCount = 0;
+		$failedCount = 0;
+
+		foreach ($channelUrls as $rssUrl) {
+			$channelResult = $this->subscribe($rssUrl, $userId);
+			if (!empty($channelResult['channel'])) {
+				$channels[] = $channelResult['channel'];
+			} else if ($channelResult['status'] == self::STATUS_ALREADY_EXISTS) {
+				$existingCount++;
+			} else {
+				$failedCount++;
+			}
+
+			if ($progressCallback !== null) {
+				$channelResult['rss'] = $rssUrl;
+				$progressCallback($channelResult);
+			}
+		}
+
+		return [
+			'channels' => $channels,
+			'not_changed_count' => $existingCount,
+			'failed_count' => $failedCount
+		];
+	}
+
+	/**
+	 * @return string[] RSS URLs
+	 */
+	public static function parseOpml(Folder $userFolder, string $filePath) : array {
+		$rssUrls = [];
+
+		$file = self::getFile($userFolder, $filePath);
+		$rootNode = \simplexml_load_string($file->getContent(), \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($rootNode === false) {
+			throw new \UnexpectedValueException('the file is not in valid OPML format');
+		}
+
+		$rssNodes = $rootNode->xpath("/opml/body//outline[@type='rss']");
+
+		foreach ($rssNodes as $node) {
+			$rssUrls[] = (string)$node->attributes()['xmlUrl'];
+		}
+
+		return $rssUrls;
+	}
+
+	/**
+	 * @throws \OCP\Files\NotFoundException if the $path does not point to a file under the $baseFolder
+	 */
+	private static function getFile(Folder $baseFolder, string $path) : File {
+		$node = $baseFolder->get($path);
+		if (!($node instanceof File)) {
+			throw new \OCP\Files\NotFoundException();
+		}
+		return $node;
 	}
 }

@@ -22,8 +22,8 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\Files\FileInfo;
@@ -32,8 +32,8 @@ use OCP\Files\Folder;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Track find(int $trackId, string $userId)
- * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property TrackMapper $mapper
  * @phpstan-extends BusinessLayer<Track>
  */
@@ -120,21 +120,6 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks of the user which should be rescanned to ensure that the library details are up-to-date.
-	 * The track may be considered "dirty" for on of two reasons:
-	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
-	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
-	 * @return Track[]
-	 */
-	public function findAllDirty(string $userId) : array {
-		$tracks = $this->findAll($userId);
-		return \array_filter($tracks, function (Track $track) {
-			$dbModTime = new \DateTime($track->getUpdated());
-			return ($track->getDirty() || $dbModTime->getTimestamp() < $track->getFileModTime());
-		});
-	}
-
-	/**
 	 * Find most frequently played tracks
 	 * @return Track[]
 	 */
@@ -179,6 +164,17 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns file IDs of all indexed tracks of the user which should be rescanned to ensure that the library details are up-to-date.
+	 * The track may be considered "dirty" for one of two reasons:
+	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
+	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
+	 * @return int[]
+	 */
+	public function findDirtyFileIds(string $userId) : array {
+		return $this->mapper->findDirtyFileIds($userId);
+	}
+
+	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
 	 * @return array of entries like {id: int, name: string, parent: ?int, trackIds: int[]}
 	 */
@@ -196,7 +192,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectFolderPathsToTracks(array &$tracks, string $userId, Folder $musicFolder) : void {
+	public function injectFolderPathsToTracks(array $tracks, string $userId, Folder $musicFolder) : void {
 		$folderIds = \array_map(fn($t) => $t->getFolderId(), $tracks);
 		$folderIds = \array_unique($folderIds);
 		$trackIdsByFolder = \array_fill_keys($folderIds, []); // track IDs are not actually used here so we can use empty arrays
@@ -217,7 +213,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			return $foldersLut[$id]['path'];
 		};
 
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setFolderPath($getFolderPath($track->getFolderId(), $foldersLut));
 		}
 	}
@@ -317,7 +313,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$parentIds = \array_unique(\array_column($foldersToProcess, 'parent'));
 			// do not process root even if it's included in $foldersToProcess
 			$parentIds = \array_filter($parentIds, fn($i) => $i !== null);
-			$parentIds = Util::arrayDiff($parentIds, \array_keys($lut));
+			$parentIds = ArrayUtil::diff($parentIds, \array_keys($lut));
 			$parentFolders = $this->mapper->findNodeNamesAndParents($parentIds);
 
 			$foldersToProcess = [];
@@ -395,10 +391,10 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
-			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
+			string $title, ?int $number, ?int $discNumber, ?int $year, int $genreId, int $artistId, int $albumId,
+			int $fileId, string $mimetype, string $userId, ?int $length=null, ?int $bitrate=null) : Track {
 		$track = new Track();
-		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
+		$track->setTitle(StringUtil::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
 		$track->setDisk($discNumber);
 		$track->setYear($year);
@@ -434,7 +430,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result = false;
 		} else {
 			// delete all the matching tracks
-			$trackIds = Util::extractIds($tracks);
+			$trackIds = ArrayUtil::extractIds($tracks);
 			$this->deleteById($trackIds);
 
 			// find all distinct albums, artists, and users of the deleted tracks

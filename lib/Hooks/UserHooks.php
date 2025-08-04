@@ -14,12 +14,14 @@ namespace OCA\Music\Hooks;
 
 use OC\Hooks\Emitter;
 use OCA\Music\Db\Maintenance;
+use OCP\IUserManager;
 
 class UserHooks {
 	private Emitter $userManager;
 	private Maintenance $maintenance;
 
-	public function __construct(Emitter $userManager, Maintenance $maintenance) {
+	public function __construct(IUserManager $userManager, Maintenance $maintenance) {
+		assert($userManager instanceof Emitter);
 		$this->userManager = $userManager;
 		$this->maintenance = $maintenance;
 	}

@@ -21,7 +21,7 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Controller\SubsonicController;
 use OCA\Music\Db\AmpacheUserMapper;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Checks the authentication on each Subsonic API call before the
@@ -49,10 +49,12 @@ class SubsonicMiddleware extends Middleware {
 	 *
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method
+	 * @return void
 	 * @throws SubsonicException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
-		if ($controller instanceof SubsonicController) {
+		// The security access logic is not applied to the CORS pre-flight calls with the 'OPTIONS'
+		if ($controller instanceof SubsonicController && $methodName !== 'preflightedCors') {
 			$this->setupResponseFormat($controller);
 			$this->checkAuthentication($controller);
 		}
@@ -64,7 +66,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function setupResponseFormat(SubsonicController $controller) {
+	private function setupResponseFormat(SubsonicController $controller) : void {
 		$format = $this->request->getParam('f', 'xml');
 		$callback = $this->request->getParam('callback');
 
@@ -74,7 +76,7 @@ class SubsonicMiddleware extends Middleware {
 
 		if ($format === 'jsonp' && empty($callback)) {
 			$format = 'xml';
-			$this->logger->log("'jsonp' format requested but no arg 'callback' supplied, falling back to 'xml' format", 'debug');
+			$this->logger->debug("'jsonp' format requested but no arg 'callback' supplied, falling back to 'xml' format");
 		}
 
 		$controller->setResponseFormat($format, $callback);
@@ -86,7 +88,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function checkAuthentication(SubsonicController $controller) {
+	private function checkAuthentication(SubsonicController $controller) : void {
 		if ($this->request->getParam('t') !== null) {
 			throw new SubsonicException('Token-based authentication not supported', 41);
 		}
@@ -112,12 +114,12 @@ class SubsonicMiddleware extends Middleware {
 			}
 
 			// The password may be given in hexadecimal format
-			if (Util::startsWith($pass, 'enc:')) {
+			if (StringUtil::startsWith($pass, 'enc:')) {
 				$pass = \hex2bin(\substr($pass, \strlen('enc:')));
 			}
 
 			$credentials = $this->userAndKeyIdForPass($pass);
-			if (Util::stringCaseCompare($user, $credentials['user_id']) === 0) {
+			if (StringUtil::caselessCompare($user, $credentials['user_id']) === 0) {
 				$controller->setAuthenticatedUser($credentials['user_id'], $credentials['key_id']);
 			} else {
 				throw new SubsonicException('Wrong username or password', 40);
@@ -131,7 +133,7 @@ class SubsonicMiddleware extends Middleware {
 
 	/**
 	 * @param string $pass Password aka API key
-	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if $pass was not valid
+	 * @return ?array{key_id: int, user_id: string} - null if $pass was not valid
 	 */
 	private function userAndKeyIdForPass(string $pass) : ?array {
 		$hash = \hash('sha256', $pass);
@@ -157,7 +159,7 @@ class SubsonicMiddleware extends Middleware {
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
-				$this->logger->log($exception->getMessage(), 'debug');
+				$this->logger->debug($exception->getMessage());
 				return $controller->subsonicErrorResponse(
 						$exception->getCode(),
 						$exception->getMessage()

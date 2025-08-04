@@ -6,7 +6,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\AppFramework\Utility;
@@ -17,8 +17,8 @@ use OCP\IRequest;
  * Reads and parses annotations from doc comments
  */
 class RequestParameterExtractor {
-	private $request;
-	private $customFilters;
+	private IRequest $request;
+	private array $customFilters;
 
 	public function __construct(IRequest $request, array $customFilters = []) {
 		$this->request = $request;

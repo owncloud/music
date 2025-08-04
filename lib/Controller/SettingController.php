@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -25,10 +25,10 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Service\LibrarySettings;
+use OCA\Music\Service\Scanner;
 use OCA\Music\Utility\AppInfo;
-use OCA\Music\Utility\LibrarySettings;
-use OCA\Music\Utility\Scanner;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
@@ -72,7 +72,7 @@ class SettingController extends Controller {
 	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function userPath(string $value) {
+	public function userPath(string $value) : JSONResponse {
 		$prevPath = $this->librarySettings->getPath($this->userId);
 		$success = $this->librarySettings->setPath($this->userId, $value);
 
@@ -87,7 +87,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function userExcludedPaths(array $value) {
+	public function userExcludedPaths(array $value) : JSONResponse {
 		$success = $this->librarySettings->setExcludedPaths($this->userId, $value);
 		return new JSONResponse(['success' => $success]);
 	}
@@ -96,7 +96,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function enableScanMetadata(bool $value) {
+	public function enableScanMetadata(bool $value) : JSONResponse {
 		$this->librarySettings->setScanMetadataEnabled($this->userId, $value);
 		return new JSONResponse(['success' => true]);
 	}
@@ -105,7 +105,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function ignoredArticles(array $value) {
+	public function ignoredArticles(array $value) : JSONResponse {
 		$this->librarySettings->setIgnoredArticles($this->userId, $value);
 		return new JSONResponse(['success' => true]);
 	}
@@ -114,50 +114,50 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getAll() {
-		return [
+	public function getAll() : JSONResponse {
+		return new JSONResponse([
 			'path' => $this->librarySettings->getPath($this->userId),
 			'excludedPaths' => $this->librarySettings->getExcludedPaths($this->userId),
 			'scanMetadata' => $this->librarySettings->getScanMetadataEnabled($this->userId),
 			'ignoredArticles' => $this->librarySettings->getIgnoredArticles($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
-			'ampacheKeys' => $this->getUserKeys(),
+			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
 			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId
-		];
+		]);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getUserKeys() {
-		return $this->ampacheUserMapper->getAll($this->userId);
+	public function getUserKeys() : JSONResponse {
+		return new JSONResponse($this->ampacheUserMapper->getAll($this->userId));
 	}
 
-	private function getAmpacheUrl() {
-		return \str_replace('/server/xml.server.php', '',
+	private function getAmpacheUrl() : string {
+		return (string)\str_replace('/server/xml.server.php', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.xmlApi')));
 	}
 
-	private function getSubsonicUrl() {
-		return \str_replace('/rest/dummy', '',
+	private function getSubsonicUrl() : string {
+		return (string)\str_replace('/rest/dummy', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
 						'music.subsonic.handleRequest', ['method' => 'dummy'])));
 	}
 
-	private function storeUserKey($description, $password) {
+	private function storeUserKey(?string $description, string $password) : ?int {
 		$hash = \hash('sha256', $password);
-		$description = Util::truncate($description, 64); // some DB setups can't truncate automatically to column max size
+		$description = StringUtil::truncate($description, 64); // some DB setups can't truncate automatically to column max size
 		return $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 */
-	public function createUserKey($length, $description) {
-		if ($length == null || $length < self::DEFAULT_PASSWORD_LENGTH) {
+	public function createUserKey(?int $length, ?string $description) : JSONResponse {
+		if ($length === null || $length < self::DEFAULT_PASSWORD_LENGTH) {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}
 
@@ -180,7 +180,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @CORS
 	 */
-	public function createUserKeyCors($length, $description) {
+	public function createUserKeyCors(?int $length, ?string $description) : JSONResponse {
 		return $this->createUserKey($length, $description);
 	}
 
@@ -188,9 +188,9 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeUserKey($id) {
-		$this->ampacheSessionMapper->revokeSessions((int)$id);
-		$this->ampacheUserMapper->removeUserKey($this->userId, (int)$id);
+	public function removeUserKey(int $id) : JSONResponse {
+		$this->ampacheSessionMapper->revokeSessions($id);
+		$this->ampacheUserMapper->removeUserKey($this->userId, $id);
 		return new JSONResponse(['success' => true]);
 	}
 }

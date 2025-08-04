@@ -7,33 +7,36 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\BackgroundJob;
 
+use OCA\Music\AppFramework\BackgroundJob\TimedJob;
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppInfo\Application;
-use OCA\Music\Utility\PodcastService;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\Service\PodcastService;
+use OCP\IConfig;
 
-// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class PodcastUpdateCheck extends TimedJob {
 
 	/**
 	 * Check podcast updates on the background
+	 * @param mixed $arguments
+	 * @return void
 	 */
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
 
-		$container = $app->getContainer();
+		$logger = $app->get(Logger::class);
+		$logger->debug('Run ' . \get_class());
 
-		$logger = $container->query('Logger');
-		$logger->log('Run ' . \get_class(), 'debug');
-
-		$minInterval = (float)$container->query('Config')->getSystemValue('music.podcast_auto_update_interval', 24); // hours
+		$minInterval = (float)$app->get(IConfig::class)->getSystemValue('music.podcast_auto_update_interval', 24); // hours
 		// negative interval values can be used to disable the auto-update
 		if ($minInterval >= 0) {
-			$users = $container->query('PodcastChannelBusinessLayer')->findAllUsers();
-			$podcastService = $container->query('PodcastService');
+			$users = $app->get(PodcastChannelBusinessLayer::class)->findAllUsers();
+			$podcastService = $app->get(PodcastService::class);
 			$channelsChecked = 0;
 
 			foreach ($users as $userId) {
@@ -41,11 +44,11 @@ class PodcastUpdateCheck extends TimedJob {
 					$id = (isset($channelResult['channel'])) ? $channelResult['channel']->getId() : -1;
 
 					if ($channelResult['updated']) {
-						$logger->log("Channel $id of user $userId was updated", 'debug');
+						$logger->debug("Channel $id of user $userId was updated");
 					} elseif ($channelResult['status'] === PodcastService::STATUS_OK) {
-						$logger->log("Channel $id of user $userId had no changes", 'debug');
+						$logger->debug("Channel $id of user $userId had no changes");
 					} else {
-						$logger->log("Channel $id of user $userId update failed", 'debug');
+						$logger->debug("Channel $id of user $userId update failed");
 					}
 
 					$channelsChecked++;
@@ -53,14 +56,13 @@ class PodcastUpdateCheck extends TimedJob {
 			}
 
 			if ($channelsChecked === 0) {
-				$logger->log('No podcast channels were due to check for updates', 'debug');
+				$logger->debug('No podcast channels were due to check for updates');
 			} else {
-				$logger->log("$channelsChecked podcast channels in total were checked for updates", 'debug');
+				$logger->debug("$channelsChecked podcast channels in total were checked for updates");
 			}
 		}
 		else {
-			$logger->log('Automatic podcast updating is disabled via config.php', 'debug');
+			$logger->debug('Automatic podcast updating is disabled via config.php');
 		}
-
 	}
 }

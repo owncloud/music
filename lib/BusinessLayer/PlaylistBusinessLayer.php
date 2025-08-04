@@ -21,15 +21,15 @@ use OCA\Music\Db\PlaylistMapper;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Db\TrackMapper;
-
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:
  * @method Playlist find(int $playlistId, string $userId)
- * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property PlaylistMapper $mapper
  * @phpstan-extends BusinessLayer<Playlist>
  */
@@ -94,7 +94,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function create(string $name, string $userId) : Playlist {
 		$playlist = new Playlist();
-		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
 
 		return $this->mapper->insert($playlist);
@@ -102,14 +102,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function rename(string $name, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
-		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
 	public function setComment(string $comment, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
-		$playlist->setComment(Util::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
+		$playlist->setComment(StringUtil::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
@@ -131,12 +131,19 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @return int[]
+	 */
+	public function getPlaylistTrackIds(int $playlistId, string $userId) : array {
+		$playlist = $this->find($playlistId, $userId);
+		return $playlist->getTrackIdsAsArray();
+	}
+
+	/**
 	 * get list of Track objects belonging to a given playlist
 	 * @return Track[]
 	 */
 	public function getPlaylistTracks(int $playlistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$playlist = $this->find($playlistId, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = $this->getPlaylistTrackIds($playlistId, $userId);
 
 		$trackIds = \array_slice($trackIds, \intval($offset), $limit);
 
@@ -144,7 +151,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.
-		$tracksById = Util::createIdLookupTable($tracks);
+		$tracksById = ArrayUtil::createIdLookupTable($tracks);
 
 		$playlistTracks = [];
 		foreach ($trackIds as $index => $trackId) {
@@ -157,7 +164,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 				}
 				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
 			} else {
-				$this->logger->log("Invalid track ID $trackId found on playlist $playlistId", 'debug');
+				$this->logger->debug("Invalid track ID $trackId found on playlist $playlistId");
 				$track = Track::emptyInstance();
 				$track->setId($trackId);
 			}
@@ -173,8 +180,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @return int duration in seconds
 	 */
 	public function getDuration(int $playlistId, string $userId) : int {
-		$playlist = $this->find($playlistId, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = $this->getPlaylistTrackIds($playlistId, $userId);
 		$durations = $this->trackMapper->getDurations($trackIds);
 
 		// We can't simply sum up the values of $durations array, because the playlist may
@@ -225,14 +231,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		if ($sortBy !== SortBy::None && !$historyStrict) {
 			// When generating by non-strict history, use a pool of tracks at maximum twice the size of final list.
 			// However, don't use more than half of the matching tracks unless that is required to satisfy the required list size.
-			$poolSize = max($size, \count($tracks) / 2);
+			$poolSize = (int)max($size, \count($tracks) / 2);
 			$tracks = \array_slice($tracks, 0, $poolSize);
 		}
 
 		// Pick the final random set of tracks
 		$tracks = Random::pickItems($tracks, $size);
 
-		$playlist->setTrackIdsFromArray(Util::extractIds($tracks));
+		$playlist->setTrackIdsFromArray(ArrayUtil::extractIds($tracks));
 
 		return $playlist;
 	}

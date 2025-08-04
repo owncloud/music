@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -33,6 +33,10 @@ class Random {
 
 	/**
 	 * Get one random item from the given array. Return null if the array is empty.
+	 *
+	 * @phpstan-template T
+	 * @phpstan-param T[] $itemArray
+	 * @phpstan-return ?T
 	 */
 	public static function pickItem(array $itemArray) {
 		if (empty($itemArray)) {
@@ -46,9 +50,9 @@ class Random {
 	/**
 	 * Get desired number of random items from the given array
 	 *
-	 * @param array $itemArray
-	 * @param int $count
-	 * @return array
+	 * @phpstan-template T
+	 * @phpstan-param T[] $itemArray
+	 * @phpstan-return T[]
 	 */
 	public static function pickItems(array $itemArray, int $count) : array {
 		$count = \min($count, \count($itemArray)); // can't return more than all items
@@ -62,7 +66,7 @@ class Random {
 			}
 			\shuffle($indices);
 
-			return Util::arrayMultiGet($itemArray, $indices);
+			return ArrayUtil::multiGet($itemArray, $indices);
 		}
 	}
 
@@ -104,15 +108,21 @@ class Random {
 		return \array_slice($indices, $offset, $count);
 	}
 
-	private static function encodeIndices($indices) {
+	/**
+	 * @param int[] $indices
+	 */
+	private static function encodeIndices(array $indices) : string {
 		return \implode(',', $indices);
 	}
 
-	private static function decodeIndices($buffer) {
+	/**
+	 * @return int[]
+	 */
+	private static function decodeIndices(?string $buffer) : array {
 		if (empty($buffer)) {
 			return [];
 		} else {
-			return \explode(',', $buffer);
+			return \array_map('intval', \explode(',', $buffer));
 		}
 	}
 }

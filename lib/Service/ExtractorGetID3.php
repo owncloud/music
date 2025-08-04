@@ -9,10 +9,10 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 
@@ -22,7 +22,7 @@ use OCP\Files\File;
  * an extractor class for getID3
  */
 class ExtractorGetID3 implements Extractor {
-	private $getID3;
+	private ?\getID3 $getID3;
 	private Logger $logger;
 
 	public function __construct(Logger $logger) {
@@ -36,7 +36,7 @@ class ExtractorGetID3 implements Extractor {
 	 * Music app commands.
 	 * See https://github.com/nextcloud/server/issues/17027.
 	 */
-	private function initGetID3() {
+	private function initGetID3() : void {
 		if ($this->getID3 === null) {
 			require_once __DIR__ . '/../../3rdparty/getID3/getid3/getid3.php';
 			$this->getID3 = new \getID3();
@@ -68,19 +68,21 @@ class ExtractorGetID3 implements Extractor {
 			}
 		} catch (\Throwable $e) {
 			$eClass = \get_class($e);
-			$this->logger->log("Exception/Error $eClass when analyzing file {$file->getPath()}\n"
-						. "Message: {$e->getMessage()}, Stack trace: {$e->getTraceAsString()}", 'error');
+			$this->logger->error("Exception/Error $eClass when analyzing file {$file->getPath()}\n"
+						. "Message: {$e->getMessage()}, Stack trace: {$e->getTraceAsString()}");
 		}
 
 		return $metadata;
 	}
 
 	private function doExtract(File $file) : array {
+		\assert($this->getID3 !== null, 'initGetID3 must be called first');
+		/** @var ?resource $fp */ // null value has been seen at least on some cloud versions although phpdoc of File::fopen doesn't allow it
 		$fp = $file->fopen('r');
 
 		if (empty($fp)) {
 			// note: some of the file opening errors throw and others return a null fp
-			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
+			$this->logger->error("Failed to open file {$file->getPath()} for metadata extraction");
 			$metadata = [];
 		} else {
 			\mb_substitute_character(0x3F);
@@ -90,9 +92,9 @@ class ExtractorGetID3 implements Extractor {
 
 			if (\array_key_exists('error', $metadata)) {
 				foreach ($metadata['error'] as $error) {
-					$this->logger->log('getID3 error occurred', 'debug');
+					$this->logger->debug('getID3 error occurred');
 					// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
-					$this->logger->log('getID3 error message: '. $error, 'debug');
+					$this->logger->debug('getID3 error message: '. $error);
 				}
 			}
 		}
@@ -104,7 +106,7 @@ class ExtractorGetID3 implements Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param File $file the media file
-	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
+	 * @return ?array{image_mime: string, data: string}
 	 */
 	public function parseEmbeddedCoverArt(File $file) : ?array {
 		$fileInfo = $this->extract($file);

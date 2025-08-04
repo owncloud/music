@@ -7,10 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- */
+ * @copyright Pauli Järvinen 2017 - 2025
+*/
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCP\Files\File;
 
@@ -28,7 +30,7 @@ interface Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param File $file the media file
-	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
+	 * @return ?array{image_mime: string, data: string}
 	 */
 	public function parseEmbeddedCoverArt(File $file) : ?array;
 }

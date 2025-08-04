@@ -9,19 +9,20 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
-use OCA\Music\AppFramework\Db\CompatibleMapper;
+use OCA\Music\AppFramework\Db\Mapper;
 
 /**
  * @method AmpacheSession findEntity(string $sql, array $params)
+ * @phpstan-extends Mapper<AmpacheSession>
  */
-class AmpacheSessionMapper extends CompatibleMapper {
+class AmpacheSessionMapper extends Mapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_ampache_sessions', AmpacheSession::class);
 	}

@@ -24,8 +24,9 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
-
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
@@ -256,14 +257,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
 			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
-					? null : Util::extractIds($albums);
+					? null : ArrayUtil::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
 			$genres = $this->mapper->getGenresByAlbumId($albumIds, $userId);
 
-			foreach ($albums as &$album) {
+			foreach ($albums as $album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($artists[$albumId] ?? []);
 				$album->setNumberOfDisks($diskCounts[$albumId] ?? 1);
@@ -311,7 +312,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateAlbum(?string $name, int $albumArtistId, string $userId) : Album {
 		$album = new Album();
-		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$album->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
 
@@ -408,7 +409,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Given an array of Track objects, inject the corresponding Album object to each of them
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectAlbumsToTracks(array &$tracks, string $userId) : void {
+	public function injectAlbumsToTracks(array $tracks, string $userId) : void {
 		$albumIds = [];
 
 		// get unique album IDs
@@ -425,10 +426,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 		}
 
 		// create hash tables "id => entity" for the albums for fast access
-		$albumMap = Util::createIdLookupTable($albums);
+		$albumMap = ArrayUtil::createIdLookupTable($albums);
 
 		// finally, set the references on the tracks
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setAlbum($albumMap[$track->getAlbumId()] ?? new Album());
 		}
 	}

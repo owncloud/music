@@ -1,16 +1,49 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+- Human-friendly formatting for bitrate and sample rate in the track details pane
+- Improved performance for "dirty" file checking on huge music collections
+
+### Fixed
+- Subsonic API: In methods `getAlbumInfo` and `getAlbumInfo2` with no info found, an empty array was returned instead of an empty object
+  [#1233](https://github.com/owncloud/music/issues/1233)
+- File hooks potentially breaking the cloud update process when Music app is updated at the same time and the cloud runs partially updated app instance
+  [#1231](https://github.com/owncloud/music/issues/1231)
+- Album cover from Last.fm failing to be loaded in the album details pane (since v2.1.0)
+  [#1238](https://github.com/owncloud/music/issues/1238)
+
+## 2.2.0 - 2025-06-15
+
+### Added
 - Support for importing WPL playlist files and play them within Files
   [#1153](https://github.com/owncloud/music/issues/1153)
   * MIME mapping for the file is needed which can be added with `occ music:register-mime-types`
+- Support parsing lyrics from .lrc files in addition to the audio file metadata tags
+  [#1221](https://github.com/owncloud/music/issues/1221)
+  * The lyrics file must be found in the same folder with the audio file and have the same file name but with the extension `.lrc`.
+- Importing and exporting podcasts channels from/to an OPML file
+  [#904](https://github.com/owncloud/music/issues/904)
+  * Using the web UI or with the `occ` commands `music:podcast-import` and `music:podcast-export`
 
 ### Changed
 - In the Files app, use the Music app icon on the file actions menu item "Play"
+- Allow manual entry of the file name when exporting a playlist or the radio stations
+- Data stored to DB tables is truncated to max number of bytes instead of characters; this should avoid problems with non-ASCII characters on some DB configurations
+- Command `occ music:scan` shows the time consumed to analyze files and update DB. With option `--debug`, this is shown per file.
+- Improved scan performance, especially on MariaDB
+- Subsonic API:
+  * Set CORS headers and enable pre-flight to allow web app clients to connect from any domain
+  * Use error code 0 (generic error) instead of 70 (requested data not found) when an unsupported API endpoint is requested
 
 ### Fixed
+- "New files to scan" and "Scanning" bottom panes being slightly misplaced on NC 25+
+- Alphabet navigation not scrolling to quite correct location on first click in long list views like "All tracks" (since v2.0.0)
+- Command `occ music:scan --rescan` failing if the DB contains any track with an invalid `artist_id` or `album_id`
+  [#1228](https://github.com/owncloud/music/issues/1228)
 
-## 2.1.4 - 2025-05-10
+## 2.1.4 - 2025-04-10
 
 ### Fixed
 - Subsonic API not working on PHP versions 7.4 and 8.0 (since v2.1.3)

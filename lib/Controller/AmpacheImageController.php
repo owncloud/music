@@ -18,12 +18,13 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\Entity;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\AmpacheImageService;
-use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Service\AmpacheImageService;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PlaceholderImage;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -32,7 +33,7 @@ use OCP\IRequest;
 
 class AmpacheImageController extends Controller {
 	private AmpacheImageService $service;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private LibrarySettings $librarySettings;
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
@@ -40,18 +41,18 @@ class AmpacheImageController extends Controller {
 	private Logger $logger;
 
 	public function __construct(
-			string $appname,
+			string $appName,
 			IRequest $request,
 			AmpacheImageService $service,
-			CoverHelper $coverHelper,
+			CoverService $coverService,
 			LibrarySettings $librarySettings,
 			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
 			PlaylistBusinessLayer $playlistBusinessLayer,
 			Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->service = $service;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->librarySettings = $librarySettings;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
@@ -90,7 +91,7 @@ class AmpacheImageController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id not found");
 		}
 
-		$coverImage = $this->coverHelper->getCover($entity, $userId, $this->librarySettings->getFolder($userId), $size);
+		$coverImage = $this->coverService->getCover($entity, $userId, $this->librarySettings->getFolder($userId), $size);
 		if ($coverImage === null) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id has no cover image");
 		}
@@ -100,6 +101,7 @@ class AmpacheImageController extends Controller {
 		return $response;
 	}
 
+	/** @phpstan-return ?BusinessLayer<covariant Entity> */
 	private function getBusinessLayer(string $object_type) : ?BusinessLayer {
 		switch ($object_type) {
 			case 'album':		return $this->albumBusinessLayer;

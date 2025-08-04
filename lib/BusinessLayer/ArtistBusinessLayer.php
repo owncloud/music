@@ -21,8 +21,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\IL10N;
 use OCP\Files\File;
@@ -30,9 +29,9 @@ use OCP\Files\File;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Artist find(int $trackId, string $userId)
- * @method Artist[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
- * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
+ * @method Artist[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
+ * @method Artist[] findById(int[] $ids, ?string $userId=null, bool $preserveOrder=false)
  * @property ArtistMapper $mapper
  * @phpstan-extends BusinessLayer<Artist>
  */
@@ -126,7 +125,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateArtist(?string $name, string $userId) : Artist {
 		$artist = new Artist();
-		$artist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$artist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$artist->setUserId($userId);
 		$artist->setHash(\hash('md5', \mb_strtolower($name ?? '')));
 		return $this->mapper->updateOrInsert($artist);

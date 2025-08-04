@@ -12,10 +12,10 @@
 
 namespace OCA\Music\Http;
 
+use OCA\Music\Utility\ArrayUtil;
 use OCP\AppFramework\Http\ICallbackResponse;
 use OCP\AppFramework\Http\IOutput;
 use OCP\AppFramework\Http\Response;
-use OCP\AppFramework\Http;
 
 use OCA\Music\Utility\HttpUtil;
 
@@ -29,13 +29,6 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 	private $context;
 
 	public function __construct(string $url) {
-		// Base constructor parent::__construct() cannot be called because it exists on Nextcloud but not on ownCloud.
-		// Still, we need to properly initialize the headers on NC which would normally happen in the base constructor.
-		$this->setHeaders([]);
-
-		$this->url = $url;
-		$this->contentLength = null;
-
 		$reqHeaders = [];
 		if (isset($_SERVER['HTTP_ACCEPT'])) {
 			$reqHeaders['Accept'] = $_SERVER['HTTP_ACCEPT'];
@@ -44,42 +37,20 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 			$reqHeaders['Range'] = $_SERVER['HTTP_RANGE'];
 		}
 
-		$this->context = HttpUtil::createContext(null, $reqHeaders, /*maxRedirects=*/0);
+		$this->context = HttpUtil::createContext(null, $reqHeaders);
+		$resolved = HttpUtil::resolveRedirections($url, $this->context);
 
-		// Get headers from the source and relay the important ones to our client. Handle the redirection manually
-		// since the platform redirection didn't seem to work in all cases, see https://github.com/owncloud/music/issues/1209.
-		$redirectsAllowed = 20;
-		do {
-			$sourceHeaders = HttpUtil::getUrlHeaders($this->url, $this->context, /*convertKeysToLower=*/true);
-			$status = $sourceHeaders['status_code'];
-			$redirect = ($status >= 300 && $status < 400 && isset($sourceHeaders['location']));
-			if ($redirect) {
-				if ($redirectsAllowed-- > 0) {
-					$this->url = $sourceHeaders['location'];
-				} else {
-					$redirect = false;
-					$status = Http::STATUS_LOOP_DETECTED;
-				}
-			}
-		} while ($redirect);
+		$this->url = $resolved['url'];
+		$this->setStatus($resolved['status_code']);
+		$this->setHeaders($resolved['headers']);
 
-		$this->setStatus($status);
-
-		if (isset($sourceHeaders['content-type'])) {
-			$this->addHeader('Content-Type', $sourceHeaders['content-type']);
-		}
-		if (isset($sourceHeaders['accept-ranges'])) {
-			$this->addHeader('Accept-Ranges', $sourceHeaders['accept-ranges']);
-		}
-		if (isset($sourceHeaders['content-range'])) {
-			$this->addHeader('Content-Range', $sourceHeaders['content-range']);
-		}
-		if (isset($sourceHeaders['content-length'])) {
-			$this->addHeader('Content-Length', $sourceHeaders['content-length']);
-			$this->contentLength = (int)$sourceHeaders['content-length'];
-		}
+		$length = ArrayUtil::getCaseInsensitive($resolved['headers'], 'content-length');
+		$this->contentLength = ($length === null) ? null : (int)$length;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function callback(IOutput $output) {
 		// The content length is absent for stream-like sources. 0-length indicates that
 		// there is no body to transfer.

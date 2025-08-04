@@ -180,7 +180,7 @@
     "Loading…" : "Chargement…",
     "Lyrics" : "Paroles",
     "MIME type" : "Type MIME",
-    "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only." : "De nombreuses fonctionnalités de l'application Musique sont basées sur les métadonnées stockées dans les fichiers audio. Cependant, l'analyse de ces données peut prendre beaucoup de temps sur certains systèmes utilisant un stockage externe. Lorsqu'elle est désactivée, la structure de la bibliothèque est construite uniquement sur la base des noms de fichiers et de dossiers.",
+    "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using external storage. When disabled, the library structure is built based on the file and folder names only." : "De nombreuses fonctionnalités de l'application Musique sont basées sur les métadonnées stockées dans les fichiers audio. Cependant, l'analyse de ces données peut prendre beaucoup de temps sur certains systèmes utilisant un stockage externe. Lorsqu'elle est désactivée, la structure de la bibliothèque est construite uniquement sur la base des noms de fichiers et de dossiers.",
     "Many functionalities of the Music app web UI can be controlled with keyboard shortcuts." : "De nombreuses fonctionnalités de l’interface Web de l’application Musique peuvent être contrôlées à l’aide de raccourcis clavier.",
     "Matches regular expression" : "Corresponds à l'expression régulière",
     "Modified" : "Modification",

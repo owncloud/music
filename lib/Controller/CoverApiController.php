@@ -27,10 +27,11 @@ use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Service\CoverService;
 use OCA\Music\Utility\HttpUtil;
 
 class CoverApiController extends Controller {
@@ -40,27 +41,27 @@ class CoverApiController extends Controller {
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private PodcastChannelBusinessLayer $podcastChannelBusinessLayer;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private ?string $userId;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								IRootFolder $rootFolder,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
-								CoverHelper $coverHelper,
+								CoverService $coverService,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->rootFolder = $rootFolder;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->userId = $userId;
 		$this->logger = $logger;
 	}
@@ -69,13 +70,13 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function albumCover(int $albumId, $originalSize, $coverToken) {
+	public function albumCover(int $albumId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$album = $this->albumBusinessLayer->find($albumId, $userId);
 			return $this->cover($album, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -84,13 +85,13 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function artistCover(int $artistId, $originalSize, $coverToken) {
+	public function artistCover(int $artistId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			return $this->cover($artist, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -99,13 +100,13 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function podcastCover(int $channelId, $originalSize, $coverToken) {
+	public function podcastCover(int $channelId, ?string $originalSize, ?string $coverToken) : Response {
 		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
 			$channel = $this->podcastChannelBusinessLayer->find($channelId, $userId);
 			return $this->cover($channel, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -114,10 +115,10 @@ class CoverApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function cachedCover(string $hash, ?string $coverToken) {
+	public function cachedCover(string $hash, ?string $coverToken) : Response {
 		try {
-			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$coverData = $this->coverHelper->getCoverFromCache($hash, $userId);
+			$userId = $this->userId ?? $this->coverService->getUserForAccessToken($coverToken);
+			$coverData = $this->coverService->getCoverFromCache($hash, $userId);
 			if ($coverData === null) {
 				throw new \OutOfBoundsException("Cover with hash $hash not found");
 			}
@@ -127,28 +128,29 @@ class CoverApiController extends Controller {
 			HttpUtil::setClientCachingDays($response, 365);
 			return $response;
 		} catch (\OutOfBoundsException $ex) {
-			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
+			$this->logger->debug("Failed to get the requested cover: $ex");
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
 	/**
 	 * @param Artist|Album|PodcastChannel $entity
+	 * @param string|int|bool|null $originalSize
 	 */
-	private function cover($entity, string $userId, $originalSize) {
+	private function cover(Entity $entity, string $userId, /*mixed*/ $originalSize) : Response {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
 		$userFolder = $this->rootFolder->getUserFolder($userId);
 
 		if ($originalSize) {
 			// cover requested in original size, without scaling or cropping
-			$cover = $this->coverHelper->getCover($entity, $userId, $userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
+			$cover = $this->coverService->getCover($entity, $userId, $userFolder, CoverService::DO_NOT_CROP_OR_SCALE);
 			if ($cover !== null) {
 				return new FileResponse($cover);
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}
 		} else {
-			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $userId, $userFolder);
+			$coverAndHash = $this->coverService->getCoverAndHash($entity, $userId, $userFolder);
 
 			if ($coverAndHash['hash'] !== null && $this->userId !== null) {
 				// Cover is in cache. Return a redirection response so that the client

@@ -31,11 +31,10 @@ use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\SortBy;
-use OCA\Music\Db\Track;
 use OCA\Music\Http\ErrorResponse;
-use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Service\DetailsService;
+use OCA\Music\Service\Scanner;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Scanner;
 
 class ShivaApiController extends Controller {
 
@@ -43,29 +42,29 @@ class ShivaApiController extends Controller {
 	private TrackBusinessLayer $trackBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
 	private AlbumBusinessLayer $albumBusinessLayer;
-	private DetailsHelper $detailsHelper;
+	private DetailsService $detailsService;
 	private Scanner $scanner;
 	private string $userId;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								TrackBusinessLayer $trackBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
-								DetailsHelper $detailsHelper,
+								DetailsService $detailsService,
 								Scanner $scanner,
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
-		$this->detailsHelper = $detailsHelper;
+		$this->detailsService = $detailsService;
 		$this->scanner = $scanner;
 		$this->userId = $userId ?? '';
 		$this->urlGenerator = $urlGenerator;
@@ -83,10 +82,12 @@ class ShivaApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $fulltree
+	 * @param string|int|bool|null $albums
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artists($fulltree, $albums, ?int $page_size=null, ?int $page=null) {
+	public function artists(/*mixed*/ $fulltree, /*mixed*/ $albums, ?int $page_size=null, ?int $page=null) : JSONResponse {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = \filter_var($albums, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
@@ -100,10 +101,11 @@ class ShivaApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $fulltree
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artist(int $id, $fulltree) {
+	public function artist(int $id, /*mixed*/ $fulltree) : JSONResponse {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		try {
 			/** @var Artist $artist */
@@ -134,10 +136,11 @@ class ShivaApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $fulltree
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums(?int $artist=null, $fulltree=null, ?int $page_size=null, ?int $page=null) {
+	public function albums(?int $artist=null, /*mixed*/ $fulltree=null, ?int $page_size=null, ?int $page=null) : JSONResponse {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
 
@@ -153,10 +156,11 @@ class ShivaApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $fulltree
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function album(int $id, $fulltree) {
+	public function album(int $id, /*mixed*/ $fulltree) : JSONResponse {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		try {
 			$album = $this->albumBusinessLayer->find($id, $this->userId);
@@ -189,10 +193,11 @@ class ShivaApiController extends Controller {
 	}
 
 	/**
+	 * @param string|int|bool|null $fulltree
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function tracks(?int $artist=null, ?int $album=null, $fulltree=null, ?int $page_size=null, ?int $page=null) {
+	public function tracks(?int $artist=null, ?int $album=null, /*mixed*/ $fulltree=null, ?int $page_size=null, ?int $page=null) : JSONResponse {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
 
@@ -221,7 +226,7 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function track(int $id) {
+	public function track(int $id) : JSONResponse {
 		try {
 			$track = $this->trackBusinessLayer->find($id, $this->userId);
 			return new JSONResponse($track->toShivaApi($this->urlGenerator));
@@ -234,12 +239,12 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function trackLyrics(int $id) {
+	public function trackLyrics(int $id) : JSONResponse {
 		try {
 			$track = $this->trackBusinessLayer->find($id, $this->userId);
 			$fileId = $track->getFileId();
 			$userFolder = $this->scanner->resolveUserFolder($this->userId);
-			if ($this->detailsHelper->hasLyrics($fileId, $userFolder)) {
+			if ($this->detailsService->hasLyrics($fileId, $userFolder)) {
 				/**
 				 * The Shiva API has been designed around the idea that lyrics would be scraped from an external
 				 * source and never stored on the Shiva server. We, on the other hand, support only lyrics embedded
@@ -264,7 +269,7 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function randomArtist() {
+	public function randomArtist() : JSONResponse {
 		return $this->randomItem($this->artistBusinessLayer, 'artist');
 	}
 
@@ -272,7 +277,7 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function randomAlbum() {
+	public function randomAlbum() : JSONResponse {
 		return $this->randomItem($this->albumBusinessLayer, 'album');
 	}
 
@@ -280,11 +285,12 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function randomTrack() {
+	public function randomTrack() : JSONResponse {
 		return $this->randomItem($this->trackBusinessLayer, 'track');
 	}
 
-	private function randomItem(BusinessLayer $businessLayer, string $type) {
+	/** @phpstan-param BusinessLayer<*> $businessLayer */
+	private function randomItem(BusinessLayer $businessLayer, string $type) : JSONResponse {
 		$ids = $businessLayer->findAllIds($this->userId);
 		$id = Random::pickItem($ids);
 
@@ -295,7 +301,7 @@ class ShivaApiController extends Controller {
 		}
 	}
 
-	private function entityIdAndUri(int $id, string $type) {
+	private function entityIdAndUri(int $id, string $type) : array {
 		return [
 			'id' => $id,
 			'uri' => $this->urlGenerator->linkToRoute("music.shivaApi.$type", ['id' => $id])
@@ -306,7 +312,7 @@ class ShivaApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function latestItems(?string $since) {
+	public function latestItems(?string $since) : JSONResponse {
 		if ($since === null) {
 			$dateTime = new \DateTime('7 days ago');
 			$since = $dateTime->format(BaseMapper::SQL_DATE_FORMAT);

@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\IRequest;
@@ -24,8 +25,8 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileStreamResponse;
-use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\Scanner;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\Scanner;
 
 /**
  * End-points for shared audio file handling. Methods of this class may be
@@ -38,13 +39,13 @@ class ShareController extends Controller {
 	private PlaylistFileService $playlistFileService;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								Scanner $scanner,
 								PlaylistFileService $playlistFileService,
 								Logger $logger,
 								IManager $shareManager) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;
 		$this->playlistFileService = $playlistFileService;
@@ -55,7 +56,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function fileInfo(string $token, int $fileId) {
+	public function fileInfo(string $token, int $fileId) : JSONResponse {
 		$share = $this->shareManager->getShareByToken($token);
 		$fileOwner = $share->getShareOwner();
 		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
@@ -87,7 +88,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function download(string $token, int $fileId) {
+	public function download(string $token, int $fileId) : Response {
 		try {
 			$sharedFolder = $this->getSharedFolder($token);
 			$file = $sharedFolder->getById($fileId)[0] ?? null;
@@ -107,7 +108,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function parsePlaylist(string $token, int $fileId) {
+	public function parsePlaylist(string $token, int $fileId) : JSONResponse {
 		try {
 			$sharedFolder = $this->getSharedFolder($token);
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);

@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2017 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
@@ -22,7 +22,9 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\RadioStation;
-
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\PlaceholderImage;
+use OCA\Music\Utility\Random;
 use OCP\Files\Folder;
 use OCP\Files\File;
 
@@ -32,7 +34,7 @@ use OCP\IL10N;
 /**
  * utility to get cover image for album
  */
-class CoverHelper {
+class CoverService {
 	private Extractor $extractor;
 	private Cache $cache;
 	private AlbumBusinessLayer $albumBusinessLayer;
@@ -44,7 +46,7 @@ class CoverHelper {
 	const DO_NOT_CROP_OR_SCALE = -1;
 
 	public function __construct(
-			Extractor $extractor,
+			ExtractorGetID3 $extractor,
 			Cache $cache,
 			AlbumBusinessLayer $albumBusinessLayer,
 			IConfig $config,
@@ -73,7 +75,7 @@ class CoverHelper {
 		if ($entity instanceof Playlist) {
 			$trackIds = $entity->getTrackIdsAsArray();
 			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
-			$result = $this->getCoverMosaic($albums, $userId, $rootFolder);
+			$result = $this->getCoverMosaic($albums, $userId, $rootFolder, $size);
 		} elseif ($entity instanceof RadioStation) {
 			$result = null; // only placeholders supported for radio
 		} elseif ($entity instanceof Album || $entity instanceof Artist || $entity instanceof PodcastChannel) {
@@ -205,18 +207,18 @@ class CoverHelper {
 				try {
 					$this->cache->add($userId, 'cover_' . $hash, $mime . '|' . \base64_encode($content));
 				} catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Cover with hash $hash is already cached", 'debug');
+					$this->logger->debug("Cover with hash $hash is already cached");
 				}
 				// cache the hash with hashKey as a key
 				try {
 					$this->cache->add($userId, $hashKey, $hash);
 				} catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Cover hash with key $hashKey is already cached", 'debug');
+					$this->logger->debug("Cover hash with key $hashKey is already cached");
 				}
 				// collection.json needs to be regenerated the next time it's fetched
 				$this->cache->remove($userId, 'collection');
 			} else {
-				$this->logger->log("Cover image of entity with key $hashKey is large ($size B), skip caching", 'debug');
+				$this->logger->debug("Cover image of entity with key $hashKey is large ($size B), skip caching");
 			}
 		}
 
@@ -249,12 +251,14 @@ class CoverHelper {
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
+		$response = null;
+
 		if ($entity instanceof PodcastChannel) {
-			list('content' => $image, 'content_type' => $mime) = HttpUtil::loadFromUrl($entity->getImageUrl());
-			if ($image !== false) {
-				$response = ['mimetype' => $mime, 'content' => $image];
-			} else {
-				$response = null;
+			if ($entity->getImageUrl() !== null) {
+				list('content' => $image, 'content_type' => $mime) = HttpUtil::loadFromUrl($entity->getImageUrl());
+				if ($image !== false) {
+					$response = ['mimetype' => $mime, 'content' => $image];
+				}
 			}
 		} else {
 			$response = $this->readCoverFromLocalFile($entity, $rootFolder);
@@ -299,7 +303,7 @@ class CoverHelper {
 
 			if ($response === null) {
 				$class = \get_class($entity);
-				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
+				$this->logger->error("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId");
 			}
 		}
 
@@ -323,7 +327,7 @@ class CoverHelper {
 			$srcHeight = $meta[1];
 		} else {
 			$srcWidth = $srcHeight = 0;
-			$this->logger->log('Failed to extract size of the image, skip downscaling', 'warn');
+			$this->logger->warning('Failed to extract size of the image, skip downscaling');
 		}
 
 		// only process picture if it's larger than target size or not perfect square
@@ -331,7 +335,7 @@ class CoverHelper {
 			$img = \imagecreatefromstring($image['content']);
 
 			if ($img === false) {
-				$this->logger->log('Failed to open cover image for downscaling', 'warn');
+				$this->logger->warning('Failed to open cover image for downscaling');
 			} else {
 				$srcCropSize = \min($srcWidth, $srcHeight);
 				$srcX = (int)(($srcWidth - $srcCropSize) / 2);
@@ -341,7 +345,7 @@ class CoverHelper {
 				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);
 
 				if ($scaledImg === false) {
-					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warn');
+					$this->logger->warning("Failed to create scaled image of size $dstSize x $dstSize");
 					\imagedestroy($img);
 				} else {
 					\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
@@ -364,7 +368,7 @@ class CoverHelper {
 							$image['content'] = \ob_get_contents();
 							break;
 						default:
-							$this->logger->log("Cover image type {$image['mimetype']} not supported for downscaling", 'warn');
+							$this->logger->warning("Cover image type {$image['mimetype']} not supported for downscaling");
 							break;
 					}
 					\ob_end_clean();
@@ -376,11 +380,11 @@ class CoverHelper {
 	}
 
 	private function createMosaic(array $covers, ?int $size) : array {
-		$size = $size ?: $this->coverSize;
+		$size = ($size > 0) ? $size : $this->coverSize; // DO_NOT_CROP_OR_SCALE handled here the same as null, i.e. default size
 		$pieceSize = $size/2;
 		$mosaicImg = \imagecreatetruecolor($size, $size);
 		if ($mosaicImg === false) {
-			$this->logger->log("Failed to create mosaic image of size $size x $size", 'warn');
+			$this->logger->warning("Failed to create mosaic image of size $size x $size");
 		}
 		else {
 			$scaleAndCopyPiece = function($pieceData, $dstImage, $dstX, $dstY, $dstSize) {
@@ -391,7 +395,7 @@ class CoverHelper {
 				$piece = imagecreatefromstring($pieceData['content']);
 
 				if ($piece === false) {
-					$this->logger->log('Failed to open cover image to create a mosaic', 'warn');
+					$this->logger->warning('Failed to open cover image to create a mosaic');
 				} else {
 					\imagecopyresampled($dstImage, $piece, $dstX, $dstY, 0, 0, $dstSize, $dstSize, $srcWidth, $srcHeight);
 					\imagedestroy($piece);
@@ -463,7 +467,7 @@ class CoverHelper {
 	}
 
 	/**
-	 * @see CoverHelper::createAccessToken
+	 * @see CoverService::createAccessToken
 	 * @throws \OutOfBoundsException if the token is not valid
 	 */
 	public function getUserForAccessToken(?string $token) : string {

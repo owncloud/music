@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -22,16 +22,15 @@ use OCA\Music\Db\BookmarkMapper;
 use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Bookmark find(int $bookmarkId, string $userId)
- * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::Name, int $limit=null, int $offset=null)
- * @method Bookmark[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Bookmark[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property BookmarkMapper $mapper
  * @phpstan-extends BusinessLayer<Bookmark>
  */
@@ -52,9 +51,22 @@ class BookmarkBusinessLayer extends BusinessLayer {
 		$bookmark->setType($type);
 		$bookmark->setEntryId($entryId);
 		$bookmark->setPosition($position);
-		$bookmark->setComment(Util::truncate($comment, 256));
+		$bookmark->setComment(StringUtil::truncate($comment, 256));
 
 		return $this->mapper->insertOrUpdate($bookmark);
+	}
+
+	/**
+	 * @param ?string $comment Property is not updated if null passed
+	 * @throws BusinessLayerException if such bookmark does not exist
+	 */
+	public function updateByEntry(string $userId, int $type, int $entryId, int $position, ?string $comment) : Bookmark {
+		$bookmark = $this->findByEntry($type, $entryId, $userId);
+		$bookmark->setPosition($position);
+		if ($comment !== null) {
+			$bookmark->setComment(StringUtil::truncate($comment, 256));
+		}
+		return $this->mapper->update($bookmark);
 	}
 
 	/**

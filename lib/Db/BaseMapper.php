@@ -17,44 +17,42 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IConfig;
 use OCP\IDBConnection;
 
-use OCA\Music\AppFramework\Db\CompatibleMapper;
+use OCA\Music\AppFramework\Db\Mapper;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 /**
  * Common base class for data access classes of the Music app
  * 
- * Annotate the relevant base class methods since VSCode doesn't understand the dynamically defined base class:
- * @method string getTableName()
- * @method Entity delete(Entity $entity)
- * We need to annotate also a few protected methods as "public" since PHPDoc doesn't have any syntax to declare protected methods:
- * @method \PDOStatement execute(string $sql, array $params = [], ?int $limit = null, ?int $offset = null)
  * @method Entity findEntity(string $sql, array $params)
  * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
+ * @method Entity delete(Entity $entity)
  * 
  * @phpstan-template EntityType of Entity
+ * @phpstan-extends Mapper<EntityType>
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-method EntityType delete(EntityType $entity)
  */
-abstract class BaseMapper extends CompatibleMapper {
+abstract class BaseMapper extends Mapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected string $nameColumn;
+	protected ?array $uniqueColumns;
 	protected ?string $parentIdColumn;
-	/** @phpstan-var class-string<EntityType> $entityClass */
-	protected $entityClass;
 	protected string $dbType; // database type 'mysql', 'pgsql', or 'sqlite3'
 
 	/**
+	 * @param ?string[] $uniqueColumns List of column names composing the unique constraint of the table. Null if there's no unique index.
 	 * @phpstan-param class-string<EntityType> $entityClass
 	 */
-	public function __construct(IDBConnection $db, IConfig $config, string $tableName, string $entityClass, string $nameColumn, ?string $parentIdColumn=null) {
+	public function __construct(
+			IDBConnection $db, IConfig $config, string $tableName, string $entityClass,
+			string $nameColumn, ?array $uniqueColumns=null, ?string $parentIdColumn=null) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
+		$this->uniqueColumns = $uniqueColumns;
 		$this->parentIdColumn = $parentIdColumn;
-		// eclipse the base class property to help phpstan
-		$this->entityClass = $entityClass;
 		$this->dbType = $config->getSystemValue('dbtype');
 	}
 
@@ -252,7 +250,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
 	 * @param int[] $parentIds
-	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
 	 * @throws \DomainException if the entity type handled by this mapper doesn't have a parent relation
 	 */
 	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
@@ -403,18 +401,25 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::insert()
+	 * @see Mapper::insert()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function insert(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function insert(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$nowStr = $now->format(self::SQL_DATE_FORMAT);
 		$entity->setCreated($nowStr);
 		$entity->setUpdated($nowStr);
 
 		try {
-			return parent::insert($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+			return parent::insert($entity);
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 		} catch (\OCP\DB\Exception $e) {
@@ -429,14 +434,21 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see CompatibleMapper::update()
+	 * @see Mapper::update()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function update(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
+	public function update(\OCP\AppFramework\Db\Entity $entity) : Entity {
+		if (!($entity instanceof Entity)) {
+			// Because of Liskov Substitution Principle, this class must technically accept any platform Entity.
+			// However, the function only works correctly for our own Entity type. The return type can be narrowed
+			// from the parent, thanks to the covariance rules of PHP 7.4 and later.
+			throw new \BadMethodCallException('$entity must be of type ' . Entity::class);
+		}
+
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
-		return parent::update($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type
+		return parent::update($entity);
 	}
 
 	/**
@@ -452,9 +464,11 @@ abstract class BaseMapper extends CompatibleMapper {
 		try {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
-			$existingEntity = $this->findUniqueEntity($entity);
-			$entity->setId($existingEntity->getId());
-			$entity->setCreated($existingEntity->getCreated());
+			$existingId = $this->findIdOfConflict($entity);
+			$entity->setId($existingId);
+			// The previous call to $this->insert has set the `created` property of $entity.
+			// Set it again using the data from the existing entry.
+			$entity->setCreated($this->getCreated($existingId));
 			return $this->update($entity);
 		}
 	}
@@ -464,24 +478,18 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * a new entity is inserted.
 	 * Note: The functions insertOrUpdate and updateOrInsert get the exactly same thing done. The only difference is
 	 * that the former is optimized for cases where the entity doesn't exist and the latter for cases where it does exist.
+	 * @param Entity $entity
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
 	public function updateOrInsert(Entity $entity) : Entity {
 		try {
-			$existingEntity = $this->findUniqueEntity($entity);
-			$entity->setId($existingEntity->getId());
+			$existingId = $this->findIdOfConflict($entity);
+			$entity->setId($existingId);
 			return $this->update($entity);
 		} catch (DoesNotExistException $ex) {
-			try {
-				return $this->insert($entity);
-			} catch (UniqueConstraintViolationException $ex) {
-				// the conflicting entry didn't exist an eyeblink ago but now it does
-				// => this is essentially a concurrent update and it is anyway non-deterministic, which
-				//    update happens last; cancel this update
-				return $this->findUniqueEntity($entity);
-			}
+			return $this->insertOrUpdate($entity);
 		}
 	}
 
@@ -650,7 +658,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		// possibly multiparted query enclosed in quotation marks is handled as a single substring,
 		// while the default interpretation of multipart string is that each of the parts can be found
 		// separately as substring in the given order
-		if (Util::startsWith($input, '"') && Util::endsWith($input, '"')) {
+		if (StringUtil::startsWith($input, '"') && StringUtil::endsWith($input, '"')) {
 			// remove the quotation
 			$pattern = \substr($input, 1, -1);
 		} else {
@@ -664,7 +672,7 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * Format SQL operator, conversion, and parameter matching the given advanced search operator.
-	 * @return array like ['op' => string, 'conv' => string, 'param' => string|int|null]
+	 * @return array{op: string, conv: string, param: string|int|null}
 	 */
 	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		if ($this->dbType == 'sqlite3' && ($ruleOperator == 'regexp' || $ruleOperator == 'notregexp')) {
@@ -695,7 +703,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 	}
 
-	protected static function sanitizeNumericOp($comparisonOperator) {
+	protected static function sanitizeNumericOp(string $comparisonOperator) : string {
 		if (\in_array($comparisonOperator, ['>=', '<=', '=', '!=', '>', '<'])) {
 			return $comparisonOperator;
 		} else {
@@ -755,11 +763,28 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
+	 * @param string $datetime Date-and-time string in UTC
+	 */
+	protected function sqlDateToEpoch(string $datetime) : string {
+		if ($this->dbType == 'pgsql') {
+			return "DATE_PART('EPOCH', $datetime)";
+		} else if ($this->dbType == 'sqlite3') {
+			return "CAST(strftime('%s', $datetime) AS INT)";
+		} else { // 'mysql'
+			// MySQL function UNIX_TIMESTAMP "helpfully" converts given datetime from session timezone to UTC
+			// and there's no way to prevent this. Hence, we need to convert the UTC first to the session time zone.
+			// In addition to being stupid, this is ambiguous for one hour per year when the DST ends. As result, this
+			// function is slightly bugged and the result is off-by-one-hour during this DST shift hour.
+			return "UNIX_TIMESTAMP(CONVERT_TZ($datetime, '+00:00', @@session.time_zone))";
+		}
+	}
+
+	/**
 	 * SQLite connects the operator REGEXP to the function of the same name but doesn't ship the function itself.
 	 * Hence, we need to register it as a user-function. This happens by creating a suitable wrapper for the PHP
 	 * native preg_match function. Based on https://stackoverflow.com/a/18484596.
 	 */
-	private function registerRegexpFuncForSqlite() {
+	private function registerRegexpFuncForSqlite() : void {
 		// skip if the function already exists
 		if (!$this->funcExistsInSqlite('regexp')) {
 			// We need to use a private interface here to drill down to the native DB connection. The interface is
@@ -799,10 +824,38 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Find an entity which has the same identity as the supplied entity.
-	 * How the identity of the entity is defined, depends on the derived concrete class.
-	 * @phpstan-param EntityType $entity
-	 * @phpstan-return EntityType
+	 * Find ID of an existing entity which conflicts with the unique constraint of the given entity
 	 */
-	abstract protected function findUniqueEntity(Entity $entity) : Entity;
+	private function findIdOfConflict(Entity $entity) : int {
+		if (empty($this->uniqueColumns)) {
+			throw new \BadMethodCallException('not supported');
+		}
+
+		$properties = \array_map(fn($col) => $entity->columnToProperty($col), $this->uniqueColumns);
+		$values = \array_map(fn($prop) => $entity->$prop, $properties);
+
+		$conds = \array_map(fn($col) => "`$col` = ?", $this->uniqueColumns);
+		$sql = "SELECT `id` FROM {$this->getTableName()} WHERE " . \implode(' AND ', $conds);
+
+		$result = $this->execute($sql, $values);
+		/** @var string|false $id */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
+		$id = $result->fetchColumn();
+
+		if ($id === false) {
+			throw new DoesNotExistException('Conflicting entity not found');
+		}
+
+		return (int)$id;
+	}
+
+	private function getCreated(int $id) : string {
+		$sql = "SELECT `created` FROM {$this->getTableName()} WHERE `id` = ?";
+		$result = $this->execute($sql, [$id]);
+		/** @var string|false $created */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
+		$created = $result->fetchColumn();
+		if ($created === false) {
+			throw new DoesNotExistException('ID not found');
+		}
+		return $created;
+	}
 }

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -23,10 +23,10 @@ use OCA\Music\AppFramework\Core\Logger;
 class LogController extends Controller {
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->logger = $logger;
 	}
 
@@ -34,8 +34,8 @@ class LogController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function log($message) {
-		$this->logger->log('JS: ' . $message, 'debug');
+	public function log(?string $message) : JSONResponse {
+		$this->logger->debug('JS: ' . $message);
 		return new JSONResponse(['success' => true]);
 	}
 }

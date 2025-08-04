@@ -9,22 +9,27 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Hooks;
 
-use OCA\Music\AppInfo\Application;;
+use OCA\Music\AppInfo\Application;
+use OCA\Music\Service\Scanner;
+use OCP\Files\Folder;
+use OCP\IGroupManager;
 
 class ShareHooks {
-	private static function removeSharedItem($app, $itemType, $nodeId, $owner, $removeFromUsers) {
-		$scanner = $app->getContainer()->query('Scanner');
+	private static function removeSharedItem(
+			string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
+		/** @var Scanner $scanner */
+		$scanner = self::inject(Scanner::class);
 
 		if ($itemType === 'folder') {
 			$ownerHome = $scanner->resolveUserFolder($owner);
 			$nodes = $ownerHome->getById($nodeId);
-			if (\count($nodes) > 0) {
-				$sharedFolder = $nodes[0];
+			$sharedFolder = $nodes[0] ?? null;
+			if ($sharedFolder instanceof Folder) {
 				$scanner->deleteFolder($sharedFolder, $removeFromUsers);
 			}
 		} elseif ($itemType === 'file') {
@@ -36,23 +41,22 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnshared(array $params) {
+	public static function itemUnshared(array $params) : void {
 		$shareType = $params['shareType'];
-		$app = \OC::$server->query(Application::class);
 
 		// react only on user and group shares
 		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
-			$userIds = [ $params['shareWith'] ];
+			$receivingUserIds = [ $params['shareWith'] ];
 		} elseif ($shareType == \OCP\Share::SHARE_TYPE_GROUP) {
-			$groupManager = $app->getContainer()->query('ServerContainer')->getGroupManager();
+			$groupManager = self::inject(IGroupManager::class);
 			$groupMembers = $groupManager->displayNamesInGroup($params['shareWith']);
-			$userIds = \array_keys($groupMembers);
+			$receivingUserIds = \array_keys($groupMembers);
 			// remove the item owner from the list of targeted users if present
-			$userIds = \array_diff($userIds, [ $params['uidOwner'] ]);
+			$receivingUserIds = \array_diff($receivingUserIds, [ $params['uidOwner'] ]);
 		}
 
-		if (!empty($userIds)) {
-			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $userIds);
+		if (!empty($receivingUserIds)) {
+			self::removeSharedItem($params['itemType'], $params['itemSource'], $params['uidOwner'], $receivingUserIds);
 		}
 	}
 
@@ -60,38 +64,47 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared by the share recipient
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnsharedFromSelf(array $params) {
+	public static function itemUnsharedFromSelf(array $params) : void {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
-		$app = \OC::$server->query(Application::class);
-		$removeFromUsers = [ $app->getContainer()->query('UserId') ];
+		$removeFromUsers = [ self::inject('receivingUserId') ];
 
-		self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
+		self::removeSharedItem($params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 	}
 
 	/**
 	 * Invoke auto update of music database after item gets shared
 	 * @param array $params contains the params of the added share
 	 */
-	public static function itemShared(array $params) {
+	public static function itemShared(array $params) : void {
 		// Do not auto-update database when a folder is shared. The folder might contain
 		// thousands of audio files, and indexing them could take minutes or hours. The sharee
 		// user will be prompted to update database the next time she opens the Music app.
 		// Similarly, do not auto-update on group shares.
 		if ($params['itemType'] === 'file' && $params['shareType'] == \OCP\Share::SHARE_TYPE_USER) {
-			$app = \OC::$server->query(Application::class);
-			$container = $app->getContainer();
-			$scanner = $container->query('Scanner');
-			$sharerFolder = $container->query('UserFolder');
-			$file = $sharerFolder->getById($params['itemSource'])[0]; // file object with sharer path
-			$userId = $params['shareWith'];
-			$userFolder = $scanner->resolveUserFolder($userId);
-			$filePath = $userFolder->getPath() . $params['itemTarget']; // file path for sharee
-			$scanner->update($file, $userId, $filePath);
+			$scanner = self::inject(Scanner::class);
+
+			$sharingUser = self::inject('userId');
+			$sharingUserFolder = $scanner->resolveUserFolder($sharingUser);
+			$file = $sharingUserFolder->getById($params['itemSource'])[0]; // file object with sharing user path
+
+			$receivingUserId = $params['shareWith'];
+			$receivingUserFolder = $scanner->resolveUserFolder($receivingUserId);
+			$receivingUserFilePath = $receivingUserFolder->getPath() . $params['itemTarget'];
+			$scanner->update($file, $receivingUserId, $receivingUserFilePath);
 		}
 	}
 
-	public function register() {
+	/**
+	 * Get the dependency identified by the given name
+	 * @return mixed
+	 */
+	private static function inject(string $id) {
+		$app = \OC::$server->query(Application::class);
+		return $app->get($id);
+	}
+
+	public function register() : void {
 		// FIXME: this is temporarily static because core emitters are not future
 		// proof, therefore legacy code in here
 		\OCP\Util::connectHook('OCP\Share', 'post_unshare', __CLASS__, 'itemUnshared');

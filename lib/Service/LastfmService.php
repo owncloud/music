@@ -7,10 +7,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
@@ -20,6 +20,8 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Track;
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\IConfig;
 
@@ -139,7 +141,7 @@ class LastfmService {
 				$matchingLibArtists = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
 
 				if (!empty($matchingLibArtists)) {
-					foreach ($matchingLibArtists as &$matchArtist) { // loop although there really shouldn't be more than one
+					foreach ($matchingLibArtists as $matchArtist) { // loop although there really shouldn't be more than one
 						$matchArtist->setLastfmUrl($lastfmArtist['url']);
 					}
 					$result = \array_merge($result, $matchingLibArtists);
@@ -235,7 +237,7 @@ class LastfmService {
 			$args['format'] = 'json';
 
 			// remove args with null or empty values
-			$args = \array_filter($args, [Util::class, 'isNonEmptyString']);
+			$args = \array_filter($args, [StringUtil::class, 'isNonEmptyString']);
 
 			// glue arg keys and values together ...
 			$args = \array_map(fn($key, $value) => ($key . '=' . \urlencode($value)), \array_keys($args), $args);

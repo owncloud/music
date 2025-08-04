@@ -133,7 +133,7 @@ class Cache {
 		return \count($rows) ? $rows[0]['user_id'] : null;
 	}
 
-	private function executeUpdate(string $sql, array $params) {
+	private function executeUpdate(string $sql, array $params) : int {
 		try {
 			return $this->db->executeUpdate($sql, $params);
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {

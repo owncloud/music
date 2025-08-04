@@ -19,7 +19,7 @@ use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
 
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -30,6 +30,7 @@ use OCP\IL10N;
  * @phpstan-template EntityType of Entity
  */
 abstract class BusinessLayer {
+	/** @phpstan-var BaseMapper<EntityType> */
 	protected BaseMapper $mapper;
 
 	// Some SQLite installations can't handle more than 999 query args. Remember that `user_id` takes one slot in most queries.
@@ -40,15 +41,6 @@ abstract class BusinessLayer {
 	 */
 	public function __construct(BaseMapper $mapper) {
 		$this->mapper = $mapper;
-	}
-
-	/**
-	 * Update an entity in the database
-	 * @phpstan-param EntityType $entity
-	 * @phpstan-return EntityType
-	 */
-	public function update(Entity $entity) : Entity {
-		return $this->mapper->update($entity);
 	}
 
 	/**
@@ -134,7 +126,7 @@ abstract class BusinessLayer {
 		}
 
 		if ($preserveOrder) {
-			$lut = Util::createIdLookupTable($entities);
+			$lut = ArrayUtil::createIdLookupTable($entities);
 			$result = [];
 			foreach ($ids as $id) {
 				$result[] = $lut[$id];
@@ -236,7 +228,7 @@ abstract class BusinessLayer {
 				// in case the random order is requested, the limit/offset handling happens after the DB query
 				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, SortBy::Name);
 				$indices = $random->getIndices(\count($entities), $offset, $limit, $userId, 'adv_search_'.$this->mapper->unprefixedTableName());
-				$entities = Util::arrayMultiGet($entities, $indices);
+				$entities = ArrayUtil::multiGet($entities, $indices);
 			} else {
 				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $sortBy, $limit, $offset);
 			}
@@ -263,7 +255,7 @@ abstract class BusinessLayer {
 	/**
 	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
 	 * @param int[] $parentIds
-	 * @return array like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
 	 * @throws BusinessLayerException if the entity type handled by this business layer doesn't have a parent relation
 	 */
 	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
@@ -331,6 +323,23 @@ abstract class BusinessLayer {
 			return $this->mapper->setStarredDate(null, $ids, $userId);
 		} else {
 			return 0;
+		}
+	}
+
+	/**
+	 * Set rating for the entity by id
+	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
+	 * @throws \BadMethodCallException if the entity type of this business layer doesn't support rating
+	 * @phpstan-return EntityType
+	 */
+	public function setRating(int $id, int $rating, string $userId) : Entity {
+		$entity = $this->find($id, $userId);
+		if (\property_exists($entity, 'rating')) {
+			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
+			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore method.notFound
+			return $this->mapper->update($entity);
+		} else {
+			throw new \BadMethodCallException('rating not supported on the entity type ' . \get_class($entity));
 		}
 	}
 

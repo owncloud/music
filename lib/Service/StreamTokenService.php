@@ -7,10 +7,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\Db\Cache;
 

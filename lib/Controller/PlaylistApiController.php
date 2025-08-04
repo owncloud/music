@@ -17,14 +17,17 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Response;
 
 use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
@@ -33,8 +36,8 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
-use OCA\Music\Utility\CoverHelper;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\CoverService;
+use OCA\Music\Service\PlaylistFileService;
 
 class PlaylistApiController extends Controller {
 	private IURLGenerator $urlGenerator;
@@ -43,14 +46,14 @@ class PlaylistApiController extends Controller {
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private TrackBusinessLayer $trackBusinessLayer;
 	private GenreBusinessLayer $genreBusinessLayer;
-	private CoverHelper $coverHelper;
+	private CoverService $coverService;
 	private PlaylistFileService $playlistFileService;
 	private string $userId;
 	private Folder $userFolder;
 	private IConfig $configManager;
 	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								PlaylistBusinessLayer $playlistBusinessLayer,
@@ -58,23 +61,23 @@ class PlaylistApiController extends Controller {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
-								CoverHelper $coverHelper,
+								CoverService $coverService,
 								PlaylistFileService $playlistFileService,
 								string $userId,
-								Folder $userFolder,
+								IRootFolder $rootFolder,
 								IConfig $configManager,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
-		$this->coverHelper = $coverHelper;
+		$this->coverService = $coverService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
-		$this->userFolder = $userFolder;
+		$this->userFolder = $rootFolder->getUserFolder($userId);
 		$this->configManager = $configManager;
 		$this->logger = $logger;
 	}
@@ -85,13 +88,12 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getAll(string $type = 'shiva') {
+	public function getAll(string $type = 'shiva') : JSONResponse {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
-		if ($type === 'shiva') {
-			return \array_map(fn($p) => $p->toShivaApi($this->urlGenerator), $playlists);
-		} else {
-			return \array_map(fn($p) => $p->toApi($this->urlGenerator), $playlists);
-		}
+		$result = ($type === 'shiva')
+			? \array_map(fn($p) => $p->toShivaApi($this->urlGenerator), $playlists)
+			: \array_map(fn($p) => $p->toApi($this->urlGenerator), $playlists);
+		return new JSONResponse($result);
 	}
 
 	/**
@@ -99,9 +101,11 @@ class PlaylistApiController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * 
+	 * @param string|int|null $trackIds
 	 */
-	public function create(string $name, /*mixed*/ $trackIds, ?string $comment=null) {
-		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
+	public function create(?string $name, /*mixed*/ $trackIds, ?string $comment=null) : JSONResponse {
+		$playlist = $this->playlistBusinessLayer->create($name ?? '', $this->userId);
 
 		// add trackIds and comment to the newly created playlist if provided
 		if (!empty($trackIds)) {
@@ -112,7 +116,7 @@ class PlaylistApiController extends Controller {
 			$playlist = $this->playlistBusinessLayer->setComment($comment, $playlist->getId(), $this->userId);
 		}
 
-		return $playlist->toApi($this->urlGenerator);
+		return new JSONResponse($playlist->toApi($this->urlGenerator));
 	}
 
 	/**
@@ -122,19 +126,20 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function delete(int $id) {
+	public function delete(int $id) : JSONResponse {
 		$this->playlistBusinessLayer->delete($id, $this->userId);
-		return [];
+		return new JSONResponse([]);
 	}
 
 	/**
 	 * lists a single playlist
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
+	 * @param string|int|bool $fulltree
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get(int $id, string $type = 'shiva', $fulltree = 'false') {
+	public function get(int $id, string $type = 'shiva', /*mixed*/ $fulltree = 'false') : JSONResponse {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
@@ -150,7 +155,7 @@ class PlaylistApiController extends Controller {
 				$result['tracks'] = $this->getTracksFulltree($playlist);
 			}
 
-			return $result;
+			return new JSONResponse($result);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -169,13 +174,14 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * generate a smart playlist according to the given rules
+ 	 * @param string|int|bool|null $historyStrict
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function generate(
 			?bool $useLatestParams, ?string $history, ?string $genres, ?string $artists,
-			?int $fromYear, ?int $toYear, ?string $favorite=null, int $size=100, string $historyStrict='false') {
+			?int $fromYear, ?int $toYear, ?string $favorite=null, int $size=100, /*mixed*/ $historyStrict='false') : JSONResponse {
 
 		if ($useLatestParams) {
 			$history = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_history') ?: null;
@@ -217,7 +223,7 @@ class PlaylistApiController extends Controller {
 			'size' => $size
 		];
 
-		return $result;
+		return new JSONResponse($result);
 	}
 
 	/**
@@ -227,10 +233,10 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getCover(int $id) {
+	public function getCover(int $id) : Response {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-			$cover = $this->coverHelper->getCover($playlist, $this->userId, $this->userFolder);
+			$cover = $this->coverService->getCover($playlist, $this->userId, $this->userFolder);
 
 			if ($cover !== null) {
 				return new FileResponse($cover);
@@ -249,7 +255,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update(int $id, ?string $name = null, ?string $comment = null, ?string $trackIds = null) {
+	public function update(int $id, ?string $name = null, ?string $comment = null, ?string $trackIds = null) : JSONResponse {
 		$result = null;
 		if ($name !== null) {
 			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
@@ -257,7 +263,7 @@ class PlaylistApiController extends Controller {
 		if ($comment !== null) {
 			$result = $this->modifyPlaylist('setComment', [$comment, $id, $this->userId]);
 		}
-		if ($trackIds!== null) {
+		if ($trackIds !== null) {
 			$result = $this->modifyPlaylist('setTracks', [self::toIntArray($trackIds), $id, $this->userId]);
 		}
 		if ($result === null) {
@@ -269,25 +275,25 @@ class PlaylistApiController extends Controller {
 	/**
 	 * insert or append tracks to a playlist
 	 * @param int $id playlist ID
-	 * @param string|int $track Comma-separated list of track IDs
+	 * @param string|int|null $track Comma-separated list of track IDs
 	 * @param ?int $index Insertion position within the playlist, or null to append
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function addTracks(int $id, $track, ?int $index = null) {
+	public function addTracks(int $id, /*mixed*/ $track, ?int $index = null) : JSONResponse {
 		return $this->modifyPlaylist('addTracks', [self::toIntArray($track), $id, $this->userId, $index]);
 	}
 
 	/**
 	 * removes tracks from a playlist
 	 * @param int $id playlist ID
-	 * @param string|int $index Comma-separated list of track indices within the playlist
+	 * @param string|int|null $index Comma-separated list of track indices within the playlist
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeTracks(int $id, $index) {
+	public function removeTracks(int $id, /*mixed*/ $index) : JSONResponse {
 		return $this->modifyPlaylist('removeTracks', [self::toIntArray($index), $id, $this->userId]);
 	}
 
@@ -298,15 +304,19 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function reorder(int $id, $fromIndex, $toIndex) {
-		return $this->modifyPlaylist('moveTrack',
-				[$fromIndex, $toIndex, $id, $this->userId]);
+	public function reorder(int $id, ?int $fromIndex, ?int $toIndex) : JSONResponse {
+		if ($fromIndex === null || $toIndex === null) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Arguments 'fromIndex' and 'toIndex' are required");
+		} else {
+			return $this->modifyPlaylist('moveTrack', [$fromIndex, $toIndex, $id, $this->userId]);
+		}
 	}
 
 	/**
 	 * export the playlist to a file
 	 * @param int $id playlist ID
 	 * @param string $path parent folder path
+	 * @param ?string $filename target file name, omit to use the playlist name
 	 * @param string $oncollision action to take on file name collision,
 	 *								supported values:
 	 *								- 'overwrite' The existing file will be overwritten
@@ -316,17 +326,17 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportToFile(int $id, string $path, string $oncollision) {
+	public function exportToFile(int $id, string $path, ?string $filename=null, string $oncollision='abort') : JSONResponse {
 		try {
 			$exportedFilePath = $this->playlistFileService->exportToFile(
-					$id, $this->userId, $this->userFolder, $path, $oncollision);
+					$id, $this->userId, $this->userFolder, $path, $filename, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
-		} catch (\RuntimeException $ex) {
-			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
+		} catch (FileExistsException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, 'file already exists', ['path' => $ex->getPath(), 'suggested_name' => $ex->getAltName()]);
 		} catch (\OCP\Files\NotPermittedException $ex) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}
@@ -340,11 +350,11 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function importFromFile(int $id, string $filePath) {
+	public function importFromFile(int $id, string $filePath) : JSONResponse {
 		try {
 			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
 			$result['playlist'] = $result['playlist']->toApi($this->urlGenerator);
-			return $result;
+			return new JSONResponse($result);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
 		} catch (\OCP\Files\NotFoundException $ex) {
@@ -361,7 +371,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function parseFile(int $fileId) {
+	public function parseFile(int $fileId) : JSONResponse {
 		try {
 			$result = $this->playlistFileService->parseFile($fileId, $this->userFolder);
 

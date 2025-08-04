@@ -7,16 +7,18 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2024
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
+
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
-
-use OCA\Music\AppFramework\Core\Logger;
 
 /**
  * Manage the user-specific music folder setting
@@ -104,14 +106,14 @@ class LibrarySettings {
 	public function getFolder(string $userId) : Folder {
 		$userHome = $this->rootFolder->getUserFolder($userId);
 		$path = $this->getPath($userId);
-		return Util::getFolderFromRelativePath($userHome, $path);
+		return FilesUtil::getFolderFromRelativePath($userHome, $path);
 	}
 
 	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {
 		$filePath = self::normalizePath($filePath);
 		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());
 
-		return Util::startsWith($filePath, $musicPath)
+		return StringUtil::startsWith($filePath, $musicPath)
 				&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
 	}
 
@@ -120,7 +122,7 @@ class LibrarySettings {
 		$excludedPaths = $this->getExcludedPaths($userId);
 
 		foreach ($excludedPaths as $excludedPath) {
-			if (Util::startsWith($excludedPath, '/')) {
+			if (StringUtil::startsWith($excludedPath, '/')) {
 				$excludedPath = $userRootPath . $excludedPath;
 			} else {
 				$excludedPath = $musicPath . '/' . $excludedPath;
@@ -141,7 +143,7 @@ class LibrarySettings {
 			// no wildcards, beginning of the path should match the pattern exactly
 			// and the next character after the matching part (if any) should be '/'
 			$patternLen = \strlen($pattern);
-			return Util::startsWith($path, $pattern)
+			return StringUtil::startsWith($path, $pattern)
 				&& (\strlen($path) === $patternLen || $path[$patternLen] === '/');
 		} else {
 			// some wildcard characters in the pattern, convert the pattern into regex:

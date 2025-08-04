@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 namespace OCA\Music\Controller;
@@ -29,10 +29,12 @@ use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Entity;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\StringUtil;
 
 class AdvSearchController extends Controller {
 
@@ -98,10 +100,10 @@ class AdvSearchController extends Controller {
 				\assert($this->userId !== null, 'Unexpected error: AdvSearch run with userId === null');
 				$entities = $businessLayer->findAllAdvanced(
 					$conjunction, $rules, $this->userId, self::mapSortBy($order), ($order==='random') ? $this->random : null, $limit, $offset);
-				$entityIds = Util::extractIds($entities);
+				$entityIds = ArrayUtil::extractIds($entities);
 				return new JSONResponse([
 					'id' => \md5($entity.\serialize($entityIds)), // use hash => identical results will have identical ID
-					Util::snakeToCamelCase($entity).'Ids' => $entityIds
+					StringUtil::snakeToCamelCase($entity).'Ids' => $entityIds
 				]);
 			} else {
 				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Entity type '$entity' is not supported");
@@ -111,7 +113,8 @@ class AdvSearchController extends Controller {
 		}
 	}
 
-	private function businessLayerForType($type) : ?BusinessLayer {
+	/** @phpstan-return ?BusinessLayer<covariant Entity> */
+	private function businessLayerForType(string $type) : ?BusinessLayer {
 		$map = [
 			'album' => $this->albumBusinessLayer,
 			'artist' => $this->artistBusinessLayer,

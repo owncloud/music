@@ -15,7 +15,7 @@ namespace OCA\Music\Command;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\Db\Playlist;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\PlaylistFileService;
 
 use OCP\Files\File;
 use OCP\Files\Folder;

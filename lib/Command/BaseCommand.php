@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -28,6 +28,9 @@ abstract class BaseCommand extends Command {
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->addArgument(
@@ -51,6 +54,9 @@ abstract class BaseCommand extends Command {
 		$this->doConfigure();
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		try {
 			self::ensureUsersGiven($input);

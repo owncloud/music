@@ -7,15 +7,16 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Command;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\Db\Playlist;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\PlaylistFileService;
 
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -136,13 +137,13 @@ class PlaylistExport extends BaseCommand {
 	private function exportPlaylist(Playlist $playlist, string $userId, Folder $userFolder, string $dir, bool $overwrite, OutputInterface $output) : void {
 		try {
 			$id = $playlist->getId();
-			$filePath = $this->playlistFileService->exportToFile($id, $userId, $userFolder, $dir, $overwrite ? 'overwrite' : 'abort');
+			$filePath = $this->playlistFileService->exportToFile($id, $userId, $userFolder, $dir, null, $overwrite ? 'overwrite' : 'abort');
 			$output->writeln("  The playlist <info>$id</info> was exported to <info>$filePath</info>");
 		} catch (BusinessLayerException $ex) {
 			$output->writeln("  User <info>$userId</info> has no playlist with id <error>$id</error>");
 		} catch (\OCP\Files\NotFoundException $ex) {
 			$output->writeln("  Invalid folder path <error>$dir</error>");
-		} catch (\RuntimeException $ex) {
+		} catch (FileExistsException $ex) {
 			$output->writeln("  Playlist file with the name <error>{$playlist->getName()}</error> already exists, pass the argument <info>--overwrite</info> to overwrite it");
 		}
 	}

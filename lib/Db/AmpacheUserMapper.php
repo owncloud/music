@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Db;
 
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
 
 use OCP\IDBConnection;
 
@@ -57,7 +57,7 @@ class AmpacheUserMapper {
 
 	/**
 	 * @param string $hash Password hash
-	 * @return ?array like ['key_id' => int, 'user_id' => string] or null if not found
+	 * @return ?array{key_id: int, user_id: string} - null if not found
 	 */
 	public function getUserByPasswordHash(string $hash) : ?array {
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_ampache_users` WHERE `hash` = ?';
@@ -83,7 +83,7 @@ class AmpacheUserMapper {
 		$result = $this->db->executeQuery($sql);
 		$rows = $result->fetchAll();
 
-		return Util::arrayColumns($rows, ['user_id', 'hash'], 'id');
+		return ArrayUtil::columns($rows, ['user_id', 'hash'], 'id');
 	}
 
 	/**
@@ -123,19 +123,9 @@ class AmpacheUserMapper {
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users`
 				(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
 		$params = [$userId, $hash, $description];
-		$this->db->executeUpdate($sql, $params);
+		$affectedRows = $this->db->executeUpdate($sql, $params);
 
-		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users`
-				WHERE `user_id` = ? AND `hash` = ?';
-		$params = [$userId, $hash];
-		$result = $this->db->executeQuery($sql, $params);
-		$row = $result->fetch();
-
-		if ($row === false) {
-			return null;
-		}
-
-		return (int)$row['id'];
+		return ($affectedRows > 0) ? $this->db->lastInsertId('*PREFIX*music_ampache_users') : null;
 	}
 
 	public function removeUserKey(string $userId, int $id) : void {

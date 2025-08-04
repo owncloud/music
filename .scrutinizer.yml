@@ -10,8 +10,7 @@ filter:
         - "3rdparty/getID3/getid3/"
         - "stubs/"
 
-# Code coverage is not collected at the moment to speed up the Scrutinizer analysis, especially on the
-# private fork of the project where there is no Travis running the tests.
+# No-one currently submits the coverage data so there's no use to wait for it.
 #tools:
 #    external_code_coverage:
 #        timeout: 300    # Timeout in seconds, 5 minutes

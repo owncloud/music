@@ -7,10 +7,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2024
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
@@ -35,7 +35,7 @@ use OCP\ICache;
  * (with tens of thousands of tracks, the size of the json may be more than 10 MB and the
  * DB may be configured with maximum object size of e.g. 1 MB).
  */
-class CollectionHelper {
+class CollectionService {
 	private Library $library;
 	private ICache $fileCache;
 	private Cache $dbCache;
@@ -63,8 +63,7 @@ class CollectionHelper {
 			try {
 				$this->addJsonToCache($collectionJson);
 			} catch (UniqueConstraintViolationException $ex) {
-				$this->logger->log("Race condition: collection.json for user {$this->userId} ".
-						"cached twice, ignoring latter.", 'warn');
+				$this->logger->warning("Race condition: collection.json for user {$this->userId} cached twice, ignoring latter.");
 			}
 		}
 
@@ -81,9 +80,9 @@ class CollectionHelper {
 		if ($hash !== null) {
 			$json = $this->fileCache->get('music_collection.json');
 			if ($json === null) {
-				$this->logger->log("Inconsistent collection state for user {$this->userId}: ".
+				$this->logger->debug("Inconsistent collection state for user {$this->userId}: ".
 						"Hash found from DB-backed cache but data not found from the ".
-						"file-backed cache. Removing also the hash.", 'debug');
+						"file-backed cache. Removing also the hash.");
 				$this->dbCache->remove($this->userId, 'collection');
 			}
 		}

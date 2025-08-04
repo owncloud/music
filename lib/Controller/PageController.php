@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2019 - 2023
+ * @copyright Pauli Järvinen 2019 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -22,10 +22,10 @@ use OCP\IRequest;
 class PageController extends Controller {
 	private IL10N $l10n;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IL10N $l10n) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 	}
 
@@ -33,7 +33,7 @@ class PageController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function index() {
+	public function index() : TemplateResponse {
 		$userLang = $this->l10n->getLanguageCode();
 		return new TemplateResponse($this->appName, 'main', ['lang' => $userLang]);
 	}

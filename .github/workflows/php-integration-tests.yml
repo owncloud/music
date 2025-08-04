@@ -1,0 +1,90 @@
+name: PHP Integration Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  intgr-tests:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cloud: nextcloud
+            version: 20.0.5
+            php: 7.4
+            db: sqlite
+          - cloud: nextcloud
+            version: 31.0.7
+            php: 8.4
+            db: pgsql
+          - cloud: owncloud
+            version: 10.5.0
+            php: 7.4
+            db: sqlite
+          - cloud: owncloud
+            version: 10.15.3
+            php: 7.4
+            db: mysql
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Restore cached SW package
+      id: server-cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: /tmp/oc_music_ci/server
+        key: ${{ matrix.cloud }}-${{ matrix.version }}
+
+    - name: Download the cloud SW package
+      if: steps.server-cache-restore.outputs.cache-hit != 'true'
+      run: tests/scripts/downloadServerForCi.sh ${{ matrix.cloud }} ${{ matrix.version }}
+
+    - name: Save SW package to cache
+      id: server-cache-save
+      if: steps.server-cache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: /tmp/oc_music_ci/server
+        key: ${{ matrix.cloud }}-${{ matrix.version }}
+
+    - name: Setup CI env
+      run: tests/scripts/setupEnvForCi.sh ${{ matrix.cloud }} ${{ matrix.db }}
+
+    - name: Run integration tests
+      working-directory: /tmp/oc_music_ci/server/apps/music
+      run: composer run-script integration-tests
+
+    - name: Run behat tests
+      run: |
+          php -S localhost:8888 -t /tmp/oc_music_ci/server &
+          cp tests/behat.yml.ci_tests tests/behat.yml
+          composer run-script behat
+
+    - name: Check log
+      if: success() || failure()
+      run: cat /tmp/oc_music_ci/data/${{ matrix.cloud }}.log

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-04-21 22:38+0300\n"
+"POT-Creation-Date: 2025-06-08 23:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,11 +124,11 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:81
+#: js/app/services/podcastservice.ts:132
 msgid "Add a new podcast channel from an RSS feed"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:82
+#: js/app/services/podcastservice.ts:133
 msgid "Add channel"
 msgstr ""
 
@@ -221,14 +221,14 @@ msgstr ""
 msgid "Albums by {{artist}}"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:131
+#: js/app/services/podcastservice.ts:267
 msgid "All channels were already up-to-date"
 msgstr ""
 
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1877 musicwidget.ts:57
+#: Controller/AmpacheController.php:1880 musicwidget.ts:57
 msgid "All tracks"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Any searchable text"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:175
+#: js/app/services/playlistfileservice.ts:210
 msgid "Append to an existing playlist?"
 msgstr ""
 
@@ -257,7 +257,7 @@ msgstr ""
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:175
+#: js/app/services/podcastservice.ts:311
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:235
+#: Controller/SubsonicController.php:239
 msgid "Artists"
 msgstr ""
 
@@ -329,7 +329,7 @@ msgstr ""
 msgid "Changes to the excluded paths will only take effect upon rescan."
 msgstr ""
 
-#: js/app/services/podcastservice.ts:134
+#: js/app/services/podcastservice.ts:270
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
@@ -375,7 +375,7 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
-#: templates/partials/navigationitem.php:114
+#: templates/partials/navigationitem.php:120
 msgid "Compact layout"
 msgstr ""
 
@@ -383,7 +383,7 @@ msgstr ""
 msgid "Contains"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:158 js/app/services/podcastservice.ts:168
+#: js/app/services/podcastservice.ts:294 js/app/services/podcastservice.ts:304
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr ""
 
@@ -480,20 +480,25 @@ msgstr ""
 msgid "Error playing URL:"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:100
+#: js/app/services/playlistfileservice.ts:96
 msgid "Export playlist to a file in the selected folder"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:131
+#: js/app/services/podcastservice.ts:160
+msgid "Export podcasts to an OPML file in the selected folder"
+msgstr ""
+
+#: js/app/services/playlistfileservice.ts:136
 msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
+#: templates/partials/navigationitem.php:103
 #: templates/partials/navigationitem.php:42
 #: templates/partials/navigationitem.php:82
 msgid "Export to file"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:72
+#: js/app/services/podcastservice.ts:114
 msgid "Failed to add the podcast channel"
 msgstr ""
 
@@ -511,11 +516,15 @@ msgstr ""
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:157
+#: js/app/services/playlistfileservice.ts:192
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:211
+#: js/app/services/podcastservice.ts:223
+msgid "Failed to import podcasts from the file {{ file }}"
+msgstr ""
+
+#: js/app/services/playlistfileservice.ts:246
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr ""
 
@@ -585,14 +594,16 @@ msgstr ""
 #: js/app/controllers/views/advancedsearchviewcontroller.js:104
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
+#: js/app/services/podcastservice.ts:80
 msgid "File name"
 msgstr ""
 
-#: templates/partials/navigationitem.php:142
+#: templates/partials/navigationitem.php:148
 msgid "Filters"
 msgstr ""
 
-#: templates/partials/navigationitem.php:128
+#: templates/partials/navigationitem.php:134
 msgid "Flat layout"
 msgstr ""
 
@@ -601,7 +612,7 @@ msgid "Folder"
 msgstr ""
 
 #: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:236
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr ""
@@ -622,7 +633,7 @@ msgstr ""
 msgid "Generate API password"
 msgstr ""
 
-#: js/app/controllers/navigationcontroller.js:256
+#: js/app/controllers/navigationcontroller.js:282
 msgid "Generated {{ datetime }}"
 msgstr ""
 
@@ -690,24 +701,29 @@ msgid ""
 "navigation item \"Internet radio\", and select \"Add manually\"."
 msgstr ""
 
+#: templates/partials/navigationitem.php:100
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:166
+#: js/app/services/playlistfileservice.ts:201
 msgid "Import playlist contents from the selected file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:219
+#: js/app/services/podcastservice.ts:200
+msgid "Import podcast channels from the selected OPML file"
+msgstr ""
+
+#: js/app/services/playlistfileservice.ts:254
 msgid "Import radio stations from the selected file"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:199
+#: js/app/services/playlistfileservice.ts:234
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:145
+#: js/app/services/playlistfileservice.ts:180
 msgid "Imported {{ count }} tracks from the file {{ file }}."
 msgstr ""
 
@@ -744,7 +760,7 @@ msgstr ""
 
 #: js/app/controllers/playercontroller.js:734
 #: js/app/controllers/playercontroller.js:756
-#: js/app/services/playlistfileservice.ts:109
+#: js/app/services/playlistfileservice.ts:139
 #: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
 msgstr ""
@@ -753,7 +769,7 @@ msgstr ""
 msgid "Internet radio stations"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:68
+#: js/app/services/podcastservice.ts:110
 msgid "Invalid RSS feed URL"
 msgstr ""
 
@@ -850,7 +866,7 @@ msgstr ""
 msgid ""
 "Many features of the Music app are based on the metadata stored in the audio "
 "files. However, scanning this data may consume a lot of time on some systems "
-"using extrenal storage. When disabled, the library structure is built based "
+"using external storage. When disabled, the library structure is built based "
 "on the file and folder names only."
 msgstr ""
 
@@ -947,7 +963,7 @@ msgstr ""
 msgid "No tracks matching the filters"
 msgstr ""
 
-#: templates/partials/navigationitem.php:111
+#: templates/partials/navigationitem.php:117
 msgid "Normal layout"
 msgstr ""
 
@@ -1006,7 +1022,8 @@ msgstr ""
 msgid "Often played"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:33
+#: js/app/services/playlistfileservice.ts:35
+#: js/app/services/podcastservice.ts:73
 msgid "Overwrite existing file"
 msgstr ""
 
@@ -1084,7 +1101,7 @@ msgstr ""
 msgid "Playlist"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:89
+#: js/app/services/playlistfileservice.ts:109
 msgid "Playlist exported to file {{ path }}"
 msgstr ""
 
@@ -1094,7 +1111,8 @@ msgstr ""
 msgid "Playlist name"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:53
+#: js/app/services/playlistfileservice.ts:48
+#: js/app/services/podcastservice.ts:53
 msgid "Playlist or folder not found"
 msgstr ""
 
@@ -1108,8 +1126,12 @@ msgstr ""
 msgid "Podcast channel"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:59
+#: js/app/services/podcastservice.ts:101
 msgid "Podcast channel \"{{ title }}\" added"
+msgstr ""
+
+#: js/app/services/podcastservice.ts:173
+msgid "Podcast channels exported to file {{ path }}"
 msgstr ""
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:293
@@ -1122,7 +1144,8 @@ msgid "Podcast metadata"
 msgstr ""
 
 #: js/app/controllers/playercontroller.js:757
-#: templates/partials/navigation.php:19 musicwidget.ts:60
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
+#: musicwidget.ts:60
 msgid "Podcasts"
 msgstr ""
 
@@ -1148,7 +1171,7 @@ msgstr ""
 msgid "Radio station not found"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:117
+#: js/app/services/playlistfileservice.ts:149
 msgid "Radio stations exported to file {{ path }}"
 msgstr ""
 
@@ -1199,11 +1222,11 @@ msgstr ""
 msgid "Refine the filters defined for the smart playlist"
 msgstr ""
 
-#: templates/fake-template.php:5 templates/partials/navigationitem.php:139
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:145
 msgid "Reload"
 msgstr ""
 
-#: templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:106
 msgid "Reload channels"
 msgstr ""
 
@@ -1212,7 +1235,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:176
+#: js/app/services/podcastservice.ts:312
 msgid "Remove channel"
 msgstr ""
 
@@ -1273,8 +1296,13 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-#: templates/partials/navigationitem.php:145
+#: templates/partials/navigationitem.php:151
 msgid "Save playlist"
+msgstr ""
+
+#: js/app/services/playlistfileservice.ts:67
+#: js/app/services/podcastservice.ts:81
+msgid "Save with given file name"
 msgstr ""
 
 #: templates/main.php:70
@@ -1454,21 +1482,22 @@ msgstr ""
 msgid "Text copied to clipboard"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:104
+#: js/app/services/podcastservice.ts:240
 msgid "The channel was already up-to-date"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:101
+#: js/app/services/podcastservice.ts:237
 msgid "The channel was updated from the source"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:30
+#: js/app/services/playlistfileservice.ts:32
+#: js/app/services/podcastservice.ts:70
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
 "overwrite it. Select \"No\" to save with another name."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:173
+#: js/app/services/playlistfileservice.ts:208
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
 "after the existing contents. Proceed?"
@@ -1497,7 +1526,7 @@ msgid ""
 "playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
-#: js/app/services/podcastservice.ts:70
+#: js/app/services/podcastservice.ts:112
 msgid "This channel is already subscribed"
 msgstr ""
 
@@ -1579,7 +1608,7 @@ msgstr ""
 msgid "Tracks on {{album}}"
 msgstr ""
 
-#: templates/partials/navigationitem.php:125
+#: templates/partials/navigationitem.php:131
 msgid "Tree layout"
 msgstr ""
 
@@ -1587,11 +1616,12 @@ msgstr ""
 msgid "Try to refine the search"
 msgstr ""
 
-#: js/app/services/podcastservice.ts:89
+#: js/app/services/podcastservice.ts:146
 msgid "URL"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:61
+#: js/app/services/playlistfileservice.ts:56
+#: js/app/services/podcastservice.ts:61
 msgid "Unexpected error"
 msgstr ""
 
@@ -1653,7 +1683,7 @@ msgid ""
 "player."
 msgstr ""
 
-#: js/app/controllers/navigationcontroller.js:258
+#: js/app/controllers/navigationcontroller.js:284
 msgid "Used filters: {{ params }}"
 msgstr ""
 
@@ -1673,7 +1703,8 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:57
+#: js/app/services/playlistfileservice.ts:52
+#: js/app/services/podcastservice.ts:57
 msgid "Writing to the file is not allowed"
 msgstr ""
 
@@ -1901,11 +1932,11 @@ msgid_plural "{{ count }} duplicate tracks were removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/app/services/playlistfileservice.ts:202
+#: js/app/services/playlistfileservice.ts:237
 msgid "{{ count }} entries were skipped."
 msgstr ""
 
-#: js/app/services/playlistfileservice.ts:148
+#: js/app/services/playlistfileservice.ts:183
 msgid "{{ count }} files were skipped."
 msgstr ""
 
@@ -1948,7 +1979,7 @@ msgstr ""
 msgid "{{artist}} appears on albums"
 msgstr ""
 
-#: Db/Album.php:271
+#: Db/Album.php:270
 msgid "Unknown album"
 msgstr ""
 

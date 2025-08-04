@@ -9,34 +9,38 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2024
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\BackgroundJob;
 
+use OCA\Music\AppFramework\BackgroundJob\TimedJob;
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\AppInfo\Application;
+use OCA\Music\Db\AmpacheSessionMapper;
+use OCA\Music\Db\Maintenance;
+use OCA\Music\Service\Scanner;
 
-// The base class extended is a class alias created in OCA\Music\AppInfo\Application
 class Cleanup extends TimedJob {
 
 	/**
 	 * Run background cleanup task
+	 * @param mixed $arguments
+	 * @return void
 	 */
 	public function run($arguments) {
 		$app = \OC::$server->query(Application::class);
 
-		$container = $app->getContainer();
-
-		$logger = $container->query('Logger');
-		$logger->log('Run ' . \get_class(), 'debug');
+		$logger = $app->get(Logger::class);
+		$logger->debug('Run ' . \get_class());
 
 		// remove orphaned entities
-		$container->query('Maintenance')->cleanUp();
+		$app->get(Maintenance::class)->cleanUp();
 
 		// remove expired sessions
-		$container->query('AmpacheSessionMapper')->cleanUp();
+		$app->get(AmpacheSessionMapper::class)->cleanUp();
 
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query('Scanner')->findAlbumCovers();
+		$app->get(Scanner::class)->findAlbumCovers();
 	}
 }

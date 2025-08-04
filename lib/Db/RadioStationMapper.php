@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -30,14 +30,5 @@ class RadioStationMapper extends BaseMapper {
 	public function findByStreamUrl(string $url, string $userId) : RadioStation {
 		$sql = $this->selectUserEntities("`stream_url` = ?");
 		return $this->findEntity($sql, [$userId, $url]);
-	}
-
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 */
-	protected function findUniqueEntity(Entity $station) : Entity {
-		// The radio_stations table has no unique constraints, and hence, this function
-		// should never be called.
-		throw new \BadMethodCallException('not supported');
 	}
 }

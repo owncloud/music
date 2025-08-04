@@ -12,9 +12,12 @@
  * @copyright Pauli Järvinen 2022 - 2025
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\StringUtil;
+use OCA\Music\Utility\Util;
 use OCP\IURLGenerator;
 
 /**
@@ -74,13 +77,16 @@ class RadioService {
 		return $ret;
 	}
 
+	/**
+	 * @param resource $fp File handle
+	 */
 	private static function parseTitleFromStreamMetadata($fp) : ?string {
 		$meta_length = \ord(\fread($fp, 1)) * 16;
 		if ($meta_length) {
 			$metadatas = \explode(';', \fread($fp, $meta_length));
 			$title = self::findStrFollowing($metadatas, "StreamTitle=");
 			if ($title) {
-				return Util::truncate(\trim($title, "'"), 256);
+				return StringUtil::truncate(\trim($title, "'"), 256);
 			}
 		}
 		return null;
@@ -95,7 +101,7 @@ class RadioService {
 		if ($status_code == 200) {
 			return $parseResult($content);
 		} else {
-			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
+			$this->logger->debug("Failed to read $metaUrl: $status_code $message");
 			return null;
 		}
 	}
@@ -253,8 +259,8 @@ class RadioService {
 		return $result;
 	}
 
-	private static function convertUrlOnPlaylistToAbsolute($containedUrl, $playlistUrlParts) {
-		if (!Util::startsWith($containedUrl, 'http://', true) && !Util::startsWith($containedUrl, 'https://', true)) {
+	private static function convertUrlOnPlaylistToAbsolute(string $containedUrl, array $playlistUrlParts) : string {
+		if (!StringUtil::startsWith($containedUrl, 'http://', true) && !StringUtil::startsWith($containedUrl, 'https://', true)) {
 			$urlParts = $playlistUrlParts;
 			$path = $urlParts['path'];
 			$lastSlash = \strrpos($path, '/');
@@ -278,17 +284,17 @@ class RadioService {
 		$urlParts = \parse_url($url);
 		$lcPath = \mb_strtolower($urlParts['path'] ?? '/');
 
-		$isPls = Util::endsWith($lcPath, '.pls');
-		$isM3u = !$isPls && (Util::endsWith($lcPath, '.m3u') || Util::endsWith($lcPath, '.m3u8'));
+		$isPls = StringUtil::endsWith($lcPath, '.pls');
+		$isM3u = !$isPls && (StringUtil::endsWith($lcPath, '.m3u') || StringUtil::endsWith($lcPath, '.m3u8'));
 
 		if ($isPls || $isM3u) {
 			$maxLength = 8 * 1024;
 			list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($url, $maxLength);
 
 			if ($status_code != 200) {
-				$this->logger->log("Could not read radio playlist from $url: $status_code $message", 'debug');
+				$this->logger->debug("Could not read radio playlist from $url: $status_code $message");
 			} elseif (\strlen($content) >= $maxLength) {
-				$this->logger->log("The URL $url seems to be the stream although the extension suggests it's a playlist", 'debug');
+				$this->logger->debug("The URL $url seems to be the stream although the extension suggests it's a playlist");
 			} else if ($isPls) {
 				$entries = PlaylistFileService::parsePlsContent($content);
 			} else {
@@ -337,7 +343,7 @@ class RadioService {
 			$content = '';
 			while ($line = \fgets($fp)) {
 				$line = \trim($line);
-				if (!empty($line) && !Util::startsWith($line, '#')) {
+				if (!empty($line) && !StringUtil::startsWith($line, '#')) {
 					$segUrl = self::convertUrlOnPlaylistToAbsolute($line, $manifestUrlParts);
 					$segToken = $this->tokenService->tokenForUrl($segUrl);
 					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment',
@@ -349,7 +355,7 @@ class RadioService {
 
 			\fclose($fp);
 		} else {
-			$this->logger->log("Failed to read manifest from $url: {$result['status_code']} {$result['message']}", 'warn');
+			$this->logger->warning("Failed to read manifest from $url: {$result['status_code']} {$result['message']}");
 		}
 
 		return $result;

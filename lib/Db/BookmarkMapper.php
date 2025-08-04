@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -24,21 +24,11 @@ use OCP\IDBConnection;
  */
 class BookmarkMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_bookmarks', Bookmark::class, 'comment');
+		parent::__construct($db, $config, 'music_bookmarks', Bookmark::class, 'comment', ['type', 'entry_id', 'user_id']);
 	}
 
 	public function findByEntry(int $type, int $entryId, string $userId) : Bookmark {
 		$sql = $this->selectUserEntities("`type` = ? AND `entry_id` = ?");
 		return $this->findEntity($sql, [$userId, $type, $entryId]);
-	}
-
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param Bookmark $bookmark
-	 * @return Bookmark
-	 */
-	protected function findUniqueEntity(Entity $bookmark) : Entity {
-		assert($bookmark instanceof Bookmark);
-		return $this->findByEntry($bookmark->getType(), $bookmark->getEntryId(), $bookmark->getUserId());
 	}
 }

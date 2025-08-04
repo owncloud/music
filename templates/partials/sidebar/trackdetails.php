@@ -41,7 +41,7 @@
 		<div class="tab" id="technicalTabView" ng-show="selectedTab=='technical'">
 			<dl class="fileinfo">
 				<dt ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
-				<dd ng-repeat-end>{{ formatDetailValue(info.value) }}</dd>
+				<dd title="{{ valueTooltip(info.value, info.key) }}" ng-repeat-end>{{ formatDetailValue(info.value, info.key) }}</dd>
 			</dl>
 		</div>
 

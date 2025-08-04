@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-04-21 22:38+0300\n"
-"PO-Revision-Date: 2025-08-03 19:07+0300\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2025-08-04 20:22+0300\n"
 "Last-Translator: Kirill Kurenov, 2025\n"
 "Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/"
 "language/ru/)\n"
@@ -39,7 +39,7 @@ msgstr "(Не удалось подключиться к Last.fm)"
 msgid "(Last.fm has not been set up)"
 msgstr "(Last.fm не настроен)"
 
-#: templates/fake-template.php:9 musicwidget.ts:238
+#: templates/fake-template.php:9
 msgid "(library root)"
 msgstr "(корень библиотеки)"
 
@@ -139,11 +139,11 @@ msgstr "<strong>SPACE</strong> или <strong>K</strong>"
 msgid "About"
 msgstr "О программе"
 
-#: js/app/services/podcastservice.ts:81
+#: js/app/services/podcastservice.ts:132
 msgid "Add a new podcast channel from an RSS feed"
 msgstr "Добавить новый канал подкаста из RSS-канала"
 
-#: js/app/services/podcastservice.ts:82
+#: js/app/services/podcastservice.ts:133
 msgid "Add channel"
 msgstr "Добавить канал"
 
@@ -199,7 +199,7 @@ msgid "After"
 msgstr "После"
 
 #: js/app/controllers/playercontroller.js:758
-#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
+#: templates/partials/sidebar/trackdetails.php:54
 msgid "Album"
 msgstr "Альбом"
 
@@ -233,7 +233,7 @@ msgstr "Рейтинг альбома"
 
 #: js/app/controllers/playercontroller.js:751
 #: templates/partials/navigation.php:8
-#: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
+#: templates/partials/sidebar/artistdetails.php:14
 msgid "Albums"
 msgstr "Альбомы"
 
@@ -241,14 +241,13 @@ msgstr "Альбомы"
 msgid "Albums by {{artist}}"
 msgstr "Альбомы {{artist}}"
 
-#: js/app/services/podcastservice.ts:131
+#: js/app/services/podcastservice.ts:267
 msgid "All channels were already up-to-date"
 msgstr "Все каналы уже были обновлены"
 
 #: js/app/controllers/playercontroller.js:754
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1877 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Все треки"
 
@@ -260,7 +259,7 @@ msgstr "Ampache и Subsonic"
 msgid "Any searchable text"
 msgstr "Любой текст для поиска"
 
-#: js/app/services/playlistfileservice.ts:175
+#: js/app/services/playlistfileservice.ts:210
 msgid "Append to an existing playlist?"
 msgstr "Добавить к этому плейлисту?"
 
@@ -280,7 +279,7 @@ msgstr ""
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Вы уверены, что хотите удалить плейлист \"{{ name }}\"?"
 
-#: js/app/services/podcastservice.ts:175
+#: js/app/services/podcastservice.ts:311
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr "Вы уверены, что хотите удалить подкаст \"{{ title }}\"?"
 
@@ -301,7 +300,7 @@ msgid "Articles to ignore on artist names"
 msgstr "Артикли для игнорирования в именах исполнителей"
 
 #: js/app/controllers/playercontroller.js:759
-#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
+#: templates/partials/sidebar/trackdetails.php:51
 msgid "Artist"
 msgstr "Исполнитель"
 
@@ -325,7 +324,6 @@ msgstr "Рейтинг исполнителя"
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:235
 msgid "Artists"
 msgstr "Исполнители"
 
@@ -355,7 +353,7 @@ msgstr ""
 msgid "Changes to the excluded paths will only take effect upon rescan."
 msgstr "Изменения вступят в силу только после повторного сканирования."
 
-#: js/app/services/podcastservice.ts:134
+#: js/app/services/podcastservice.ts:270
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Изменения загружены для одного канала"
@@ -395,7 +393,7 @@ msgstr "Нажмите, чтобы повторно сканировать"
 msgid "Click to show \"Getting started\""
 msgstr "Открыть \"Быстрый старт\""
 
-#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:248
+#: templates/partials/sidebar/sidebar.php:2
 msgid "Close"
 msgstr "Закрыть"
 
@@ -403,7 +401,7 @@ msgstr "Закрыть"
 msgid "Comment"
 msgstr "Комментарий"
 
-#: templates/partials/navigationitem.php:114
+#: templates/partials/navigationitem.php:120
 msgid "Compact layout"
 msgstr "Компактный вид"
 
@@ -411,7 +409,7 @@ msgstr "Компактный вид"
 msgid "Contains"
 msgstr "Содержит"
 
-#: js/app/services/podcastservice.ts:158 js/app/services/podcastservice.ts:168
+#: js/app/services/podcastservice.ts:294 js/app/services/podcastservice.ts:304
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr "Не удалось удалить канал \"{{ title }}\""
 
@@ -510,20 +508,25 @@ msgstr "Равно"
 msgid "Error playing URL:"
 msgstr "Ошибка воспроизведения URL:"
 
-#: js/app/services/playlistfileservice.ts:100
+#: js/app/services/playlistfileservice.ts:96
 msgid "Export playlist to a file in the selected folder"
 msgstr "Экспорт плейлиста в файл в выбранную папку"
 
-#: js/app/services/playlistfileservice.ts:131
+#: js/app/services/podcastservice.ts:160
+msgid "Export podcasts to an OPML file in the selected folder"
+msgstr "Экспорт подкастов в OPML-файл в выбранную папку"
+
+#: js/app/services/playlistfileservice.ts:136
 msgid "Export radio stations to a file in the selected folder"
 msgstr "Экспорт радиостанций в файл в выбранную папку"
 
+#: templates/partials/navigationitem.php:103
 #: templates/partials/navigationitem.php:42
 #: templates/partials/navigationitem.php:82
 msgid "Export to file"
 msgstr "Экспорт в файл"
 
-#: js/app/services/podcastservice.ts:72
+#: js/app/services/podcastservice.ts:114
 msgid "Failed to add the podcast channel"
 msgstr "Не удалось добавить подкаст-канал"
 
@@ -543,11 +546,15 @@ msgstr "Не удалось удалить радиостанцию:"
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr "Не удалось сгенерировать новый пароль для Ampache/Subsonic"
 
-#: js/app/services/playlistfileservice.ts:157
+#: js/app/services/playlistfileservice.ts:192
 msgid "Failed to import playlist from the file {{ file }}"
 msgstr "Не удалось импортировать плейлист из файла {{ file }}"
 
-#: js/app/services/playlistfileservice.ts:211
+#: js/app/services/podcastservice.ts:223
+msgid "Failed to import podcasts from the file {{ file }}"
+msgstr "Не удалось импортировать подкасты из файла {{ file }}"
+
+#: js/app/services/playlistfileservice.ts:246
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr "Не удалось импортировать радиостанции из файла {{ file }}"
 
@@ -617,14 +624,16 @@ msgstr "Данные файла"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:104
 #: js/app/controllers/views/advancedsearchviewcontroller.js:162
 #: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
+#: js/app/services/podcastservice.ts:80
 msgid "File name"
 msgstr "Имя файла"
 
-#: templates/partials/navigationitem.php:142
+#: templates/partials/navigationitem.php:148
 msgid "Filters"
 msgstr "Фильтры"
 
-#: templates/partials/navigationitem.php:128
+#: templates/partials/navigationitem.php:134
 msgid "Flat layout"
 msgstr "Список"
 
@@ -633,8 +642,7 @@ msgid "Folder"
 msgstr "Папка"
 
 #: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:236
-#: musicwidget.ts:55
+#: templates/partials/navigation.php:10
 msgid "Folders"
 msgstr "Папки"
 
@@ -654,7 +662,7 @@ msgstr "Основное"
 msgid "Generate API password"
 msgstr "Генерация пароля для API"
 
-#: js/app/controllers/navigationcontroller.js:256
+#: js/app/controllers/navigationcontroller.js:282
 msgid "Generated {{ datetime }}"
 msgstr "Создан: {{ datetime }}"
 
@@ -665,7 +673,7 @@ msgstr "Жанр"
 
 #: js/app/controllers/playercontroller.js:753
 #: templates/partials/navigation.php:12
-#: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
+#: templates/partials/sidebar/smartlistfilters.php:18
 msgid "Genres"
 msgstr "Жанры"
 
@@ -736,24 +744,29 @@ msgstr ""
 "Если вы знаете URL-адрес потока для добавления, нажмите символ «…» рядом с "
 "разделом «Интернет-радио» и выберите «Добавить вручную»."
 
+#: templates/partials/navigationitem.php:100
 #: templates/partials/navigationitem.php:39
 #: templates/partials/navigationitem.php:79
 msgid "Import from file"
 msgstr "Импорт из файла"
 
-#: js/app/services/playlistfileservice.ts:166
+#: js/app/services/playlistfileservice.ts:201
 msgid "Import playlist contents from the selected file"
 msgstr "Импортировать плейлист из выбранного файла"
 
-#: js/app/services/playlistfileservice.ts:219
+#: js/app/services/podcastservice.ts:200
+msgid "Import podcast channels from the selected OPML file"
+msgstr "Импортировать подкаст-каналы из выбранного OPML-файла"
+
+#: js/app/services/playlistfileservice.ts:254
 msgid "Import radio stations from the selected file"
 msgstr "Импортировать радиостанции из выбранного файла"
 
-#: js/app/services/playlistfileservice.ts:199
+#: js/app/services/playlistfileservice.ts:234
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
 msgstr "Импортировано {{ count }} радиостанций из файла {{ file }}."
 
-#: js/app/services/playlistfileservice.ts:145
+#: js/app/services/playlistfileservice.ts:180
 msgid "Imported {{ count }} tracks from the file {{ file }}."
 msgstr "Импортировано {{ count }} треков из файла {{ file }}."
 
@@ -796,8 +809,8 @@ msgstr "Внутренняя ошибка сервера"
 
 #: js/app/controllers/playercontroller.js:734
 #: js/app/controllers/playercontroller.js:756
-#: js/app/services/playlistfileservice.ts:109
-#: templates/partials/navigation.php:17 musicwidget.ts:59
+#: js/app/services/playlistfileservice.ts:139
+#: templates/partials/navigation.php:17
 msgid "Internet radio"
 msgstr "Интернет-радио"
 
@@ -805,7 +818,7 @@ msgstr "Интернет-радио"
 msgid "Internet radio stations"
 msgstr "Интернет-радиостанции"
 
-#: js/app/services/podcastservice.ts:68
+#: js/app/services/podcastservice.ts:110
 msgid "Invalid RSS feed URL"
 msgstr "Некорректная ссылка (RSS)"
 
@@ -902,13 +915,13 @@ msgstr "Тип MIME"
 msgid ""
 "Many features of the Music app are based on the metadata stored in the audio "
 "files. However, scanning this data may consume a lot of time on some systems "
-"using extrenal storage. When disabled, the library structure is built based "
+"using external storage. When disabled, the library structure is built based "
 "on the file and folder names only."
 msgstr ""
-"Многие функции музыкального приложения работают на основе метаданных, "
-"хранящихся в аудиофайлах. Однако их сканирование может занять много времени "
-"на некоторых системах (особенно с внешними накопителями). Если отключено, "
-"структура библиотеки строится только на основе имён файлов и папок."
+"Многие функции музыкального приложения используют метаданные аудиофайлов. "
+"Однако сканирование этих данных может занимать значительное время на "
+"некоторых системах с внешними хранилищами. При отключении этой опции "
+"структура библиотеки строится исключительно на основе имён файлов и папок."
 
 #: templates/partials/views/settingsview.php:116
 msgid ""
@@ -927,8 +940,7 @@ msgstr "Соответствует регулярному выражению"
 msgid "Modified"
 msgstr "Дата изменения"
 
-#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
-#: Search/Provider.php:76
+#: templates/partials/views/settingsview.php:194
 msgid "Music"
 msgstr "Музыка"
 
@@ -979,7 +991,6 @@ msgid "New radio station"
 msgstr "Новая радиостанция"
 
 #: templates/partials/controls.php:53 templates/partials/controls.php:54
-#: embeddedplayer.js:218
 msgid "Next"
 msgstr "Следующий"
 
@@ -1007,7 +1018,7 @@ msgstr "Нет треков"
 msgid "No tracks matching the filters"
 msgstr "Нет треков, соответствующих фильтрам"
 
-#: templates/partials/navigationitem.php:111
+#: templates/partials/navigationitem.php:117
 msgid "Normal layout"
 msgstr "Обычный вид"
 
@@ -1076,7 +1087,8 @@ msgstr "Выкл"
 msgid "Often played"
 msgstr "Часто проигрываемые"
 
-#: js/app/services/playlistfileservice.ts:33
+#: js/app/services/playlistfileservice.ts:35
+#: js/app/services/podcastservice.ts:73
 msgid "Overwrite existing file"
 msgstr "Перезаписать файл"
 
@@ -1106,7 +1118,7 @@ msgstr ""
 "каталога пользователя, а остальные относительно базового пути к музыкальной "
 "библиотеке."
 
-#: templates/fake-template.php:13 embeddedplayer.js:199
+#: templates/fake-template.php:13
 msgid "Pause"
 msgstr "Пауза"
 
@@ -1117,8 +1129,7 @@ msgstr "Пауза"
 #: templates/partials/views/playlistview.php:5
 #: templates/partials/views/podcastsview.php:18
 #: templates/partials/views/radioview.php:5
-#: templates/partials/views/smartlistview.php:5 embeddedplayer.js:189
-#: folderview.js:254 folderview.js:322
+#: templates/partials/views/smartlistview.php:5
 msgid "Play"
 msgstr "Проиграть"
 
@@ -1153,11 +1164,10 @@ msgstr "Количество проигрываний"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:191
 #: js/app/controllers/views/advancedsearchviewcontroller.js:241
 #: js/app/controllers/views/advancedsearchviewcontroller.js:243
-#: playlisttabview.js:17
 msgid "Playlist"
 msgstr "Плейлист"
 
-#: js/app/services/playlistfileservice.ts:89
+#: js/app/services/playlistfileservice.ts:109
 msgid "Playlist exported to file {{ path }}"
 msgstr "Плейлист экспортирован в файл {{ path }}"
 
@@ -1167,7 +1177,8 @@ msgstr "Плейлист экспортирован в файл {{ path }}"
 msgid "Playlist name"
 msgstr "Название плейлиста"
 
-#: js/app/services/playlistfileservice.ts:53
+#: js/app/services/playlistfileservice.ts:48
+#: js/app/services/podcastservice.ts:53
 msgid "Playlist or folder not found"
 msgstr "Плейлист или папка не найдены"
 
@@ -1183,9 +1194,13 @@ msgstr ""
 msgid "Podcast channel"
 msgstr "Подкаст-канал"
 
-#: js/app/services/podcastservice.ts:59
+#: js/app/services/podcastservice.ts:101
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Подкаст-канал \"{{ title }}\" добавлен"
+
+#: js/app/services/podcastservice.ts:173
+msgid "Podcast channels exported to file {{ path }}"
+msgstr "Подкаст-каналы экспортированы в файл {{ path }}"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:293
 msgid "Podcast episode"
@@ -1197,12 +1212,12 @@ msgid "Podcast metadata"
 msgstr "Метаданные подкаста"
 
 #: js/app/controllers/playercontroller.js:757
-#: templates/partials/navigation.php:19 musicwidget.ts:60
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr "Подкасты"
 
 #: templates/partials/controls.php:37 templates/partials/controls.php:5
-#: templates/partials/controls.php:6 embeddedplayer.js:209
+#: templates/partials/controls.php:6
 msgid "Previous"
 msgstr "Предыдущий"
 
@@ -1223,7 +1238,7 @@ msgstr "Радиостанция"
 msgid "Radio station not found"
 msgstr "Радиостанция не найдена"
 
-#: js/app/services/playlistfileservice.ts:117
+#: js/app/services/playlistfileservice.ts:149
 msgid "Radio stations exported to file {{ path }}"
 msgstr "Радиостанции экспортированы в файл {{ path }}"
 
@@ -1274,11 +1289,11 @@ msgstr "Недавно обновленные"
 msgid "Refine the filters defined for the smart playlist"
 msgstr "Уточните фильтры для смарт-плейлиста"
 
-#: templates/fake-template.php:5 templates/partials/navigationitem.php:139
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:145
 msgid "Reload"
 msgstr "Обновить"
 
-#: templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:106
 msgid "Reload channels"
 msgstr "Обновить каналы"
 
@@ -1287,7 +1302,7 @@ msgstr "Обновить каналы"
 msgid "Remove"
 msgstr "Удалить"
 
-#: js/app/services/podcastservice.ts:176
+#: js/app/services/podcastservice.ts:312
 msgid "Remove channel"
 msgstr "Удалить канал"
 
@@ -1348,9 +1363,14 @@ msgstr "Отозвать пароль для API"
 msgid "Rules"
 msgstr "Правила"
 
-#: templates/partials/navigationitem.php:145
+#: templates/partials/navigationitem.php:151
 msgid "Save playlist"
 msgstr "Сохранить плейлист"
+
+#: js/app/services/playlistfileservice.ts:67
+#: js/app/services/podcastservice.ts:81
+msgid "Save with given file name"
+msgstr "Сохранить с указанным именем файла"
 
 #: templates/main.php:70
 msgid "Scanning music …"
@@ -1370,7 +1390,7 @@ msgstr "Поиск по"
 msgid "Search not available in this view"
 msgstr "Поиск недоступен в этом разделе"
 
-#: js/app/controllers/sidebar/albumdetailscontroller.js:68
+#: js/app/controllers/sidebar/albumdetailscontroller.js:67
 msgid "See the album on Last.fm"
 msgstr "Посмотреть альбом на Last.fm"
 
@@ -1394,7 +1414,7 @@ msgstr ""
 "Перемотка вперёд. Для ускорения удерживайте <strong>SHIFT</strong>, для "
 "замедления — <strong>ALT</strong>."
 
-#: templates/partials/views/settingsview.php:39 musicwidget.ts:234
+#: templates/partials/views/settingsview.php:39
 msgid "Select folder"
 msgstr "Выбрать папку"
 
@@ -1542,15 +1562,16 @@ msgstr "Тех.данные"
 msgid "Text copied to clipboard"
 msgstr "Текст скопирован в буфер обмена"
 
-#: js/app/services/podcastservice.ts:104
+#: js/app/services/podcastservice.ts:240
 msgid "The channel was already up-to-date"
 msgstr "Канал не требует обновления"
 
-#: js/app/services/podcastservice.ts:101
+#: js/app/services/podcastservice.ts:237
 msgid "The channel was updated from the source"
 msgstr "Канал обновлён из источника"
 
-#: js/app/services/playlistfileservice.ts:30
+#: js/app/services/playlistfileservice.ts:32
+#: js/app/services/podcastservice.ts:70
 msgid ""
 "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
 "overwrite it. Select \"No\" to save with another name."
@@ -1559,7 +1580,7 @@ msgstr ""
 "перезаписать его. Выберите \"Нет\", чтобы сохранить под другим именем. "
 "Закройте окно для отмены."
 
-#: js/app/services/playlistfileservice.ts:173
+#: js/app/services/playlistfileservice.ts:208
 msgid ""
 "The playlist already contains some tracks. Imported tracks will be appended "
 "after the existing contents. Proceed?"
@@ -1596,7 +1617,7 @@ msgstr ""
 "Это действие удаляет все просканированные треки и пользовательские "
 "плейлисты. После этого коллекцию можно будет просканировать заново."
 
-#: js/app/services/podcastservice.ts:70
+#: js/app/services/podcastservice.ts:112
 msgid "This channel is already subscribed"
 msgstr "Вы уже подписаны на этот канал"
 
@@ -1638,7 +1659,7 @@ msgstr ""
 msgid "Total length"
 msgstr "Общее время"
 
-#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
+#: js/app/controllers/playercontroller.js:791
 msgid "Track"
 msgstr "Трек"
 
@@ -1688,7 +1709,7 @@ msgstr "Треки {{artist}}"
 msgid "Tracks on {{album}}"
 msgstr "Треки в {{album}}"
 
-#: templates/partials/navigationitem.php:125
+#: templates/partials/navigationitem.php:131
 msgid "Tree layout"
 msgstr "Дерево"
 
@@ -1696,11 +1717,12 @@ msgstr "Дерево"
 msgid "Try to refine the search"
 msgstr "Уточните параметры поиска"
 
-#: js/app/services/podcastservice.ts:89
+#: js/app/services/podcastservice.ts:146
 msgid "URL"
 msgstr "URL"
 
-#: js/app/services/playlistfileservice.ts:61
+#: js/app/services/playlistfileservice.ts:56
+#: js/app/services/podcastservice.ts:61
 msgid "Unexpected error"
 msgstr "Непредвиденная ошибка"
 
@@ -1772,7 +1794,7 @@ msgstr ""
 "Используйте этот адрес, чтобы просмотреть вашу музыкальную коллекцию с "
 "любого плеера совместимого с Ampache."
 
-#: js/app/controllers/navigationcontroller.js:258
+#: js/app/controllers/navigationcontroller.js:284
 msgid "Used filters: {{ params }}"
 msgstr "Применённые фильтры: {{ params }}"
 
@@ -1792,7 +1814,8 @@ msgstr "Громкость"
 msgid "Website"
 msgstr "Вебсайт"
 
-#: js/app/services/playlistfileservice.ts:57
+#: js/app/services/playlistfileservice.ts:52
+#: js/app/services/podcastservice.ts:57
 msgid "Writing to the file is not allowed"
 msgstr "Запись в файл запрещена"
 
@@ -2030,11 +2053,11 @@ msgstr[1] "{{ count }} дубликата треков удалено"
 msgstr[2] "{{ count }} дубликатов треков удалено"
 msgstr[3] "{{ count }} дубликатов треков удалено"
 
-#: js/app/services/playlistfileservice.ts:202
+#: js/app/services/playlistfileservice.ts:237
 msgid "{{ count }} entries were skipped."
 msgstr "{{ count }} записей были пропущено."
 
-#: js/app/services/playlistfileservice.ts:148
+#: js/app/services/playlistfileservice.ts:183
 msgid "{{ count }} files were skipped."
 msgstr "{{ count }} файлов пропущено."
 
@@ -2087,152 +2110,118 @@ msgstr "{{ scanningScanned }} из {{ scanningTotal }}"
 msgid "{{artist}} appears on albums"
 msgstr "{{artist}} участвует в альбомах"
 
-#: Db/Album.php:271
-msgid "Unknown album"
-msgstr "Неизвестный альбом"
+#~ msgid "Unknown album"
+#~ msgstr "Неизвестный альбом"
 
-#: Db/Artist.php:134
-msgid "Unknown artist"
-msgstr "Неизвестный исполнитель"
+#~ msgid "Unknown artist"
+#~ msgstr "Неизвестный исполнитель"
 
-#: Db/Bookmark.php:47
-msgid "(no comment)"
-msgstr "(без комментариев)"
+#~ msgid "(no comment)"
+#~ msgstr "(без комментариев)"
 
-#: Db/Genre.php:84
-msgid "(Unknown genre)"
-msgstr "(Неизвестный жанр)"
+#~ msgid "(Unknown genre)"
+#~ msgstr "(Неизвестный жанр)"
 
-#: musicwidget.ts:52
-msgid "Album artists"
-msgstr "Исполнители альбома"
+#~ msgid "Album artists"
+#~ msgstr "Исполнители альбома"
 
-#: musicwidget.ts:53
-msgid "Track artists"
-msgstr "Исполнители трека"
+#~ msgid "Track artists"
+#~ msgstr "Исполнители трека"
 
-#: musicwidget.ts:58
-msgid "Playlists"
-msgstr "Плейлисты"
+#~ msgid "Playlists"
+#~ msgstr "Плейлисты"
 
-#: musicwidget.ts:62
-msgid "Select mode"
-msgstr "Режим отображения"
+#~ msgid "Select mode"
+#~ msgstr "Режим отображения"
 
-#: musicwidget.ts:182 musicwidget.ts:209
-msgid "Select artist"
-msgstr "Выбрать исполнителя"
+#~ msgid "Select artist"
+#~ msgstr "Выбрать исполнителя"
 
-#: musicwidget.ts:190
-msgid "(All albums)"
-msgstr "(Все альбомы)"
+#~ msgid "(All albums)"
+#~ msgstr "(Все альбомы)"
 
-#: musicwidget.ts:192 musicwidget.ts:221
-msgid "Select album"
-msgstr "Выбрать альбом"
+#~ msgid "Select album"
+#~ msgstr "Выбрать альбом"
 
-#: musicwidget.ts:247
-msgid "Select genre"
-msgstr "Выбрать жанр"
+#~ msgid "Select genre"
+#~ msgstr "Выбрать жанр"
 
-#: musicwidget.ts:263
-msgid "Select playlist"
-msgstr "Выбрать плейлист"
+#~ msgid "Select playlist"
+#~ msgstr "Выбрать плейлист"
 
-#: musicwidget.ts:279
-msgid "Select channel"
-msgstr "Выбрать канал"
+#~ msgid "Select channel"
+#~ msgstr "Выбрать канал"
 
-#: embeddedplayer.js:136
-msgid "Actions"
-msgstr "Действия"
+#~ msgid "Actions"
+#~ msgstr "Действия"
 
-#: embeddedplayer.js:162
-msgid "Import radio to Music"
-msgstr "Импорт радиостанций в 'Музыку'"
+#~ msgid "Import radio to Music"
+#~ msgstr "Импорт радиостанций в 'Музыку'"
 
-#: embeddedplayer.js:163
-msgid "Import list to Music"
-msgstr "Импорт списка в 'Музыку'"
+#~ msgid "Import list to Music"
+#~ msgstr "Импорт списка в 'Музыку'"
 
-#: embeddedplayer.js:164
-msgid "Show playlist"
-msgstr "Показать плейлист"
+#~ msgid "Show playlist"
+#~ msgstr "Показать плейлист"
 
-#: embeddedplayer.js:414
-msgid "Continue playing in Music"
-msgstr "Продолжить воспроизведение в 'Музыке'"
+#~ msgid "Continue playing in Music"
+#~ msgstr "Продолжить воспроизведение в 'Музыке'"
 
-#: embeddedplayer.js:417
-msgid "(file is not within your music collection folder)"
-msgstr "(файл отсутствует в папке вашей музыкальной коллекции)"
+#~ msgid "(file is not within your music collection folder)"
+#~ msgstr "(файл отсутствует в папке вашей музыкальной коллекции)"
 
-#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
-msgid "Loading…"
-msgstr "Загрузка…"
+#~ msgid "Loading…"
+#~ msgstr "Загрузка…"
 
-#: folderview.js:143
-msgid ""
-"The option is available only while the parent folder of the playlist file is "
-"shown"
-msgstr "Эта опция доступна только при отображении родительской папки плейлиста"
+#~ msgid ""
+#~ "The option is available only while the parent folder of the playlist file "
+#~ "is shown"
+#~ msgstr ""
+#~ "Эта опция доступна только при отображении родительской папки плейлиста"
 
-#: folderview.js:156
-msgid "None of the playlist files are within your music library"
-msgstr ""
-"Ни один из файлов плейлиста не находится в вашей музыкальной библиотеке"
+#~ msgid "None of the playlist files are within your music library"
+#~ msgstr ""
+#~ "Ни один из файлов плейлиста не находится в вашей музыкальной библиотеке"
 
-#: folderview.js:161
-msgid ""
-"{inCount} out of {totalCount} files are within your music library and can be "
-"imported"
-msgstr ""
-"{inCount} из {totalCount} файлов находятся в вашей музыкальной библиотеке и "
-"могут быть импортированы"
+#~ msgid ""
+#~ "{inCount} out of {totalCount} files are within your music library and can "
+#~ "be imported"
+#~ msgstr ""
+#~ "{inCount} из {totalCount} файлов находятся в вашей музыкальной библиотеке "
+#~ "и могут быть импортированы"
 
-#: folderview.js:362
-msgid "No files from the playlist could be found"
-msgstr "Не удалось найти ни одного файла из плейлиста"
+#~ msgid "No files from the playlist could be found"
+#~ msgstr "Не удалось найти ни одного файла из плейлиста"
 
-#: folderview.js:365
-msgid "The playlist contained {count} invalid path(s)."
-msgstr "В плейлисте {count} нерабочих путей."
+#~ msgid "The playlist contained {count} invalid path(s)."
+#~ msgstr "В плейлисте {count} нерабочих путей."
 
-#: folderview.js:370
-msgid "See the playlist file details."
-msgstr "См. детали файла плейлиста."
+#~ msgid "See the playlist file details."
+#~ msgstr "См. детали файла плейлиста."
 
-#: folderview.js:386 playlisttabview.js:90
-msgid "Error reading playlist file"
-msgstr "Ошибка чтения файла плейлиста"
+#~ msgid "Error reading playlist file"
+#~ msgstr "Ошибка чтения файла плейлиста"
 
-#: playlistfileservice.js:53
-msgid "Imported {count} tracks to a new playlist '{name}'."
-msgstr "Импортировано {count} треков в новый плейлист '{name}'."
+#~ msgid "Imported {count} tracks to a new playlist '{name}'."
+#~ msgstr "Импортировано {count} треков в новый плейлист '{name}'."
 
-#: playlistfileservice.js:56
-msgid "{count} files were skipped."
-msgstr "{count} файлов было пропущено."
+#~ msgid "{count} files were skipped."
+#~ msgstr "{count} файлов было пропущено."
 
-#: playlistfileservice.js:62 playlistfileservice.js:86
-msgid "Failed to import the playlist file {file}"
-msgstr "Не удалось импортировать файл плейлиста {file}"
+#~ msgid "Failed to import the playlist file {file}"
+#~ msgstr "Не удалось импортировать файл плейлиста {file}"
 
-#: playlistfileservice.js:67
-msgid "Failed to create a new playlist"
-msgstr "Не удалось создать плейлист"
+#~ msgid "Failed to create a new playlist"
+#~ msgstr "Не удалось создать плейлист"
 
-#: playlistfileservice.js:78
-msgid "Imported {count} radio stations."
-msgstr "Импортировано {count} радиостанций."
+#~ msgid "Imported {count} radio stations."
+#~ msgstr "Импортировано {count} радиостанций."
 
-#: playlistfileservice.js:80
-msgid "{count} entries were skipped."
-msgstr "{count} записей были пропущено."
+#~ msgid "{count} entries were skipped."
+#~ msgstr "{count} записей были пропущено."
 
-#: playlisttabview.js:76
-msgid "Some files on the playlist were not found"
-msgstr "Некоторые файлы из плейлиста не найдены"
+#~ msgid "Some files on the playlist were not found"
+#~ msgstr "Некоторые файлы из плейлиста не найдены"
 
 #~ msgid "Invalid path"
 #~ msgstr "Некорректный путь"

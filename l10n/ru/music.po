@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # Alexander Savchenko, 2014
 # Dmitry <dmitrymq@gmail.com>, 2013
@@ -10,164 +10,2273 @@
 # Sergei Shuykov, 2015
 # Void Ayanami <hex.void@gmail.com>, 2013
 # Дмитрий <me@imthecat.ru>, 2014
+# Kirill Kurenov, 2025
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-09-19 20:12+0000\n"
-"Last-Translator: Dmitry Popov <popov@krista.ru>\n"
-"Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/language/ru/)\n"
+"Report-Msgid-Bugs-To: translations@owncloud.org\n"
+"POT-Creation-Date: 2025-06-08 23:39+0300\n"
+"PO-Revision-Date: 2025-08-05 00:44+0300\n"
+"Last-Translator: Kirill Kurenov, 2025\n"
+"Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/"
+"language/ru/)\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Poedit 3.6\n"
 
-#: ../templates/main.php:60
-msgid "+ New Playlist"
-msgstr "+ Новый плейлист"
+#: templates/partials/sidebar/albumdetails.php:36
+#: templates/partials/sidebar/artistdetails.php:39
+msgid "(Failed to connect Last.fm)"
+msgstr "(Не удалось подключиться к Last.fm)"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:55
+#: templates/partials/sidebar/albumdetails.php:33
+#: templates/partials/sidebar/artistdetails.php:36
+msgid "(Last.fm has not been set up)"
+msgstr "(Last.fm не настроен)"
+
+#: templates/fake-template.php:9 musicwidget.ts:238
+msgid "(library root)"
+msgstr "(корень библиотеки)"
+
+#: templates/partials/sidebar/artistdetails.php:5
+msgid "(no artist image available)"
+msgstr "(нет изображения исполнителя)"
+
+#: templates/fake-template.php:14
+msgid "(press and hold for more)"
+msgstr "(удерживать для опций)"
+
+#: templates/partials/views/advancedsearchview.php:26
+msgid "10 matches"
+msgstr "10 совпадений"
+
+#: templates/partials/views/advancedsearchview.php:28
+msgid "100 matches"
+msgstr "100 совпадений"
+
+#: templates/partials/views/advancedsearchview.php:27
+msgid "30 matches"
+msgstr "30 совпадений"
+
+#: templates/partials/views/advancedsearchview.php:29
+msgid "500 matches"
+msgstr "500 совпадений"
+
+#: templates/partials/views/settingsview.php:30
+msgid ""
+"<strong>**</strong> matches zero or more arbitrary characters including path "
+"segment separators '/'"
+msgstr ""
+"<strong>**</strong> соответствует любому количеству символов, включая "
+"разделители путей '/'"
+
+#: templates/partials/views/settingsview.php:29
+msgid ""
+"<strong>*</strong> matches zero or more arbitrary characters within a path "
+"segment"
+msgstr ""
+"<strong>*</strong> соответствует любому количеству произвольных символов в "
+"пределах одного сегмента пути"
+
+#: templates/partials/views/settingsview.php:28
+msgid "<strong>?</strong> matches any one character within a path segment"
+msgstr "<strong>?</strong> соответствует любому одному символу в сегменте пути"
+
+#: templates/partials/views/settingsview.php:132
+msgid "<strong>CTRL+F</strong>"
+msgstr "<strong>CTRL+F</strong>"
+
+#: templates/partials/views/settingsview.php:125
+msgid "<strong>CTRL+LEFT</strong>"
+msgstr "<strong>CTRL+LEFT</strong>"
+
+#: templates/partials/views/settingsview.php:126
+msgid "<strong>CTRL+RIGHT</strong>"
+msgstr "<strong>CTRL+RIGHT</strong>"
+
+#: templates/partials/views/settingsview.php:123
+msgid "<strong>LEFT</strong> or <strong>J</strong>"
+msgstr "<strong>LEFT</strong> или <strong>J</strong>"
+
+#: templates/partials/views/settingsview.php:127
+msgid "<strong>M</strong>"
+msgstr "<strong>M</strong>"
+
+#: templates/partials/views/settingsview.php:128
+msgid "<strong>NUMPAD MINUS</strong>"
+msgstr "<strong>NUMPAD MINUS</strong>"
+
+#: templates/partials/views/settingsview.php:129
+msgid "<strong>NUMPAD PLUS</strong>"
+msgstr "<strong>NUMPAD PLUS</strong>"
+
+#: templates/partials/views/settingsview.php:124
+msgid "<strong>RIGHT</strong> or <strong>L</strong>"
+msgstr "<strong>RIGHT</strong> или <strong>L</strong>"
+
+#: templates/partials/views/settingsview.php:130
+msgid "<strong>SHIFT+COMMA</strong>"
+msgstr "<strong>SHIFT+COMMA</strong>"
+
+#: templates/partials/views/settingsview.php:131
+msgid "<strong>SHIFT+PERIOD</strong>"
+msgstr "<strong>SHIFT+PERIOD</strong>"
+
+#: templates/partials/views/settingsview.php:122
+msgid "<strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong>"
+msgstr "<strong>SHIFT+SPACE</strong> или <strong>SHIFT+K</strong>"
+
+#: templates/partials/views/settingsview.php:121
+msgid "<strong>SPACE</strong> or <strong>K</strong>"
+msgstr "<strong>SPACE</strong> или <strong>K</strong>"
+
+#: templates/partials/views/settingsview.php:189
+msgid "About"
+msgstr "О программе"
+
+#: js/app/services/podcastservice.ts:132
+msgid "Add a new podcast channel from an RSS feed"
+msgstr "Добавить новый канал подкаста из RSS-канала"
+
+#: js/app/services/podcastservice.ts:133
+msgid "Add channel"
+msgstr "Добавить канал"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:105
+#: js/app/controllers/views/advancedsearchviewcontroller.js:163
+#: js/app/controllers/views/advancedsearchviewcontroller.js:216
+#: js/app/controllers/views/advancedsearchviewcontroller.js:253
+#: js/app/controllers/views/advancedsearchviewcontroller.js:274
+#: js/app/controllers/views/advancedsearchviewcontroller.js:301
+msgid "Add date"
+msgstr "Дата добавления"
+
+#: templates/partials/navigationitem.php:97
+msgid "Add from RSS feed"
+msgstr "Добавить канал (RSS)"
+
+#: templates/partials/navigationitem.php:85
+msgid "Add manually"
+msgstr "Добавить вручную"
+
+#: templates/partials/views/playlistview.php:41
+msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr ""
+"Добавляйте треки перетаскиванием из разделов Альбомы или других плейлистов"
+
+#: templates/partials/views/settingsview.php:182
+msgid "Admin"
+msgstr "Администрирование"
+
+#: templates/partials/sidebar/albumdetails.php:34
+msgid ""
+"Admin may set up the Last.fm API key to show album background information "
+"here. See the Settings view for details."
+msgstr ""
+"Администратор может настроить API-ключ Last.fm для отображения фоновой "
+"информации об альбомах. Подробности см. в разделе настроек."
+
+#: templates/partials/sidebar/artistdetails.php:37
+msgid ""
+"Admin may set up the Last.fm API key to show artist biography here. See the "
+"Settings view for details."
+msgstr ""
+"Администратор может указать API-ключ Last.fm, чтобы здесь отображалась "
+"биография исполнителя. Подробнее в разделе настроек."
+
+#: templates/partials/navigation.php:67
+#: templates/partials/views/advancedsearchview.php:2
+msgid "Advanced search"
+msgstr "Расширенный поиск"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:347
+msgid "After"
+msgstr "После"
+
+#: js/app/controllers/playercontroller.js:758
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
+msgid "Album"
+msgstr "Альбом"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:146
+#: js/app/controllers/views/advancedsearchviewcontroller.js:90
+msgid "Album artist name"
+msgstr "Имя исполнителя альбома"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:204
+msgid "Album count"
+msgstr "Количество альбомов"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:153
+#: js/app/controllers/views/advancedsearchviewcontroller.js:96
+msgid "Album genre"
+msgstr "Жанр альбома"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:143
+msgid "Album metadata"
+msgstr "Метаданные альбома"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:201
+#: js/app/controllers/views/advancedsearchviewcontroller.js:88
+msgid "Album name"
+msgstr "Название альбома"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:118
+#: js/app/controllers/views/advancedsearchviewcontroller.js:228
+msgid "Album rating"
+msgstr "Рейтинг альбома"
+
+#: js/app/controllers/playercontroller.js:751
+#: templates/partials/navigation.php:8
+#: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
 msgstr "Альбомы"
 
-#: ../templates/main.php:56
-msgid "All tracks"
-msgstr "Все дорожки"
+#: templates/partials/sidebar/artistdetails.php:66
+msgid "Albums by {{artist}}"
+msgstr "Альбомы {{artist}}"
 
-#: ../templates/fake-template.php:6
+#: js/app/services/podcastservice.ts:267
+msgid "All channels were already up-to-date"
+msgstr "Все каналы уже были обновлены"
+
+#: js/app/controllers/playercontroller.js:754
+#: templates/partials/navigation.php:14
+#: templates/partials/views/alltracksview.php:4
+#: Controller/AmpacheController.php:1880 musicwidget.ts:57
+msgid "All tracks"
+msgstr "Все треки"
+
+#: templates/partials/views/settingsview.php:138
+msgid "Ampache and Subsonic"
+msgstr "Ampache и Subsonic"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:81
+msgid "Any searchable text"
+msgstr "Любой текст для поиска"
+
+#: js/app/services/playlistfileservice.ts:210
+msgid "Append to an existing playlist?"
+msgstr "Добавить к этому плейлисту?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:193
+msgid ""
+"Are you sure to permanently erase all the configured internet radio stations?"
+msgstr ""
+"Вы уверены, что хотите окончательно удалить все настроенные интернет-"
+"радиостанции?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:223
+msgid "Are you sure to permanently erase all the configured podcast channels?"
+msgstr ""
+"Вы уверены, что хотите безвозвратно удалить все настроенные подкаст-каналы?"
+
+#: js/app/controllers/navigationcontroller.js:173
+msgid "Are you sure to remove the playlist \"{{ name }}\"?"
+msgstr "Вы уверены, что хотите удалить плейлист \"{{ name }}\"?"
+
+#: js/app/services/podcastservice.ts:311
+msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
+msgstr "Вы уверены, что хотите удалить подкаст \"{{ title }}\"?"
+
+#: js/app/controllers/views/radioviewcontroller.js:38
+msgid "Are you sure to remove the radio station \"{{ name }}\"?"
+msgstr "Вы уверены, что хотите удалить радиостанцию ​​\"{{ name }}\"?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:150
+msgid ""
+"Are you sure to reset the music collection? This removes all scanned tracks "
+"and user-created playlists!"
+msgstr ""
+"Вы уверены, что хотите сбросить музыкальную коллекцию? Это удалит все "
+"просканированные треки и пользовательские плейлисты!"
+
+#: templates/partials/views/settingsview.php:102
+msgid "Articles to ignore on artist names"
+msgstr "Артикли для игнорирования в именах исполнителей"
+
+#: js/app/controllers/playercontroller.js:759
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
+msgid "Artist"
+msgstr "Исполнитель"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:206
+#: js/app/controllers/views/advancedsearchviewcontroller.js:97
+msgid "Artist genre"
+msgstr "Жанр исполнителя"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:198
+msgid "Artist metadata"
+msgstr "Метаданные исполнителя"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:89
+msgid "Artist name"
+msgstr "Имя исполнителя"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:119
+#: js/app/controllers/views/advancedsearchviewcontroller.js:175
+msgid "Artist rating"
+msgstr "Рейтинг исполнителя"
+
+#: templates/partials/sidebar/albumdetails.php:14
+#: templates/partials/sidebar/smartlistfilters.php:25
+#: Controller/SubsonicController.php:239
 msgid "Artists"
 msgstr "Исполнители"
 
-#: ../templates/main.php:146
+#: templates/partials/sidebar/albumdetails.php:64
+msgid "Artists featured on {{album}}"
+msgstr "Исполнители в {{album}}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:346
+msgid "Before"
+msgstr "До"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:94
+#: templates/partials/sidebar/radiostationdetails.php:44
+msgid "Bit rate"
+msgstr "Битрейт"
+
+#: templates/partials/sidebar/radiostationdetails.php:32
+msgid "Broadcasted name"
+msgstr "Название в эфире"
+
+#: templates/partials/views/settingsview.php:58
+msgid "Changes on this setting take effect only upon rescan of the library."
+msgstr ""
+"Изменения вступают в силу только после повторного сканирования библиотеки."
+
+#: templates/partials/views/settingsview.php:33
+msgid "Changes to the excluded paths will only take effect upon rescan."
+msgstr "Изменения вступят в силу только после повторного сканирования."
+
+#: js/app/services/podcastservice.ts:270
+msgid "Changes were loaded for one channel"
+msgid_plural "Changes were loaded for {{ count }} channels"
+msgstr[0] "Изменения загружены для одного канала"
+msgstr[1] "Изменения загружены для {{ count }} каналов"
+msgstr[2] "Изменения загружены для {{ count }} каналов"
+msgstr[3] "Загружены изменения: {{ count }} каналов"
+
+#: js/app/controllers/playercontroller.js:763
+msgid "Channel"
+msgstr "Канал"
+
+#: js/app/controllers/sidebar/smartlistfilterscontroller.js:74
+msgid "Check the filter values"
+msgstr "Проверьте значения фильтра"
+
+#: templates/main.php:63
+msgid "Click here to rescan these files"
+msgstr "Кликните здесь, чтобы повторно отсканировать эти файлы"
+
+#: templates/main.php:55
 msgid "Click here to start the scan"
 msgstr "Кликните здесь, чтобы начать сканирование"
 
-#: ../templates/fake-template.php:13
+#: templates/partials/views/podcastsview.php:41
+msgid "Click to add your first podcast channel"
+msgstr "Нажмите, чтобы добавить свой первый подкаст"
+
+#: js/app/directives/collapsiblehtml.js:12
+msgid "Click to expand"
+msgstr "Нажмите, чтобы развернуть"
+
+#: templates/partials/views/genresview.php:33
+msgid "Click to rescan"
+msgstr "Нажмите, чтобы повторно сканировать"
+
+#: templates/partials/views/radioview.php:38
+msgid "Click to show \"Getting started\""
+msgstr "Открыть \"Быстрый старт\""
+
+#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:248
+msgid "Close"
+msgstr "Закрыть"
+
+#: templates/partials/sidebar/playlistdetails.php:22
+msgid "Comment"
+msgstr "Комментарий"
+
+#: templates/partials/navigationitem.php:120
+msgid "Compact layout"
+msgstr "Компактный вид"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:319
+msgid "Contains"
+msgstr "Содержит"
+
+#: js/app/services/podcastservice.ts:294 js/app/services/podcastservice.ts:304
+msgid "Could not remove the channel \"{{ title }}\""
+msgstr "Не удалось удалить канал \"{{ title }}\""
+
+#: js/app/services/podcastservice.ts:29
+msgid "Could not update the channel \"{{ title }}\" from the source"
+msgstr "Не удалось обновить канал \"{{ title }}\" из источника"
+
+#: templates/partials/sidebar/playlistdetails.php:16
+#: templates/partials/sidebar/radiostationdetails.php:26
+msgid "Created"
+msgstr "Дата создания"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:273
+#: js/app/controllers/views/advancedsearchviewcontroller.js:300
+msgid "Date published"
+msgstr "Дата публикации"
+
+#: templates/partials/views/settingsview.php:130
+msgid "Decrease playback speed"
+msgstr "Уменьшить скорость воспроизведения"
+
+#: templates/partials/views/settingsview.php:128
+msgid ""
+"Decrease volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Уменьшить громкость. Сильнее с <strong>SHIFT</strong> или слабее с "
+"<strong>ALT</strong>."
+
+#: templates/partials/navigationitem.php:64
+#: templates/partials/views/radioview.php:25
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/partials/sidebar/radiostationdetails.php:35
+#: templates/partials/views/settingsview.php:158
 msgid "Description"
 msgstr "Описание"
 
-#: ../templates/fake-template.php:14
+#: templates/partials/views/settingsview.php:168
 msgid "Description (e.g. App name)"
 msgstr "Описание (например Название приложения)"
 
-#: ../templates/fake-template.php:15
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
+#: templates/partials/navigationitem.php:33
+#: templates/partials/views/playlistview.php:30
+#: templates/partials/views/radioview.php:23
+msgid "Details"
+msgstr "Подробности"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:152
+msgid "Disk count"
+msgstr "Количество дисков"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:320
+msgid "Does not contain"
+msgstr "Не содержит"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:334
+msgid "Does not equal"
+msgstr "Не равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:328
+msgid "Does not match regular expression"
+msgstr "Не соответствует регулярному выражению"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:326
+msgid "Does not sound like"
+msgstr "Не звучит как"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:150
+#: js/app/controllers/views/advancedsearchviewcontroller.js:203
+#: js/app/controllers/views/advancedsearchviewcontroller.js:267
+#: js/app/controllers/views/advancedsearchviewcontroller.js:294
+#: js/app/controllers/views/advancedsearchviewcontroller.js:93
+msgid "Duration (seconds)"
+msgstr "Продолжительность (сек)"
+
+#: templates/partials/views/settingsview.php:52
+msgid "Enable metadata scanning"
+msgstr "Включить сканирование метаданных"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:322
+msgid "Ends with"
+msgstr "Заканчивается на"
+
+#: js/app/controllers/playercontroller.js:764
+msgid "Episode"
+msgstr "Эпизод"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:333
+msgid "Equals"
+msgstr "Равно"
+
+#: js/app/controllers/playercontroller.js:138
+msgid "Error playing URL:"
+msgstr "Ошибка воспроизведения URL:"
+
+#: js/app/services/playlistfileservice.ts:96
+msgid "Export playlist to a file in the selected folder"
+msgstr "Экспорт плейлиста в файл в выбранную папку"
+
+#: js/app/services/podcastservice.ts:160
+msgid "Export podcasts to an OPML file in the selected folder"
+msgstr "Экспорт подкастов в OPML-файл в выбранную папку"
+
+#: js/app/services/playlistfileservice.ts:136
+msgid "Export radio stations to a file in the selected folder"
+msgstr "Экспорт радиостанций в файл в выбранную папку"
+
+#: templates/partials/navigationitem.php:103
+#: templates/partials/navigationitem.php:42
+#: templates/partials/navigationitem.php:82
+msgid "Export to file"
+msgstr "Экспорт в файл"
+
+#: js/app/services/podcastservice.ts:114
+msgid "Failed to add the podcast channel"
+msgstr "Не удалось добавить подкаст-канал"
+
+#: js/app/controllers/maincontroller.js:247
+msgid ""
+"Failed to check for new audio files (error {{ code }}); check the server "
+"logs for details"
+msgstr ""
+"Не удалось проверить наличие новых аудиофайлов (ошибка {{ code }}); "
+"подробности см. в журнале сервера"
+
+#: js/app/controllers/views/radioviewcontroller.js:72
+msgid "Failed to delete the radio station:"
+msgstr "Не удалось удалить радиостанцию:"
+
+#: templates/partials/views/settingsview.php:170
+msgid "Failed to generate new Ampache/Subsonic password"
+msgstr "Не удалось сгенерировать новый пароль для Ampache/Subsonic"
+
+#: js/app/services/playlistfileservice.ts:192
+msgid "Failed to import playlist from the file {{ file }}"
+msgstr "Не удалось импортировать плейлист из файла {{ file }}"
+
+#: js/app/services/podcastservice.ts:223
+msgid "Failed to import podcasts from the file {{ file }}"
+msgstr "Не удалось импортировать подкасты из файла {{ file }}"
+
+#: js/app/services/playlistfileservice.ts:246
+msgid "Failed to import radio stations from the file {{ file }}"
+msgstr "Не удалось импортировать радиостанции из файла {{ file }}"
+
+#: js/app/controllers/maincontroller.js:197
+msgid "Failed to load the collection:"
+msgstr "Не удалось загрузить коллекцию:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:173
+msgid "Failed to reset the collection:"
+msgstr "Не удалось сбросить коллекцию:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:241
+msgid "Failed to reset the podcast channels:"
+msgstr "Не удалось сбросить подкаст-каналы:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:211
+msgid "Failed to reset the radio stations:"
+msgstr "Не удалось сбросить радиостанции:"
+
+#: templates/partials/views/settingsview.php:48
+msgid "Failed to save the ignored paths"
+msgstr "Не удалось сохранить исключаемые пути"
+
+#: templates/partials/views/settingsview.php:12
+msgid "Failed to save the music collection path"
+msgstr "Не удалось сохранить путь к музыкальной коллекции"
+
+#: templates/partials/views/settingsview.php:106
+#: templates/partials/views/settingsview.php:56
+msgid "Failed to save the setting"
+msgstr "Не удалось сохранить настройку"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:114
+#: js/app/controllers/views/advancedsearchviewcontroller.js:172
+#: js/app/controllers/views/advancedsearchviewcontroller.js:225
+#: js/app/controllers/views/advancedsearchviewcontroller.js:257
+#: js/app/controllers/views/advancedsearchviewcontroller.js:283
+#: js/app/controllers/views/advancedsearchviewcontroller.js:310
+#: templates/partials/sidebar/smartlistfilters.php:32
+msgid "Favorite"
+msgstr "Избранное"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:115
+#: templates/partials/sidebar/smartlistfilters.php:36
+msgid "Favorite album"
+msgstr "Избранный альбом"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:116
+#: templates/partials/sidebar/smartlistfilters.php:37
+msgid "Favorite artist"
+msgstr "Избранный исполнитель"
+
+#: templates/partials/sidebar/smartlistfilters.php:35
+msgid "Favorite track"
+msgstr "Избранный трек"
+
+#: templates/partials/sidebar/smartlistfilters.php:38
+msgid "Favorite track, album, or artist"
+msgstr "Избранный трек, альбом или исполнитель"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:102
+#: js/app/controllers/views/advancedsearchviewcontroller.js:160
+#: js/app/controllers/views/advancedsearchviewcontroller.js:213
+msgid "File data"
+msgstr "Данные файла"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:104
+#: js/app/controllers/views/advancedsearchviewcontroller.js:162
+#: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
+#: js/app/services/podcastservice.ts:80
+msgid "File name"
+msgstr "Имя файла"
+
+#: templates/partials/navigationitem.php:148
+msgid "Filters"
+msgstr "Фильтры"
+
+#: templates/partials/navigationitem.php:134
+msgid "Flat layout"
+msgstr "Список"
+
+#: js/app/controllers/playercontroller.js:760
+msgid "Folder"
+msgstr "Папка"
+
+#: js/app/controllers/playercontroller.js:752
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
+#: musicwidget.ts:55
+msgid "Folders"
+msgstr "Папки"
+
+#: templates/partials/sidebar/sidebar.php:20
+msgid "Follow playback"
+msgstr "Следить за воспроизведением"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:110
+msgid "GUID"
+msgstr "GUID"
+
+#: templates/partials/sidebar/trackdetails.php:9
+msgid "General"
+msgstr "Основное"
+
+#: templates/partials/views/settingsview.php:169
 msgid "Generate API password"
 msgstr "Генерация пароля для API"
 
-#: ../templates/fake-template.php:18
+#: js/app/controllers/navigationcontroller.js:282
+msgid "Generated {{ datetime }}"
+msgstr "Создан: {{ datetime }}"
+
+#: js/app/controllers/playercontroller.js:761
+#: templates/partials/sidebar/radiostationdetails.php:41
+msgid "Genre"
+msgstr "Жанр"
+
+#: js/app/controllers/playercontroller.js:753
+#: templates/partials/navigation.php:12
+#: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
+msgid "Genres"
+msgstr "Жанры"
+
+#: templates/partials/navigationitem.php:76
+msgid "Getting started"
+msgstr "Быстрый старт"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:156
+#: js/app/controllers/views/advancedsearchviewcontroller.js:209
+msgid "Has image"
+msgstr "Есть обложка"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:155
+#: js/app/controllers/views/advancedsearchviewcontroller.js:208
+#: js/app/controllers/views/advancedsearchviewcontroller.js:98
+msgid "Has no genre"
+msgstr "Без жанра"
+
+#: templates/partials/views/settingsview.php:153
 msgid ""
-"Here you can generate passwords to use with the Ampache API, because they "
-"can't be stored in a really secure way due to the design of the Ampache API."
-" You can generate as many passwords as you want and revoke them anytime."
-msgstr "Здесь вы можете генерировать пароли для использования API Ampache, так как они не могут быть сохранены действительно безопасным способом из-за особенностей API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время."
+"Here you can generate passwords to use with the Ampache or Subsonic API. "
+"Separate passwords are used because they can't be stored in a really secure "
+"way due to the design of the APIs. You can generate as many passwords as you "
+"want and revoke them at anytime."
+msgstr ""
+"Здесь вы можете сгенерировать пароли для использования с API Ampache или "
+"Subsonic. Отдельные пароли используются, поскольку они не могут храниться "
+"действительно безопасным образом из-за конструкции API. Вы можете "
+"сгенерировать столько паролей, сколько захотите, и отозвать их в любое время."
 
-#: ../templates/fake-template.php:10
-msgid "Invalid path"
-msgstr "Некорректный путь"
-
-#: ../templates/fake-template.php:19
+#: templates/partials/sidebar/smartlistfilters.php:59
 msgid ""
-"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
-"free to report your experience with this feature in the corresponding <a "
-"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
-" like to have a list of clients to test with. Thanks"
-msgstr "Следует помнить, что API Ampache является предварительной и поэтому неустойчивой реализацией. Не стесняйтесь делиться опытом работы с этой функцией в соответствующем <a href=\"https://github.com/owncloud/music/issues/60\">разделе</a>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
+"Hint: To list tracks with more refined criteria, try <a href=\"{{url}}"
+"\">Advanced search</a>"
+msgstr ""
+"Подсказка: Для поиска треков по более точным критериям попробуйте <a "
+"href=\"{{url}}\">Расширенный поиск</a>"
 
-#: ../templates/fake-template.php:3
+#: js/app/controllers/views/advancedsearchviewcontroller.js:271
+#: js/app/controllers/views/advancedsearchviewcontroller.js:298
+#: templates/partials/sidebar/smartlistfilters.php:43
+msgid "History"
+msgstr "История"
+
+#: templates/partials/views/settingsview.php:146
+msgid "If this URL doesn't work try to append '/server/xml.server.php'."
+msgstr ""
+"Если этот URL не работает, попробуйте добавить его в конце '/server/"
+"xml.server.php'."
+
+#: templates/partials/sidebar/radiohint.php:10
+msgid ""
+"If you have a PLS or M3U file containing the stream URL, then first upload "
+"the file to your cloud using the Files app, press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Import from file\". Find "
+"the previously uploaded playlist file and press \"Choose\"."
+msgstr ""
+"Чтобы импортировать поток из файла PLS или M3U, предварительно загрузите его "
+"в облачное хранилище через приложение \"Файлы\". Далее воспользуйтесь меню … "
+"в разделе \"Интернет-радио\" и выберите опцию \"Импорт из файла\". Найдите "
+"ранее загруженный файл плейлиста и нажмите \"Выбрать\"."
+
+#: templates/partials/sidebar/radiohint.php:8
+msgid ""
+"If you know the stream URL to add, then press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Add manually\"."
+msgstr ""
+"Если вы знаете URL-адрес потока для добавления, нажмите символ «…» рядом с "
+"разделом «Интернет-радио» и выберите «Добавить вручную»."
+
+#: templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:39
+#: templates/partials/navigationitem.php:79
+msgid "Import from file"
+msgstr "Импорт из файла"
+
+#: js/app/services/playlistfileservice.ts:201
+msgid "Import playlist contents from the selected file"
+msgstr "Импортировать плейлист из выбранного файла"
+
+#: js/app/services/podcastservice.ts:200
+msgid "Import podcast channels from the selected OPML file"
+msgstr "Импортировать подкаст-каналы из выбранного OPML-файла"
+
+#: js/app/services/playlistfileservice.ts:254
+msgid "Import radio stations from the selected file"
+msgstr "Импортировать радиостанции из выбранного файла"
+
+#: js/app/services/playlistfileservice.ts:234
+msgid "Imported {{ count }} radio stations from the file {{ file }}."
+msgstr "Импортировано {{ count }} радиостанций из файла {{ file }}."
+
+#: js/app/services/playlistfileservice.ts:180
+msgid "Imported {{ count }} tracks from the file {{ file }}."
+msgstr "Импортировано {{ count }} треков из файла {{ file }}."
+
+#: templates/partials/views/settingsview.php:108
+msgid ""
+"In addition to the web interface, this setting is respected in the Subsonic "
+"interface although not necessarily by all clients."
+msgstr ""
+"Это настройка применяется не только в веб-интерфейсе, но и в интерфейсе "
+"Subsonic, хотя не все клиенты могут её поддерживать."
+
+#: templates/partials/sidebar/radiohint.php:14
+msgid ""
+"In case your stream does not play, see <a href=\"{{url}}\" "
+"target=\"_blank\">troubleshooting</a>"
+msgstr ""
+"Если трансляция не воспроизводится, см. <a href=\"{{url}}\" "
+"target=\"_blank\">помощь при проблемах</a>"
+
+#: templates/partials/views/settingsview.php:131
+msgid "Increase playback speed"
+msgstr "Увеличить скорость воспроизведения"
+
+#: templates/partials/views/settingsview.php:129
+msgid ""
+"Increase volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Увеличить громкость. Сильнее с <strong>SHIFT</strong> или слабее с "
+"<strong>ALT</strong>."
+
+#: templates/partials/sidebar/albumdetails.php:8
+#: templates/partials/sidebar/artistdetails.php:11
+msgid "Info"
+msgstr "Информация"
+
+#: js/app/controllers/maincontroller.js:188
+msgid "Internal server error"
+msgstr "Внутренняя ошибка сервера"
+
+#: js/app/controllers/playercontroller.js:734
+#: js/app/controllers/playercontroller.js:756
+#: js/app/services/playlistfileservice.ts:139
+#: templates/partials/navigation.php:17 musicwidget.ts:59
+msgid "Internet radio"
+msgstr "Интернет-радио"
+
+#: templates/partials/views/radioview.php:4
+msgid "Internet radio stations"
+msgstr "Интернет-радиостанции"
+
+#: js/app/services/podcastservice.ts:110
+msgid "Invalid RSS feed URL"
+msgstr "Некорректная ссылка (RSS)"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:323
+msgid "Is"
+msgstr "Равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:350
+msgid "Is equal to"
+msgstr "Равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:343
+msgid "Is false"
+msgstr "Нет"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:335
+msgid "Is greater than"
+msgstr "Больше"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:331
+msgid "Is greater than or equal to"
+msgstr "Больше или равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:336
+msgid "Is less than"
+msgstr "Меньше"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:332
+msgid "Is less than or equal to"
+msgstr "Меньше или равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:324
+msgid "Is not"
+msgstr "Не равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:351
+msgid "Is not equal to"
+msgstr "Не равно"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:128
+#: js/app/controllers/views/advancedsearchviewcontroller.js:184
+#: js/app/controllers/views/advancedsearchviewcontroller.js:237
+msgid "Is played"
+msgstr "Был проигран"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:129
+msgid "Is played album"
+msgstr "Проигран альбом"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:130
+#: js/app/controllers/views/advancedsearchviewcontroller.js:185
+msgid "Is played artist"
+msgstr "Проигран исполнитель"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:342
+msgid "Is true"
+msgstr "Да"
+
+#: templates/partials/views/settingsview.php:126
+msgid "Jump to the next track"
+msgstr "Следующий трек"
+
+#: templates/partials/views/settingsview.php:125
+msgid "Jump to the previous track"
+msgstr "Предыдущий трек"
+
+#: templates/partials/views/settingsview.php:112
+msgid "Keyboard shortcuts"
+msgstr "Горячие клавиши"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:126
+#: js/app/controllers/views/advancedsearchviewcontroller.js:182
+#: js/app/controllers/views/advancedsearchviewcontroller.js:235
+msgid "Last played"
+msgstr "Последнее проигрывание"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:339
+msgid "Limit"
+msgstr "Лимит"
+
+#: templates/partials/sidebar/smartlistfilters.php:6
+msgid "List size"
+msgstr "Размер списка"
+
+#: templates/partials/sidebar/trackdetails.php:12
+msgid "Lyrics"
+msgstr "Текст песни"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:106
+msgid "MIME type"
+msgstr "Тип MIME"
+
+#: templates/partials/views/settingsview.php:57
+msgid ""
+"Many features of the Music app are based on the metadata stored in the audio "
+"files. However, scanning this data may consume a lot of time on some systems "
+"using external storage. When disabled, the library structure is built based "
+"on the file and folder names only."
+msgstr ""
+"Многие функции музыкального приложения используют метаданные аудиофайлов. "
+"Однако сканирование этих данных может занимать значительное время на "
+"некоторых системах с внешними хранилищами. При отключении этой опции "
+"структура библиотеки строится исключительно на основе имён файлов и папок."
+
+#: templates/partials/views/settingsview.php:116
+msgid ""
+"Many functionalities of the Music app web UI can be controlled with keyboard "
+"shortcuts."
+msgstr ""
+"Многие функции веб-интерфейса приложения 'Музыка' можно управлять с помощью "
+"горячих клавиш."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:327
+msgid "Matches regular expression"
+msgstr "Соответствует регулярному выражению"
+
+#: templates/partials/sidebar/playlistdetails.php:19
+#: templates/partials/sidebar/radiostationdetails.php:29
+msgid "Modified"
+msgstr "Дата изменения"
+
+#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
+#: Search/Provider.php:76
 msgid "Music"
 msgstr "Музыка"
 
-#: ../templates/main.php:145
+#: templates/fake-template.php:8 templates/partials/views/settingsview.php:4
+msgid "Music library"
+msgstr "Музыкальная библиотека"
+
+#: templates/partials/sidebar/albumdetails.php:44
+#: templates/partials/sidebar/artistdetails.php:58
+#: templates/partials/sidebar/trackdetails.php:60
+msgid "MusicBrainz"
+msgstr "MusicBrainz"
+
+#: templates/fake-template.php:15
+msgid "Mute"
+msgstr "Выкл звук"
+
+#: templates/partials/views/settingsview.php:127
+msgid "Mute / Unmute"
+msgstr "Вкл/Выкл звук"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:145
+#: js/app/controllers/views/advancedsearchviewcontroller.js:200
+#: js/app/controllers/views/advancedsearchviewcontroller.js:252
+#: js/app/controllers/views/advancedsearchviewcontroller.js:265
+#: js/app/controllers/views/advancedsearchviewcontroller.js:292
+#: js/app/controllers/views/advancedsearchviewcontroller.js:87
+#: templates/partials/sidebar/radiostationdetails.php:8
+msgid "Name"
+msgstr "Имя"
+
+#: templates/partials/navigation.php:28 templates/partials/navigation.php:31
+msgid "New Playlist"
+msgstr "Новый плейлист"
+
+#: templates/main.php:54
 msgid "New music available"
 msgstr "Доступна новая музыка"
 
-#: ../templates/main.php:140 ../templates/main.php:141
+#: templates/main.php:95 templates/main.php:96
 msgid "New music available. Click here to reload the music library."
-msgstr "Доступна новая музыка. Кликните здесь, чтобы перезагрузить музыкальную библиотеку."
+msgstr ""
+"Доступна новая музыка. Кликните здесь, чтобы перезагрузить музыкальную "
+"библиотеку."
 
-#: ../templates/main.php:91
+#: templates/partials/sidebar/radiostationdetails.php:5
+msgid "New radio station"
+msgstr "Новая радиостанция"
+
+#: templates/partials/controls.php:53 templates/partials/controls.php:54
+#: embeddedplayer.js:218
 msgid "Next"
 msgstr "Следующий"
 
-#: ../templates/main.php:134
+#: templates/partials/views/podcastsview.php:40
+msgid "No channels"
+msgstr "Список каналов пуст"
+
+#: templates/main.php:46
 msgid "No music found"
 msgstr "Музыка не найдена"
 
-#: ../templates/fake-template.php:9
+#: templates/main.php:86
+msgid "No search results in this view for <strong>{{ queryString }}</strong>"
+msgstr "В этом разделе нет результатов для <strong>{{ queryString }}</strong>"
+
+#: templates/partials/views/radioview.php:37
+msgid "No stations"
+msgstr "Список станций пуст"
+
+#: templates/partials/views/playlistview.php:40
+msgid "No tracks"
+msgstr "Нет треков"
+
+#: templates/partials/views/smartlistview.php:24
+msgid "No tracks matching the filters"
+msgstr "Нет треков, соответствующих фильтрам"
+
+#: templates/partials/navigationitem.php:117
+msgid "Normal layout"
+msgstr "Обычный вид"
+
+#: templates/partials/sidebar/smartlistfilters.php:51
+msgid "Not recently added"
+msgstr "Давно добавленные"
+
+#: templates/partials/sidebar/smartlistfilters.php:47
+msgid "Not recently played"
+msgstr "Давно не проигрываемые"
+
+#: templates/partials/views/settingsview.php:140
+msgid ""
+"Note that Music may not be compatible with all Ampache/Subsonic clients. "
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" "
+"target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" "
+"target=\"_blank\">Subsonic clients</a>."
+msgstr ""
+"Обратите внимание, что приложение 'Музыка' может быть несовместим со всеми "
+"клиентами Ampache/Subsonic. Проверьте список проверенных клиентов <a "
+"href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache</a> и <a "
+"href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic</a>."
+
+#: templates/partials/sidebar/smartlistfilters.php:42
+msgid ""
+"Note that this selection makes any difference only when the library has more "
+"than the requested number of matches. In the strict mode, only the best "
+"matching songs are included with no element of randomness."
+msgstr ""
+"Обратите внимание, что данный выбор имеет значение только в случае, если в "
+"библиотеке найдено больше совпадений, чем запрошенное количество. В строгом "
+"режиме включаются только наиболее подходящие песни без какого-либо элемента "
+"случайности."
+
+#: templates/partials/views/settingsview.php:14
+msgid ""
+"Note: When the path is changed, any previously scanned files outside the new "
+"path are removed from the collection and any playlists."
+msgstr ""
+"Примечание: При изменении пути все ранее просканированные файлы вне нового "
+"пути будут удалены из коллекции и плейлистов."
+
+#: templates/partials/sidebar/artistdetails.php:25
+msgid "Number of albums"
+msgstr "Количество альбомов"
+
+#: templates/partials/sidebar/artistdetails.php:31
+msgid "Number of performed tracks"
+msgstr "Количество воспроизведенных треков"
+
+#: templates/partials/sidebar/albumdetails.php:25
+#: templates/partials/sidebar/playlistdetails.php:10
+msgid "Number of tracks"
+msgstr "Количество треков"
+
+#: templates/partials/sidebar/artistdetails.php:28
+msgid "Number of tracks on albums"
+msgstr "Количество треков в альбомах"
+
+#: js/app/controllers/playercontroller.js:779
+#: js/app/controllers/playercontroller.js:788
+msgid "Off"
+msgstr "Выкл"
+
+#: templates/partials/sidebar/smartlistfilters.php:48
+msgid "Often played"
+msgstr "Часто проигрываемые"
+
+#: js/app/services/playlistfileservice.ts:35
+#: js/app/services/podcastservice.ts:73
+msgid "Overwrite existing file"
+msgstr "Перезаписать файл"
+
+#: templates/partials/views/settingsview.php:176
+msgid "Password:"
+msgstr "Пароль:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:75
+msgid "Path to exclude from your music collection"
+msgstr "Путь для исключения из вашей музыкальной коллекции"
+
+#: js/app/controllers/views/settingsviewcontroller.js:40
+#: templates/partials/views/settingsview.php:7
 msgid "Path to your music collection"
 msgstr "Путь до вашей музыкальной коллекции"
 
-#: ../templates/main.php:89
+#: templates/partials/views/settingsview.php:18
+msgid "Paths to exclude from your music collection"
+msgstr "Пути для исключения из вашей музыкальной коллекции"
+
+#: templates/partials/views/settingsview.php:32
+msgid ""
+"Paths with a leading '/' character are resolved relative to the user home "
+"directory and others relative to the music library base path."
+msgstr ""
+"Пути, начинающиеся с символа '/', определяются относительно домашнего "
+"каталога пользователя, а остальные относительно базового пути к музыкальной "
+"библиотеке."
+
+#: templates/fake-template.php:13 embeddedplayer.js:199
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../templates/main.php:87
+#: js/app/directives/listheading.js:23 templates/fake-template.php:12
+#: templates/partials/views/advancedsearchview.php:69
+#: templates/partials/views/albumsview.php:27
+#: templates/partials/views/alltracksview.php:5
+#: templates/partials/views/playlistview.php:5
+#: templates/partials/views/podcastsview.php:18
+#: templates/partials/views/radioview.php:5
+#: templates/partials/views/smartlistview.php:5 embeddedplayer.js:189
+#: folderview.js:254 folderview.js:322
 msgid "Play"
 msgstr "Проиграть"
 
-#: ../templates/main.php:85
+#: templates/partials/views/settingsview.php:121
+msgid "Play / Pause"
+msgstr "Проиграть / Пауза"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:123
+#: js/app/controllers/views/advancedsearchviewcontroller.js:179
+#: js/app/controllers/views/advancedsearchviewcontroller.js:232
+msgid "Play history"
+msgstr "История прослушивания"
+
+#: templates/partials/controls.php:46
+msgid "Playback rate"
+msgstr "Скорость воспроизведения"
+
+#: js/app/controllers/playercontroller.js:372
+msgid "Playback speed not adjustible for the current song"
+msgstr "Невозможно изменить скорость воспроизведения для этого трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:125
+#: js/app/controllers/views/advancedsearchviewcontroller.js:181
+#: js/app/controllers/views/advancedsearchviewcontroller.js:234
+msgid "Played times"
+msgstr "Количество проигрываний"
+
+#: js/app/controllers/playercontroller.js:762
+#: js/app/controllers/views/advancedsearchviewcontroller.js:134
+#: js/app/controllers/views/advancedsearchviewcontroller.js:136
+#: js/app/controllers/views/advancedsearchviewcontroller.js:189
+#: js/app/controllers/views/advancedsearchviewcontroller.js:191
+#: js/app/controllers/views/advancedsearchviewcontroller.js:241
+#: js/app/controllers/views/advancedsearchviewcontroller.js:243
+#: playlisttabview.js:17
+msgid "Playlist"
+msgstr "Плейлист"
+
+#: js/app/services/playlistfileservice.ts:109
+msgid "Playlist exported to file {{ path }}"
+msgstr "Плейлист экспортирован в файл {{ path }}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:137
+#: js/app/controllers/views/advancedsearchviewcontroller.js:192
+#: js/app/controllers/views/advancedsearchviewcontroller.js:244
+msgid "Playlist name"
+msgstr "Название плейлиста"
+
+#: js/app/services/playlistfileservice.ts:48
+#: js/app/services/podcastservice.ts:53
+msgid "Playlist or folder not found"
+msgstr "Плейлист или папка не найдены"
+
+#: templates/partials/views/settingsview.php:197
+msgid ""
+"Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">issue tracker</a>"
+msgstr ""
+"Сообщайте об ошибках и проблемах в наш <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">баг-трекер</a>"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:266
+msgid "Podcast channel"
+msgstr "Подкаст-канал"
+
+#: js/app/services/podcastservice.ts:101
+msgid "Podcast channel \"{{ title }}\" added"
+msgstr "Подкаст-канал \"{{ title }}\" добавлен"
+
+#: js/app/services/podcastservice.ts:173
+msgid "Podcast channels exported to file {{ path }}"
+msgstr "Подкаст-каналы экспортированы в файл {{ path }}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:293
+msgid "Podcast episode"
+msgstr "Подкаст эпизод"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:263
+#: js/app/controllers/views/advancedsearchviewcontroller.js:290
+msgid "Podcast metadata"
+msgstr "Метаданные подкаста"
+
+#: js/app/controllers/playercontroller.js:757
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
+#: musicwidget.ts:60
+msgid "Podcasts"
+msgstr "Подкасты"
+
+#: templates/partials/controls.php:37 templates/partials/controls.php:5
+#: templates/partials/controls.php:6 embeddedplayer.js:209
 msgid "Previous"
 msgstr "Предыдущий"
 
-#: ../templates/main.php:118
+#: templates/partials/sidebar/albumdetails.php:37
+#: templates/partials/sidebar/artistdetails.php:40
+msgid "Problem connecting Last.fm. The API key may be invalid."
+msgstr "Проблема подключения к Last.fm. Возможно, неверный API-ключ."
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:94
+msgid "RSS URL"
+msgstr "RSS URL"
+
+#: templates/partials/sidebar/radiostationdetails.php:4
+msgid "Radio station"
+msgstr "Радиостанция"
+
+#: js/app/controllers/playercontroller.js:294
+msgid "Radio station not found"
+msgstr "Радиостанция не найдена"
+
+#: js/app/services/playlistfileservice.ts:149
+msgid "Radio stations exported to file {{ path }}"
+msgstr "Радиостанции экспортированы в файл {{ path }}"
+
+#: templates/partials/sidebar/smartlistfilters.php:49
+msgid "Rarely played"
+msgstr "Редко проигрываемые"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:112
+#: js/app/controllers/views/advancedsearchviewcontroller.js:117
+#: js/app/controllers/views/advancedsearchviewcontroller.js:170
+#: js/app/controllers/views/advancedsearchviewcontroller.js:173
+#: js/app/controllers/views/advancedsearchviewcontroller.js:223
+#: js/app/controllers/views/advancedsearchviewcontroller.js:226
+#: js/app/controllers/views/advancedsearchviewcontroller.js:281
+#: js/app/controllers/views/advancedsearchviewcontroller.js:284
+#: js/app/controllers/views/advancedsearchviewcontroller.js:308
+#: js/app/controllers/views/advancedsearchviewcontroller.js:311
+msgid "Rating"
+msgstr "Рейтинг"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:107
+#: js/app/controllers/views/advancedsearchviewcontroller.js:165
+#: js/app/controllers/views/advancedsearchviewcontroller.js:218
+#: js/app/controllers/views/advancedsearchviewcontroller.js:255
+#: js/app/controllers/views/advancedsearchviewcontroller.js:276
+#: js/app/controllers/views/advancedsearchviewcontroller.js:303
+#: templates/partials/sidebar/smartlistfilters.php:50
+msgid "Recently added"
+msgstr "Недавно добавленные"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:127
+#: js/app/controllers/views/advancedsearchviewcontroller.js:183
+#: js/app/controllers/views/advancedsearchviewcontroller.js:236
+#: templates/partials/sidebar/smartlistfilters.php:46
+msgid "Recently played"
+msgstr "Недавно проигранные"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:108
+#: js/app/controllers/views/advancedsearchviewcontroller.js:166
+#: js/app/controllers/views/advancedsearchviewcontroller.js:219
+#: js/app/controllers/views/advancedsearchviewcontroller.js:256
+#: js/app/controllers/views/advancedsearchviewcontroller.js:277
+#: js/app/controllers/views/advancedsearchviewcontroller.js:304
+msgid "Recently updated"
+msgstr "Недавно обновленные"
+
+#: templates/partials/views/smartlistview.php:25
+msgid "Refine the filters defined for the smart playlist"
+msgstr "Уточните фильтры для смарт-плейлиста"
+
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:145
+msgid "Reload"
+msgstr "Обновить"
+
+#: templates/partials/navigationitem.php:106
+msgid "Reload channels"
+msgstr "Обновить каналы"
+
+#: templates/partials/views/playlistview.php:33
+#: templates/partials/views/settingsview.php:40
+msgid "Remove"
+msgstr "Удалить"
+
+#: js/app/services/podcastservice.ts:312
+msgid "Remove channel"
+msgstr "Удалить канал"
+
+#: templates/partials/navigationitem.php:61
+msgid "Remove duplicates"
+msgstr "Удалить дубликаты"
+
+#: js/app/controllers/navigationcontroller.js:174
+msgid "Remove playlist"
+msgstr "Удалить плейлист"
+
+#: js/app/controllers/views/radioviewcontroller.js:39
+msgid "Remove radio station"
+msgstr "Удалить радиостанцию"
+
+#: templates/partials/views/playlistview.php:33
+msgid "Remove track from playlist"
+msgstr "Удалить трек из плейлиста"
+
+#: templates/partials/navigationitem.php:36
+msgid "Rename"
+msgstr "Переименовать"
+
+#: js/app/controllers/playercontroller.js:784
+#: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr "Повтор"
 
-#: ../templates/fake-template.php:16
+#: js/app/controllers/views/albumsviewcontroller.js:275
+#: js/app/controllers/views/playlistviewcontroller.js:196
+msgid "Requested entry was not found"
+msgstr "Запрошенная запись не найдена"
+
+#: templates/partials/views/settingsview.php:61
+msgid "Reset"
+msgstr "Сброс"
+
+#: js/app/controllers/views/settingsviewcontroller.js:194
+#: templates/partials/views/settingsview.php:74
+msgid "Reset internet radio stations"
+msgstr "Сбросить интернет-радиостанции"
+
+#: js/app/controllers/views/settingsviewcontroller.js:151
+#: templates/partials/views/settingsview.php:64
+msgid "Reset music collection"
+msgstr "Сбросить музыкальную коллекцию"
+
+#: js/app/controllers/views/settingsviewcontroller.js:224
+#: templates/partials/views/settingsview.php:83
+msgid "Reset podcast channels"
+msgstr "Сбросить подкаст-каналы"
+
+#: templates/partials/views/settingsview.php:159
 msgid "Revoke API password"
 msgstr "Отозвать пароль для API"
 
-#: ../templates/main.php:151
+#: templates/partials/views/advancedsearchview.php:32
+msgid "Rules"
+msgstr "Правила"
+
+#: templates/partials/navigationitem.php:151
+msgid "Save playlist"
+msgstr "Сохранить плейлист"
+
+#: js/app/services/playlistfileservice.ts:67
+#: js/app/services/podcastservice.ts:81
+msgid "Save with given file name"
+msgstr "Сохранить с указанным именем файла"
+
+#: templates/main.php:70
 msgid "Scanning music …"
 msgstr "Сканирую музыку…"
 
-#: ../templates/main.php:116
+#: templates/partials/navigation.php:54 templates/partials/navigation.php:56
+#: templates/partials/views/advancedsearchview.php:62
+#: templates/partials/views/settingsview.php:132
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/partials/views/advancedsearchview.php:6
+msgid "Search for"
+msgstr "Поиск по"
+
+#: js/app/controllers/searchcontroller.js:98
+msgid "Search not available in this view"
+msgstr "Поиск недоступен в этом разделе"
+
+#: js/app/controllers/sidebar/albumdetailscontroller.js:68
+msgid "See the album on Last.fm"
+msgstr "Посмотреть альбом на Last.fm"
+
+#: js/app/controllers/sidebar/trackdetailscontroller.js:89
+msgid "See the track on Last.fm"
+msgstr "Посмотреть трек на Last.fm"
+
+#: templates/partials/views/settingsview.php:123
+msgid ""
+"Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Перемотка назад. Для ускорения удерживайте <strong>SHIFT</strong>, для "
+"замедления — <strong>ALT</strong>."
+
+#: templates/partials/views/settingsview.php:124
+msgid ""
+"Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Перемотка вперёд. Для ускорения удерживайте <strong>SHIFT</strong>, для "
+"замедления — <strong>ALT</strong>."
+
+#: templates/partials/views/settingsview.php:39 musicwidget.ts:234
+msgid "Select folder"
+msgstr "Выбрать папку"
+
+#: templates/partials/favoritetoggle.php:3
+msgid "Set favorite"
+msgstr "Добавить в избранное"
+
+#: templates/partials/sidebar/radiohint.php:4
+msgid "Setting up radio stations"
+msgstr "Настройка радиостанций"
+
+#: templates/partials/navigation.php:77
+#: templates/partials/views/settingsview.php:2
+msgid "Settings"
+msgstr "Настройки"
+
+#: js/app/controllers/views/podcastsviewcontroller.js:114
+msgid "Show all {{ count }} episodes …"
+msgstr "Показать все {{ count }} эпизодов…"
+
+#: js/app/directives/tracklist.js:53
+msgid "Show all {{ count }} songs …"
+msgstr "Показать все {{ count }} песен …"
+
+#: templates/partials/sidebar/artistdetails.php:54
+#: templates/partials/views/settingsview.php:117
+msgid "Show all…"
+msgstr "Показать все…"
+
+#: templates/partials/views/settingsview.php:97
+msgid ""
+"Show desktop notification when the playing song changes. You also need to "
+"have the desktop notifications allowed in your browser for this site."
+msgstr ""
+"Отображать уведомление на рабочем столе при смене трека. Для работы этой "
+"функции необходимо разрешить показ уведомлений для данного сайта в "
+"настройках браузера."
+
+#: templates/partials/sidebar/trackdetails.php:5
+msgid "Show in Files"
+msgstr "Показать в 'Файлы'"
+
+#: js/app/directives/tracklist.js:50
+msgid "Show less …"
+msgstr "Свернуть…"
+
+#: templates/partials/views/settingsview.php:23
+msgid "Show more…"
+msgstr "Подробнее…"
+
+#: js/app/controllers/playercontroller.js:778
+#: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr "Перемешать"
 
-#: ../js/public/app.js:629
+#: templates/partials/sidebar/artistdetails.php:47
+msgid "Similar to"
+msgstr "Похоже на"
+
+#: js/app/controllers/playercontroller.js:755
+#: templates/partials/navigation.php:22
+#: templates/partials/views/smartlistview.php:4
+msgid "Smart playlist"
+msgstr "Смарт-плейлист"
+
+#: templates/partials/sidebar/smartlistfilters.php:3
+msgid "Smart playlist filters"
+msgstr "Фильтры смарт-плейлиста"
+
+#: js/app/controllers/playercontroller.js:529
 msgid "Some not playable tracks were skipped."
 msgstr "Некоторые не проигрываемые композиции были пропущены."
 
-#: ../templates/fake-template.php:11
+#: templates/main.php:62
+msgid "Some of the previously scanned files may have changed"
+msgstr "Некоторые из ранее просканированных файлов могли измениться"
+
+#: templates/main.php:79
+msgid "Some search results are omitted"
+msgstr "Часть результатов не показана"
+
+#: templates/partials/views/genresview.php:34
+msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr ""
+"Некоторые треки в вашей медиатеке требуют повторного сканирования для "
+"отображения жанра"
+
+#: templates/partials/views/settingsview.php:94
+msgid "Song change notifications"
+msgstr "Уведомления о смене трека"
+
+#: templates/partials/navigationitem.php:45
+msgid "Sort …"
+msgstr "Сортировать …"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:325
+msgid "Sounds like"
+msgstr "Звучит как"
+
+#: templates/partials/views/settingsview.php:22
+msgid ""
+"Specify folders within your music collection path which shall be excluded "
+"from the scanning."
+msgstr ""
+"Укажите папки в вашей музыкальной коллекции, которые следует исключить из "
+"сканирования."
+
+#: templates/partials/views/settingsview.php:107
+msgid ""
+"Specify space-delimited list of articles which should be ignored when "
+"ordering the artists alphabetically. The articles are case-insensitive."
+msgstr ""
+"Укажите список артиклей (через пробел), которые следует игнорировать при "
+"алфавитной сортировке исполнителей. Регистр букв не учитывается."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:321
+msgid "Starts with"
+msgstr "Начинается с"
+
+#: templates/partials/controls.php:14 templates/partials/controls.php:15
+#: templates/partials/controls.php:27
+#: templates/partials/views/settingsview.php:122
+msgid "Stop"
+msgstr "Стоп"
+
+#: templates/partials/sidebar/radiostationdetails.php:14
+msgid "Stream URL"
+msgstr "URL потока"
+
+#: templates/partials/sidebar/smartlistfilters.php:53
+msgid "Strict"
+msgstr "Строго"
+
+#: templates/partials/sidebar/albumdetails.php:41
+#: templates/partials/sidebar/artistdetails.php:44
+#: templates/partials/sidebar/trackdetails.php:57
+msgid "Tags"
+msgstr "Тэги"
+
+#: templates/partials/sidebar/trackdetails.php:15
+msgid "Technical"
+msgstr "Тех.данные"
+
+#: js/app/controllers/views/settingsviewcontroller.js:334
+msgid "Text copied to clipboard"
+msgstr "Текст скопирован в буфер обмена"
+
+#: js/app/services/podcastservice.ts:240
+msgid "The channel was already up-to-date"
+msgstr "Канал не требует обновления"
+
+#: js/app/services/podcastservice.ts:237
+msgid "The channel was updated from the source"
+msgstr "Канал обновлён из источника"
+
+#: js/app/services/playlistfileservice.ts:32
+#: js/app/services/podcastservice.ts:70
+msgid ""
+"The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
+"overwrite it. Select \"No\" to save with another name."
+msgstr ""
+"Папка уже содержит файл с именем \"{{ filename }}\". Выберите \"Да\", чтобы "
+"перезаписать его. Выберите \"Нет\", чтобы сохранить под другим именем. "
+"Закройте окно для отмены."
+
+#: js/app/services/playlistfileservice.ts:208
+msgid ""
+"The playlist already contains some tracks. Imported tracks will be appended "
+"after the existing contents. Proceed?"
+msgstr ""
+"Плейлист уже содержит треки. Новые треки будут добавлены в конец списка. "
+"Продолжить?"
+
+#: templates/partials/views/settingsview.php:184
+msgid ""
+"There is no settings UI for the server-wide settings of the Music app but "
+"some settings are available by adding specific key-value pairs to the file "
+"<samp>{{filename}}</samp>. The available keys are documented <a "
+"href=\"{{url}}\" target=\"_blank\">here</a>."
+msgstr ""
+"На серверном уровне для музыкального приложения нет графического интерфейса "
+"настроек, но некоторые параметры можно изменить, добавив опции в файл: "
+"<samp>{{filename}}</samp>. Доступные опции описаны в документации <a "
+"href=\"{{url}}\" target=\"_blank\">здесь</a>."
+
+#: templates/partials/views/settingsview.php:88
+msgid "This action erases all the channels shown in the \"Podcasts\" view."
+msgstr "Это действие удалит все каналы, отображаемые в разделе «Подкасты»."
+
+#: templates/partials/views/settingsview.php:79
+msgid ""
+"This action erases all the stations shown in the \"Internet radio\" view."
+msgstr "Удаляет все станции, отображаемые в разделе «Интернет-радио»."
+
+#: templates/partials/views/settingsview.php:69
+msgid ""
+"This action resets all the scanned tracks and all the user-created "
+"playlists. After this, the collection can be scanned again from scratch."
+msgstr ""
+"Это действие удаляет все просканированные треки и пользовательские "
+"плейлисты. После этого коллекцию можно будет просканировать заново."
+
+#: js/app/services/podcastservice.ts:112
+msgid "This channel is already subscribed"
+msgstr "Вы уже подписаны на этот канал"
+
+#: templates/partials/views/settingsview.php:70
+msgid ""
+"This may be desirable after changing the excluded paths, or if the database "
+"would somehow get corrupted. If the latter happens, please report a bug to "
+"the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
+msgstr ""
+"Это может потребоваться после изменения исключённых путей или в случае "
+"повреждения базы данных. Если произошло последнее, пожалуйста, сообщите об "
+"ошибке в наш <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">баг-трекер</"
+"a>."
+
+#: templates/partials/views/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr "Эта настройка определяет каталог, в котором будет проведено сканирование музыки."
+msgstr ""
+"Эта настройка определяет каталог, в котором будет проведено сканирование "
+"музыки."
 
-#: ../templates/fake-template.php:8
+#: js/app/controllers/maincontroller.js:191
+msgid "Timeout"
+msgstr "Таймаут"
+
+#: templates/partials/sidebar/radiohint.php:12
+msgid ""
+"To find radio streams, you may use the <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. There, you can find channels "
+"e.g. by name, language, or style. You may save the results as PLS and follow "
+"the instructions above to import them to the Music app."
+msgstr ""
+"Для поиска радиостанций вы можете использовать <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. Там вы можете найти каналы по "
+"названию, языку или жанру. Результаты можно сохранить в формате PLS и "
+"импортировать, следуя приведённым выше инструкциям."
+
+#: templates/partials/sidebar/albumdetails.php:28
+#: templates/partials/sidebar/playlistdetails.php:13
+msgid "Total length"
+msgstr "Общее время"
+
+#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
+msgid "Track"
+msgstr "Трек"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:147
+msgid "Track artist name"
+msgstr "Исполнитель трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:151
+#: js/app/controllers/views/advancedsearchviewcontroller.js:205
+msgid "Track count"
+msgstr "Количество треков"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:154
+#: js/app/controllers/views/advancedsearchviewcontroller.js:207
+#: js/app/controllers/views/advancedsearchviewcontroller.js:95
+msgid "Track genre"
+msgstr "Жанр трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:85
+msgid "Track metadata"
+msgstr "Метаданные трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:148
+#: js/app/controllers/views/advancedsearchviewcontroller.js:202
+msgid "Track name"
+msgstr "Название трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:91
+msgid "Track number"
+msgstr "Номер трека"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:174
+#: js/app/controllers/views/advancedsearchviewcontroller.js:227
+msgid "Track rating"
+msgstr "Рейтинг трека"
+
+#: templates/partials/sidebar/albumdetails.php:11
+#: templates/partials/sidebar/artistdetails.php:17
 msgid "Tracks"
-msgstr "Композиции"
+msgstr "Треки"
 
-#: ../templates/fake-template.php:4
-msgid "Unknown album"
-msgstr "Неизвестный альбом"
+#: templates/partials/sidebar/artistdetails.php:93
+msgid "Tracks by {{artist}}"
+msgstr "Треки {{artist}}"
 
-#: ../templates/fake-template.php:5
-msgid "Unknown artist"
-msgstr "Неизвестный исполнитель"
+#: templates/partials/sidebar/albumdetails.php:51
+msgid "Tracks on {{album}}"
+msgstr "Треки в {{album}}"
 
-#: ../templates/main.php:135
+#: templates/partials/navigationitem.php:131
+msgid "Tree layout"
+msgstr "Дерево"
+
+#: templates/main.php:80
+msgid "Try to refine the search"
+msgstr "Уточните параметры поиска"
+
+#: js/app/services/podcastservice.ts:146
+msgid "URL"
+msgstr "URL"
+
+#: js/app/services/playlistfileservice.ts:56
+#: js/app/services/podcastservice.ts:61
+msgid "Unexpected error"
+msgstr "Непредвиденная ошибка"
+
+#: js/app/services/podcastservice.ts:38
+msgid "Unexpected error when updating the channel \"{{ title }}\""
+msgstr "Непредвиденная ошибка при обновлении канала \"{{ title }}\""
+
+#: templates/partials/views/settingsview.php:98
+msgid ""
+"Unlike the other settings, this switch is stored per browser and not per "
+"user account."
+msgstr ""
+"В отличие от других настроек, этот переключатель сохраняется для каждого "
+"браузера, а не для учётной записи пользователя."
+
+#: templates/fake-template.php:16
+msgid "Unmute"
+msgstr "Вкл звук"
+
+#: templates/partials/favoritetoggle.php:5
+msgid "Unset favorite"
+msgstr "Убрать из избранного"
+
+#: templates/partials/sidebar/smartlistfilters.php:57
+msgid "Update"
+msgstr "Обновить"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:106
+#: js/app/controllers/views/advancedsearchviewcontroller.js:164
+#: js/app/controllers/views/advancedsearchviewcontroller.js:217
+#: js/app/controllers/views/advancedsearchviewcontroller.js:254
+#: js/app/controllers/views/advancedsearchviewcontroller.js:275
+#: js/app/controllers/views/advancedsearchviewcontroller.js:302
+msgid "Update date"
+msgstr "Дата обновления"
+
+#: js/app/controllers/sidebar/artistdetailscontroller.js:68
+msgid ""
+"Upload image named \"{{name}}\" to anywhere within your library path to see "
+"it here."
+msgstr ""
+"Загрузите изображение с именем \"{{name}}\" в любое место вашей библиотеки, "
+"чтобы увидеть его здесь."
+
+#: templates/main.php:47
 msgid "Upload music in the files app to listen to it here"
 msgstr "Закачайте музыку в приложении Файлы, чтобы послушать её здесь"
 
-#: ../templates/fake-template.php:12
+#: templates/partials/views/settingsview.php:172
 msgid ""
-"Use this address to browse your music collection from any Ampache compatible"
-" player."
-msgstr "Используйте этот адрес, чтобы просмотреть вашу музыкальную коллекцию с любого плеера совместимого с Ampache."
+"Use the following credentials to connect to this Ampache/Subsonic instance."
+msgstr ""
+"Используйте следующие учетные данные для подключения к этому экземпляру "
+"Ampache/Subsonic."
 
-#: ../templates/fake-template.php:17
+#: templates/partials/views/settingsview.php:151
 msgid ""
-"Use your username and following password to connect to this Ampache "
-"instance:"
-msgstr "Используйте свой логин и пароль ниже для подключения к данному экземпляру Ampache:"
+"Use this address to browse your music collection from a Subsonic compatible "
+"player."
+msgstr ""
+"Используйте этот адрес, чтобы просмотреть вашу музыкальную коллекцию с "
+"любого плеера совместимого с Subsonic."
 
-#: ../templates/main.php:121 ../templates/main.php:123
+#: templates/partials/views/settingsview.php:146
+msgid ""
+"Use this address to browse your music collection from an Ampache compatible "
+"player."
+msgstr ""
+"Используйте этот адрес, чтобы просмотреть вашу музыкальную коллекцию с "
+"любого плеера совместимого с Ampache."
+
+#: js/app/controllers/navigationcontroller.js:284
+msgid "Used filters: {{ params }}"
+msgstr "Применённые фильтры: {{ params }}"
+
+#: templates/partials/views/settingsview.php:91
+msgid "User interface"
+msgstr "Пользовательский интерфейс"
+
+#: templates/partials/views/settingsview.php:174
+msgid "Username:"
+msgstr "Имя пользователя:"
+
+#: templates/partials/controls.php:102 templates/partials/controls.php:98
 msgid "Volume"
 msgstr "Громкость"
 
-#: ../templates/main.php:57 ../templates/main.php:77
-msgid "tracks"
-msgstr "дорожки"
+#: templates/partials/sidebar/radiostationdetails.php:38
+msgid "Website"
+msgstr "Вебсайт"
 
-#: ../templates/main.php:152
+#: js/app/services/playlistfileservice.ts:52
+#: js/app/services/podcastservice.ts:57
+msgid "Writing to the file is not allowed"
+msgstr "Запись в файл запрещена"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:149
+#: js/app/controllers/views/advancedsearchviewcontroller.js:92
+msgid "Year"
+msgstr "Год"
+
+#: templates/partials/sidebar/smartlistfilters.php:11
+msgid "Years"
+msgstr "Годы"
+
+#: templates/partials/views/settingsview.php:139
+msgid ""
+"You can browse and play your music collection from external applications "
+"which support either Ampache or Subsonic API."
+msgstr ""
+"Вы можете просматривать и воспроизводить свою музыкальную коллекцию через "
+"внешние приложения, поддерживающие API Ampache или Subsonic."
+
+#: templates/partials/views/settingsview.php:26
+msgid "You can use the wild cards '?', '*', and '**':"
+msgstr "Вы можете использовать специальные символы (wildcards) ?, * и **:"
+
+#: templates/partials/sidebar/radiohint.php:6
+msgid ""
+"You may add radio stations either by manually entering the stream URL or by "
+"importing a playlist file containing one or more stream URLs."
+msgstr ""
+"Вы можете добавлять радиостанции вручную, вводя URL потока, или импортируя "
+"файл плейлиста, содержащий один или несколько URL потоков."
+
+#: templates/partials/views/advancedsearchview.php:9
+msgid "albums"
+msgstr "альбомы"
+
+#: templates/partials/views/advancedsearchview.php:10
+msgid "artists"
+msgstr "исполнители"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:97
+msgid "author"
+msgstr "автор"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:109
+msgid "bit rate"
+msgstr "битрейт"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:100
+msgid "build date"
+msgstr "дата сборки"
+
+#: templates/partials/navigationitem.php:55
+msgid "by album"
+msgstr "по альбому"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:36
+#: js/app/controllers/views/advancedsearchviewcontroller.js:45
+#: templates/partials/navigationitem.php:52
+msgid "by artist"
+msgstr "по исполнителю"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:63
+msgid "by channel"
+msgstr "по каналу"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:35
+#: js/app/controllers/views/advancedsearchviewcontroller.js:44
+#: js/app/controllers/views/advancedsearchviewcontroller.js:51
+#: js/app/controllers/views/advancedsearchviewcontroller.js:57
+#: js/app/controllers/views/advancedsearchviewcontroller.js:62
+#: js/app/controllers/views/advancedsearchviewcontroller.js:69
+msgid "by name"
+msgstr "по названию"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:38
+msgid "by play count"
+msgstr "по количеству прослушиваний"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:40
+#: js/app/controllers/views/advancedsearchviewcontroller.js:47
+#: js/app/controllers/views/advancedsearchviewcontroller.js:53
+#: js/app/controllers/views/advancedsearchviewcontroller.js:65
+#: js/app/controllers/views/advancedsearchviewcontroller.js:71
+msgid "by rating"
+msgstr "по рейтингу"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:39
+msgid "by recent play"
+msgstr "по давности воспроизведения"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:37
+#: js/app/controllers/views/advancedsearchviewcontroller.js:46
+#: js/app/controllers/views/advancedsearchviewcontroller.js:52
+#: js/app/controllers/views/advancedsearchviewcontroller.js:58
+#: js/app/controllers/views/advancedsearchviewcontroller.js:64
+#: js/app/controllers/views/advancedsearchviewcontroller.js:70
+msgid "by time added"
+msgstr "по дате добавления"
+
+#: templates/partials/navigationitem.php:49
+msgid "by title"
+msgstr "по названию"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:98
+msgid "category"
+msgstr "категория"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:104
+msgid "channel"
+msgstr "канал"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:96
+msgid "copyright"
+msgstr "авторские права"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:92
+msgid "description"
+msgstr "описание"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:107
+msgid "duration"
+msgstr "длительность"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:102
+msgid "episode"
+msgstr "эпизод"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:111
+msgid "keywords"
+msgstr "ключевые слова"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:95
+msgid "language"
+msgstr "язык"
+
+#: templates/partials/views/advancedsearchview.php:23
+msgid "limiting to"
+msgstr "отобразить"
+
+#: templates/partials/views/advancedsearchview.php:16
+msgid "matching all rules"
+msgstr "в соответствии со всеми"
+
+#: templates/partials/views/advancedsearchview.php:17
+msgid "matching any rule"
+msgstr "в соответствии с любым"
+
+#: templates/partials/views/advancedsearchview.php:19
+msgid "ordering results"
+msgstr "сортировка"
+
+#: templates/partials/views/advancedsearchview.php:11
+msgid "playlists"
+msgstr "плейлисты"
+
+#: templates/partials/views/advancedsearchview.php:13
+msgid "podcast channels"
+msgstr "каналы подкастов"
+
+#: templates/partials/views/advancedsearchview.php:12
+msgid "podcast episodes"
+msgstr "эпизоды подкастов"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:99
+msgid "published"
+msgstr "опубликовано"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:41
+#: js/app/controllers/views/advancedsearchviewcontroller.js:48
+#: js/app/controllers/views/advancedsearchviewcontroller.js:54
+#: js/app/controllers/views/advancedsearchviewcontroller.js:59
+#: js/app/controllers/views/advancedsearchviewcontroller.js:66
+#: js/app/controllers/views/advancedsearchviewcontroller.js:72
+msgid "randomly"
+msgstr "в случайном порядке"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:103
+msgid "season"
+msgstr "сезон"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:108
+msgid "size"
+msgstr "размер"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:105
+msgid "stream URL"
+msgstr "URL потока"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:91
+msgid "title"
+msgstr "название"
+
+#: templates/partials/views/advancedsearchview.php:8
+msgid "tracks"
+msgstr "треки"
+
+#: templates/partials/views/advancedsearchview.php:25
+msgid "unlimited"
+msgstr "без ограничений"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:101
+msgid "updates checked"
+msgstr "обновлено"
+
+#: templates/partials/views/settingsview.php:195
+msgid "version history"
+msgstr "история версий"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:93
+msgid "website"
+msgstr "веб-сайт"
+
+#: js/app/controllers/maincontroller.js:69
+msgid "{{ count }} album"
+msgid_plural "{{ count }} albums"
+msgstr[0] "{{ count }} альбом"
+msgstr[1] "{{ count }} альбома"
+msgstr[2] "{{ count }} альбомов"
+msgstr[3] "{{ count }} альбомов"
+
+#: js/app/controllers/maincontroller.js:102
+msgid "{{ count }} channel"
+msgid_plural "{{ count }} channels"
+msgstr[0] "{{ count }} канал"
+msgstr[1] "{{ count }} канала"
+msgstr[2] "{{ count }} каналов"
+msgstr[3] "{{ count }} каналов"
+
+#: js/app/controllers/navigationcontroller.js:159
+msgid "{{ count }} duplicate track was removed"
+msgid_plural "{{ count }} duplicate tracks were removed"
+msgstr[0] "{{ count }} дубликат трека удалён"
+msgstr[1] "{{ count }} дубликата треков удалено"
+msgstr[2] "{{ count }} дубликатов треков удалено"
+msgstr[3] "{{ count }} дубликатов треков удалено"
+
+#: js/app/services/playlistfileservice.ts:237
+msgid "{{ count }} entries were skipped."
+msgstr "{{ count }} записей были пропущено."
+
+#: js/app/services/playlistfileservice.ts:183
+msgid "{{ count }} files were skipped."
+msgstr "{{ count }} файлов пропущено."
+
+#: js/app/controllers/maincontroller.js:75
+msgid "{{ count }} folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] "{{ count }} папка"
+msgstr[1] "{{ count }} папки"
+msgstr[2] "{{ count }} папок"
+msgstr[3] "{{ count }} папок"
+
+#: js/app/controllers/maincontroller.js:84
+msgid "{{ count }} genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] "{{ count }} жанр"
+msgstr[1] "{{ count }} жанра"
+msgstr[2] "{{ count }} жанров"
+msgstr[3] "{{ count }} жанров"
+
+#: js/app/controllers/maincontroller.js:93
+msgid "{{ count }} station"
+msgid_plural "{{ count }} stations"
+msgstr[0] "{{ count }} станция"
+msgstr[1] "{{ count }} станции"
+msgstr[2] "{{ count }} станций"
+msgstr[3] "{{ count }} станций"
+
+#: js/app/controllers/maincontroller.js:59
+#: js/app/controllers/maincontroller.js:64
+msgid "{{ count }} track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] "{{ count }} трек"
+msgstr[1] "{{ count }} трека"
+msgstr[2] "{{ count }} треков"
+msgstr[3] "{{ count }} треков"
+
+#: templates/partials/views/advancedsearchview.php:68
+msgid "{{ resultCount() }} result"
+msgid_plural "{{ resultCount() }} results"
+msgstr[0] "{{ resultCount() }} результат"
+msgstr[1] "{{ resultCount() }} результата"
+msgstr[2] "{{ resultCount() }} результатов"
+msgstr[3] "{{ resultCount() }} результатов"
+
+#: templates/main.php:71
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} из {{ scanningTotal }}"
+
+#: templates/partials/sidebar/artistdetails.php:78
+msgid "{{artist}} appears on albums"
+msgstr "{{artist}} участвует в альбомах"
+
+#: Db/Album.php:270
+msgid "Unknown album"
+msgstr "Неизвестный альбом"
+
+#: Db/Artist.php:134
+msgid "Unknown artist"
+msgstr "Неизвестный исполнитель"
+
+#: Db/Bookmark.php:47
+msgid "(no comment)"
+msgstr "(без комментариев)"
+
+#: Db/Genre.php:84
+msgid "(Unknown genre)"
+msgstr "(Неизвестный жанр)"
+
+#: musicwidget.ts:52
+msgid "Album artists"
+msgstr "Исполнители альбома"
+
+#: musicwidget.ts:53
+msgid "Track artists"
+msgstr "Исполнители трека"
+
+#: musicwidget.ts:58
+msgid "Playlists"
+msgstr "Плейлисты"
+
+#: musicwidget.ts:62
+msgid "Select mode"
+msgstr "Режим отображения"
+
+#: musicwidget.ts:182 musicwidget.ts:209
+msgid "Select artist"
+msgstr "Выбрать исполнителя"
+
+#: musicwidget.ts:190
+msgid "(All albums)"
+msgstr "(Все альбомы)"
+
+#: musicwidget.ts:192 musicwidget.ts:221
+msgid "Select album"
+msgstr "Выбрать альбом"
+
+#: musicwidget.ts:247
+msgid "Select genre"
+msgstr "Выбрать жанр"
+
+#: musicwidget.ts:263
+msgid "Select playlist"
+msgstr "Выбрать плейлист"
+
+#: musicwidget.ts:279
+msgid "Select channel"
+msgstr "Выбрать канал"
+
+#: embeddedplayer.js:136
+msgid "Actions"
+msgstr "Действия"
+
+#: embeddedplayer.js:162
+msgid "Import radio to Music"
+msgstr "Импорт радиостанций в 'Музыку'"
+
+#: embeddedplayer.js:163
+msgid "Import list to Music"
+msgstr "Импорт списка в 'Музыку'"
+
+#: embeddedplayer.js:164
+msgid "Show playlist"
+msgstr "Показать плейлист"
+
+#: embeddedplayer.js:414
+msgid "Continue playing in Music"
+msgstr "Продолжить воспроизведение в 'Музыке'"
+
+#: embeddedplayer.js:417
+msgid "(file is not within your music collection folder)"
+msgstr "(файл отсутствует в папке вашей музыкальной коллекции)"
+
+#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
+msgid "Loading…"
+msgstr "Загрузка…"
+
+#: folderview.js:143
+msgid ""
+"The option is available only while the parent folder of the playlist file is "
+"shown"
+msgstr "Эта опция доступна только при отображении родительской папки плейлиста"
+
+#: folderview.js:156
+msgid "None of the playlist files are within your music library"
+msgstr ""
+"Ни один из файлов плейлиста не находится в вашей музыкальной библиотеке"
+
+#: folderview.js:161
+msgid ""
+"{inCount} out of {totalCount} files are within your music library and can be "
+"imported"
+msgstr ""
+"{inCount} из {totalCount} файлов находятся в вашей музыкальной библиотеке и "
+"могут быть импортированы"
+
+#: folderview.js:362
+msgid "No files from the playlist could be found"
+msgstr "Не удалось найти ни одного файла из плейлиста"
+
+#: folderview.js:365
+msgid "The playlist contained {count} invalid path(s)."
+msgstr "В плейлисте {count} нерабочих путей."
+
+#: folderview.js:370
+msgid "See the playlist file details."
+msgstr "См. детали файла плейлиста."
+
+#: folderview.js:386 playlisttabview.js:90
+msgid "Error reading playlist file"
+msgstr "Ошибка чтения файла плейлиста"
+
+#: playlistfileservice.js:53
+msgid "Imported {count} tracks to a new playlist '{name}'."
+msgstr "Импортировано {count} треков в новый плейлист '{name}'."
+
+#: playlistfileservice.js:56
+msgid "{count} files were skipped."
+msgstr "{count} файлов было пропущено."
+
+#: playlistfileservice.js:62 playlistfileservice.js:86
+msgid "Failed to import the playlist file {file}"
+msgstr "Не удалось импортировать файл плейлиста {file}"
+
+#: playlistfileservice.js:67
+msgid "Failed to create a new playlist"
+msgstr "Не удалось создать плейлист"
+
+#: playlistfileservice.js:78
+msgid "Imported {count} radio stations."
+msgstr "Импортировано {count} радиостанций."
+
+#: playlistfileservice.js:80
+msgid "{count} entries were skipped."
+msgstr "{count} записей были пропущено."
+
+#: playlisttabview.js:76
+msgid "Some files on the playlist were not found"
+msgstr "Некоторые файлы из плейлиста не найдены"
+
+#~ msgid "Invalid path"
+#~ msgstr "Некорректный путь"
+
+#~ msgid ""
+#~ "Keep in mind, that the Ampache API is just a preview and is unstable. "
+#~ "Feel free to report your experience with this feature in the "
+#~ "corresponding <a href=\"https://github.com/owncloud/music/issues/"
+#~ "60\">issue</a>. I would also like to have a list of clients to test with. "
+#~ "Thanks"
+#~ msgstr ""
+#~ "Следует помнить, что API Ampache является предварительной и поэтому "
+#~ "неустойчивой реализацией. Не стесняйтесь делиться опытом работы с этой "
+#~ "функцией в соответствующем <a href=\"https://github.com/owncloud/music/"
+#~ "issues/60\">разделе</a>. Я также хотел бы создать список клиентов для "
+#~ "тестирования. Спасибо"

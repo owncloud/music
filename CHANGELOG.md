@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 ### Added
+- Russian translation
+  [#1219](https://github.com/owncloud/music/pull/1219) @mexvod
 
 ### Changed
 - Human-friendly formatting for bitrate and sample rate in the track details pane

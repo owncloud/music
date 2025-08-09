@@ -15,7 +15,7 @@
 	</div>
 	<div>
 		<div class="label-container">
-			<label for="excluded-paths" translate>Paths to exclude from your music collection</label>:
+			<label translate>Paths to exclude from your music collection</label>:
 		</div>
 		<em>
 			<p>
@@ -54,7 +54,7 @@
 		<input type="checkbox" id="scan-metadata-toggle" ng-model="settings.scanMetadata"/>
 		<div class="icon-loading-small operation-in-progress" ng-show="savingScanMetadata"></div>
 		<span style="color:red" ng-show="errorScanMetadata" translate>Failed to save the setting</span>
-		<p><em translate>Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only.</em></p>
+		<p><em translate>Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using external storage. When disabled, the library structure is built based on the file and folder names only.</em></p>
 		<p><em translate>Changes on this setting take effect only upon rescan of the library.</em></p>
 	</div>
 
@@ -107,6 +107,33 @@
 		<p><em translate>Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive.</em></p>
 		<p><em translate>In addition to the web interface, this setting is respected in the Subsonic interface although not necessarily by all clients.</em></p>
 	</div>
+	<div>
+		<div class="label-container">
+			<label translate>Keyboard shortcuts</label>
+		</div>
+		<em>
+			<p>
+				<span translate>Many functionalities of the Music app web UI can be controlled with keyboard shortcuts.</span>
+				<strong class="clickable" ng-click="showKeyboardShortcuts=true" ng-hide="showKeyboardShortcuts" translate>Show all…</strong>
+			</p>
+			<div ng-show="showKeyboardShortcuts">
+				<table class="grid">
+					<tr><td translate><strong>SPACE</strong> or <strong>K</strong></td><td translate>Play / Pause</td></tr>
+					<tr><td translate><strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong></td><td translate>Stop</td></tr>
+					<tr><td translate><strong>LEFT</strong> or <strong>J</strong></td><td translate>Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>RIGHT</strong> or <strong>L</strong></td><td translate>Seek forward. Seek faster with <strong>SHIFT</strong> or slower with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>CTRL+LEFT</strong></td><td translate>Jump to the previous track</td></tr>
+					<tr><td translate><strong>CTRL+RIGHT</strong></td><td translate>Jump to the next track</td></tr>
+					<tr><td translate><strong>M</strong></td><td translate>Mute / Unmute</td></tr>
+					<tr><td translate><strong>NUMPAD MINUS</strong></td><td translate>Decrease volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>NUMPAD PLUS</strong></td><td translate>Increase volume. Adjust more with <strong>SHIFT</strong> or less with <strong>ALT</strong>.</td></tr>
+					<tr><td translate><strong>SHIFT+COMMA</strong></td><td translate>Decrease playback speed</td></tr>
+					<tr><td translate><strong>SHIFT+PERIOD</strong></td><td translate>Increase playback speed</td></tr>
+					<tr><td translate><strong>CTRL+F</strong></td><td translate>Search</td></tr>
+				</table>
+			</div>
+		</em>
+	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>
@@ -153,61 +180,10 @@
 	</div>
 
 	<h2 translate>Admin</h2>
-	<div class="clickable" ng-show="!showAdmin" ng-click="showAdmin=true" translate>Show...</div>
-	<div ng-show="showAdmin">
-		<p translate translate-params-filename="'<cloud root>/config/config.php'">
-			There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below.
+	<div>
+		<p translate translate-params-filename="'<cloud root>/config/config.php'" translate-params-url="'https://github.com/owncloud/music/wiki/Admin-settings'">
+			There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are documented <a href="{{url}}" target="_blank">here</a>.
 		</p>
-		<div>
-			<p>music.lastfm_api_key</p>
-			<p><em translate
-					translate-params-lastfm-url="'https://www.last.fm/api/account/create'"
-					translate-params-guide-url="'https://github.com/owncloud/music/wiki/Setting-up-Last.fm-connection'"
-			>
-				To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{lastfmUrl}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key. For more details, see the <a href="{{guideUrl}}" target="_blank">tutorial</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.cover_size</p>
-			<p><em translate>
-				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer.
-			</em></p>
-		</div>
-		<div>
-			<p>music.allowed_radio_src</p>
-			<p><em translate
-					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
-					translate-params-img-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src'"
-			>
-				Array of allowed radio and podcast streaming hosts. HLS-type streams are not affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy headers <a href="{{mediaSrcUrl}}" target="_blank">media-src</a> and <a href="{{imgSrcUrl}}" target="_blank">img-src</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.enable_radio_hls</p>
-			<p><em translate
-					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
-			>
-				Enable streaming HLS-type radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
-			</em></p>
-		</div>
-		<div>
-			<p>music.podcast_auto_update_interval</p>
-			<p>
-				<em translate>The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours.</em><br/>
-				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
-			</p>
-		</div>
-		<div>
-			<p>music.ampache_api_default_ver</p>
-			<p><em translate
-					translate-params-default-ver="6">
-				The Ampache API major version to use in case the client doesn't specify any version. The default is {{defaultVer}}.
-			</em></p>
-		</div>
-		<div class="dimmed">
-			<p>music.allowed_radio_hls_src</p>
-			<p><em translate>OBSOLETE. This key is no longer needed or used by the Music application.</em></p>
-		</div>
 	</div>
 
 	<h2 translate>About</h2>

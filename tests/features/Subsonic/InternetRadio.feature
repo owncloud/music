@@ -28,13 +28,13 @@ Feature: Subsonic API - Inernet Radio
     When I request the "getInternetRadioStations" resource
     Then I should get XML with "internetRadioStation" entries:
       | name               | streamUrl                       | homePageUrl              |
-      | My station         | https://invalid.com/stream.mp3  | https://invalid.com/home |
       | My another station | https://invalid.com/stream2.mp3 |                          |
+      | My station         | https://invalid.com/stream.mp3  | https://invalid.com/home |
 
 
   Scenario: Update station
     Given I request the "getInternetRadioStations" resource
-    And I store the attribute "id" from the first "internetRadioStation" XML element
+    And I store the attribute "id" from the second "internetRadioStation" XML element
     When I specify the parameter "id" with the stored value
     And I specify the parameter "name" with value "My renamed station"
     And I specify the parameter "streamUrl" with value "https://invalid.com/new_stream.ogg"
@@ -47,8 +47,8 @@ Feature: Subsonic API - Inernet Radio
     When I request the "getInternetRadioStations" resource
     Then I should get XML with "internetRadioStation" entries:
       | name               | streamUrl                          | homePageUrl                    |
-      | My renamed station | https://invalid.com/new_stream.ogg | https://invalid.com/sweet_home |
       | My another station | https://invalid.com/stream2.mp3    |                                |
+      | My renamed station | https://invalid.com/new_stream.ogg | https://invalid.com/sweet_home |
 
 
   Scenario: Delete the first station
@@ -63,7 +63,7 @@ Feature: Subsonic API - Inernet Radio
     When I request the "getInternetRadioStations" resource
     Then I should get XML with "internetRadioStation" entries:
       | name               | streamUrl                          | homePageUrl                    |
-      | My another station | https://invalid.com/stream2.mp3    |                                |
+      | My renamed station | https://invalid.com/new_stream.ogg | https://invalid.com/sweet_home |
 
 
   Scenario: Delete the last station

@@ -7,21 +7,26 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\Hooks;
 
-class UserHooks {
-	private $userManager;
-	private $maintenance;
+use OC\Hooks\Emitter;
+use OCA\Music\Db\Maintenance;
+use OCP\IUserManager;
 
-	public function __construct($userManager, $maintenance) {
+class UserHooks {
+	private Emitter $userManager;
+	private Maintenance $maintenance;
+
+	public function __construct(IUserManager $userManager, Maintenance $maintenance) {
+		assert($userManager instanceof Emitter);
 		$this->userManager = $userManager;
 		$this->maintenance = $maintenance;
 	}
 
-	public function register() {
+	public function register() : void {
 		$maintenance = $this->maintenance;
 		$callback = function ($user) use ($maintenance) {
 			$maintenance->resetAllData($user->getUID());

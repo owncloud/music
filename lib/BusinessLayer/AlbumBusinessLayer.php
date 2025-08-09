@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -24,20 +24,21 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
-
+use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\Random;
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @phpstan-extends BusinessLayer<Album>
+ * @property AlbumMapper $mapper
  */
 class AlbumBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
-		$this->mapper = $albumMapper;
 		$this->logger = $logger;
 	}
 
@@ -56,7 +57,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findById()
 	 * @return Album[]
 	 */
-	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+	public function findById(array $ids, ?string $userId=null, bool $preserveOrder=false) : array {
 		$albums = parent::findById($ids, $userId, $preserveOrder);
 		if ($userId !== null) {
 			return $this->injectExtraFields($albums, $userId);
@@ -70,7 +71,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAll()
 	 * @return Album[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
+	public function findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		$effectivelyLimited = ($limit !== null && $limit < \count($albums));
@@ -202,8 +203,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAllByName()
 	 * @return Album[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+	public function findAllAdvanced(
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::Name,
+			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $sortBy, $random, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 
@@ -254,14 +257,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
 			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
-					? null : Util::extractIds($albums);
+					? null : ArrayUtil::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
 			$genres = $this->mapper->getGenresByAlbumId($albumIds, $userId);
 
-			foreach ($albums as &$album) {
+			foreach ($albums as $album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($artists[$albumId] ?? []);
 				$album->setNumberOfDisks($diskCounts[$albumId] ?? 1);
@@ -309,7 +312,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateAlbum(?string $name, int $albumArtistId, string $userId) : Album {
 		$album = new Album();
-		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$album->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
 
@@ -348,7 +351,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int|null $coverFileId the file id of the cover image
 	 * @param int $albumId the id of the album to be modified
 	 */
-	public function setCover(?int $coverFileId, int $albumId) {
+	public function setCover(?int $coverFileId, int $albumId) : void {
 		$this->mapper->setCover($coverFileId, $albumId);
 	}
 
@@ -358,7 +361,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Album[] albums which got modified, empty array if none
 	 */
-	public function removeCovers(array $coverFileIds, array $userIds=null) : array {
+	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 
@@ -367,7 +370,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string|null $userId target user; omit to target all users
 	 * @return string[] users whose collections got modified
 	 */
-	public function findCovers(string $userId = null) : array {
+	public function findCovers(?string $userId = null) : array {
 		$affectedUsers = [];
 		$albums = $this->mapper->getAlbumsWithoutCover($userId);
 		foreach ($albums as $album) {
@@ -406,7 +409,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Given an array of Track objects, inject the corresponding Album object to each of them
 	 * @param Track[] $tracks (in|out)
 	 */
-	public function injectAlbumsToTracks(array &$tracks, string $userId) {
+	public function injectAlbumsToTracks(array $tracks, string $userId) : void {
 		$albumIds = [];
 
 		// get unique album IDs
@@ -423,10 +426,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 		}
 
 		// create hash tables "id => entity" for the albums for fast access
-		$albumMap = Util::createIdLookupTable($albums);
+		$albumMap = ArrayUtil::createIdLookupTable($albums);
 
 		// finally, set the references on the tracks
-		foreach ($tracks as &$track) {
+		foreach ($tracks as $track) {
 			$track->setAlbum($albumMap[$track->getAlbumId()] ?? new Album());
 		}
 	}

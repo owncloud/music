@@ -11,15 +11,13 @@
  *
  */
 
-angular.module('Music').directive('onEnter', function () {
+angular.module('Music').directive('onEnter', ['$timeout', function ($timeout) {
 	return function (scope, element, attrs) {
-		element.bind('keydown keypress', function (event) {
+		element.on('keydown keypress', (event) => {
 			if (event.which === 13) {
-				scope.$apply(function () {
-					scope.$eval(attrs.onEnter, {$event: event});
-				});
+				$timeout(() => scope.$eval(attrs.onEnter, {$event: event}));
 				event.preventDefault();
 			}
 		});
 	};
-});
+}]);

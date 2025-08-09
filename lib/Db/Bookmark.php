@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -29,10 +29,10 @@ use OCP\IL10N;
  * @method void setComment(?string $comment)
  */
 class Bookmark extends Entity {
-	public $type;
-	public $entryId;
-	public $position;
-	public $comment;
+	public int $type = 0;
+	public int $entryId = 0;
+	public int $position = 0;
+	public ?string $comment = null;
 
 	public const TYPE_TRACK = 1;
 	public const TYPE_PODCAST_EPISODE = 2;
@@ -57,16 +57,23 @@ class Bookmark extends Entity {
 		];
 	}
 
-	public function toAmpacheApi() : array {
-		return [
+	public function toAmpacheApi(?callable $renderEntry = null) : array {
+		$objectType = ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode';
+		$result = [
 			'id' => (string)$this->getId(),
 			'owner' => $this->getUserId(),
-			'object_type' => ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode',
+			'object_type' => $objectType,
 			'object_id' => (string)$this->getEntryId(),
-			'position' => (int)($this->getPosition() / 1000), // millisecods to seconds
+			'position' => (int)($this->getPosition() / 1000), // milliseconds to seconds
 			'client' => $this->getComment(),
 			'creation_date' => Util::formatDateTimeUtcOffset($this->getCreated()),
 			'update_date' => Util::formatDateTimeUtcOffset($this->getUpdated())
 		];
+
+		if ($renderEntry !== null) {
+			$result[$objectType] = $renderEntry($objectType, $this->getEntryId());
+		}
+
+		return $result;
 	}
 }

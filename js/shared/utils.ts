@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 declare var OCA : any;
@@ -19,11 +19,20 @@ OCA.Music.Utils = class {
 	/**
 	 * Originally in ownCloud and in Nextcloud up to version 13, the #app-content element acted as the main scroll container.
 	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
-	 * to the Music app. Then, Nextcloud 25 changed this back to the original system.
+	 * to the Music app. Then, Nextcloud 25 changed this back to the original system. In Nextcloud 28, this changed once again
+	 * within the Files app but not globally. 
 	 */
 	static getScrollContainer() : JQuery<any> {
 		const appContent = $('#app-content');
-		return (appContent.css('overflow-y') === 'auto') ? appContent : $(window.document);
+		const filesList = $('#app-content-vue .files-list');
+
+		if (appContent.css('overflow-y') === 'auto') {
+			return appContent;
+		} else if (filesList.css('overflow-y') === 'auto') {
+			return filesList;
+		} else {
+			return $(window.document);
+		}
 	}
 
 	/**
@@ -61,7 +70,23 @@ OCA.Music.Utils = class {
 	}
 
 	/**
-	 * Capitalizes the firts character of the given string
+	 * Attempt to get a reference with the first supplied function. If the reference is available, then call the second
+	 * function giving the reference as an argument. Otherwise retry in a while. Keep trying until the reference is available.
+	 */
+	static executeOnceRefAvailable<T>(getRef : () => T|null|undefined, callback : (arg : T) => any, attemptInterval_ms = 500) : void {
+		const attempt = () => {
+			let ref = getRef();
+			if (ref) {
+				callback(ref);
+			} else {
+				setTimeout(attempt, attemptInterval_ms);
+			}
+		};
+		attempt();
+	}
+
+	/**
+	 * Capitalizes the first character of the given string
 	 */
 	static capitalize(str : string) : string {
 		return str && str[0].toUpperCase() + str.slice(1); 
@@ -153,7 +178,7 @@ OCA.Music.Utils = class {
 	}
 
 	/**
-	 * Format baud rate given as bit per second to kilobits per second with integer precission
+	 * Format baud rate given as bit per second to kilobits per second with integer precision
 	 */
 	static formatBitrate(bitsPerSecond : number) : string {
 		return (bitsPerSecond / 1000).toFixed() + ' kbps';

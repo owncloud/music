@@ -23,7 +23,7 @@ sub crawlFiles{
       push( @found, crawlFiles( $dir.'/'.$i ));
     }
     else{
-      push(@found,$dir.'/'.$i) if $i =~ /\.js$/ || $i =~ /\.php$/;
+      push(@found,$dir.'/'.$i) if $i =~ /\.js$/ || $i =~ /\.ts$/ || $i =~ /\.php$/;
     }
   }
 
@@ -66,7 +66,11 @@ die( "Program must be executed in a l10n-folder called 'l10n'" ) unless $wheream
 my $pwd = dirname(cwd());
 
 my @dirs = ();
-push(@dirs, $pwd);
+# Append Music app directories which are not handled by angular-gettext
+push(@dirs, $pwd . "/lib");
+push(@dirs, $pwd . "/js/dashboard");
+push(@dirs, $pwd . "/js/embedded");
+push(@dirs, $pwd . "/js/shared");
 
 # Languages
 my @languages = ();
@@ -78,7 +82,6 @@ foreach my $i ( @files ){
 }
 
 if( $task eq 'read' ){
-  rmtree( 'templates' );
   mkdir( 'templates' ) unless -d 'templates';
   print "Mode: reading\n";
   foreach my $dir ( @dirs ){
@@ -93,8 +96,8 @@ if( $task eq 'read' ){
     foreach my $file ( @totranslate ){
       next if $ignore{$file};
       # TODO: add support for twig templates
-      my $keyword = ( $file =~ /\.js$/ ? 't:2' : 't');
-      my $language = ( $file =~ /\.js$/ ? 'Python' : 'PHP');
+      my $keyword = ( $file =~ /\.[jt]s$/ ? 't:2' : 't');
+      my $language = ( $file =~ /\.[jt]s$/ ? 'JavaScript' : 'PHP');
       my $joinexisting = ( -e $output ? '--join-existing' : '');
       print "    Reading $file\n";
       `xgettext --output="$output" $joinexisting --keyword=$keyword --language=$language "$file" --from-code=UTF-8 --package-version="5.0.0" --package-name="$packageName" --msgid-bugs-address="translations\@owncloud.org"`;

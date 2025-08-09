@@ -1,0 +1,139 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2016 - 2024
+ */
+
+/**
+ * This file contains rules both for the playlist view specifically and for the other similar views like 'All tracks' and 'Genres' etc.
+ */
+
+/**
+ * Generic rules for multiple views
+ */
+
+.playlist-area {
+	clear: both;
+	padding-top: 15px;
+}
+
+.playlist-area > h1 {
+	margin-left: 14px;
+	margin-bottom: 11px;
+}
+
+.playlist-area > h1 > span:hover,
+.playlist-area > h1 > span:hover * {
+	cursor: pointer;
+}
+
+.playlist-area h2 {
+	margin-left: 14px;
+	margin-top: 12px;
+	margin-bottom: 0;
+}
+
+.playlist-area .track-list > li {
+	padding-bottom: 4px;
+	padding-top: 5px;
+	white-space: nowrap;
+}
+
+.playlist-area .track-list > li > div {
+	max-width: calc(100% - 36px);
+	white-space: nowrap;
+}
+
+.playlist-area .track-list .ordinal {
+	min-width: 30px;
+	text-align: right;
+}
+
+.playlist-area .track-list .albumart {
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
+	font-size: 18px;
+	margin-right: 6px;
+}
+
+.playlist-area .track-list .play-pause.overlay {
+	width: 36px;
+	height: 36px;
+	margin-left: -46px;
+}
+
+.playlist-area .current.playing .play-pause.overlay,
+.playlist-area :hover > .play-pause.overlay,
+#app-content .playlist-area .current:not(.playing):hover .play-pause.overlay {
+	background-image: url(../../img/play-overlay.svg);
+}
+
+.playlist-area .current:not(.playing) .play-pause.overlay,
+#app-content .playlist-area .current.playing:hover .play-pause.overlay {
+	background-image: url(../../img/pause-overlay.svg)
+}
+
+.playlist-area .track-list .title-lines {
+	max-width: calc(100% - 72px);
+}
+
+.playlist-area .track-list > li .title-lines > div {
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.playlist-area .track-list.insert-above > li.drag-hover {
+	padding-top: 40px;
+}
+
+.playlist-area .track-list.insert-below > li.drag-hover {
+	padding-bottom: 40px;
+}
+
+.playlist-area .track-list > li > div,
+.playlist-area .track-list > li > div * {
+	display: inline-block;
+	cursor: pointer;
+}
+
+#app-content .playlist-area .track-list li .action {
+	visibility: hidden;
+	border: none;
+	background-color: transparent;
+	vertical-align: middle;
+	margin: 0;
+	opacity: 0.5;
+	padding: 16px;
+}
+
+#app-content .playlist-area .track-list li .action:hover {
+	opacity: 1;
+}
+
+#app-content .playlist-area .track-list li:hover .action {
+	visibility: visible;
+}
+
+#app-content .playlist-area .track-list .icon-loading-small {
+	margin-bottom: -3px;
+}
+
+/**
+ * Rules specific for the playlist/smartlist/radio views
+ */
+
+#playlist-view,
+#smartlist-view {
+	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
+}
+
+#playlist-view .track-list > li > div,
+#radio-view .track-list > li > div {
+	max-width: calc(100% - 72px); /* more space needs to be reserved as there are two action icons instead of just one */
+}

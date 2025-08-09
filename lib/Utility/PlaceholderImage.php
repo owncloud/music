@@ -5,6 +5,7 @@ declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  * @copyright 2018 John Molakvoæ <skjnldsv@protonmail.com>
+ * @copyright 2022 - 2025 Pauli Järvinen
  *
  * @author Christopher Schäpers <kondou@ts.unde.re>
  * @author Christoph Wurst <christoph@winzerhof-wurst.at>
@@ -78,6 +79,7 @@ class PlaceholderImage {
 
 	/**
 	 * Generate placeholder data in format compatible with OCA\Music\Http\FileResponse
+	 * @return array{content: string, mimetype: string}
 	 */
 	public static function generateForResponse(string $name, string $seed, int $size) : array {
 		return [
@@ -102,10 +104,11 @@ class PlaceholderImage {
 		if (empty($displayName) === true) {
 			return '?';
 		}
-		$firstTwoLetters = array_map(function ($namePart) {
-			return \mb_strtoupper(mb_substr($namePart, 0, 1), 'UTF-8');
-		}, explode(' ', $displayName, 2));
-			return \implode('', $firstTwoLetters);
+		$firstTwoLetters = array_map(
+			fn($namePart) => \mb_strtoupper(\mb_substr($namePart, 0, 1), 'UTF-8'),
+			\explode(' ', $displayName, 2)
+		);
+		return \implode('', $firstTwoLetters);
 	}
 
 	/**
@@ -198,12 +201,12 @@ class PlaceholderImage {
 namespace OCA\Music\Utility\PlaceholderImage;
 
 /**
- * A strripped-down copy of https://github.com/nextcloud/server/blob/master/lib/public/Color.php
+ * A stripped-down copy of https://github.com/nextcloud/server/blob/master/lib/public/Color.php
  */
 class Color {
-	private $r;
-	private $g;
-	private $b;
+	private int $r;
+	private int $g;
+	private int $b;
 
 	public function __construct(int $r, int $g, int $b) {
 		$this->r = $r;

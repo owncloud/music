@@ -28,8 +28,8 @@ Feature: Subsonic API - Playlists
     When I request the "getPlaylists" resource
     Then I should get XML with "playlist" entries:
       | name                | songCount | public |
-      | My playlist         | 0         | false  |
       | My another playlist | 1         | false  |
+      | My playlist         | 0         | false  |
 
 
   Scenario: Update playlist
@@ -37,7 +37,7 @@ Feature: Subsonic API - Playlists
     And I request the "search2" resource
     And I store the attribute "id" from the first "song" XML element as "songIdToAdd"
     And I request the "getPlaylists" resource
-    And I store the attribute "id" from the second "playlist" XML element
+    And I store the attribute "id" from the first "playlist" XML element
     When I specify the parameter "playlistId" with the stored value of "id"
     And I specify the parameter "name" with value "My renamed playlist"
     And I specify the parameter "songIdToAdd" with the stored value

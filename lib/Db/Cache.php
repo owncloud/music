@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -17,7 +17,7 @@ use OCP\IDBConnection;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 
 class Cache {
-	private $db;
+	private IDBConnection $db;
 
 	public function __construct(IDBConnection $db) {
 		$this->db = $db;
@@ -64,7 +64,7 @@ class Cache {
 	 * @param string $userId User to target, omit to target all users
 	 * @param string $key Key to target, omit to target all keys
 	 */
-	public function remove(string $userId = null, string $key = null) : void {
+	public function remove(?string $userId = null, ?string $key = null) : void {
 		$sql = 'DELETE FROM `*PREFIX*music_cache`';
 		$params = [];
 		if ($userId !== null) {
@@ -98,12 +98,12 @@ class Cache {
 	}
 
 	/**
-	 * Get all key-value pairs of one user, optionally limitting to keys with a given prefix.
+	 * Get all key-value pairs of one user, optionally limiting to keys with a given prefix.
 	 * @param string $userId
 	 * @param string|null $prefix
 	 * @return array of arrays with keys 'key', 'data'
 	 */
-	public function getAll(string $userId, string $prefix = null) : array {
+	public function getAll(string $userId, ?string $prefix = null) : array {
 		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache`
 				WHERE `user_id` = ?';
 		$params = [$userId];
@@ -133,7 +133,7 @@ class Cache {
 		return \count($rows) ? $rows[0]['user_id'] : null;
 	}
 
-	private function executeUpdate(string $sql, array $params) {
+	private function executeUpdate(string $sql, array $params) : int {
 		try {
 			return $this->db->executeUpdate($sql, $params);
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {

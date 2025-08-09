@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -19,14 +19,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Cleanup extends Command {
 
-	/** @var Maintenance */
-	private $maintenance;
+	private Maintenance $maintenance;
 
-	public function __construct($maintenance) {
+	public function __construct(Maintenance $maintenance) {
 		$this->maintenance = $maintenance;
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->setName('music:cleanup')
@@ -34,10 +36,13 @@ class Cleanup extends Command {
 		;
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln('Running cleanup task...');
-		$removedEtries = $this->maintenance->cleanUp();
-		$output->writeln("Removed entries: " . \json_encode($removedEtries));
+		$removedEntries = $this->maintenance->cleanUp();
+		$output->writeln("Removed entries: " . \json_encode($removedEntries));
 		return 0;
 	}
 }

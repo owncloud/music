@@ -7,15 +7,15 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 
 angular.module('Music').controller('NavigationController', [
 	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', '$location',
-	'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
+	'playQueueService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
 	function ($rootScope, $scope, $document, Restangular, $timeout, $location,
-			playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
+			playQueueService, playlistFileService, podcastService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
@@ -27,6 +27,8 @@ angular.module('Music').controller('NavigationController', [
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
+		// same as above, but for the search field
+		$scope.showSearch = false;
 		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
 
@@ -41,7 +43,7 @@ angular.module('Music').controller('NavigationController', [
 			// Move the focus to the input field. This has to be made asynchronously
 			// because the field is not visible yet, it is shown by ng-show binding
 			// later during this digest loop.
-			$timeout(() => $('.new-list').focus());
+			$timeout(() => $('#new-list-input').trigger('focus'));
 		};
 
 		// Commit creating playlist
@@ -57,6 +59,50 @@ angular.module('Music').controller('NavigationController', [
 			$scope.newPlaylistTrackIds = [];
 			$scope.showCreateForm = false;
 		};
+
+		$scope.startSearch = function() {
+			$scope.showSearch = true;
+			// Move the focus to the input field. This has to be made asynchronously
+			// because the field is not visible yet, it is shown by ng-show binding
+			// later during this digest loop.
+			$timeout(() => $('#search-input').trigger('focus'));
+			expandCollapsedNavigationPane();
+		};
+
+		$scope.clearSearch = function() {
+			$('#search-input').val('');
+			$('#search-input').trigger('change');
+			$scope.showSearch = false;
+		};
+
+		$('#search-input').on('blur', function() {
+			if (this.value == '') {
+				$scope.showSearch = false;
+			}
+		});
+		
+		/** 
+		 * Catch ctrl+f except when a view not supporting search is active or the search input is already
+		 * focused. In the latter case, let the cloud core and/or browser do its default handling.
+		 * Note: This event is bound in the *capturing* phase instead of the typical *bubbling* phase.
+		 * This is to enable us to execute before the event handler registered by the unified search.
+		 * During the bubbling phase, the handlers are executed in the order they are registered and we
+		 * can't register our handler before the cloud core.
+		 */
+		document.addEventListener('keydown', (e) => {
+			const noSearchViews = ['#/settings', '#/search'];
+			if (!noSearchViews.includes($rootScope.currentView)
+				&& !$('#search-input').is(':focus')
+				&& !$('#unified-search__input').is(':focus')
+				&& e.ctrlKey && e.key === 'f')
+			{
+				$timeout($scope.startSearch);
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			}
+			return true;
+		}, {capture: true});
 
 		// Show/hide the more actions menu on a navigation item
 		$scope.onNaviItemMoreButton = function(naviDestination) {
@@ -130,7 +176,7 @@ angular.module('Music').controller('NavigationController', [
 						if (confirmed) {
 							Restangular.one('playlists', playlist.id).remove();
 
-							// remove the elemnt also from the AngularJS list
+							// remove the element also from the AngularJS list
 							libraryService.removePlaylist(playlist);
 						}
 					},
@@ -184,6 +230,32 @@ angular.module('Music').controller('NavigationController', [
 			);
 		};
 
+		$scope.exportPodcastsToFile = function(event) {
+			if ($scope.anyPodcastChannels()) {
+				podcastService.exportToFile().then(
+					() => $scope.podcastsBusy = false, // success
+					() => $scope.podcastsBusy = false, // failure
+					(state) => { // notification about state change
+						if (state == 'started') {
+							$scope.podcastsBusy = true;
+						} else if (state == 'stopped') {
+							$scope.podcastsBusy = false;
+						}
+					}
+				);
+			} else {
+				event.stopPropagation();
+			}
+		};
+
+		$scope.importPodcastsFromFile = function() {
+			podcastService.importFromFile().then(
+				() => $scope.podcastsBusy = false, // success
+				() => $scope.podcastsBusy = false, // failure
+				() => $scope.podcastsBusy = true   // notification about import actually starting
+			);
+		};
+
 		$scope.reloadPodcasts = function(event) {
 			if ($scope.anyPodcastChannels()) {
 				$scope.podcastsBusy = true;
@@ -208,20 +280,21 @@ angular.module('Music').controller('NavigationController', [
 			const smartlist = libraryService.getSmartList();
 			createPlaylist(
 				gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
-				_.map(smartlist.tracks, 'track.id')
+				_.map(smartlist.tracks, 'track.id'),
+				gettextCatalog.getString('Used filters: {{ params }}', { params: JSON.stringify(_.omitBy(smartlist.params, _.isNil), null, 2) })
 			);
 		};
 
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {
 			if ($rootScope.playingView == destination) {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			else {
 				let play = function(id, tracks) {
 					if (tracks && tracks.length) {
-						playlistService.setPlaylist(id, tracks);
-						playlistService.publish('play', destination);
+						playQueueService.setPlaylist(id, tracks);
+						playQueueService.publish('play', destination);
 					}
 				};
 
@@ -272,10 +345,17 @@ angular.module('Music').controller('NavigationController', [
 			addTracks(playlist, trackIdsFromGenre(genreId));
 		};
 
+		// Add all tracks of another playlist to the playlist
+		$scope.addPlaylist = function(playlist, anotherListId) {
+			addTracks(playlist, trackIdsFromPlaylist(anotherListId));
+		};
+
 		// An item dragged and dropped on a navigation bar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
 				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('tracks' in droppedItem) {
+				addTracks(playlist, droppedItem.tracks);
 			} else if ('album' in droppedItem) {
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {
@@ -284,8 +364,10 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addFolder(playlist, droppedItem.folder);
 			} else if ('genre' in droppedItem) {
 				$scope.addGenre(playlist, droppedItem.genre);
+			} else if ('playlist' in droppedItem) {
+				$scope.addPlaylist(playlist, droppedItem.playlist);
 			} else {
-				console.error('Unknwon entity dropped on playlist');
+				console.error('Unknown entity dropped on playlist');
 			}
 
 			// 50 ms haptic feedback for touch devices
@@ -303,25 +385,40 @@ angular.module('Music').controller('NavigationController', [
 
 		// Dragging an entity over the navigation toggle pops the navigation pane open.
 		// Subsequently, ending the drag closes the navigation pane.
-		let navOpenedByDrag = false;
-		const navToggle = document.getElementById('app-navigation-toggle');
-		navToggle.addEventListener('dragenter', function() {
-			if (!navOpenedByDrag) {
-				navOpenedByDrag = true;
-				$timeout(() => $(navToggle).click());
+		// It occasionally happens (at least on Chrome) that the navigation toggle is not yet
+		// present when this controller is initialized. In those cases, the related logic
+		// is injected a bit later. See https://github.com/owncloud/music/issues/1137.
+		OCA.Music.Utils.executeOnceRefAvailable(
+			() => document.getElementById('app-navigation-toggle'),
+			(navToggle) => {
+				let navOpenedByDrag = false;
+				navToggle.addEventListener('dragenter', () => {
+					if (!navOpenedByDrag) {
+						navOpenedByDrag = true;
+						expandCollapsedNavigationPane();
+					}
+				});
+				document.addEventListener('dragend', () => {
+					if (navOpenedByDrag) { 
+						navOpenedByDrag = false;
+						$scope.collapseNavigationPaneOnMobile();
+					}
+				});
 			}
-		});
-		document.addEventListener('dragend', function() {
-			if (navOpenedByDrag) { 
-				navOpenedByDrag = false;
-				$scope.collapseNavigationPaneOnMobile();
-			}
-		});
+		);
 
-		function createPlaylist(name, trackIds) {
+		function expandCollapsedNavigationPane() {
+			const $navToggle = $('#app-navigation-toggle');
+			if (!$('body').hasClass('snapjs-left') && $navToggle.is(':visible')) {
+				$timeout(() => $navToggle.trigger('click'));
+			}
+		}
+
+		function createPlaylist(name, trackIds, comment=undefined) {
 			const args = {
 				name: name,
-				trackIds: trackIds.join(',')
+				trackIds: trackIds.join(','),
+				comment: comment
 			};
 			Restangular.all('playlists').post(args).then(function(playlist) {
 				libraryService.addPlaylist(playlist);
@@ -350,6 +447,11 @@ angular.module('Music').controller('NavigationController', [
 			return _.map(genre.tracks, 'track.id');
 		}
 
+		function trackIdsFromPlaylist(playlistId) {
+			let playlist = libraryService.getPlaylist(playlistId);
+			return _.map(playlist.tracks, 'track.id');
+		}
+
 		function addTracks(playlist, trackIds) {
 			if (playlist === null) {
 				// tracks dropped on the "+ New Playlist" item, start creating a new list
@@ -366,10 +468,10 @@ angular.module('Music').controller('NavigationController', [
 					let newTracks = _.map(trackIds, function(trackId) {
 						return { track: libraryService.getTrack(trackId) };
 					});
-					playlistService.onTracksAdded(newTracks);
+					playQueueService.onTracksAdded(newTracks);
 				}
 
-				Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
+				Restangular.one('playlists', playlist.id).all('add').post({track: trackIds.join(',')}).then(function (result) {
 					playlist.updated = result.updated;
 				});
 			}
@@ -379,7 +481,7 @@ angular.module('Music').controller('NavigationController', [
 			// Update the currently playing list if necessary
 			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
 				let playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
-				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
+				playQueueService.onPlaylistModified(playlist.tracks, playingIndex);
 			}
 
 			let trackIds = _.map(playlist.tracks, 'track.id');

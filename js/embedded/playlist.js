@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 OCA.Music = OCA.Music || {};
@@ -25,14 +25,18 @@ OCA.Music.Playlist = class {
 	}
 
 	constructor(folderFiles, supportedMimes, firstFileId) {
-		this.#files = _.filter(folderFiles, function(file) {
-			// external URLs do not have a valid MIME type set, attempt to play them regardless
-			return file.mimetype === null || _.includes(supportedMimes, file.mimetype);
-		});
-		this.#currentIndex = _.findIndex(this.#files, function(file) {
-			// types int/string depend on the cloud version, don't use ===
-			return file.id == firstFileId; 
-		});
+		// Filter out unsupported files.
+		// External URLs do not have a valid MIME type set, attempt to play them regardless.
+		this.#files = _.filter(folderFiles, (f) => (f.mimetype === null || supportedMimes.includes(f.mimetype)));
+
+		// Find the initial index corresponding the given file ID.
+		// ID type int/string depend on the cloud version, don't use '==='.
+		this.#currentIndex = _.findIndex(this.#files, (file) => file.id == firstFileId);
+
+		// Default the start index to 0 if the desired ID is not found (after the filtering).
+		if (this.#files.length && this.#currentIndex == -1) {
+			this.#currentIndex = 0;
+		}
 	}
 
 	next() {

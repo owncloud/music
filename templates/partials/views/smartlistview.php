@@ -1,4 +1,4 @@
-<div class="view-container playlist-area flat-list-view" id="smartlist-area" ng-show="!loading && !loadingCollection">
+<div id="smartlist-view" class="view-container playlist-area flat-list-view" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span translate>Smart playlist</span>

@@ -1,6 +1,8 @@
 # README
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
+[![PHP Analysis](https://github.com/paulijar/music/actions/workflows/php-analysis.yml/badge.svg)](https://github.com/paulijar/music/actions/workflows/php-analysis.yml)
+[![PHP Integration Tests](https://github.com/paulijar/music/actions/workflows/php-integration-tests.yml/badge.svg)](https://github.com/paulijar/music/actions/workflows/php-integration-tests.yml)
 
 <img src="/img/logo/music_logotype_horizontal.svg" alt="logotype" width="60%"/>
 
@@ -35,15 +37,15 @@ Mobile layout and media control integration to the lock screen and notification 
 * AU (`audio/basic`)
 * CAF (`audio/x-caf`)
 
-_Note: The audio formats supported vary depending on the browser. Most recents versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
+_Note: The audio formats supported vary depending on the browser. Most recent versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
 ### Detail
 
 The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. Still, there is no browser which could natively play all the formats listed above. For those formats not supported natively, the Music app utilizes the Aurora.js javascript library which is able to play most of the formats listed above, excluding only the OGG containers. On the other hand, Aurora.js may not be able to play all the individual files of the supported formats and is very limited in features (no seeking, no adjusting of playback speed).
 
-_Note: In order to be playable in the Music app, the file type has to be mapped to a MIME type `audio/*` on your cloud instance. Neither ownCloud nor Nextcloud has these mappings by default for the file types AAC, AIFF, AU, or CAF. To add these mappings, run:_
+_Note: In order to be playable in the Music app, the file type has to be mapped to a MIME type `audio/*` on your cloud instance. Neither ownCloud nor Nextcloud has these mappings by default for the file types AIFF, AU, or CAF. The mapping for the file type AAC is missing from ownCloud but present on Nextcloud. To add the missing mappings, run:_
 
-	./occ music:register-mime-types
+	php occ music:register-mime-types
 
 ## Usage hints
 
@@ -53,41 +55,8 @@ If the database would somehow get corrupted, the user can force it to be rebuilt
 
 ### Commands
 
-If preferred, it is also possible to use the command line tool for the database maintenance as described below. This may be quicker than scanning via the web UI in case of large music library, and optionally allows targeting more than one user at once.
+If preferred, it is also possible to use the command line tool for the database maintenance, see https://github.com/owncloud/music/wiki/Commands. This may be quicker than scanning via the web UI in case of large music library, and optionally allows targeting more than one user at once, as well as some more options not available on the web interface.
 
-Following commands are available(see script occ in your ownCloud root folder):
-
-#### Scan music files
-
-Scan all audio files not already indexed in the database. Extract metadata from those and insert it to the database. Target either specified user(s) or user group(s) or all users.
-
-	./occ music:scan USERNAME1 USERNAME2 ...
-	./occ music:scan --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:scan --all
-
-All the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
-
-You can also supply the option `--rescan` to scan also the files which are already part of the collection. This might be necessary, if some file update has been missed by the app because of some bug or because the admin has temporarily disabled the app.
-
-Lastly, you can give option `--clean-obsolete` to make the process check all the previously scanned files, and clean up those which are no longer found. Again, this is usually handled automatically, but manually running the command could be necessary on some special cases.
-
-#### Reset scanned metadata
-
-Reset all data stored to the music database. Target either specified user(s) or user group(s) or all users.
-
-**Warning:** This command will erase user-created data! It will remove all playlists as playlists are linked against the track metadata.
-
-	./occ music:reset-database USERNAME1 USERNAME2 ...
-	./occ music:reset-database --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:reset-database --all
-
-#### Reset cache
-
-Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tests. Target either specified user(s) or user group(s) or all users.
-
-	./occ music:reset-cache USERNAME1 USERNAME2 ...
-	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
-	./occ music:reset-cache --all
 
 ### Ampache and Subsonic
 
@@ -128,19 +97,18 @@ The application's scalability for large music collections has gradually improved
 
 #### Translations
 
-There exist partial translations for the Music app for many languages, but most of them are very much incomplete. In the past, the application was translated at https://www.transifex.com/owncloud-org/owncloud/ and the resource still exists there. However, large majoriry of the strings used in the app have not been picked by Transifex for many years now, and hence the translations from Transifex cannot be actually used. The root cause is disparity in the localization mechanisms used in the Music app and on ownCloud in general, and bridging the gap would require some support from ownCloud core team. This is probably never going to happen, see https://central.owncloud.org/t/owncloud-music-app-translations/14881. For now, you may contribute translations as normal pull requests, by following the instructions from https://github.com/owncloud/music/issues/671#issuecomment-782746463.
+There exist partial translations for the Music app for many languages, but most of them are very much incomplete. In the past, the application was translated at https://www.transifex.com/owncloud-org/owncloud/ and the resource still exists there. However, large majority of the strings used in the app have not been picked by Transifex for many years now, and hence the translations from Transifex cannot be actually used. The root cause is disparity in the localization mechanisms used in the Music app and on ownCloud in general, and bridging the gap would require some support from ownCloud core team. This is probably never going to happen, see https://central.owncloud.org/t/owncloud-music-app-translations/14881. For now, you may contribute translations as normal pull requests, by following the instructions from https://github.com/owncloud/music/issues/671#issuecomment-782746463.
 
-#### SMB shares
+#### SMB storage
 
-The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track names from the file names and the album names from the folder names. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
+The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track name from the file name, album name from the parent folder name, and artist name from the grand parent folder name. Whether or not the problem exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share. According to the [documentation](https://docs.nextcloud.com/server/stable/admin_manual/configuration_files/external_storage/smb.html), using the SMB storage requires either `smbclient` or `libsmbclient-php` and the latter is preferred. Installing the `libsmbclient-php` has solved this metadata issue for some users.
 
 ## Development
 
 ### Build frontend bundle
 
-All the frontend javascript sources of the Music app, including the used vendor libraries, are bundled into a single file for deployment using webpack. This bundle file is `dist/webpack.app.js`. Similarly, all the style files of the Music app are bundled into `dist/webpack.app.css`. Downloading the vendor libraries and generating these bundles requires the `npm` utility, and happens by running:
+All the frontend javascript sources of the Music app, including the used vendor libraries, are bundled into a few files for deployment using webpack. These bundle files are named like `dist/webpack.*.js`. Similarly, all the style files of the Music app are bundled into files like `dist/webpack.*.css`. Downloading the vendor libraries and generating these bundles requires the `npm` utility, and happens by running:
 
-	cd build
 	npm install --deps
 	npm run build
 
@@ -169,20 +137,20 @@ To install test dependencies, run the following command on the root level of the
 
 #### Static analysis with PHPStan
 
-	composer run-script analyze
+	composer run analyze
 
 #### PHP unit tests
 
-	composer run-script unit-tests
+	composer run unit-tests
 
 #### PHP integration tests
 The integration tests require the music app to be installed under the `apps` folder of an ownCloud or Nextcloud installation. The following steps assume that the cloud installation in question has not been taken into use yet, e.g. it's a fresh clone from github.
 
 	cd ../..          # owncloud/nextcloud core
-	./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
-	./occ app:enable music
+	php occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
+	php occ app:enable music
 	cd apps/music
-	composer run-script integration-tests
+	composer run integration-tests
 
 #### Behat acceptance tests
 
@@ -193,43 +161,39 @@ The integration tests require the music app to be installed under the `apps` fol
 
 For the acceptance tests, you need to upload all the tracks from the following zip file to your cloud instance: https://github.com/paulijar/music/files/2364060/testcontent.zip
 
+### Translation scripts
+
+The translatable strings are extracted from the front-end files of the Music app proper using the `angular-gettext` module. This is installed among other dependencies with `npm`.
+
+In addition, there are some translatable strings within the back-end code and in the front-end files for the embedded Files player and for the Nextcloud Dashboard widget. These are handled using the perl script `l10n/l10n.pl`. In addition to the perl interpreter, this script requires the module `Locale::PO` (can be installed with CPAN) and the `xgettext` tool. On Linux, the latter should be available with `apt-get install gettext` or similar. On Windows, this needs to be installed manually and the executable must be added to the PATH; at least the version 0.22.5 from https://github.com/vslavik/gettext-tools-windows/releases seems to work well.
+
+When the tools are setup correctly, all the strings can be extracted from the source codes to `l10n/templates/music.pot` with the command:
+
+	cd build
+	make l10n-extract
+
+The music.pot file can then be used to update the language-specific translation file (l10n/*/music.po) as described in https://github.com/owncloud/music/issues/671#issuecomment-782746463.
+
+Once the translations have been updated in the .po files, we need to generate the final source files used to build the Music application. This, again, uses both `angular-gettext` and `l10n/l10n.pl`. For this, execute
+
+	cd build
+	make l10n-clone
+	make l10n-compile
+
+The step `l10n-clone` above makes copies of some translations to different language codes. This is needed because ownCloud and Nextcloud use slightly different language codes in some cases. Furthermore, the clouds may support multiple versions of the same language but the Music app currently has identical translation for each of them.
+
 ## API
 
-The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
-
-However, the front-end of the Music app nowadays doesn't use any part of the Shiva API. Instead, the following proprietary REST endpoints are used:
-
-* `/api/log`
-* `/api/prepare_collection`
-* `/api/collection`
-* `/api/folders`
-* `/api/genres`
-* `/api/file/{fileId}`
-* `/api/file/{fileId}/download`
-* `/api/file/{fileId}/path`
-* `/api/file/{fileId}/info`
-* `/api/file/{fileId}/details`
-* `/api/scanstate`
-* `/api/scan`
-* `/api/resetscanned`
-* `/api/cover/{hash}`
-* `/api/artist/{artistId}/cover`
-* `/api/artist/{artistId}/details`
-* `/api/artist/{artistId}/similar`
-* `/api/album/{albumId}/cover`
-* `/api/album/{albumId}/details`
-* `/api/share/{token}/{fileId}/info`
-* `/api/share/{token}/{fileId}/parse`
-* Playlist API at `/api/playlists/*`
-* Radio API at `/api/radio/*`
-* Podcast API at `/api/podcasts/*`
-* Settings API at `/api/settings/*`
+The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resource `/artists/<int:artist_id>/shows`. The endpoints of this API can be found under `https://own.cloud.example.org/index.php/apps/music/api/`. The Shiva API could be used by other applications running on ownCloud/Nextcloud to access the library contents. This API is accessible only with a valid cloud user session which makes it difficult to use for clients running outside of the hosting cloud.
 
 To connect external client applications, partial implementations of the following APIs are available:
 
 * [Ampache XML API](https://github.com/ampache/ampache/wiki/XML-methods) at `/ampache/server/xml.server.php`
 * [Ampache JSON API](https://github.com/ampache/ampache/wiki/JSON-methods) at `/ampache/server/json.server.php`
 * [Subsonic API](http://www.subsonic.org/pages/api.jsp) at `/subsonic/rest/{method}`
+
+The web interface of the Music app uses a proprietary REST API. Note that this API may change between the application versions without prior notice. For list of all available endpoints, see [appinfo/routes.php](https://github.com/owncloud/music/blob/master/appinfo/routes.php). As this API is not documented anywhere, the details of each endpoint have to be checked from the implementation. See [here](https://github.com/owncloud/music/issues/1012#issuecomment-1256943457) for some hints.
+
 
 ### `/api/log`
 
@@ -329,7 +293,7 @@ Response:
 
 ### Creating APIKEY for Subsonic/Ampache
 
-The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
+The endpoint `/api/settings/userkey/generate` may be used to programmatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
 
 ```

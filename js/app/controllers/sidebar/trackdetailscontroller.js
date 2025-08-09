@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 
@@ -15,19 +15,19 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.selectedTab = 'general';
 
-		let currentTrack = null;
-
 		function resetContents() {
-			currentTrack = null;
+			$scope.track = null;
 			$scope.details = null;
 			$scope.lastfmInfo = null;
 			$scope.lastfmArtist = null;
 			$scope.lastfmAlbum = null;
 			$scope.lastfmTags = null;
+			$scope.lastfmMbid = null;
 		}
+		resetContents();
 
 		function getFileId() {
-			let files = currentTrack.files;
+			let files = $scope.track.files;
 			return files[Object.keys(files)[0]];
 		}
 
@@ -42,9 +42,9 @@ angular.module('Music').controller('TrackDetailsController', [
 		}
 
 		function showDetails(trackId) {
-			if (!currentTrack || trackId != currentTrack.id) {
+			if (!$scope.track || trackId != $scope.track.id) {
 				resetContents();
-				currentTrack = libraryService.getTrack(trackId);
+				$scope.track = libraryService.getTrack(trackId);
 
 				let albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -52,7 +52,7 @@ angular.module('Music').controller('TrackDetailsController', [
 				let fileId = getFileId();
 				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
 
-				Restangular.one('file', fileId).one('details').get().then(function(result) {
+				Restangular.one('files', fileId).one('details').get().then(function(result) {
 					if (result.tags.picture) {
 						albumart.css('background-image', 'url("' + result.tags.picture + '")');
 						albumart.css('height', ''); // remove the inline height and use the one from the css file
@@ -101,6 +101,11 @@ angular.module('Music').controller('TrackDetailsController', [
 				if ('toptags' in data.track) {
 					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
 				}
+
+				const mbid = data.track.mbid;
+				if (mbid) {
+					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
+				}
 			}
 		}
 
@@ -115,7 +120,7 @@ angular.module('Music').controller('TrackDetailsController', [
 		$rootScope.$on('playerProgress', function(event, time) {
 			// check if we are viewing time-synced lyrics of the currently playing track
 			if ($scope.details && $scope.details.lyrics && $scope.details.lyrics.synced
-					&& $scope.$parent.currentTrack.id == currentTrack.id) {
+					&& $scope.$parent.currentTrack.id == $scope.track.id) {
 				// Check if the highlighted row needs to change. First find the last row
 				// which has been already reached by the playback.
 				let allRows = $('#app-sidebar .lyrics');
@@ -135,12 +140,25 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.$watch('selectedTab', $scope.$parent.adjustFixedPositions);
 
-		$scope.formatDetailValue = function(value) {
-			if (isFloat(value)) {
+		$scope.formatDetailValue = function(value, key=null) {
+			if (key == 'sample_rate') {
+				return (value/1000).toFixed(1) + ' kHz';
+			} else if (key == 'bitrate') {
+				return (value/1000).toFixed(0) + ' kbps';
+			} else if (isFloat(value)) {
 				// limit the number of shown digits on floating point numbers
 				return Number(value.toPrecision(6));
 			} else {
 				return value;
+			}
+		};
+
+		$scope.valueTooltip = function(value, key) {
+			// Show the original value in the tooltip on those entries where some formatting is applied
+			if (key == 'sample_rate' || key == 'bitrate' || isFloat(value)) {
+				return value;
+			} else {
+				return '';
 			}
 		};
 
@@ -182,11 +200,11 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.tagHasDetails = function(tag) {
 			switch (tag.key) {
-			case 'artist':			return currentTrack.artist.name == tag.value;
-			case 'album':			return currentTrack.album.name == tag.value;
+			case 'artist':			return $scope.track.artist.name == tag.value;
+			case 'album':			return $scope.track.album.name == tag.value;
 			case 'albumartist':		// fall through
 			case 'album_artist':	// fall through
-			case 'band':			return currentTrack.album.artist.name == tag.value;
+			case 'band':			return $scope.track.album.artist.name == tag.value;
 			default:				return false;
 			}
 		};
@@ -194,15 +212,15 @@ angular.module('Music').controller('TrackDetailsController', [
 		$scope.showTagDetails = function(tag) {
 			switch (tag.key) {
 			case 'artist':
-				$rootScope.$emit('showArtistDetails', currentTrack.artistId);
+				$rootScope.$emit('showArtistDetails', $scope.track.artistId);
 				break;
 			case 'album':
-				$rootScope.$emit('showAlbumDetails', currentTrack.album.id);
+				$rootScope.$emit('showAlbumDetails', $scope.track.album.id);
 				break;
 			case 'albumartist':		// fall through
 			case 'album_artist':	// fall through
 			case 'band':
-				$rootScope.$emit('showArtistDetails', currentTrack.album.artist.id);
+				$rootScope.$emit('showArtistDetails', $scope.track.album.artist.id);
 				break;
 			default:
 				// nothing

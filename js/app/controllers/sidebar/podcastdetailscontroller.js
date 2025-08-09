@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 
@@ -49,15 +49,11 @@ angular.module('Music').controller('PodcastDetailsController', [
 				let albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
 
-				let restPath = 'podcasts';
-				if ($scope.contentType == 'podcastChannel') {
-					$scope.entity = libraryService.getPodcastChannel($scope.contentId);
-				} else {
-					$scope.entity = libraryService.getPodcastEpisode($scope.contentId);
-					restPath += '/episodes';
-				}
+				$scope.entity = ($scope.contentType == 'podcastChannel')
+					? libraryService.getPodcastChannel($scope.contentId)
+					: libraryService.getPodcastEpisode($scope.contentId);
 
-				Restangular.one(restPath, $scope.contentId).one('details').get().then(function(result) {
+				Restangular.one($scope.restPrefix(), $scope.contentId).one('details').get().then(function(result) {
 					if (result.image === undefined && $scope.entity.channel !== undefined) {
 						result.image = $scope.entity.channel.image;
 					}
@@ -81,6 +77,10 @@ angular.module('Music').controller('PodcastDetailsController', [
 				resetContents();
 			}
 		});
+
+		$scope.restPrefix = function() {
+			return ($scope.contentType == 'podcastChannel') ? 'podcasts' : 'podcasts/episodes';
+		};
 
 		$scope.keyShown = function(key, value) {
 			return value !== null && value !== '' && key !== 'id' && key !== 'image';

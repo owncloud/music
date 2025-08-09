@@ -7,10 +7,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022, 2023
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Utility;
+
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Response;
 
 /**
  * Static utility functions to work with HTTP requests
@@ -21,72 +24,170 @@ class HttpUtil {
 
 	/**
 	 * Use HTTP GET to load the requested URL
-	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string]
+	 * @return array{content: string|false, status_code: int, message: string, content_type: string}
 	 */
 	public static function loadFromUrl(string $url, ?int $maxLength=null, ?int $timeout_s=null) : array {
-		$status_code = 0;
-		$content_type = null;
+		$context = self::createContext($timeout_s);
+		$resolved = self::resolveRedirections($url, $context); // handles also checking for allowed URL schemes
 
-		if (!self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
-			$content = false;
-			$message = 'URL scheme must be one of ' . \json_encode(self::ALLOWED_SCHEMES);
-		} else {
-			$opts = [
-				'http' => [
-					'header' => self::userAgentHeader(),	// some servers don't allow requests without a user agent header
-					'ignore_errors' => true,				// don't emit warnings for bad/unavailable URL, we handle errors manually
-					'max_redirects' => 5
-				]
-			];
-			if ($timeout_s !== null) {
-				$opts['http']['timeout'] = $timeout_s;
-			}
-			$context = \stream_context_create($opts);
-
+		$status_code = $resolved['status_code'];
+		if ($status_code >= 200 && $status_code < 300) {
 			// The length parameter of file_get_contents isn't nullable prior to PHP8.0
 			if ($maxLength === null) {
-				$content = @\file_get_contents($url, false, $context);
+				$content = @\file_get_contents($resolved['url'], false, $context);
 			} else {
-				$content = @\file_get_contents($url, false, $context, 0, $maxLength);
+				$content = @\file_get_contents($resolved['url'], false, $context, 0, $maxLength);
 			}
+		} else {
+			$content = false;
+		}
 
-			// It's some PHP magic that calling file_get_contents creates and populates also a local
-			// variable array $http_response_header, provided that the server could be reached.
-			if (!empty($http_response_header)) {
-				list($version, $status_code, $message) = \explode(' ', $http_response_header[0], 3);
-				$status_code = (int)$status_code;
-				$content_type = self::findHeader($http_response_header, 'Content-Type');
+		$message = $resolved['status_msg'];
+		$content_type = ArrayUtil::getCaseInsensitive($resolved['headers'], 'content-type');
+
+		return \compact('content', 'status_code', 'message', 'content_type');
+	}
+
+	/**
+	 * @param array<string, mixed> $extraHeaders
+	 * @return resource
+	 */
+	public static function createContext(?int $timeout_s = null, array $extraHeaders = []) {
+		$opts = self::contextOptions($extraHeaders);
+		if ($timeout_s !== null) {
+			$opts['http']['timeout'] = $timeout_s;
+		}
+		return \stream_context_create($opts);
+	}
+
+	/**
+	 * Resolve redirections with a custom logic. The platform solution doesn't always work correctly, especially with
+	 * unusually long header lines, see https://github.com/owncloud/music/issues/1209.
+	 * @param resource $context
+	 * @return array{url: string, status_code: int, status_msg: string, headers: array<string, string>}
+	 * 					The final URL and the headers from the URL, after any redirections. @see HttpUtil::parseHeaders
+	 */
+	public static function resolveRedirections(string $url, $context, int $maxRedirects=20) : array {
+		do {
+			$headers = self::getUrlHeaders($url, $context);
+			$status = $headers['status_code'];
+			$location = ArrayUtil::getCaseInsensitive($headers['headers'], 'location');
+			$redirect = ($status >= 300 && $status < 400 && $location !== null);
+			if ($redirect) {
+				if ($maxRedirects-- > 0) {
+					$url = $location;
+				} else {
+					$redirect = false;
+					$headers['status_code'] = Http::STATUS_LOOP_DETECTED;
+					$headers['status_msg'] = 'Max number of redirections exceeded';
+				}
+			}
+		} while ($redirect);
+
+		$headers['url'] = $url;
+		return $headers;
+	}
+
+	/**
+	 * @param resource $context
+	 * @return array{status_code: int, status_msg: string, headers: array<string, string>}
+	 * 					The headers from the URL, after any redirections. @see HttpUtil::parseHeaders
+	 */
+	private static function getUrlHeaders(string $url, $context) : array {
+		$result = null;
+		if (self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
+			// the type of the second parameter of get_header has changed in PHP 8.0
+			$associative = \version_compare(\phpversion(), '8.0', '<') ? 0 : false;
+			$rawHeaders = @\get_headers($url, /** @scrutinizer ignore-type */ $associative, $context);
+
+			if ($rawHeaders !== false) {
+				$result = self::parseHeaders($rawHeaders);
 			} else {
-				$message = 'The requested URL did not respond';
+				$result = ['status_code' => Http::STATUS_SERVICE_UNAVAILABLE, 'status_msg' => 'Error connecting the URL', 'headers' => ['Content-Length' => '0']];
+			}
+		} else {
+			$result = ['status_code' => Http::STATUS_FORBIDDEN, 'status_msg' => 'URL scheme not allowed', 'headers' => ['Content-Length' => '0']];
+		}
+		return $result;
+	}
+
+	/**
+	 * @param string[] $rawHeaders
+	 * @return array{status_code: int, status_msg: string, headers: array<string, string>}
+	 * 			The key 'status_code' will contain the status code number of the HTTP request (like 200, 302, 404).
+	 * 			The key 'status_msg' will contain the textual status following the code (like 'OK' or 'Not Found').
+	 * 			The key 'headers' will contain all the named HTTP headers as a dictionary.
+	 */
+	private static function parseHeaders(array $rawHeaders) : array {
+		$result = ['status_code' => 0, 'status_msg' => 'invalid', 'headers' => []];
+
+		foreach ($rawHeaders as $row) {
+			// The response usually starts with a header like "HTTP/1.1 200 OK". However, some shoutcast streams
+			// may instead use "ICY 200 OK".
+			$ignoreCase = true;
+			if (StringUtil::startsWith($row, 'HTTP/', $ignoreCase) || StringUtil::startsWith($row, 'ICY ', $ignoreCase)) {
+				// Start of new response. If we have already parsed some headers, then those are from some
+				// intermediate redirect response and those should be discarded.
+				$parts = \explode(' ', $row, 3);
+				if (\count($parts) == 3) {
+					list(, $status_code, $status_msg) = $parts;
+				} else {
+					$status_code = Http::STATUS_INTERNAL_SERVER_ERROR;
+					$status_msg = 'Bad response status header';
+				}
+				$result = ['status_code' => (int)$status_code, 'status_msg' => $status_msg, 'headers' => []];
+			} else {
+				// All other lines besides the initial status line should have the format "key: value"
+				$parts = \explode(':', $row, 2);
+				if (\count($parts) == 2) {
+					list($key, $value) = $parts;
+					$result['headers'][\trim($key)] = \trim($value);
+				}
 			}
 		}
 
-		return \compact('content', 'status_code', 'message', 'content_type');
+		return $result;
 	}
 
 	public static function userAgentHeader() : string {
 		return 'User-Agent: OCMusic/' . AppInfo::getVersion();
 	}
 
-	private static function findHeader(array $headers, string $headerKey) : ?string {
-		foreach ($headers as $header) {
-			$find = \strstr($header, $headerKey . ':');
-			if ($find !== false) {
-				return \trim(\substr($find, \strlen($headerKey)+1));
-			}
+	/**
+	 * @param array<string, mixed> $extraHeaders
+	 * @return array{http: array<string, mixed>}
+	 */
+	private static function contextOptions(array $extraHeaders = []) : array {
+		$opts = [
+			'http' => [
+				'header' => self::userAgentHeader(),	// some servers don't allow requests without a user agent header
+				'ignore_errors' => true,				// don't emit warnings for bad/unavailable URL, we handle errors manually
+				'max_redirects' => 0					// we use our custom logic to resolve redirections
+			]
+		];
+
+		foreach ($extraHeaders as $key => $value) {
+			$opts['http']['header'] .= "\r\n$key: $value";
 		}
-		return null;
+
+		return $opts;
 	}
 
+	/** @param string[] $schemes */
 	private static function isUrlSchemeOneOf(string $url, array $schemes) : bool {
 		$url = \mb_strtolower($url);
 
 		foreach ($schemes as $scheme) {
-			if (Util::startsWith($url, $scheme . '://')) {
+			if (StringUtil::startsWith($url, $scheme . '://')) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public static function setClientCachingDays(Response $httpResponse, int $days) : void {
+		$httpResponse->cacheFor($days * 24 * 60 * 60);
+		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

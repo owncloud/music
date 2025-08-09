@@ -5,37 +5,38 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2024
  */
 
 angular.module('Music').controller('PodcastsViewController', [
-	'$scope', '$rootScope', 'playlistService', 'podcastService', 'libraryService', '$timeout', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, podcastService, libraryService, $timeout, gettextCatalog) {
+	'$scope', '$rootScope', 'playQueueService', 'podcastService', 'libraryService', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, playQueueService, podcastService, libraryService, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playQueueService.unsubscribeAll(this);
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playEpisodes(listId, episodes) {
 			let playlist = _.map(episodes, (episode) => ({track: episode}));
-			playlistService.setPlaylist(listId, playlist);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist);
+			playQueueService.publish('play');
 		}
 
 		function playPlaylistFromEpisode(listId, playlist, episode) {
 			let index = _.findIndex(playlist, function(i) {return i.track.id == episode.id;});
-			playlistService.setPlaylist(listId, playlist, index);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist, index);
+			playQueueService.publish('play');
 		}
 
 		$scope.playEpisode = function(episodeId) {
@@ -44,15 +45,15 @@ angular.module('Music').controller('PodcastsViewController', [
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && episode.id === currentTrack.id && currentTrack.type === 'podcast') {
-				playlistService.publish('togglePlayback');
+				playQueueService.publish('togglePlayback');
 			}
 			else {
-				let currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playQueueService.getCurrentPlaylistId();
 
 				// start playing the channel from this episode if the clicked track belongs
 				// to a channel which is the current play scope
 				if (currentListId === 'podcast-channel-' + episode.channel.id) {
-					playPlaylistFromEpisode(currentListId, playlistService.getCurrentPlaylist(), episode);
+					playPlaylistFromEpisode(currentListId, playQueueService.getCurrentPlaylist(), episode);
 				}
 				// on any other episode, start playing just the episode
 				else {
@@ -113,14 +114,13 @@ angular.module('Music').controller('PodcastsViewController', [
 			return gettextCatalog.getString('Show all {{ count }} episodes …', { count: count });
 		};
 
-		// emited on end of playlist by playerController
-		subscribe('playlistEnded', function() {
+		playQueueService.subscribe('playlistEnded', function() {
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(_event, playlistId) {
+		playQueueService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
 		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime = 500) {
 			let episode = libraryService.getPodcastEpisode(episodeId);
@@ -168,7 +168,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			}
 		}
 
-		// Make the content visible immediatedly if the podcasts are already loaded.
+		// Make the content visible immediately if the podcasts are already loaded.
 		// Otherwise it happens on the 'podcastsLoaded' event handler.
 		if (libraryService.podcastsLoaded()) {
 			onContentReady();

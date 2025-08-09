@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -19,16 +19,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RegisterMimeTypes extends Command {
 
-	/** @var IMimeTypeLoader */
-	private $mimeTypeLoader;
+	private IMimeTypeLoader $mimeTypeLoader;
 
-	private $mimeMappings = [
-		'aac' => ['audio/aac'],
-		'au' => ['audio/basic'],
-		'aif' => ['audio/aiff'],
-		'aiff' => ['audio/aiff'],
-		'aifc' => ['audio/aiff'],
-		'caf' => ['audio/x-caf']
+	private array $mimeMappings = [
+		'aac'	=> ['audio/aac'],
+		'aif'	=> ['audio/aiff'],
+		'aifc'	=> ['audio/aiff'],
+		'aiff'	=> ['audio/aiff'],
+		'au'	=> ['audio/basic'],
+		'caf'	=> ['audio/x-caf'],
+		'wpl'	=> ['application/vnd.ms-wpl'],
 	];
 
 	public function __construct(IMimeTypeLoader $mimeTypeLoader) {
@@ -36,13 +36,19 @@ class RegisterMimeTypes extends Command {
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->setName('music:register-mime-types')
-			->setDescription('map following file extensions as audio MIME types: ' . \json_encode(\array_keys($this->mimeMappings)));
+			->setDescription('map following file extensions to proper MIME types: ' . \json_encode(\array_keys($this->mimeMappings)));
 		;
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		try {
 			$output->writeln('Registering MIME types for existing files...');
@@ -56,13 +62,13 @@ class RegisterMimeTypes extends Command {
 		return 0;
 	}
 
-	private function registerForExistingFiles(OutputInterface $output) {
+	private function registerForExistingFiles(OutputInterface $output) : void {
 		// The needed function is not part of the public API but we know it should exist
 		if (\method_exists($this->mimeTypeLoader, 'updateFilecache')) {
 			foreach ($this->mimeMappings as $ext => $mimetypes) {
 				foreach ($mimetypes as $mimetype) {
 					$mimeId = $this->mimeTypeLoader->getId($mimetype);
-					$updatedCount = $this->mimeTypeLoader->updateFilecache($ext, $mimeId);
+					$updatedCount = $this->mimeTypeLoader->/** @scrutinizer ignore-call */updateFilecache($ext, $mimeId);
 					$output->writeln("  Updated MIME type $mimetype for $updatedCount files with the extension .$ext");
 				}
 			}
@@ -71,7 +77,7 @@ class RegisterMimeTypes extends Command {
 		}
 	}
 
-	private function registerForNewFiles(OutputInterface $output) {
+	private function registerForNewFiles(OutputInterface $output) : void {
 		$mappingFile = \OC::$configDir . 'mimetypemapping.json';
 		$mappings = $this->mimeMappings;
 		$existingMappings = [];

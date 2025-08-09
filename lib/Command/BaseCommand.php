@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -19,8 +19,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class BaseCommand extends Command {
-	protected $userManager;
-	protected $groupManager;
+	protected \OCP\IUserManager $userManager;
+	protected \OCP\IGroupManager $groupManager;
 
 	public function __construct(\OCP\IUserManager $userManager, \OCP\IGroupManager $groupManager) {
 		$this->userManager = $userManager;
@@ -28,6 +28,9 @@ abstract class BaseCommand extends Command {
 		parent::__construct();
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function configure() {
 		$this
 			->addArgument(
@@ -51,6 +54,9 @@ abstract class BaseCommand extends Command {
 		$this->doConfigure();
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		try {
 			self::ensureUsersGiven($input);

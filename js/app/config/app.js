@@ -7,7 +7,7 @@
  * @author Morris Jobke <morris.jobke@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2024
  */
 
 angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSanitize', 'ang-drag-drop'])
@@ -60,6 +60,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				templateUrl:'podcastsview.html'
 			};
 
+			let advancedSearchControllerConfig = {
+				controller:'AdvancedSearchViewController',
+				templateUrl:'advancedsearchview.html'
+			};
+
 			let settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -83,6 +88,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				.when('/genres',               genresControllerConfig)
 				.when('/radio',                radioControllerConfig)
 				.when('/podcasts',             podcastsControllerConfig)
+				.when('/search',               advancedSearchControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])

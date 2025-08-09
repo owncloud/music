@@ -1,0 +1,99 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2018 - 2024
+ */
+
+/**
+ * Common rules for the track-list directive
+ */
+
+.track-list li {
+	line-height: 20px;
+}
+
+.track-list li * {
+	cursor: pointer;
+}
+
+.track-list .more-less {
+	cursor: pointer;
+}
+
+.track-list > li > div {
+	display: table-cell;
+}
+
+.track-list > li > div > * {
+	vertical-align: middle;
+}
+
+.track-list > li.placeholder {
+	padding: 0;
+	border: none;
+}
+
+#app-view:not(.searchmode) .track-list.collapsed .collapsible {
+	display: none !important;
+}
+
+.track-list > li.more-less {
+	padding-left: 18px;
+	padding-top: 6px;
+	padding-bottom: 5px;
+	display: none;
+}
+
+#app-view:not(.searchmode) .track-list.collapsed li.more-less:not(.collapsible),
+#app-view:not(.searchmode) .track-list:not(.collapsed) li.more-less.collapsible {
+	display: inline-block;
+}
+
+/**
+ * View specific rules for the track-list directive in the 'Albums' view
+ */
+
+.album-area .track-list {
+	margin-left: 195px;
+}
+
+.album-area .track-list li:not(.more-less) {
+	display: table;
+	padding-left: 2px;
+	padding-top: 6px;
+	padding-bottom: 5px;
+	white-space: nowrap;
+}
+
+.album-area .track-list .item-info {
+	max-width: 240px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.album-area .track-list .item-info > span {
+	vertical-align: bottom;
+}
+
+.view-container.single-col .album-area .track-list .item-info {
+	max-width: unset;
+	overflow: initial;
+}
+
+.view-container.single-col .album-area .track-list .item-info > span {
+	display: inline-block;
+	white-space: normal;
+	vertical-align: top;
+}
+
+#albums.compact .album-area .track-list {
+	margin-left: 30px;
+}
+
+#albums.compact:not(.single-col) .album-area .track-list .item-info {
+	max-width: 305px;
+}

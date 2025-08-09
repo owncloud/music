@@ -24,16 +24,18 @@
 
 #music-controls #playlist-area .popovermenu ul {
 	display: block;
+	padding: 4px;
 }
 
 #music-controls #playlist-area .popovermenu ul li {
-	padding: 0 10px 0 0;
+	padding: 0;
 	white-space: nowrap;
 }
 
 #music-controls #playlist-area .popovermenu ul a {
 	opacity: .7;
 	line-height: 36px;
+	padding-right: 10px;
 }
 
 #music-controls #playlist-area .popovermenu ul a:hover {

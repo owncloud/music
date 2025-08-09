@@ -3,7 +3,7 @@
 # ownCloud Music
 #
 # @author Pauli Järvinen
-# @copyright 2021 - 2023 Pauli Järvinen <pauli.jarvinen@gmail.com>
+# @copyright 2021 - 2024 Pauli Järvinen <pauli.jarvinen@gmail.com>
 #
 
 # Create the base package from the files stored in git
@@ -39,8 +39,9 @@ zip -d music/music.zip "music/phpstan*.*"
 zip -d music/music.zip "music/webpack.config.js"
 
 # Fork the package to own versions for Nextcloud and ownCloud.
-# Different mechanism is used on each cloud to define the database schema.
+# Different mechanism is used on each cloud to define the database schema and for bootstrapping.
 cp music/music.zip music/music-nc.zip
 mv music/music.zip music/music-oc.zip
+zip -d music/music-nc.zip "music/appinfo/app.php"
 zip -d music/music-nc.zip "music/appinfo/database.xml"
 zip -d music/music-oc.zip "music/lib/Migration/Version*Date*.php"

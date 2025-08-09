@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -15,46 +15,58 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 
 use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\FileExistsException;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
+use OCA\Music\Http\RelayStreamResponse;
+use OCA\Music\Service\PlaylistFileService;
+use OCA\Music\Service\RadioService;
+use OCA\Music\Service\StreamTokenService;
 use OCA\Music\Utility\HttpUtil;
-use OCA\Music\Utility\PlaylistFileService;
-use OCA\Music\Utility\Util;
-use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
-	private $config;
-	private $businessLayer;
-	private $service;
-	private $playlistFileService;
-	private $userId;
-	private $userFolder;
-	private $logger;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private RadioStationBusinessLayer $businessLayer;
+	private RadioService $service;
+	private StreamTokenService $tokenService;
+	private PlaylistFileService $playlistFileService;
+	private string $userId;
+	private IRootFolder $rootFolder;
+	private Logger $logger;
 
-	public function __construct(string $appname,
+	public function __construct(string $appName,
 								IRequest $request,
 								IConfig $config,
+								IURLGenerator $urlGenerator,
 								RadioStationBusinessLayer $businessLayer,
 								RadioService $service,
+								StreamTokenService $tokenService,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
-								?Folder $userFolder,
+								IRootFolder $rootFolder,
 								Logger $logger) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 		$this->config = $config;
+		$this->urlGenerator = $urlGenerator;
 		$this->businessLayer = $businessLayer;
 		$this->service = $service;
+		$this->tokenService = $tokenService;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; may be null when resolveStreamUrl used on public share
-		$this->userFolder = $userFolder;
+		$this->rootFolder = $rootFolder;
 		$this->logger = $logger;
 	}
 
@@ -64,9 +76,11 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getAll() {
+	public function getAll() : JSONResponse {
 		$stations = $this->businessLayer->findAll($this->userId);
-		return Util::arrayMapMethod($stations, 'toApi');
+		return new JSONResponse(
+			\array_map(fn($s) => $s->toApi(), $stations)
+		);
 	}
 
 	/**
@@ -75,12 +89,16 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function create($name, $streamUrl, $homeUrl) {
+	public function create(?string $name, ?string $streamUrl, ?string $homeUrl) : JSONResponse {
 		if ($streamUrl === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'streamUrl' not given");
-		} else {
+		}
+		
+		try {
 			$station = $this->businessLayer->create($this->userId, $name, $streamUrl, $homeUrl);
-			return $station->toApi();
+			return new JSONResponse($station->toApi());
+		} catch (\DomainException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
 		}
 	}
 
@@ -90,10 +108,10 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function delete(int $id) {
+	public function delete(int $id) : JSONResponse {
 		try {
 			$this->businessLayer->delete($id, $this->userId);
-			return [];
+			return new JSONResponse([]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -105,10 +123,10 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get(int $id) {
+	public function get(int $id) : JSONResponse {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
-			return $station->toAPI();
+			return new JSONResponse($station->toApi());
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -120,34 +138,25 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update(int $id, string $name = null, string $streamUrl = null, string $homeUrl = null) {
+	public function update(int $id, ?string $name = null, ?string $streamUrl = null, ?string $homeUrl = null) : JSONResponse {
 		if ($name === null && $streamUrl === null && $homeUrl === null) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'streamUrl', 'homrUrl'] must be given");
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'streamUrl', 'homeUrl'] must be given");
 		}
 
 		try {
-			$station = $this->businessLayer->find($id, $this->userId);
-			if ($name !== null) {
-				$station->setName($name);
-			}
-			if ($streamUrl !== null) {
-				$station->setStreamUrl($streamUrl);
-			}
-			if ($homeUrl !== null) {
-				$station->setHomeUrl($homeUrl);
-			}
-			$this->businessLayer->update($station);
-
+			$station = $this->businessLayer->updateStation($id, $this->userId, $name, $streamUrl, $homeUrl);
 			return new JSONResponse($station->toApi());
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		} catch (\DomainException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
 		}
 	}
 
 	/**
 	 * export all radio stations to a file
 	 *
-	 * @param string $name target file name without the file extension
+	 * @param string $name target file name
 	 * @param string $path parent folder path
 	 * @param string $oncollision action to take on file name collision,
 	 *								supported values:
@@ -158,20 +167,16 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportAllToFile(string $name, string $path, string $oncollision) {
-		if ($this->userFolder === null) {
-			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
-			// But in that case, the framework should block the execution before it reaches here.
-			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
-		}
+	public function exportAllToFile(string $name, string $path, string $oncollision='abort') : JSONResponse {
 		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
 			$exportedFilePath = $this->playlistFileService->exportRadioStationsToFile(
-					$this->userId, $this->userFolder, $path, $name . '.m3u8', $oncollision);
+					$this->userId, $userFolder, $path, $name, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
-		} catch (\RuntimeException $ex) {
-			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
+		} catch (FileExistsException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, 'file already exists', ['path' => $ex->getPath(), 'suggested_name' => $ex->getAltName()]);
 		} catch (\OCP\Files\NotPermittedException $ex) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}
@@ -184,16 +189,12 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function importFromFile(string $filePath) {
-		if ($this->userFolder === null) {
-			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
-			// But in that case, the framework should block the execution before it reaches here.
-			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
-		}
+	public function importFromFile(string $filePath) : JSONResponse {
 		try {
-			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
-			$result['stations'] = Util::arrayMapMethod($result['stations'], 'toApi');
-			return $result;
+			$userFolder = $this->rootFolder->getUserFolder($this->userId);
+			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $userFolder, $filePath);
+			$result['stations'] = \array_map(fn($s) => $s->toApi(), $result['stations']);
+			return new JSONResponse($result);
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		} catch (\UnexpectedValueException $ex) {
@@ -207,7 +208,7 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function resetAll() {
+	public function resetAll() : JSONResponse {
 		$this->businessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
@@ -218,14 +219,14 @@ class RadioApiController extends Controller {
 	* @NoAdminRequired
 	* @NoCSRFRequired
 	*/
-	public function getChannelInfo(int $id, ?string $type=null) {
+	public function getChannelInfo(int $id, ?string $type=null) : JSONResponse {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
 
 			switch ($type) {
 				case 'icy':
-					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 1);
+					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 5);
 					break;
 				case 'shoutcast-v1':
 					$metadata = $this->service->readShoutcastV1Metadata($streamUrl);
@@ -237,7 +238,7 @@ class RadioApiController extends Controller {
 					$metadata = $this->service->readIcecastMetadata($streamUrl);
 					break;
 				default:
-					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 1)
+					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 5)
 							?? $this->service->readShoutcastV2Metadata($streamUrl)
 							?? $this->service->readIcecastMetadata($streamUrl)
 							?? $this->service->readShoutcastV1Metadata($streamUrl);
@@ -256,11 +257,37 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function stationStreamUrl(int $id) {
+	public function stationStreamUrl(int $id) : JSONResponse {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
-			return new JSONResponse($this->service->resolveStreamUrl($streamUrl));
+			$resolved = $this->service->resolveStreamUrl($streamUrl);
+			$relayEnabled = $this->streamRelayEnabled();
+			if ($relayEnabled && !$resolved['hls']) {
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.stationStream', ['id' => $id]);
+			}
+			return new JSONResponse($resolved);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * get audio stream for a radio station
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function stationStream(int $id) : Response {
+		try {
+			$station = $this->businessLayer->find($id, $this->userId);
+			$streamUrl = $station->getStreamUrl();
+			$resolved = $this->service->resolveStreamUrl($streamUrl);
+			if ($this->streamRelayEnabled()) {
+				return new RelayStreamResponse($resolved['url']);
+			} else {
+				return new RedirectResponse($resolved['url']);
+			}
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -274,8 +301,43 @@ class RadioApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function resolveStreamUrl(string $url) {
-		return new JSONResponse($this->service->resolveStreamUrl(\rawurldecode($url)));
+	public function resolveStreamUrl(string $url, ?string $token) : JSONResponse {
+		$url = \rawurldecode($url);
+
+		if ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
+			$resolved = $this->service->resolveStreamUrl($url);
+			$relayEnabled = $this->streamRelayEnabled();
+			if ($relayEnabled && !$resolved['hls']) {
+				$token = $this->tokenService->tokenForUrl($resolved['url']);
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+			}
+			return new JSONResponse($resolved);
+		}
+	}
+
+	/**
+	 * create a relayed stream for the given URL if relaying enabled; otherwise just redirect to the URL
+	 * 
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function streamFromUrl(string $url, ?string $token) : Response {
+		$url = \rawurldecode($url);
+
+		if ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} elseif ($this->streamRelayEnabled()) {
+			return new RelayStreamResponse($url);
+		} else {
+			return new RedirectResponse($url);
+		}
 	}
 
 	/**
@@ -284,20 +346,26 @@ class RadioApiController extends Controller {
 	 * This fetches the manifest file from the given URL and returns a modified version of it.
 	 * The front-end can't easily stream directly from the original source because of the Content-Security-Policy.
 	 *
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function hlsManifest(string $url) {
-		if ($this->hlsEnabled()) {
+	public function hlsManifest(string $url, ?string $token) : Response {
+		$url = \rawurldecode($url);
+
+		if (!$this->hlsEnabled()) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		} elseif ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
-				= $this->service->getHlsManifest(\rawurldecode($url));
+				= $this->service->getHlsManifest($url);
 
 			return new FileResponse([
 				'content' => $content,
 				'mimetype' => $contentType
 			], $status);
-		} else {
-			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		}
 	}
 
@@ -306,24 +374,42 @@ class RadioApiController extends Controller {
 	 *
 	 * The segment is fetched from the given URL and relayed as such to the client.
 	 *
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function hlsSegment(string $url) {
-		if ($this->hlsEnabled()) {
+	public function hlsSegment(string $url, ?string $token) : Response {
+		$url = \rawurldecode($url);
+
+		if (!$this->hlsEnabled()) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		} elseif ($token === null) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'a security token must be passed');
+		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
+		} else {
 			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
-				= HttpUtil::loadFromUrl(\rawurldecode($url));
+				= HttpUtil::loadFromUrl($url);
 
 			return new FileResponse([
 				'content' => $content,
 				'mimetype' => $contentType ?? 'application/octet-stream'
 			], $status);
-		} else {
-			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
 		}
 	}
 
 	private function hlsEnabled() : bool {
-		return (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
+		$enabled = (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
+		if ($this->userId === '') {
+			$enabled = (bool)$this->config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
+		}
+		return $enabled;
+	}
+
+	private function streamRelayEnabled() : bool {
+		$enabled = (bool)$this->config->getSystemValue('music.relay_radio_stream', true);
+		if ($this->userId === '') {
+			$enabled = (bool)$this->config->getSystemValue('music.relay_radio_stream_on_share', $enabled);
+		}
+		return $enabled;
 	}
 }

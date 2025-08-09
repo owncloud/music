@@ -7,14 +7,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory', 
-'playlistService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
+'playQueueService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $timeout, $window, ArtistFactory, 
-		playlistService, libraryService, inViewService, gettextCatalog, Restangular) {
+		playQueueService, libraryService, inViewService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -22,25 +22,29 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	// setup dark theme support for Nextcloud versions older than 25
 	OCA.Music.DarkThemeLegacySupport.applyOnElement(document.getElementById('app'));
 
-	// create a global rule to use themed icons for folders everywhere, the default icon-folder is not themed on NC 25 and later
-	const folderStyle = document.createElement('style');
-	folderStyle.innerHTML = `#app-view .icon-folder { background-image: url(${OC.MimeType.getIconUrl('dir')}) }`;
-	document.head.appendChild(folderStyle);
+	// Create a global rule to use themed icons for folders everywhere, the default icon-folder is not themed on NC 25 and later.
+	// It happens sometimes (at least on Chrome), that OC.MimeType is not yet present when we come here (see 
+	// https://github.com/owncloud/music/issues/1137). In those cases, we need to postpone registering the folder style.
+	OCA.Music.Utils.executeOnceRefAvailable(() => OC.MimeType, (ocMimeType) => {
+		const folderStyle = document.createElement('style');
+		folderStyle.innerHTML = `#app-view .icon-folder { background-image: url(${ocMimeType.getIconUrl('dir')}) }`;
+		document.head.appendChild(folderStyle);
+	});
 
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, listEntry) {
+	playQueueService.subscribe('trackChanged', function(listEntry) {
 		$scope.currentTrack = listEntry.track;
-		$scope.currentTrackIndex = playlistService.getCurrentIndex();
+		$scope.currentTrackIndex = playQueueService.getCurrentIndex();
 	});
 
-	playlistService.subscribe('play', function(e, playingView) {
+	playQueueService.subscribe('play', function(playingView) {
 		// assume that the play started from current view if no other view given
 		$rootScope.playingView = playingView || $rootScope.currentView;
 	});
 
-	playlistService.subscribe('playlistEnded', function() {
+	playQueueService.subscribe('playlistEnded', function() {
 		$rootScope.playingView = null;
 		$scope.currentTrack = null;
 		$scope.currentTrackIndex = -1;
@@ -52,23 +56,23 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.trackCountText = function(playlist) {
 		let trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
-		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+		return gettextCatalog.getPlural(trackCount, '{{ count }} track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.smartListTrackCountText = function() {
 		var trackCount = libraryService.getSmartListTrackCount();
-		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+		return gettextCatalog.getPlural(trackCount, '{{ count }} track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.albumCountText = function() {
 		let albumCount = libraryService.getAlbumCount();
-		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
+		return gettextCatalog.getPlural(albumCount, '{{ count }} album', '{{ count }} albums', { count: albumCount });
 	};
 
 	$scope.folderCountText = function() {
 		if (libraryService.foldersLoaded()) {
 			let folderCount = libraryService.getAllFoldersWithTracks().length;
-			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+			return gettextCatalog.getPlural(folderCount, '{{ count }} folder', '{{ count }} folders', { count: folderCount });
 		} else {
 			return '';
 		}
@@ -77,7 +81,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.genresCountText = function() {
 		if (libraryService.genresLoaded()) {
 			let genreCount = libraryService.getAllGenres().length;
-			return gettextCatalog.getPlural(genreCount, '1 genre', '{{ count }} genres', { count: genreCount });
+			return gettextCatalog.getPlural(genreCount, '{{ count }} genre', '{{ count }} genres', { count: genreCount });
 		} else {
 			return '';
 		}
@@ -86,7 +90,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.radioCountText = function() {
 		if (libraryService.radioStationsLoaded()) {
 			let stationCount = libraryService.getAllRadioStations().length;
-			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
+			return gettextCatalog.getPlural(stationCount, '{{ count }} station', '{{ count }} stations', { count: stationCount });
 		} else {
 			return '';
 		}
@@ -95,7 +99,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.podcastsCountText = function() {
 		if (libraryService.podcastsLoaded()) {
 			let channelsCount = libraryService.getPodcastChannelsCount();
-			return gettextCatalog.getPlural(channelsCount, '1 channel', '{{ count }} channels', { count: channelsCount });
+			return gettextCatalog.getPlural(channelsCount, '{{ count }} channel', '{{ count }} channels', { count: channelsCount });
 		} else {
 			return '';
 		}
@@ -131,16 +135,21 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$scope.artists = libraryService.getCollection();
 
 			// Emit the event asynchronously so that the DOM tree has already been
-			// manipulated and rendered by the browser when obeservers get the event.
+			// manipulated and rendered by the browser when observers get the event.
 			$timeout(function() {
 				$rootScope.$emit('collectionLoaded');
 			});
 
 			// Load playlists once the collection has been loaded
-			Restangular.all('playlists').getList().then(function(playlists) {
+			Restangular.all('playlists').getList({type: 'musicapp'}).then(function(playlists) {
 				libraryService.setPlaylists(playlists);
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
+
+				// fetch favorites once library, playlists, and podcasts are all loaded
+				if (libraryService.podcastsLoaded()) {
+					updateFavorites();
+				}
 			});
 
 			// Load also the smart playlist once the collection is ready
@@ -167,7 +176,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			// check the availability of unscanned files after the collection has been loaded,
 			// unless we are already in the middle of scanning (and intermediate results were just loaded)
 			if (!$scope.scanning) {
-				$scope.updateFilesToScan();
+				updateFilesToScan();
 			}
 		},
 		function(response) { // error handling
@@ -185,8 +194,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 				reason = response.status;
 				break;
 			}
-			OC.Notification.showTemporary(
-					gettextCatalog.getString('Failed to load the collection: ') + reason);
+			const errMsg = gettextCatalog.getString('Failed to load the collection:');
+			OC.Notification.showTemporary(errMsg + ' ' + reason);
 		});
 
 	};
@@ -202,30 +211,35 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		Restangular.one('podcasts').get().then(function(podcasts) {
 			libraryService.setPodcasts(podcasts);
 			$rootScope.$emit('podcastsLoaded');
+
+			// fetch favorites once library, playlists, and podcasts are all loaded
+			if (libraryService.collectionLoaded() && libraryService.playlistsLoaded()) {
+				updateFavorites();
+			}
 		});
 	};
+
+	function updateFavorites() {
+		Restangular.one('favorites').get().then((favorites) => libraryService.setFavorites(favorites));
+	}
 
 	// initial loading of artists and radio stations
 	$scope.update();
 	$scope.updateRadio();
 	$scope.updatePodcasts();
 
-	let FILES_TO_SCAN_PER_STEP = 10;
+	const FILES_TO_SCAN_PER_STEP = 10;
 	let filesToScan = null;
-	let filesToScanIterator = 0;
-	let previouslyScannedCount = 0;
+	$scope.unscannedFiles = null;
+	$scope.dirtyFiles = null;
 
-	$scope.updateFilesToScan = function() {
+	function updateFilesToScan() {
 		$scope.checkingUnscanned = true;
 		Restangular.one('scanstate').get().then(function(state) {
 			$scope.checkingUnscanned = false;
-			previouslyScannedCount = state.scannedCount;
-			filesToScan = state.unscannedFiles;
-			filesToScanIterator = 0;
-			$scope.toScan = (filesToScan.length > 0);
-			$scope.scanningScanned = previouslyScannedCount;
-			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
-			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
+			$scope.unscannedFiles = state.unscannedFiles;
+			$scope.dirtyFiles = state.dirtyFiles;
+			$scope.noMusicAvailable = (state.scannedCount + state.unscannedFiles.length === 0);
 		},
 		function(error) {
 			$scope.checkingUnscanned = false;
@@ -233,11 +247,11 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 					gettextCatalog.getString('Failed to check for new audio files (error {{ code }}); check the server logs for details', {code: error.status})
 			);
 		});
-	};
+	}
 
 	function processNextScanStep() {
-		let sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
-		let filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
+		let sliceEnd = $scope.scanningScanned + FILES_TO_SCAN_PER_STEP;
+		let filesForStep = filesToScan.slice($scope.scanningScanned, sliceEnd);
 		let params = {
 				files: filesForStep.join(','),
 				finalize: sliceEnd >= filesToScan.length
@@ -246,15 +260,13 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			// Ignore the results if scanning has been cancelled while we
 			// were waiting for the result.
 			if ($scope.scanning) {
-				filesToScanIterator = sliceEnd;
+				$scope.scanningScanned = sliceEnd;
 
 				if (result.filesScanned || result.albumCoversUpdated) {
 					$scope.updateAvailable = true;
 				}
 
-				$scope.scanningScanned = previouslyScannedCount + filesToScanIterator;
-
-				if (filesToScanIterator < filesToScan.length) {
+				if ($scope.scanningScanned < filesToScan.length) {
 					processNextScanStep();
 				} else {
 					$scope.scanning = false;
@@ -271,15 +283,16 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function(fileIds = null) {
-		if (fileIds) {
-			filesToScan = fileIds;
-			previouslyScannedCount = 0;
-			$scope.scanningScanned = 0;
-			$scope.scanningTotal = fileIds.length;
-		}
+	$scope.startScanning = function(fileIds) {
+		filesToScan = fileIds;
+		$scope.scanningScanned = 0;
+		$scope.scanningTotal = filesToScan.length;
 
-		$scope.toScan = false;
+		if (fileIds == $scope.unscannedFiles) {
+			$scope.unscannedFiles = null;
+		} else if (fileIds == $scope.dirtyFiles) {
+			$scope.dirtyFiles = null;
+		}
 		$scope.scanning = true;
 		processNextScanStep();
 	};
@@ -289,11 +302,10 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.resetScanned = function() {
-		$scope.toScan = false;
+		$scope.unscannedFiles = null;
+		$scope.dirtyFiles = null;
 		filesToScan = null;
-		filesToScanIterator = 0;
-		previouslyScannedCount = 0;
-		// Genre and artist IDs have got invalidated while resetting the libarary, drop any related filters
+		// Genre and artist IDs have got invalidated while resetting the library, drop any related filters
 		if ($scope.smartListParams !== null) {
 			$scope.smartListParams.genres = [];
 			$scope.smartListParams.artists = [];
@@ -339,16 +351,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}, 300);
 	}
 
-	$scope.showTrackDetails = function(trackId) {
-		showDetails('track', trackId);
+	$scope.showTrackDetails = function(trackOrId) {
+		showDetails('track', trackOrId.id ?? trackOrId);
 	};
 
-	$scope.showArtistDetails = function(artist) {
-		showDetails('artist', artist.id);
+	$scope.showArtistDetails = function(artistOrId) {
+		showDetails('artist', artistOrId.id ?? artistOrId);
 	};
 
-	$scope.showAlbumDetails = function(album) {
-		showDetails('album', album.id);
+	$scope.showAlbumDetails = function(albumOrId) {
+		showDetails('album', albumOrId.id ?? albumOrId);
+	};
+
+	$scope.showPlaylistDetails = function(playlistOrId) {
+		showDetails('playlist', playlistOrId.id ?? playlistOrId);
 	};
 
 	$scope.showSmartListFilters = function() {
@@ -356,8 +372,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.collapseNavigationPaneOnMobile();
 	};
 
-	$scope.showRadioStationDetails = function(station) {
-		showDetails('radioStation', station.id);
+	$scope.showRadioStationDetails = function(stationOrId) {
+		showDetails('radioStation', stationOrId.id ?? stationOrId);
 	};
 
 	$scope.showRadioHint = function() {
@@ -365,12 +381,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.collapseNavigationPaneOnMobile();
 	};
 
-	$scope.showPodcastChannelDetails = function(channel) {
-		showDetails('podcastChannel', channel.id);
+	$scope.showPodcastChannelDetails = function(channelOrId) {
+		showDetails('podcastChannel', channelOrId.id ?? channelOrId);
 	};
 
-	$scope.showPodcastEpisodeDetails = function(episodeId) {
-		showDetails('podcastEpisode', episodeId);
+	$scope.showPodcastEpisodeDetails = function(episodeOrId) {
+		showDetails('podcastEpisode', episodeOrId.id ?? episodeOrId);
 	};
 
 	$scope.hideSidebar = function() {
@@ -455,8 +471,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
-			// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
-			$timeout(() => $('#hidden-close-app-navigation-button').click());
+			$timeout(() => {
+				// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
+				$('#hidden-close-app-navigation-button').trigger('click');
+				// Remove any active input focus to ensure that the focus is not left to an input field within the collapsed pane
+				$(document.activeElement).trigger('blur');
+			});
 		}
 	};
 
@@ -494,7 +514,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		let appViewWidth = appView.outerWidth();
 
 		// Adjust controls bar width to not overlap with the scroll bar.
-		// Subtrack one pixel from the width because outerWidth() seems to
+		// Subtract one pixel from the width because outerWidth() seems to
 		// return rounded integer value which may sometimes be slightly larger
 		// than the actual width of the #app-view.
 		let controlsWidth = appViewWidth - 1;
@@ -533,18 +553,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}
 	});
 
-	// Nextcloud 14+ uses taller header than ownCloud
-	const headerHeight = $('#header').outerHeight();
-	if (headerHeight > 45) {
-		$('#controls').addClass('taller-header');
-	}
-
 	if (OCA.Music.Utils.isLegacyLayout()) {
 		$('.app-music').addClass('legacy-layout');
-	} else {
+	} else if (OCA.Music.Utils.getScrollContainer()[0] instanceof HTMLDocument) {
+		// Nextcloud versions 14..24 need some special handling because of different container
+		$('.app-music').addClass('nc14to24');
 		// To be compatible with NC25, we have set the #app-content position as absolute. To fix problems
 		// this causes on older platforms, we need to set the #content to use top-margin instead of top-padding,
 		// just as it has been declared by the core on NC25.
+		const headerHeight = $('#header').outerHeight();
 		$('#content').css('padding-top', 0);
 		$('#content').css('margin-top', headerHeight);
 		$('#content').css('min-height', `var(--body-height, calc(100% - ${headerHeight}px))`);

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -16,13 +16,13 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
- * Type hint a base class methdo to help Scrutinizer
+ * Type hint a base class method to help Scrutinizer
  * @method PodcastEpisode updateOrInsert(PodcastEpisode $episode)
  * @phpstan-extends BaseMapper<PodcastEpisode>
  */
 class PodcastEpisodeMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {
-		parent::__construct($db, $config, 'music_podcast_episodes', PodcastEpisode::class, 'title', 'channel_id');
+		parent::__construct($db, $config, 'music_podcast_episodes', PodcastEpisode::class, 'title', ['user_id', 'guid_hash', 'channel_id'], 'channel_id');
 	}
 
 	/**
@@ -63,22 +63,13 @@ class PodcastEpisodeMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
-	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
-		switch ($rule) {
-			case 'podcast':	return "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE LOWER(`c`.`title`) $sqlOp LOWER(?))";
-			case 'time':	return "`duration` $sqlOp ?";
-			case 'pubdate':	return "`published` $sqlOp ?";
-			default:		return parent::advFormatSqlCondition($rule, $sqlOp);
-		}
-	}
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
+		$condForRule = [
+			'podcast'	=> "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE $conv(`c`.`title`) $sqlOp $conv(?))",
+			'time'		=> "`duration` $sqlOp ?",
+			'pubdate'	=> "`published` $sqlOp ?"
+		];
 
-	/**
-	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
-	 * @param PodcastEpisode $episode
-	 * @return PodcastEpisode
-	 */
-	protected function findUniqueEntity(Entity $episode) : Entity {
-		$sql = $this->selectUserEntities("`guid_hash` = ? AND `channel_id` = ?");
-		return $this->findEntity($sql, [$episode->getUserId(), $episode->getGuidHash(), $episode->getChannelId()]);
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
 	}
 }

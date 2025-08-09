@@ -7,20 +7,21 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2023
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+use OCP\IURLGenerator;
 
 /**
  * @method int getChannelId()
  * @method void setChannelId(int $id)
  * @method ?string getStreamUrl()
- * @method setStreamUrl(?string $url)
+ * @method void setStreamUrl(?string $url)
  * @method ?string getMimetype()
- * @method setMimetype(?string $mime)
+ * @method void setMimetype(?string $mime)
  * @method ?int getSize()
  * @method void setSize(?int $size)
  * @method ?int getDuration()
@@ -49,43 +50,44 @@ use OCA\Music\Utility\Util;
  * @method void setDescription(?string $description)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  */
 class PodcastEpisode extends Entity {
-	public $channelId;
-	public $streamUrl;
-	public $mimetype;
-	public $size;
-	public $duration;
-	public $guid;
-	public $guidHash;
-	public $title;
-	public $episode;
-	public $season;
-	public $linkUrl;
-	public $published;
-	public $keywords;
-	public $copyright;
-	public $author;
-	public $description;
-	public $starred;
-	public $rating;
+	public int $channelId = 0;
+	public ?string $streamUrl = null;
+	public ?string $mimetype = null;
+	public ?int $size = null;
+	public ?int $duration = null;
+	public string $guid = '';
+	public string $guidHash = '';
+	public ?string $title = null;
+	public ?int $episode = null;
+	public ?int $season = null;
+	public ?string $linkUrl = null;
+	public ?string $published = null;
+	public ?string $keywords = null;
+	public ?string $copyright = null;
+	public ?string $author = null;
+	public ?string $description = null;
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	public function __construct() {
 		$this->addType('channelId', 'int');
 		$this->addType('size', 'int');
 		$this->addType('duration', 'int');
 		$this->addType('episode', 'int');
+		$this->addType('season', 'int');
 		$this->addType('rating', 'int');
 	}
 
-	public function toApi() : array {
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getEpisodeWithSeason(),
-			'stream_url' => $this->getStreamUrl(),
+			'stream_url' => $urlGenerator->linkToRoute('music.podcastApi.episodeStream', ['id' => $this->id]),
 			'mimetype' => $this->getMimetype()
 		];
 	}
@@ -112,7 +114,8 @@ class PodcastEpisode extends Entity {
 		];
 	}
 
-	public function toAmpacheApi() : array {
+	public function toAmpacheApi(callable $createImageUrl, ?callable $createStreamUrl) : array {
+		$imageUrl = $createImageUrl($this);
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getTitle(),
@@ -130,10 +133,12 @@ class PodcastEpisode extends Entity {
 			'time' => $this->getDuration(),
 			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
-			'url' => $this->getStreamUrl(),
+			'url' => $createStreamUrl ? $createStreamUrl($this) : $this->getStreamUrl(),
+			'art' => $imageUrl,
+			'has_art' => !empty($imageUrl),
 			'flag' => !empty($this->getStarred()),
-			'rating' => $this->getRating() ?? 0,
-			'preciserating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
+			'preciserating' => $this->getRating(),
 		];
 	}
 
@@ -170,7 +175,7 @@ class PodcastEpisode extends Entity {
 		$result = (string)$this->getEpisode();
 		// the season is considered only if there actually is an episode
 		$season = $this->getSeason();
-		if ($result !== null && $season !== null) {
+		if ($season !== null) {
 			$result = "$season-$result";
 		}
 		return $result;
@@ -235,9 +240,9 @@ class PodcastEpisode extends Entity {
 			return null;
 		} else {
 			$path = \parse_url($url, PHP_URL_PATH);
-			$ext = \pathinfo($path, PATHINFO_EXTENSION);
-			if (\is_string($ext) && !empty($ext)) {
-				return $ext;
+			if (\is_string($path)) {
+				$ext = (string)\pathinfo($path, PATHINFO_EXTENSION);
+				return !empty($ext) ? $ext : null;
 			} else {
 				return null;
 			}

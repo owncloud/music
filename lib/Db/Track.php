@@ -9,11 +9,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -43,14 +44,16 @@ use OCP\IURLGenerator;
  * @method void setMbid(?string $mbid)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
  * @method int getPlayCount()
  * @method void setPlayCount(int $count)
  * @method ?string getLastPlayed()
  * @method void setLastPlayed(?string $timestamp)
+ * @method int getDirty()
+ * @method void setDirty(int $dirty)
  *
  * @method string getFilename()
  * @method int getSize()
@@ -58,37 +61,41 @@ use OCP\IURLGenerator;
  * @method ?string getAlbumName()
  * @method ?string getArtistName()
  * @method ?string getGenreName()
+ * @method int getFolderId()
  */
 class Track extends Entity {
-	public $title;
-	public $number;
-	public $disk;
-	public $year;
-	public $artistId;
-	public $albumId;
-	public $length;
-	public $fileId;
-	public $bitrate;
-	public $uri;
-	public $mimetype;
-	public $mbid;
-	public $starred;
-	public $rating;
-	public $genreId;
-	public $playCount;
-	public $lastPlayed;
+	public string $title = '';
+	public ?int $number = null;
+	public ?int $disk = null;
+	public ?int $year = null;
+	public ?int $artistId = null;
+	public ?int $albumId = null;
+	public ?int $length = null;
+	public int $fileId = 0;
+	public ?int $bitrate = null;
+	public string $mimetype = '';
+	public ?string $mbid = null;
+	public ?string $starred = null;
+	public int $rating = 0;
+	public ?int $genreId = null;
+	public int $playCount = 0;
+	public ?string $lastPlayed = null;
+	public int $dirty = 0;
 
 	// not from the music_tracks table but still part of the standard content of this entity:
-	public $filename;
-	public $size;
-	public $fileModTime;
-	public $albumName;
-	public $artistName;
-	public $genreName;
+	public string $filename = '';
+	public int $size = 0;
+	public int $fileModTime = 0;
+	public ?string $albumName = null;
+	public ?string $artistName = null;
+	public ?string $genreName = null;
+	public int $folderId = 0;
 
 	// the rest of the variables are injected separately when needed
-	private $album;
-	private $numberOnPlaylist;
+	private ?Album $album = null;
+	private ?int $numberOnPlaylist = null;
+	private ?string $folderPath = null;
+	private ?string $lyrics = null;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -102,8 +109,10 @@ class Track extends Entity {
 		$this->addType('genreId', 'int');
 		$this->addType('playCount', 'int');
 		$this->addType('rating', 'int');
+		$this->addType('dirty', 'int');
 		$this->addType('size', 'int');
 		$this->addType('fileModTime', 'int');
+		$this->addType('folderId', 'int');
 	}
 
 	public function getAlbum() : ?Album {
@@ -118,14 +127,26 @@ class Track extends Entity {
 		return $this->numberOnPlaylist;
 	}
 
-	public function setNumberOnPlaylist(int $number) {
+	public function setNumberOnPlaylist(int $number) : void {
 		$this->numberOnPlaylist = $number;
+	}
+
+	public function setFolderPath(string $path) : void {
+		$this->folderPath = $path;
+	}
+
+	public function setLyrics(?string $lyrics) : void {
+		$this->lyrics = $lyrics;
+	}
+
+	public function getPath() : ?string {
+		return ($this->folderPath ?? '') . '/' . $this->filename;
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.shivaApi.track',
-			['trackId' => $this->id]
+			['id' => $this->id]
 		);
 	}
 
@@ -134,7 +155,7 @@ class Track extends Entity {
 			'id' => $this->artistId,
 			'uri' => $urlGenerator->linkToRoute(
 				'music.shivaApi.artist',
-				['artistId' => $this->artistId]
+				['id' => $this->artistId]
 			)
 		];
 	}
@@ -144,7 +165,7 @@ class Track extends Entity {
 			'id' => $this->albumId,
 			'uri' => $urlGenerator->linkToRoute(
 				'music.shivaApi.album',
-				['albumId' => $this->albumId]
+				['id' => $this->albumId]
 			)
 		];
 	}
@@ -173,7 +194,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getAdjustedTrackNumber(),
@@ -181,7 +202,7 @@ class Track extends Entity {
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
 			'files' => [$this->getMimetype() => $urlGenerator->linkToRoute(
-				'music.api.download',
+				'music.musicApi.download',
 				['fileId' => $this->getFileId()]
 			)],
 			'bitrate' => $this->getBitrate(),
@@ -222,12 +243,12 @@ class Track extends Entity {
 			'stream_mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
-			'rating' => $this->getRating() ?? 0,
-			'preciserating' => $this->getRating() ?? 0,
+			'rating' => $this->getRating(),
+			'preciserating' => $this->getRating(),
 			'playcount' => $this->getPlayCount(),
 			'flag' => !empty($this->getStarred()),
 			'language' => null,
-			'lyrics' => null,
+			'lyrics' => $this->lyrics,
 			'mode' => null, // cbr/vbr
 			'rate' => null, // sample rate [Hz]
 			'replaygain_album_gain' => null,
@@ -237,6 +258,8 @@ class Track extends Entity {
 			'r128_album_gain' => null,
 			'r128_track_gain' => null,
 		];
+
+		$result['has_art'] = !empty($result['art']);
 
 		$genreId = $this->getGenreId();
 		if ($genreId !== null) {
@@ -248,7 +271,7 @@ class Track extends Entity {
 		}
 
 		if ($includeArtists) {
-			// Add another property `artists`. Apparently, it exists to support mulitple artists per song
+			// Add another property `artists`. Apparently, it exists to support multiple artists per song
 			// but we don't have such possibility and this is always just a 1-item array.
 			$result['artists'] = [$result['artist']];
 		}
@@ -260,8 +283,10 @@ class Track extends Entity {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. The $track entity must have the Album reference injected prior to calling this.
+	 * 
+	 * @param string[] $ignoredArticles
 	 */
-	public function toSubsonicApi(IL10N $l10n) : array {
+	public function toSubsonicApi(IL10N $l10n, array $ignoredArticles) : array {
 		$albumId = $this->getAlbumId();
 		$album = $this->getAlbum();
 		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
@@ -280,7 +305,7 @@ class Track extends Entity {
 			'suffix' => $this->getFileExtension(),
 			'duration' => $this->getLength() ?? 0,
 			'bitRate' => empty($this->getBitrate()) ? null : (int)\round($this->getBitrate()/1000), // convert bps to kbps
-			//'path' => '',
+			'path' => $this->getPath(),
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $this->getArtistId(),
@@ -291,7 +316,10 @@ class Track extends Entity {
 			'userRating' => $this->getRating() ?: null,
 			'averageRating' => $this->getRating() ?: null,
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
-			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
+			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId,
+			'playCount' => $this->getPlayCount(),
+			'played' => Util::formatZuluDateTime($this->getLastPlayed()) ?? '', // OpenSubsonic
+			'sortName' => StringUtil::splitPrefixAndBasename($this->getTitle(), $ignoredArticles)['basename'], // OpenSubsonic
 		];
 	}
 
@@ -322,4 +350,26 @@ class Track extends Entity {
 		return empty($parts) ? '' : \end($parts);
 	}
 
+	/**
+	 * Get an instance which has all the mandatory fields set to valid but empty values
+	 */
+	public static function emptyInstance() : Track {
+		$track = new self();
+
+		$track->id = -1;
+		$track->title = '';
+		$track->artistId = -1;
+		$track->albumId = -1;
+		$track->fileId = -1;
+		$track->mimetype = '';
+		$track->playCount = 0;
+		$track->dirty = 0;
+
+		$track->filename = '';
+		$track->size = 0;
+		$track->fileModTime = 0;
+		$track->folderId = -1;
+
+		return $track;
+	}
 }

@@ -1,0 +1,283 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2025
+ */
+
+/**
+ * This style file contains definitions which are common to many views or parts of the Music app.
+ */
+
+#notification a {
+	text-decoration: underline;
+}
+
+/* Override background-color definition made by NC18, which seems like a bug and breaks the dark theme (#739) */
+body#body-user.dark {
+	background-color: var(--color-main-background);
+}
+
+#app {
+	width: 100%;
+}
+
+.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
+	position: absolute;
+	top: 0px;
+	left: 300px;
+	right: 0px;
+	margin-left: 0;
+}
+
+.app-music:not(.nc14to24) #app {
+	contain: content;
+}
+
+#app-content.with-app-sidebar {
+	margin-right: 27%;
+}
+
+/* angular JS wrapper for main controller */
+#app > div {
+	width: 100%;
+	height: 100%;
+}
+
+/* Nextcloud versions 22.2.1+ have a button min-height which messes up our layout */
+#app button {
+	min-height: unset;
+}
+
+#app-view {
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	position: absolute;
+	padding-left: 14px;
+	padding-right: 50px;
+}
+
+#app-view.started {
+	padding-top: 66px;
+}
+
+.view-container {
+	padding-bottom: 60px;
+}
+
+.view-container h2 {
+	font-size: 21px;
+	line-height: 30px;
+}
+
+.play {
+	display: inline;
+	visibility: hidden;
+	opacity: .7;
+	height: 10px;
+}
+
+h1 {
+	font-size: 34px;
+	line-height: 36px;
+}
+
+h1 .play {
+	margin-bottom: 2px;
+	margin-left: 10px;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+h2 .play {
+	margin-left: 10px;
+	cursor: pointer;
+	width: 13px;
+	height: 13px;
+}
+
+h1 span:hover .play,
+h2 span:hover .play {
+	visibility: visible
+}
+
+.albumart {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	border-radius: var(--music-albumart-small-border-radius);
+}
+
+.play-pause {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-left: 0px;
+	margin-right: 6px;
+	background-image: none;
+	background-size: 100% 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	opacity: .6;
+}
+
+#app-content :hover > .play-pause {
+	opacity: 1.0;
+}
+
+.current.playing .play-pause,
+div:hover > .play-pause,
+#app-content .current:not(.playing) div:hover .play-pause {
+	background-image: url(../../img/play-big.svg);
+}
+
+.current:not(.playing) .play-pause,
+#app-content .current.playing div:hover .play-pause {
+	background-image: url(../../img/pause-big.svg)
+}
+
+#app-content button.icon-details,
+#app-content button.icon-more {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 0;
+	border: none;
+	background-color: transparent;
+	visibility: hidden;
+	opacity: 0.5;
+	padding: 7px 18px;
+	width: auto;
+}
+
+#app-content :hover > button.icon-details,
+#app-content :hover > button.icon-more {
+	visibility: visible;
+}
+
+#app-content button.icon-details:hover,
+#app-content button.icon-more:hover {
+	opacity: 1;
+}
+
+#app-view h2 .icon-loading-small {
+	top: 11px;
+	left: 3px;
+	overflow: visible;
+}
+
+#app-view h2:not(.busy) .icon-loading-small {
+	display: none;
+}
+
+#app-view h2.busy .icon-more {
+	display: none;
+}
+
+#app-view .heading,
+#app-view .heading * {
+	cursor: pointer;
+}
+
+#app-view .heading-actions {
+	display: block;
+	font-size: 13px;
+	top: 40px;
+	right: -10px;
+}
+
+.muted {
+	opacity: .5;
+	display: inline;
+}
+
+.clickable, .clickable * {
+	cursor: pointer;
+}
+
+#app-content .emptycontent {
+	position: fixed;
+	top: 0;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+	padding: 20px 50px;
+	z-index: 1;
+}
+
+#app-content .emptycontent.collapsed {
+	top: unset;
+	bottom: 0;
+	padding: 5px 20px;
+}
+
+#app-content .emptycontent.collapsed > * {
+	display: inline-block;
+	margin: 0;
+	height: 40px;
+	background-size: 40px;
+}
+
+#app-content .emptycontent.collapsed h2 {
+	margin: 0;
+}
+
+#app-content .emptycontent.clickable * {
+	opacity: 0.85;
+}
+
+#app-content .emptycontent.clickable:hover * {
+	opacity: 1;
+}
+
+#app-view .emptycontent {
+	margin-left: -14px; /* to cancel out the #app-view padding */
+}
+
+/* hide popups and navigation until the angularjs framework is up and running and can do the dynamic hiding and interpolation */
+#app:not(.loaded) .emptycontent,
+#app:not(.loaded) #searchContainer,
+#app:not(.loaded) #updateData,
+#app:not(.loaded) #app-navigation {
+	display: none;
+}
+
+#updateData {
+	position: fixed;
+	width: 60px;
+	height: 60px;
+	padding: 20px;
+	bottom: var(--body-container-margin, 0);
+	z-index: 101;
+	opacity: .4;
+}
+
+.ie #updateData {
+	bottom: 0;
+}
+
+#updateData:hover, #updateData:focus {
+	opacity: 1;
+}
+
+.highlight {
+	background-color: var(--color-background-hover, #f5f5f5);
+}
+
+.ie .highlight {
+	background-color: #f5f5f5;
+}
+
+.flip-vertically {
+	transform: scaleY(-1);
+}
+ 
+.svg,
+:not(.svg) > .play-pause {
+	filter: var(--background-invert-if-dark);
+}

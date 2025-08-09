@@ -6,9 +6,11 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvien@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2025
  */
 
-require_once __DIR__ . '/autoloader.php';
+require_once __DIR__ . '/autoloader-integration.php';
 
 require_once __DIR__ . '/../../../../lib/base.php';

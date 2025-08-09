@@ -9,15 +9,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\StringUtil;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-
-use OCA\Music\Utility\Util;
 
 /**
  * @method ?string getName()
@@ -34,30 +33,34 @@ use OCA\Music\Utility\Util;
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  * @method ?string getAlbumArtistName()
  */
 class Album extends Entity {
-	public $name;
-	public $mbid;
-	public $mbidGroup;
-	public $coverFileId;
-	public $albumArtistId;
-	public $hash;
-	public $starred;
-	public $rating;
-	public $albumArtistName; // not from music_albums table but still part of the standard content
-	public $disk; // deprecated
+	public ?string $name = null;
+	public ?string $mbid = null;
+	public ?string $mbidGroup = null;
+	public ?int $coverFileId = null;
+	public ?int $albumArtistId = null;
+	public string $hash = '';
+	public ?string $starred = null;
+	public int $rating = 0;
+	public ?string $albumArtistName = null; // not from music_albums table but still part of the standard content
+	public ?int $disk = 0; // deprecated
 
 	// extra fields injected separately by AlbumBusinessLayer
-	private $years;
-	private $genres; // *partial* Genre objects, not all properties are set
-	private $artistIds;
-	private $numberOfDisks;
+	/** @var ?int[] $years */
+	private ?array $years = null;
+	/** @var ?Genre[] $genres - AlbumBusinessLayer injects *partial* Genre objects, not all properties are set */
+	private ?array $genres = null;
+	/** @var ?int[] $artistIds */
+	private ?array $artistIds = null;
+	private ?int $numberOfDisks = null;
 
 	// injected separately when needed
-	private $tracks;
+	/** @var ?Track[] $tracks */
+	private ?array $tracks = null;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
@@ -66,26 +69,44 @@ class Album extends Entity {
 		$this->addType('rating', 'int');
 	}
 
+	/**
+	 * @return ?int[]
+	 */
 	public function getYears() : ?array {
 		return $this->years;
 	}
 
+	/**
+	 * @param ?int[] $years
+	 */
 	public function setYears(?array $years) : void {
 		$this->years = $years;
 	}
 
+	/**
+	 * @return ?Genre[]
+	 */
 	public function getGenres() : ?array {
 		return $this->genres;
 	}
 
+	/**
+	 * @param ?Genre[] $genres
+	 */
 	public function setGenres(?array $genres) : void {
 		$this->genres = $genres;
 	}
 
+	/**
+	 * @return ?int[]
+	 */
 	public function getArtistIds() : ?array {
 		return $this->artistIds;
 	}
 
+	/**
+	 * @param ?int[] $artistIds
+	 */
 	public function setArtistIds(?array $artistIds) : void {
 		$this->artistIds = $artistIds;
 	}
@@ -120,7 +141,7 @@ class Album extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.shivaApi.album',
-			['albumId' => $this->id]
+			['id' => $this->id]
 		);
 	}
 
@@ -136,7 +157,7 @@ class Album extends Entity {
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
 					'music.shivaApi.artist',
-					['artistId' => $artistId]
+					['id' => $artistId]
 				)
 			];
 		}
@@ -146,7 +167,7 @@ class Album extends Entity {
 	/**
 	 * Returns the years(s) of the album.
 	 * The album may have zero, one, or multiple years as people may tag tracks of
-	 * colletion albums with their original release dates. The respective formatted
+	 * collection albums with their original release dates. The respective formatted
 	 * year ranges could be e.g. null, '2016', and '1995 - 2000'.
 	 * @return string|null
 	 */
@@ -199,7 +220,7 @@ class Album extends Entity {
 	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.albumCover',
+			$coverUrl = $urlGenerator->linkToRoute('music.coverApi.albumCover',
 					['albumId' => $this->getId()]);
 		}
 		return $coverUrl;
@@ -215,7 +236,7 @@ class Album extends Entity {
 	 */
 	public function coverToCollection(IURLGenerator $urlGenerator, ?string $cachedCoverHash) : ?string {
 		if (!empty($cachedCoverHash)) {
-			return $urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $cachedCoverHash]);
+			return $urlGenerator->linkToRoute('music.coverApi.cachedCover', ['hash' => $cachedCoverHash]);
 		} elseif ($this->getCoverFileId() > 0) {
 			return $this->coverToAPI($urlGenerator);
 		} else {
@@ -248,7 +269,7 @@ class Album extends Entity {
 	 * @param  IL10N $l10n Localization handler
 	 * @return array shiva API object
 	 */
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
@@ -264,7 +285,7 @@ class Album extends Entity {
 	public static function compareYearAndName(Album $a, Album $b) : int {
 		$yearResult = \strcmp($a->getYearRange() ?? '', $b->getYearRange() ?? '');
 
-		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
+		return $yearResult ?: StringUtil::caselessCompare($a->getName(), $b->getName());
 	}
 
 	public static function unknownNameString(IL10N $l10n) : string {

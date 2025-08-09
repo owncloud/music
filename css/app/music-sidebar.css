@@ -1,0 +1,490 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2018 - 2025
+ */
+
+#app-sidebar {
+	position: fixed;
+	height: 100%;
+	top: 0;
+	right: 0;
+	overflow-y: hidden;
+	contain: content;
+}
+
+.nc14to24 #app-sidebar {
+	top: var(--header-height, 50px);
+	bottom: 0;
+	height: unset;
+}
+
+#app-sidebar #app-sidebar-scroll-container {
+	height: 100%;
+	width: 100%;
+	padding-top: 8px;
+	overflow-y: auto;
+}
+
+#app-sidebar .sidebar-content {
+	height: 100%;
+	width: 100%;
+}
+
+#app-sidebar .fav-button {
+	display: block;
+	position: static;
+	float: left;
+	margin-bottom: -16px;
+	margin-left: 8px;
+	cursor: pointer;
+}
+
+#app-sidebar .close {
+	position: fixed;
+	top: 0;
+	right: 0;
+	border-radius: 50%;
+	margin: 6px;
+	padding: 14px;
+	width: 44px;
+	height: 44px;
+	opacity: 0.5;
+	z-index: 1;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .close {
+	top: 45px;
+	right: 0;
+	background-color: rgba(255, 255, 255, .95);
+}
+
+#app-sidebar .close:hover {
+	opacity: 1;
+}
+
+#app-sidebar .sidebar-content > .albumart {
+	width: 100%;
+	height: 35%;
+	background-size: contain;
+	display: table;
+}
+
+#app-sidebar .sidebar-content > .albumart span {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	opacity: 0.4;
+}
+
+#app-sidebar #path {
+	width: auto;
+	text-align: center;
+	display: table;
+	margin: 0 auto 16px auto;
+}
+
+#app-sidebar .tabHeaders {
+	margin-top: 16px;
+}
+
+#app-sidebar .tabsContainer {
+	width: 100%;
+}
+
+#app-sidebar .sidebar-container {
+	padding: 15px;
+}
+
+#app-sidebar dl {
+	width: 100%;
+	overflow: hidden;
+	padding: 0 0 16px 0;
+}
+
+#app-sidebar #radio-station-details dl {
+	padding-top: 6px;
+}
+
+#app-sidebar dt {
+	float: left;
+	width: 30%;
+	padding-top: 0;
+	padding-bottom: 6px;
+	padding-right: 12px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: right;
+	opacity: .5;
+}
+
+#app-sidebar dd {
+	float: left;
+	width: 70%;
+	padding-top: 0;
+	padding-bottom: 6px;
+	padding-right: 0;
+}
+
+#app-sidebar .clickable button {
+	border: none;
+	background-color: transparent;
+	opacity: 0.5;
+	vertical-align: middle;
+	margin-top: -3px;
+	margin-bottom: -3px;
+	height: 16px;
+	width: 16px;
+}
+
+#app-sidebar h2 .icon-info {
+	margin-bottom: -2px;
+	margin-left: 4px;
+}
+
+#app-sidebar :hover > button,
+#app-sidebar button:hover {
+	opacity: 1.0;
+}
+
+#app-sidebar dd textarea,
+#app-sidebar dd input {
+	width: 100%;
+	margin-top: -6px;
+	margin-left: -6px;
+	cursor: text;
+}
+
+#app-sidebar .icon-info {
+	padding-left: 20px;
+	padding-right: 0;
+}
+
+#app-sidebar #artist-content-counts dt {
+	width: 65%;
+}
+
+#app-sidebar #artist-content-counts dd {
+	width: 35%;
+}
+
+#app-sidebar #album-content-counts dt {
+	width: 55%;
+}
+
+#app-sidebar #album-content-counts dd {
+	width: 45%;
+}
+
+#app-sidebar .tabsContainer .tab {
+	width: 100%;
+	margin-bottom: 32px;
+}
+
+#app-sidebar #lyricsTabView {
+	width: 100%;
+}
+
+#app-sidebar .lyrics {
+	width: 100%;
+	white-space: pre-wrap;
+	text-align: center;
+}
+
+#app-sidebar .lyrics.highlight {
+	background-color: var(--color-background-dark, #ededed);
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .lyrics.highlight {
+	background-color: #ededed;
+}
+
+#app-sidebar #follow-playback {
+	position: fixed;
+	right: var(--body-container-margin, 0);
+	bottom: var(--body-container-margin, 0);
+	border-radius: 50%;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+	margin: 6px;
+	padding: 12px;
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar #follow-playback {
+	right: 0;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, .95);
+}
+
+#app-sidebar .icon-loading:not(.inline) {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+/* to set size of the loading indicator, we actually have to modify the ::after element */
+#app-sidebar .icon-loading.inline::after {
+	height: 16px;
+	width: 16px;
+	margin-top: -7px;
+	margin-left: -5px;
+}
+
+#app-sidebar #favorite-toggle .icon-loading.inline::after {
+	margin-top: 4px;
+	margin-left: 6px;
+}
+
+#app-sidebar #favorite-toggle {
+	position: absolute;
+	z-index: 10;
+}
+
+#app-sidebar h1 {
+	font-size: 24px;
+	text-align: center;
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#app-sidebar #album-details h1 {
+	margin-top: 8px;
+}
+
+#app-sidebar h2 {
+	text-align: center;
+	width: 100%;
+	margin-top: 16px;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+
+#app-sidebar #lastfm-info {
+	width: 100%;
+	margin-bottom: 48px;
+}
+
+#app-sidebar #lastfm-info .missing-content {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
+	opacity: 0.4;
+}
+
+#app-sidebar #lastfm-info p {
+	white-space: pre-wrap;
+	text-align: center;
+	margin-left: 16px;
+	margin-right: 16px;
+	margin-bottom: 16px;
+}
+
+#app-sidebar #lastfm-info dt {
+	width: 20%;
+}
+
+#app-sidebar #lastfm-info dd {
+	width: 80%;
+}
+
+#app-sidebar #lastfm-info .similar-artists .icon-info {
+	padding: 0;
+	margin-right: -3px;
+}
+
+#app-sidebar #lastfm-info .show-all {
+	opacity: .5;
+	cursor: pointer;
+}
+
+#app-sidebar #lastfm-info a,
+#app-sidebar #podcast-details a,
+#app-sidebar #podcast-details a *,
+#app-sidebar #radio-station-details a,
+#app-sidebar .tutorial a,
+#app-sidebar .hint a {
+	text-decoration: underline;
+	display: inline-block;
+}
+
+#app-sidebar #lastfm-info a:after,
+#app-sidebar #podcast-details a:after,
+#app-sidebar #radio-station-details a:after,
+#app-sidebar .tutorial a:after {
+	content: " ↗";
+}
+
+#app-sidebar #lastfm-info .in-lib-artist {
+	display: inline-block;
+}
+
+#app-sidebar #lastfm-info .in-lib-artist .separator {
+	margin-right: 5px;
+}
+
+#app-sidebar .truncated:after {
+	content: "…";
+}
+
+#app-sidebar .tutorial {
+	padding: 15px 15px 45px 15px;
+}
+
+#app-sidebar .tutorial h2,
+#app-sidebar .tutorial li,
+#app-sidebar .tutorial p {
+	margin-bottom: 10px;
+}
+
+#app-sidebar .tutorial ol {
+	list-style: decimal outside;
+	margin-left: 15px;
+}
+
+#app-sidebar .tutorial li {
+	display: list-item;
+}
+
+#app-sidebar .editor-buttons button {
+	height: 24px;
+	width: 24px;
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+#app-sidebar button.disabled {
+	opacity: .5;
+	pointer-events: none;
+}
+
+#app-sidebar #podcast-details .tags {
+	margin-top: 24px;
+}
+
+#app-sidebar #smartlist-filters > div {
+	margin: 12px;
+}
+
+#app-sidebar #smartlist-filters label {
+	display: inline-block;
+	width: 90px;
+}
+
+#app-sidebar #smartlist-filters input {
+	width: calc(50% - 65px);
+}
+
+#app-sidebar #smartlist-filters select,
+#app-sidebar #smartlist-filters .chosen-container {
+	width: calc(100% - 98px);
+}
+
+#app-sidebar #smartlist-filters select {
+	background: var(--color-main-background, #fff);
+}
+
+#app-sidebar #smartlist-filters .chosen-choices,
+#app-sidebar #smartlist-filters .chosen-single {
+	background: var(--color-main-background, #fff);
+	border: var(--border-input);				/* value of the var is set in our javascript */
+	border-radius: var(--border-radius-input);	/* value of the var is set in our javascript */
+	box-shadow: unset;
+	text-overflow: ellipsis;
+	cursor: pointer;
+}
+
+#app-sidebar #smartlist-filters .chosen-choices:hover,
+#app-sidebar #smartlist-filters .chosen-single:hover {
+	border-color: var(--color-input-border-hover); /* value of the var is set in our javascript */
+}
+
+#app-sidebar #smartlist-filters .chosen-choices input {
+	margin-top: -1px;
+	margin-bottom: -1px;
+	color: var(--color-main-text, #222) !important;
+	height: 36px;
+}
+
+#app-sidebar #smartlist-filters .chosen-choices .search-choice {
+	margin-top: 6px;
+	background-color: var(--color-background-dark, #eee);
+	color: var(--color-main-text, #333);
+	background-image: unset;
+}
+
+#app-sidebar #smartlist-filters .chosen-drop {
+	background-color: var(--color-main-background, #fff);
+	border-radius: var(--border-radius-large);
+	padding: var(--default-grid-baseline);
+}
+
+#app-sidebar #smartlist-filters .chosen-drop li {
+	padding: 10px 5px;
+}
+
+#app-sidebar #smartlist-filters .chosen-drop li.highlighted {
+	background-color: var(--color-background-hover, #f5f5f5);
+	background-image: unset;
+	color: var(--color-main-text, #222);
+	border-radius: var(--border-radius-large);
+}
+
+#app-sidebar #smartlist-filters .chosen-container .chosen-results {
+	color: var(--color-main-text, #444);
+	padding: 0;
+	margin: 0;
+}
+
+#app-sidebar #smartlist-filters .chosen-container .chosen-results li.no-results {
+	color: var(--color-main-text, #333);
+	background: var(--color-background-dark, #eee);
+	opacity: .5;
+}
+
+#app-sidebar #smartlist-filters .chosen-container-multi .chosen-drop .result-selected {
+	color: unset;
+	opacity: .5;
+}
+
+#app-sidebar #smartlist-filters .chosen-single  {
+	height: 36px;
+	background-image: unset;
+}
+
+#app-sidebar #smartlist-filters .chosen-single > * {
+	margin-top: 5px;
+	color: var(--color-main-text, #222);
+}
+
+#app-sidebar #smartlist-filters #filter_history_chosen {
+	width: calc(100% - 178px);
+}
+
+#app-sidebar #smartlist-filters #filter-history-strict-label {
+	width: 50px;
+	text-align: right;
+}
+
+#app-sidebar #smartlist-filters #filter-history-strict {
+	vertical-align: middle;
+	width: 16px;
+}
+
+#app-sidebar #smartlist-filters #update-button {
+	width: 100%;
+}
+
+#app-sidebar #smartlist-filters .hint {
+	color: var(--color-text-lighter, #a5a5a5);
+	margin-top: 60px;
+}

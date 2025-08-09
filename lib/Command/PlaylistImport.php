@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 namespace OCA\Music\Command;
@@ -15,7 +15,7 @@ namespace OCA\Music\Command;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\Db\Playlist;
-use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Service\PlaylistFileService;
 
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -28,12 +28,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PlaylistImport extends BaseCommand {
-	/** @var IRootFolder */
-	private $rootFolder;
-	/** @var PlaylistBusinessLayer */
-	private $businessLayer;
-	/** @var PlaylistFileService */
-	private $playlistFileService;
+
+	private IRootFolder $rootFolder;
+	private PlaylistBusinessLayer $businessLayer;
+	private PlaylistFileService $playlistFileService;
 
 	public function __construct(
 			\OCP\IUserManager $userManager,
@@ -104,6 +102,7 @@ class PlaylistImport extends BaseCommand {
 
 		foreach ($files as $filePath) {
 			$name = \pathinfo($filePath, PATHINFO_FILENAME);
+			assert(\is_string($name));
 			$existingLists = $this->businessLayer->findAllByName($name, $userId);
 			if (\count($existingLists) === 0) {
 				$playlist = $this->businessLayer->create($name, $userId);
@@ -176,8 +175,8 @@ class PlaylistImport extends BaseCommand {
 	private static function fileMatchesPattern(File $file, string $pattern) : bool {
 		// convert the pattern to regex
 		$pattern = \preg_quote($pattern);				// escape regex meta characters
-		$pattern = \str_replace('\*', '.*', $pattern);	// convert * to its regex equivaleant
-		$pattern = \str_replace('\?', '.', $pattern);	// convert ? to its regex equivaleant
+		$pattern = \str_replace('\*', '.*', $pattern);	// convert * to its regex equivalent
+		$pattern = \str_replace('\?', '.', $pattern);	// convert ? to its regex equivalent
 		$pattern = "/^$pattern$/";						// the pattern should match the name from begin to end
 
 		return (\preg_match($pattern, $file->getName()) === 1);

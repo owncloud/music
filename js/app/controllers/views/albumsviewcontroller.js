@@ -7,18 +7,18 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 angular.module('Music').controller('AlbumsViewController', [
-	'$scope', '$rootScope', 'playlistService', 'libraryService',
+	'$scope', '$rootScope', 'playQueueService', 'libraryService',
 	'Restangular', '$document', '$route', '$location', '$timeout', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, libraryService,
+	function ($scope, $rootScope, playQueueService, libraryService,
 			Restangular, $document, $route, $location, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
-		// apply the layout mode stored by the maincontroller
+		// apply the layout mode stored by the MainController
 		$('#albums').toggleClass('compact', $scope.albumsCompactLayout);
 
 		// When making the view visible, the artists are added incrementally step-by-step.
@@ -27,15 +27,16 @@ angular.module('Music').controller('AlbumsViewController', [
 		const INCREMENTAL_LOAD_STEP = 20;
 		$scope.incrementalLoadLimit = 0;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', () => {
 			_.each(unsubFuncs, function(func) { func(); });
+			playQueueService.unsubscribeAll(this);
 		});
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
@@ -53,8 +54,8 @@ angular.module('Music').controller('AlbumsViewController', [
 			let playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
-			playlistService.setPlaylist(listId, playlist, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist(listId, playlist, startIndex);
+			playQueueService.publish('play');
 		}
 
 		function playPlaylistFromTrack(listId, playlist, track) {
@@ -62,10 +63,10 @@ angular.module('Music').controller('AlbumsViewController', [
 			window.location.hash = '#/track/' + track.id;
 
 			let index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
-			playlistService.setPlaylist(listId, playlist, index);
+			playQueueService.setPlaylist(listId, playlist, index);
 
 			let startOffset = $location.search().offset || null;
-			playlistService.publish('play', null, startOffset);
+			playQueueService.publish('play', null, startOffset);
 			$location.search('offset', null); // the offset parameter has been used up
 		}
 
@@ -74,16 +75,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			let currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
-			if (currentTrack && track.id === currentTrack.id) {
-				playlistService.publish('togglePlayback');
+			if (currentTrack && track.id === currentTrack.id && currentTrack.type == 'song') {
+				playQueueService.publish('togglePlayback');
 			}
 			else {
-				let currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playQueueService.getCurrentPlaylistId();
 
 				// start playing the album/artist from this track if the clicked track belongs
 				// to album/artist which is the current play scope
 				if (currentListId === 'album-' + track.album.id || currentListId === 'artist-' + track.album.artist.id) {
-					playPlaylistFromTrack(currentListId, playlistService.getCurrentPlaylist(), track);
+					playPlaylistFromTrack(currentListId, playQueueService.getCurrentPlaylist(), track);
 				}
 				// on any other track, start playing the collection from this track
 				else {
@@ -107,7 +108,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$scope.playFile = function (fileid) {
 			if (fileid) {
-				Restangular.one('file', fileid).get().then(function(result) {
+				Restangular.one('files', fileid).get().then(function(result) {
 					$scope.playTrack(result.id);
 					scrollToAlbumOfTrack(result.id);
 				});
@@ -147,13 +148,13 @@ angular.module('Music').controller('AlbumsViewController', [
 		};
 
 		/**
-		 * Gets track data to be dislayed in the tracklist directive
+		 * Gets track data to be displayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(track, index, scope) {
 			return {
 				title: getTitleString(track, scope.artist, false),
 				tooltip: getTitleString(track, scope.artist, true),
-				number: getTrackNumber(track),
+				number: track.formattedNumber,
 				id: track.id
 			};
 		};
@@ -173,39 +174,24 @@ angular.module('Music').controller('AlbumsViewController', [
 			return att;
 		}
 
-		/**
-		 * Formats a track number, possible including disk number, for displaying in tracklist directive
-		 */
-		function getTrackNumber(track) {
-			if (track.album.diskCount <= 1) {
-				return track.number;
-			} else {
-				// multidisk album
-				let number = track.disk + '-';
-				number += track.number ?? '?';
-				return number;
-			}
-		}
-
-		// emited on end of playlist by playerController
-		subscribe('playlistEnded', function() {
+		playQueueService.subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
 			updateHighlight(null);
-		});
+		}, this);
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		playQueueService.subscribe('playlistChanged', function(playlistId) {
 			updateHighlight(playlistId);
-		});
+		}, this);
 
-		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
+		subscribe('scrollToTrack', function(_event, trackId, animationTime /* optional */) {
 			scrollToAlbumOfTrack(trackId, animationTime);
 		});
 
-		subscribe('scrollToAlbum', function(event, albumId, animationTime /* optional */) {
+		subscribe('scrollToAlbum', function(_event, albumId, animationTime /* optional */) {
 			$scope.$parent.scrollToItem('album-' + albumId, animationTime);
 		});
 
-		subscribe('scrollToArtist', function(event, artistId, animationTime /* optional */) {
+		subscribe('scrollToArtist', function(_event, artistId, animationTime /* optional */) {
 			const elemId = 'artist-' + artistId;
 			if ($('#' + elemId).length) {
 				$scope.$parent.scrollToItem(elemId, animationTime);
@@ -291,11 +277,11 @@ angular.module('Music').controller('AlbumsViewController', [
 				}
 			}
 
-			updateHighlight(playlistService.getCurrentPlaylistId());
+			updateHighlight(playQueueService.getCurrentPlaylistId());
 		}
 
 		/**
-		 * Increase number of shown artists aynchronously step-by-step until
+		 * Increase number of shown artists asynchronously step-by-step until
 		 * they are all visible. This is to avoid script hanging up for too
 		 * long on huge collections.
 		 */
@@ -314,7 +300,7 @@ angular.module('Music').controller('AlbumsViewController', [
 					if (!isPlaying()) {
 						$timeout(initializePlayerStateFromURL);
 					} else {
-						updateHighlight(playlistService.getCurrentPlaylistId());
+						updateHighlight(playQueueService.getCurrentPlaylistId());
 					}
 
 					$timeout(() => $rootScope.$emit('viewActivated'));
@@ -322,14 +308,14 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		// Start making artists visible immediatedly if the artists are already loaded.
+		// Start making artists visible immediately if the artists are already loaded.
 		// Otherwise it happens on the 'collectionLoaded' event handler.
 		if ($scope.$parent.artists) {
 			showMore();
 		}
 
 		subscribe('collectionLoaded', function() {
-			// Start the anynchronus process of making aritsts visible
+			// Start the asynchronous process of making artists visible
 			$scope.incrementalLoadLimit = 0;
 			showMore();
 		});

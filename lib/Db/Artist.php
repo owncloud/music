@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
@@ -28,21 +28,23 @@ use OCP\IURLGenerator;
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  */
 class Artist extends Entity {
-	public $name;
-	public $coverFileId;
-	public $mbid;
-	public $hash;
-	public $starred;
-	public $rating;
+	public ?string $name = null;
+	public ?int $coverFileId = null;
+	public ?string $mbid = null;
+	public string $hash = '';
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	// not part of the standard content, injected separately when needed
-	private $lastfmUrl;
-	private $albums;
-	private $tracks;
+	private ?string $lastfmUrl = null;
+	/** @var ?Album[] $albums */
+	private ?array $albums = null;
+	/** @var ?Track[] $tracks */
+	private ?array $tracks = null;
 
 	public function __construct() {
 		$this->addType('coverFileId', 'int');
@@ -88,7 +90,7 @@ class Artist extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.shivaApi.artist',
-			['artistId' => $this->id]
+			['id' => $this->id]
 		);
 	}
 
@@ -97,12 +99,12 @@ class Artist extends Entity {
 	}
 
 	/**
-	 * Return the cover URL to be used in the Shiva API
+	 * Return the cover URL to be used in the API
 	 */
 	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.artistCover',
+			$coverUrl = $urlGenerator->linkToRoute('music.coverApi.artistCover',
 					['artistId' => $this->getId()]);
 		}
 		return $coverUrl;
@@ -111,15 +113,16 @@ class Artist extends Entity {
 	/**
 	 * @param array $albums in the "toCollection" format
 	 */
-	public function toCollection(IL10N $l10n, array $albums) : array {
+	public function toCollection(IURLGenerator $urlGenerator, IL10N $l10n, array $albums) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
-			'albums' => $albums
+			'albums' => $albums,
+			'cover' => $this->coverToAPI($urlGenerator)
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),

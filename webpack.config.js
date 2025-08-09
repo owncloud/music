@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2020 - 2023 Pauli Järvinen
+ * @copyright 2020 - 2024 Pauli Järvinen
  *
  */
 
@@ -21,6 +21,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     app: './js/index.app.js',
+    dashboard_music_widget: './js/index.dashboard.js',
     files_music_player: './js/index.embedded.js'
   },
   output: {
@@ -31,11 +32,15 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'node_modules': path.resolve(__dirname, 'node_modules'),
+      'shared': path.resolve(__dirname, 'js/shared'),
       'vendor': path.resolve(__dirname, 'js/vendor'),
       'angular': path.resolve('node_modules', 'angular'),
       'lodash': path.resolve('node_modules', 'lodash'),
       'jquery': path.resolve('node_modules', 'jquery/src/jquery'),
       'blueimp-md5': path.resolve('node_modules', 'blueimp-md5'),
+    },
+    fallback: {
+      path: require.resolve("path-browserify")
     }
   },
   plugins: [
@@ -67,6 +72,10 @@ module.exports = {
         generator: {
           filename: 'img/[hash][ext]'
         }
+      },
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
       },
       {
         include: path.resolve('node_modules', 'lodash'),

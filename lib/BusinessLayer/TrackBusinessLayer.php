@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2023
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -18,28 +18,30 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 
+use OCA\Music\Db\MatchMode;
+use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
-
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\Files\FileInfo;
 use OCP\Files\Folder;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Track find(int $trackId, string $userId)
- * @method Track[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
- * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
+ * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
+ * @property TrackMapper $mapper
  * @phpstan-extends BusinessLayer<Track>
  */
 class TrackBusinessLayer extends BusinessLayer {
-	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
-	private $logger;
+	private Logger $logger;
 
 	public function __construct(TrackMapper $trackMapper, Logger $logger) {
 		parent::__construct($trackMapper);
-		$this->mapper = $trackMapper;
 		$this->logger = $logger;
 	}
 
@@ -103,10 +105,10 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks specified by name and/or artist name
+	 * Returns all tracks specified by name, artist name, and/or album name
 	 * @return Track[] Tracks matching the criteria
 	 */
-	public function findAllByNameAndArtistName(?string $name, ?string $artistName, string $userId) : array {
+	public function findAllByNameArtistOrAlbum(?string $name, ?string $artistName, ?string $albumName, string $userId) : array {
 		if ($name !== null) {
 			$name = \trim($name);
 		}
@@ -114,20 +116,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$artistName = \trim($artistName);
 		}
 
-		return $this->mapper->findAllByNameAndArtistName($name, $artistName, $userId);
-	}
-
-	/**
-	 * Returns all tracks where the 'modified' time in the file system (actually in the cloud's file cache)
-	 * is later than the 'updated' field of the entity in the database.
-	 * @return Track[]
-	 */
-	public function findAllDirty(string $userId) : array {
-		$tracks = $this->findAll($userId);
-		return \array_filter($tracks, function (Track $track) {
-			$dbModTime = new \DateTime($track->getUpdated());
-			return ($dbModTime->getTimestamp() < $track->getFileModTime());
-		});
+		return $this->mapper->findAllByNameArtistOrAlbum($name, $artistName, $albumName, $userId);
 	}
 
 	/**
@@ -175,107 +164,163 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns file IDs of all indexed tracks of the user which should be rescanned to ensure that the library details are up-to-date.
+	 * The track may be considered "dirty" for one of two reasons:
+	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
+	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
+	 * @return int[]
+	 */
+	public function findDirtyFileIds(string $userId) : array {
+		return $this->mapper->findDirtyFileIds($userId);
+	}
+
+	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
-	 * @return array of entries like {id: int, name: string, path: string, parent: ?int, trackIds: int[]}
+	 * @return array of entries like {id: int, name: string, parent: ?int, trackIds: int[]}
 	 */
 	public function findAllFolders(string $userId, Folder $musicFolder) : array {
 		// All tracks of the user, grouped by their parent folders. Some of the parent folders
 		// may be owned by other users and are invisible to this user (in case of shared files).
-		$tracksByFolder = $this->mapper->findTrackAndFolderIds($userId);
-
-		// Get the folder names and paths for ordinary local folders directly from the DB.
-		// This is significantly more efficient than using the Files API because we need to
-		// run only single DB query instead of one per folder.
-		$folderNamesAndParents = $this->mapper->findNodeNamesAndParents(
-				\array_keys($tracksByFolder), $musicFolder->getStorage()->getId());
-
-		// root folder has to be handled as a special case because shared files from
-		// many folders may be shown to this user mapped under the root folder
-		$rootFolderTracks = [];
-
-		// Build the final results. Use the previously fetched data for the ordinary
-		// local folders and query the data through the Files API for the more special cases.
-		$result = [];
-		foreach ($tracksByFolder as $folderId => $trackIds) {
-			$entry = self::getFolderEntry($folderNamesAndParents, $folderId, $trackIds, $musicFolder);
-
-			if ($entry) {
-				$result[] = $entry;
-			} else {
-				$rootFolderTracks = \array_merge($rootFolderTracks, $trackIds);
-			}
-		}
-
-		// add the library root folder
-		$result[] = [
-			'name' => '',
-			'parent' => null,
-			'trackIds' => $rootFolderTracks,
-			'id' => $musicFolder->getId()
-		];
-
-		// add the intermediate folders which do not directly contain any tracks
-		$this->recursivelyAddMissingParentFolders($result, $result, $musicFolder);
-
-		return $result;
+		$trackIdsByFolder = $this->mapper->findTrackAndFolderIds($userId);
+		$foldersLut = $this->getFoldersLut($trackIdsByFolder, $userId, $musicFolder);
+		return \array_map(
+			fn($id, $folderInfo) => \array_merge($folderInfo, ['id' => $id]),
+			\array_keys($foldersLut), $foldersLut
+		);
 	}
 
-	private function recursivelyAddMissingParentFolders(array $foldersToProcess, array &$alreadyFoundFolders, Folder $musicFolder) : void {
+	/**
+	 * @param Track[] $tracks (in|out)
+	 */
+	public function injectFolderPathsToTracks(array $tracks, string $userId, Folder $musicFolder) : void {
+		$folderIds = \array_map(fn($t) => $t->getFolderId(), $tracks);
+		$folderIds = \array_unique($folderIds);
+		$trackIdsByFolder = \array_fill_keys($folderIds, []); // track IDs are not actually used here so we can use empty arrays
 
-		$parentIds = \array_unique(\array_column($foldersToProcess, 'parent'));
-		$parentIds = Util::arrayDiff($parentIds, \array_column($alreadyFoundFolders, 'id'));
-		$parentInfo = $this->mapper->findNodeNamesAndParents($parentIds, $musicFolder->getStorage()->getId());
+		$foldersLut = $this->getFoldersLut($trackIdsByFolder, $userId, $musicFolder);
 
-		$newParents = [];
-		foreach ($parentIds as $parentId) {
-			if ($parentId !== null) {
-				$parentEntry = self::getFolderEntry($parentInfo, $parentId, [], $musicFolder);
-				if ($parentEntry !== null) {
-					$newParents[] = $parentEntry;
+		// recursive helper to get folder's path and cache all parent paths on the way
+		$getFolderPath = function(int $id, array &$foldersLut) use (&$getFolderPath) : string {
+			// setup the path if not cached already
+			if (!isset($foldersLut[$id]['path'])) {
+				$parentId = $foldersLut[$id]['parent'];
+				if ($parentId === null) {
+					$foldersLut[$id]['path'] = '';
+				} else {
+					$foldersLut[$id]['path'] = $getFolderPath($parentId, $foldersLut) . '/' . $foldersLut[$id]['name'];
+				}
+			}
+			return $foldersLut[$id]['path'];
+		};
+
+		foreach ($tracks as $track) {
+			$track->setFolderPath($getFolderPath($track->getFolderId(), $foldersLut));
+		}
+	}
+
+	/**
+	 * Get folder info lookup table, for the given tracks. The table will contain all the predecessor folders
+	 * between those tracks and the root music folder (inclusive).
+	 * 
+	 * @param array $trackIdsByFolder Keys are folder IDs and values are arrays of track IDs
+	 * @return array Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
+	 */
+	private function getFoldersLut(array $trackIdsByFolder, string $userId, Folder $musicFolder) : array {
+		// Get the folder names and direct parent folder IDs directly from the DB.
+		// This is significantly more efficient than using the Files API because we need to
+		// run only single DB query instead of one per folder.
+		$folderNamesAndParents = $this->mapper->findNodeNamesAndParents(\array_keys($trackIdsByFolder));
+
+		// Compile the look-up-table entries from our two intermediary arrays
+		$lut = [];
+		foreach ($trackIdsByFolder as $folderId => $trackIds) {
+			// $folderId is not found from $folderNamesAndParents if it's a dummy ID created as placeholder on a malformed playlist
+			$nameAndParent = $folderNamesAndParents[$folderId] ?? ['name' => '', 'parent' => null];
+			$lut[$folderId] = \array_merge($nameAndParent, ['trackIds' => $trackIds]);
+		}
+
+		// the root folder should have null parent; here we also ensure it's included
+		$rootFolderId = $musicFolder->getId();
+		$rootTracks = $lut[$rootFolderId]['trackIds'] ?? [];
+		$lut[$rootFolderId] = ['name' => '', 'parent' => null, 'trackIds' => $rootTracks];
+
+		// External mounts and shared files/folders need some special handling. But if there are any, they should be found
+		// right under the top-level folder.
+		$this->addExternalMountsToFoldersLut($lut, $userId, $musicFolder);
+
+		// Add the intermediate folders which do not directly contain any tracks
+		$this->addMissingParentsToFoldersLut($lut);
+
+		return $lut;
+	}
+
+	/**
+	 * Add externally mounted folders and shared files and folders to the folder LUT if there are any under the $musicFolder
+	 * 
+	 * @param array $lut (in|out) Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
+	 */
+	private function addExternalMountsToFoldersLut(array &$lut, string $userId, Folder $musicFolder) : void {
+		$nodesUnderRoot = $musicFolder->getDirectoryListing();
+		$homeStorageId = $musicFolder->getStorage()->getId();
+		$rootFolderId = $musicFolder->getId();
+
+		foreach ($nodesUnderRoot as $node) {
+			if ($node->getStorage()->getId() != $homeStorageId) {
+				// shared file/folder or external mount
+				if ($node->getType() == FileInfo::TYPE_FOLDER) {
+					// The mount point folders are always included in the result. At this time, we don't know if
+					// they actually contain any tracks, unless they have direct track children. If there are direct tracks,
+					// then the parent ID is incorrectly set and needs to be overridden.
+					$trackIds = $lut[$node->getId()]['trackIds'] ?? [];
+					$lut[$node->getId()] = ['name' => $node->getName(), 'parent' => $rootFolderId, 'trackIds' => $trackIds];
+
+				} else if ($node->getMimePart() == 'audio') {
+					// shared audio file, check if it's actually a scanned file in our library
+					$sharedTrack = $this->findByFileId($node->getId(), $userId);
+					if ($sharedTrack !== null) {
+
+						$trackId = $sharedTrack->getId();
+						foreach ($lut as $folderId => &$entry) {
+							$trackIdIdx = \array_search($trackId, $entry['trackIds']);
+							if ($trackIdIdx !== false) {
+								// move the track from it's actual parent (in other user's storage) to our root
+								unset($entry['trackIds'][$trackIdIdx]);
+								$lut[$rootFolderId]['trackIds'][] = $trackId;
+
+								// remove the former parent folder if it has no more tracks and it's not one of the mount point folders
+								if (\count($entry['trackIds']) == 0 && empty(\array_filter($nodesUnderRoot, fn($n) => $n->getId() == $folderId))) {
+									unset($lut[$folderId]);
+								}
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
-
-		$alreadyFoundFolders = \array_merge($alreadyFoundFolders, $newParents);
-
-		if (\count($newParents)) {
-			$this->recursivelyAddMissingParentFolders($newParents, $alreadyFoundFolders, $musicFolder);
-		}
 	}
 
-	private static function getFolderEntry(array $folderNamesAndParents, int $folderId, array $trackIds, Folder $musicFolder) : ?array {
-		if (isset($folderNamesAndParents[$folderId])) {
-			// normal folder within the user home storage
-			$entry = $folderNamesAndParents[$folderId];
-			// special handling for the root folder
-			if ($folderId === $musicFolder->getId()) {
-				$entry = null;
-			}
-		} else {
-			// shared folder or parent folder of a shared file or an externally mounted folder
-			$folderNode = $musicFolder->getById($folderId)[0] ?? null;
-			if ($folderNode === null) {
-				// other user's folder with files shared with this user (mapped under root)
-				$entry = null;
-			} else {
-				$entry = [
-					'name' => $folderNode->getName(),
-					'parent' => $folderNode->getParent()->getId()
-				];
-			}
-		}
+	/**
+	 * Add any missing intermediary folder to the LUT. For this function to work correctly, the pre-condition is that the LUT contains
+	 * a root node which is predecessor of all other contained nodes and has 'parent' set as null.
+	 * 
+	 * @param array $lut (in|out) Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
+	 */
+	private function addMissingParentsToFoldersLut(array &$lut) : void {
+		$foldersToProcess = $lut;
 
-		if ($entry) {
-			$entry['trackIds'] = $trackIds;
-			$entry['id'] = $folderId;
+		while (\count($foldersToProcess)) {
+			$parentIds = \array_unique(\array_column($foldersToProcess, 'parent'));
+			// do not process root even if it's included in $foldersToProcess
+			$parentIds = \array_filter($parentIds, fn($i) => $i !== null);
+			$parentIds = ArrayUtil::diff($parentIds, \array_keys($lut));
+			$parentFolders = $this->mapper->findNodeNamesAndParents($parentIds);
 
-			if ($entry['id'] == $musicFolder->getId()) {
-				// the library root should be reported without a parent folder as that parent does not belong to the library
-				$entry['parent'] = null;
+			$foldersToProcess = [];
+			foreach ($parentFolders as $folderId => $nameAndParent) {
+				$foldersToProcess[] = $lut[$folderId] = \array_merge($nameAndParent, ['trackIds' => []]);
 			}
 		}
-
-		return $entry;
 	}
 
 	/**
@@ -346,10 +391,10 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
-			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
+			string $title, ?int $number, ?int $discNumber, ?int $year, int $genreId, int $artistId, int $albumId,
+			int $fileId, string $mimetype, string $userId, ?int $length=null, ?int $bitrate=null) : Track {
 		$track = new Track();
-		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
+		$track->setTitle(StringUtil::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
 		$track->setDisk($discNumber);
 		$track->setYear($year);
@@ -361,11 +406,12 @@ class TrackBusinessLayer extends BusinessLayer {
 		$track->setUserId($userId);
 		$track->setLength($length);
 		$track->setBitrate($bitrate);
+		$track->setDirty(0);
 		return $this->mapper->insertOrUpdate($track);
 	}
 
 	/**
-	 * Deletes a track
+	 * Deletes tracks
 	 * @param int[] $fileIds file IDs of the tracks to delete
 	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
 	 *                      $fileIds are deleted from all users
@@ -384,7 +430,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result = false;
 		} else {
 			// delete all the matching tracks
-			$trackIds = Util::extractIds($tracks);
+			$trackIds = ArrayUtil::extractIds($tracks);
 			$this->deleteById($trackIds);
 
 			// find all distinct albums, artists, and users of the deleted tracks
@@ -433,5 +479,20 @@ class TrackBusinessLayer extends BusinessLayer {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Marks tracks as dirty, ultimately requesting the user to rescan them
+	 * @param int[] $fileIds file IDs of the tracks to mark as dirty
+	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
+	 *                      $fileIds are marked for all users
+	 */
+	public function markTracksDirty(array $fileIds, ?array $userIds=null) : void {
+		// be prepared for huge number of file IDs
+		$chunkMaxSize = self::MAX_SQL_ARGS - \count($userIds ?? []);
+		$idChunks = \array_chunk($fileIds, $chunkMaxSize);
+		foreach ($idChunks as $idChunk) {
+			$this->mapper->markTracksDirty($idChunk, $userIds);
+		}
 	}
 }

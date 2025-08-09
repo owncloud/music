@@ -9,34 +9,36 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+use OCP\IURLGenerator;
 
 /**
- * @method string getName()
- * @method setName(string $name)
- * @method string getTrackIds()
- * @method setTrackIds(string $trackIds)
- * @method string getComment()
- * @method setComment(string $comment)
+ * @method ?string getName()
+ * @method void setName(?string $name)
+ * @method ?string getTrackIds()
+ * @method void setTrackIds(?string $trackIds)
+ * @method ?string getComment()
+ * @method void setComment(?string $comment)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?int getRating()
- * @method setRating(?int $rating)
+ * @method int getRating()
+ * @method void setRating(int $rating)
  */
 class Playlist extends Entity {
-	public $name;
-	public $trackIds;
-	public $comment;
-	public $starred;
-	public $rating;
+	public ?string $name = null;
+	public ?string $trackIds = null;
+	public ?string $comment = null;
+	public ?string $starred = null;
+	public int $rating = 0;
 
 	// injected separately when needed
-	private $duration;
+	private ?int $duration = null;
+	private bool $readOnly = false;
 
 	public function __construct() {
 		$this->addType('rating', 'int');
@@ -50,6 +52,14 @@ class Playlist extends Entity {
 		$this->duration = $duration;
 	}
 
+	public function getReadOnly() : bool {
+		return $this->readOnly;
+	}
+
+	public function setReadOnly(bool $readOnly) : void {
+		$this->readOnly = $readOnly;
+	}
+
 	public function getTrackCount() : int {
 		return \count($this->getTrackIdsAsArray());
 	}
@@ -58,8 +68,7 @@ class Playlist extends Entity {
 	 * @return int[]
 	 */
 	public function getTrackIdsAsArray() : array {
-		if (!$this->trackIds || \strlen($this->trackIds) < 3) {
-			// the list is empty if there is nothing between the leading and trailing '|'
+		if ($this->isEmpty()) {
 			return [];
 		} else {
 			$encoded = \substr($this->trackIds, 1, -1); // omit leading and trailing '|'
@@ -75,33 +84,69 @@ class Playlist extends Entity {
 		$this->setTrackIds('|' . \implode('|', $trackIds) . '|');
 	}
 
-	public function toAPI() : array {
+	public function getTrackIdsHash() : ?string {
+		return $this->isEmpty() ? null : \md5((string)$this->getTrackIds());
+	}
+
+	public function toApi(IURLGenerator $urlGenerator) : array {
 		return [
 			'name' => $this->getName(),
 			'trackIds' => $this->getTrackIdsAsArray(),
 			'id' => $this->getId(),
 			'created' => $this->getCreated(),
 			'updated' => $this->getUpdated(),
-			'comment' => $this->getComment()
+			'comment' => $this->getComment(),
+			'cover' => $this->getCoverUrl($urlGenerator)
 		];
 	}
 
-	public function toAmpacheApi(callable $createImageUrl) : array {
+	public function toShivaApi(IURLGenerator $urlGenerator) : array {
+		$trackIds = $this->getTrackIdsAsArray();
 		return [
+			'name' => $this->getName(),
+			'length' => \count($trackIds),
+			'tracks' => \array_map(fn($id, $index) => [
+				'id' => $id,
+				'index' => $index,
+				'uri' => $urlGenerator->linkToRoute('music.shivaApi.track', ['id' => $id])
+			], $trackIds, \array_keys($trackIds)),
+			'id' => $this->getId(),
+			'creation_date' => $this->getCreated()
+		];
+	}
+
+	public function toAmpacheApi(callable $createImageUrl, bool $includeTracks) : array {
+		$result = [
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
-			'items' => $this->getTrackCount(),
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
-			'rating' => $this->getRating() ?? 0,
-			'type' => 'Private'
+			'rating' => $this->getRating(),
+			'type' => 'Private',
+			'has_access' => !$this->getReadOnly(),
+			'has_collaborate' => !$this->getReadOnly(),
+			'last_update' => \strtotime($this->getUpdated() ?? ''),
+			'md5' => $this->getTrackIdsHash()
 		];
+		$result['has_art'] = !empty($result['art']);
+
+		if ($includeTracks) {
+			$ids = $this->getTrackIdsAsArray();
+			$result['items'] = ['playlisttrack' => \array_map(fn(int $trackId, int $index) => [
+				'id' => (string)$trackId,
+				'text' => $index + 1
+			], $ids, \array_keys($ids))];
+		} else {
+			$result['items'] = $this->getTrackCount();
+		}
+
+		return $result;
 	}
 
 	public function toSubsonicApi() : array {
 		return [
-			'id' => $this->getId(),
+			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->userId,
 			'public' => false,
@@ -110,7 +155,21 @@ class Playlist extends Entity {
 			'comment' => $this->getComment() ?: '',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
 			'changed' => Util::formatZuluDateTime($this->getUpdated()),
-			'coverArt' => 'pl-' . $this->getId() // work around: DSub always fetches the art using ID like "pl-NNN" even if we  use some other format here
+			'coverArt' => 'pl-' . $this->getId() // work around: DSub always fetches the art using ID like "pl-NNN" even if we would use some other format here
 		];
+	}
+
+	private function isEmpty() : bool {
+		// the list is empty if there is nothing between the leading and trailing '|'
+		return (!$this->trackIds || \strlen($this->trackIds) < 3);
+	}
+
+	private function getCoverUrl(IURLGenerator $urlGenerator) : ?string {
+		// the list might not have an id in case it's a generated playlist
+		if ($this->getId() && !$this->isEmpty()) {
+			return $urlGenerator->linkToRoute('music.playlistApi.getCover', ['id' => $this->getId()]);
+		} else {
+			return null;
+		}
 	}
 }

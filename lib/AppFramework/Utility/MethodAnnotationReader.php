@@ -7,8 +7,10 @@
  *
  * @author Alessandro Cosentino <cosenal@gmail.com>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 namespace OCA\Music\AppFramework\Utility;
@@ -17,7 +19,7 @@ namespace OCA\Music\AppFramework\Utility;
  * Reads and parses annotations from doc comments
  */
 class MethodAnnotationReader {
-	private $annotations;
+	private array $annotations;
 
 	/**
 	 * @param object|string $object an object or classname

@@ -5,23 +5,25 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 
 angular.module('Music').controller('ArtistDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
-	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
+	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService', 'playQueueService',
+	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService, playQueueService) {
 
 		function resetContents() {
 			$scope.artist = null;
+			$scope.featuredAlbums = null;
+			$scope.artistTracks = null;
 			$scope.artistAlbumTrackCount = 0;
-			$scope.artistTrackCount = 0;
 			$scope.loading = true;
 			$scope.artAvailable = false;
 			$scope.lastfmInfo = null;
 			$scope.artistBio = null;
 			$scope.artistTags = null;
+			$scope.mbid = null;
 			$scope.similarArtistsInLib = null;
 			$scope.similarArtistsNotInLib = null;
 			$scope.allSimilarShown = false;
@@ -35,7 +37,12 @@ angular.module('Music').controller('ArtistDetailsController', [
 
 				$scope.artist = libraryService.getArtist(artistId);
 				$scope.artistAlbumTrackCount = _($scope.artist.albums).map('tracks').flatten().size();
-				$scope.artistTrackCount = libraryService.findTracksByArtist(artistId).length;
+				$scope.artistTracks = libraryService.findTracksByArtist(artistId);
+				$scope.featuredAlbums = _($scope.artistTracks).map('album').uniq().difference($scope.artist.albums).value();
+
+				if ($scope.selectedTab == 'tracks' && $scope.artistTracks.length == 0) {
+					$scope.selectedTab = 'info';
+				}
 
 				let art = $('#app-sidebar .albumart');
 				art.css('background-image', '');
@@ -43,13 +50,13 @@ angular.module('Music').controller('ArtistDetailsController', [
 				// Because of the asynchronous nature of teh REST queries, it is possible that the
 				// current artist has already changed again by the time we get the result. If that has
 				// happened, then the result should be ignored.
-				Restangular.one('artist', artistId).one('cover').get().then(
+				Restangular.one('artists', artistId).one('cover').get().then(
 					function(_result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.artAvailable = true;
 							$scope.loading = false;
 
-							let url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
+							let url = OC.generateUrl('apps/music/api/artists/') + artistId + '/cover?originalSize=true';
 							art.css('background-image', 'url("' + url + '")');
 						}
 					},
@@ -66,7 +73,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 					}
 				);
 
-				Restangular.one('artist', artistId).one('details').get().then(
+				Restangular.one('artists', artistId).one('details').get().then(
 					function(result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.lastfmInfo = result;
@@ -78,6 +85,11 @@ angular.module('Music').controller('ArtistDetailsController', [
 								$scope.artistTags = $scope.formatLastfmTags(result.artist.tags.tag);
 
 								setSimilarArtists(result.artist.similar.artist);
+
+								const mbid = result.artist.mbid;
+								if (mbid) {
+									$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/artist/${mbid}">${mbid}</a>`;
+								}
 							}
 
 							$scope.$parent.adjustFixedPositions();
@@ -87,10 +99,66 @@ angular.module('Music').controller('ArtistDetailsController', [
 			}
 		}
 
+		$scope.getAlbumData = function(listItem, index, _scope) {
+			return {
+				title: listItem.name,
+				title2: listItem.year,
+				tooltip: listItem.name,
+				number: index + 1,
+				id: listItem.id,
+				art: listItem
+			};
+		};
+
+		$scope.getAlbumDraggable = function(albumId) {
+			return { album: albumId };
+		};
+
+		$scope.onAlbumClick = function(albumId) {
+			// TODO: play/pause if currently playing album clicked?
+			const album = libraryService.getAlbum(albumId);
+			playTracks('album-' + album.id, album.tracks);
+		};
+
+		$scope.getTrackData = function(listItem, index, _scope) {
+			return {
+				title: listItem.title,
+				title2: listItem.album.name + (listItem.album.year ? ` (${listItem.album.year})` : ''),
+				tooltip: listItem.title,
+				tooltip2: listItem.album.name + (listItem.album.year ? ` (${listItem.album.year})` : ''),
+				number: index + 1,
+				id: listItem.id,
+				art: listItem.album
+			};
+		};
+
+		$scope.getTrackDraggable = function(trackId) {
+			return { track: trackId };
+		};
+
+		$scope.onTrackClick = function(trackId, index) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack?.id === trackId && currentTrack?.type == 'song') {
+				// play/pause if currently playing list item clicked
+				playQueueService.publish('togglePlayback');
+			} else {
+				// on any other list item, start playing the list from this item
+				playTracks('artist-tracks-' + $scope.artist.id, $scope.artistTracks, index);
+			}
+		};
+
+		function playTracks(listId, tracks, startIndex /*optional*/) {
+			let playlist = _.map(tracks, function(track) {
+				return { track: track };
+			});
+			playQueueService.setPlaylist(listId, playlist, startIndex);
+			playQueueService.publish('play');
+		}
+
 		$scope.onShowAllSimilar = function() {
 			$scope.allSimilarShown = true;
 			$scope.allSimilarLoading = true;
-			Restangular.one('artist', $scope.artist.id).one('similar').get().then(
+			Restangular.one('artists', $scope.artist.id).one('similar').get().then(
 				function(result) {
 					setSimilarArtists(result);
 					$scope.allSimilarLoading = false;
@@ -100,7 +168,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 		};
 
 		function setSimilarArtists(artists) {
-			// siliar artists are divided to those within the library and the rest
+			// similar artists are divided to those within the library and the rest
 			let artistIsInLib = function(artist) {
 				return 'id' in artist && artist.id !== null;
 			};
@@ -121,5 +189,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 				resetContents();
 			}
 		});
+
+		$scope.$watch('selectedTab', $scope.$parent.adjustFixedPositions);
 	}
 ]);

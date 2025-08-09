@@ -25,6 +25,7 @@
 * [Christoph Wurst](https://github.com/ChristophWurst)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)
+* [Fabien Loison](https://github.com/flozz)
 * [Felix Böhm](https://github.com/felixboehm)
 * [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
 * [Gavin E](https://github.com/gavine99)
@@ -49,9 +50,11 @@
 * [Nuno Jesus](https://github.com/nunojesus)
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Paul](https://github.com/prsnbrg)
+* [perillamint](https://github.com/perillamint)
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
 * [Rello](https://github.com/rello)
+* [Robert 'Bobby' Zenz](https://github.com/RobertZenz)
 * [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
 * [Roman Štefko](https://github.com/rstefko)

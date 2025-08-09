@@ -1,5 +1,6 @@
 <div id="track-details" class="sidebar-content" ng-controller="TrackDetailsController" ng-if="contentType=='track'">
 
+	<div favorite-toggle entity="track" rest-prefix="'tracks'"></div>
 	<div class="albumart"></div>
 	<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
 
@@ -40,7 +41,7 @@
 		<div class="tab" id="technicalTabView" ng-show="selectedTab=='technical'">
 			<dl class="fileinfo">
 				<dt ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
-				<dd ng-repeat-end>{{ formatDetailValue(info.value) }}</dd>
+				<dd title="{{ valueTooltip(info.value, info.key) }}" ng-repeat-end>{{ formatDetailValue(info.value, info.key) }}</dd>
 			</dl>
 		</div>
 
@@ -55,6 +56,9 @@
 
 				<dt ng-if="lastfmTags" translate>Tags</dt>
 				<dd ng-if="lastfmTags" ng-bind-html="lastfmTags"></dd>
+
+				<dt ng-if="lastfmMbid" translate>MusicBrainz</dt>
+				<dd ng-if="lastfmMbid" ng-bind-html="lastfmMbid"></dd>
 			</dl>
 		</div>
 	</div>

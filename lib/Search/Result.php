@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2025
  */
 
 namespace OCA\Music\Search;
@@ -16,8 +16,8 @@ namespace OCA\Music\Search;
  * A found track/album/artist
  */
 class Result extends \OCP\Search\Result {
-	public function __construct($id, $name, $link, $type) {
-		parent::__construct($id, $name, $link);
+	public function __construct(int $id, string $name, string $link, string $type) {
+		parent::__construct((string)$id, $name, $link); // TODO: base class doc says that $id should contain app name
 		$this->type = $type; // defined by the parent class
 	}
 }

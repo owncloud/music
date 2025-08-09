@@ -1,0 +1,51 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2024
+ */
+
+.music-progress-info {
+	text-align: center;
+	overflow: hidden;
+}
+
+.music-progress-info span {
+	line-height: 30px;
+}
+
+.music-progress-info .seek-bar {
+	width: 100%;
+	height: 15px;
+	margin: 0 auto 0 auto;
+	position: relative;
+	background-color: #eee;
+}
+
+.music-progress-info .seek-bar, .music-progress-info .play-bar, .music-progress-info .buffer-bar {
+	display: block;
+}
+
+.music-progress-info .play-bar, .music-progress-info .buffer-bar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 15px;
+	width: 0%;
+	background-color: var(--color-primary, #1d2d44);
+}
+
+.ie .music-progress-info .play-bar, .ie .music-progress-info .buffer-bar {
+	background-color: #1d2d44;
+}
+
+.music-progress-info .translucent {
+	opacity: 0.75;
+}
+
+.music-progress-info .buffer-bar {
+	opacity: 0.1;
+}

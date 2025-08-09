@@ -1,0 +1,364 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2025
+ */
+
+.app-music #app-navigation {
+	--music-nav-item-height: var(--default-clickable-area, 44px);
+
+	padding-bottom: calc(2 * var(--music-nav-item-height) + 4 * var(--default-grid-baseline, 0px)) !important;
+	z-index: 999;
+	overflow: unset;
+	contain: content;
+	height: 100%;
+	top: 0;
+}
+
+#app-navigation > ul {
+	height: 100%;
+	padding: calc(var(--default-grid-baseline) * 2);
+	padding-bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#app-navigation > ul > li {
+	/* The NC server 25-29 uses --border-radius-pill for the nav item highlight but we don't because that 
+	   variable is available also at least on NC17-24 where the overall layout is not a good fit for the
+	   rounded highlight. The --border-radius-rounded has slightly larger value but that doesn't cause 
+	   any visual difference here because the radius already maxes out for line of height 44px with the
+	   --border-radius-pill. NC30 introduced the new variable --border-radius-element for this purpose,
+	   with somewhat lower value for the refreshed look-and-feel.
+	*/
+	border-radius: var(--border-radius-element, var(--border-radius-rounded));
+	margin-bottom: var(--default-grid-baseline);
+	transition: background-color .2s ease-in-out;
+}
+
+#app-navigation > ul > li:hover,
+#app-navigation > ul > li:focus,
+#app-navigation > ul > li:focus-within {
+	background-color: var(--color-background-hover);
+}
+
+#app-navigation > ul > li.active {
+	background-color: var(--color-primary-element-light);
+}
+
+#app-navigation .app-navigation-separator {
+	border-bottom: 1px solid;
+	border-color: var(--color-main-text, #222);
+	opacity: 0.15;
+}
+
+#app-navigation .music-navigation-item {
+	position: relative;
+	height: var(--music-nav-item-height);
+}
+
+#app-navigation .music-navigation-item-content {
+	padding-left: 0 !important;
+	height: var(--music-nav-item-height);
+	line-height: var(--music-nav-item-height);
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content * {
+	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content > * {
+	display: inline-block;
+	height: var(--music-nav-item-height);
+}
+
+#app-navigation .music-navigation-item:not(:hover):not(.active):not(.menu-open) .music-navigation-item-content {
+	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content [class^="icon-"] {
+	width: 40px;
+	height: var(--music-nav-item-height);
+	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content:not(:hover) [class^="icon-"] {
+	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content .label {
+	padding-left: 4px;
+	box-shadow: unset;
+	position: absolute;
+	width: auto;
+	right: 0;
+	left: 40px;
+}
+
+.app-music #app-navigation-toggle {
+	height: 66px;
+	top: 0;
+}
+
+body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
+	top: 50px;
+}
+
+.app-music.nc14to24 #app-navigation {
+	top: 50px;
+	bottom: 0;
+	height: unset;
+}
+
+#app-navigation .action {
+	margin-right: 5px;
+	float: right;
+	width: 24px;
+	height: 24px;
+	padding: 5px;
+}
+
+#app-navigation .action.icon-checkmark, 
+#app-navigation .action.icon-close {
+	margin-top: calc((var(--music-nav-item-height) - 24px) / 2);
+}
+
+#app-navigation .play-pause-button {
+	display: inline-block;
+	width: 40px;
+	height: 100%;
+	background-size: 16px;
+}
+
+#app-navigation .play-pause-button:hover,
+#app-navigation .current .play-pause-button {
+	background-image: unset
+}
+
+#app-navigation .play-pause {
+	margin-left: 16px;
+}
+
+#app-navigation .current:not(.playing) :hover .play-pause {
+	background-image: url(../../img/play-big.svg);
+}
+
+#app-navigation .current.playing :hover .play-pause {
+	background-image: url(../../img/pause-big.svg)
+}
+
+#app-navigation #new-playlist .track-count-badge {
+	background-color: var(--color-primary, #1d2d44);
+	color: var(--color-primary-text, #fff);
+	border-radius: 50%;
+	margin-left: 2px;
+	width: calc(var(--music-nav-item-height) - 12px);
+	height: calc(var(--music-nav-item-height) - 12px);
+	line-height: calc(var(--music-nav-item-height) - 12px);
+	text-align: center;
+	vertical-align: baseline;
+	font-size: smaller;
+}
+
+#app-navigation li.drag-hover {
+	background-color: var(--color-background-dark, #ededed);
+}
+
+#app-navigation .actions {
+	position: absolute;
+	right: 0;
+	height: 100%;
+	width: 44px;
+}
+
+#app-navigation .item-with-actions .actions {
+	height: 100%;
+	width: 44px;
+	top: 0;
+}
+
+#app-navigation .item-with-actions .actions .icon-more {
+	display: none;
+	padding: 5px;
+	opacity: .4;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+}
+
+#app-navigation .item-with-actions.active .actions .icon-more,
+#app-navigation .item-with-actions.menu-open .actions .icon-more,
+#app-navigation .item-with-actions:hover .actions .icon-more,
+#app-navigation .item-with-actions:focus-within .actions .icon-more {
+	display: inline-block;
+}
+
+#app-navigation .item-with-actions .actions .icon-more:hover {
+	opacity: 1.0;
+}
+
+#app-navigation .item-with-actions .actions .icon-loading-small {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#app-navigation .item-with-actions .actions .popovermenu a {
+	box-shadow: unset; /* older NC versions mistakenly apply also here the blue edge meant for navi pane items */
+}
+
+#app-navigation button.disabled {
+	opacity: .5;
+	pointer-events: none;
+}
+
+#app-navigation .input-container {
+	position: absolute;
+	left: 35px;
+	right: 12px;
+	width: auto;
+}
+
+#app-navigation .input-container input {
+	width: 100%;
+	margin-left: 0;
+	margin-bottom: 4px;
+	margin-top: 4px;
+	margin-right: 5px;
+	height: calc(var(--music-nav-item-height) - 6px);
+	max-height: 32px;
+	min-height: unset;
+	cursor: text;
+	box-shadow: unset;
+}
+
+#app-navigation .input-container.with-buttons {
+	right: 65px;
+}
+
+#app-navigation .input-container.with-buttons input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+#app-navigation .item-with-actions .input-container:not(.with-buttons) {
+	right: 40px;
+}
+
+#app-navigation .input-container #search-input {
+	padding-right: 32px;
+}
+
+#app-navigation .input-container #clear-search {
+	position: relative;
+	vertical-align: middle;
+	left: -40px;
+	top: -2px;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background-color: transparent;
+}
+
+#app-navigation .icon-checkmark {
+	position: absolute;
+	right: 30px;
+	float: none;
+}
+
+#app-navigation > ul > li.docked-navigation-item {
+	position: fixed;
+	width: unset;
+	left: 0;
+	right: 0;
+	height: var(--music-nav-item-height);
+	max-width: 300px;
+	margin: calc(var(--default-grid-baseline, 0px) * 2);
+	z-index: 0;
+}
+
+.legacy-layout #app-navigation > ul > li.docked-navigation-item {
+	max-width: 250px;
+}
+
+#app-navigation #music-nav-search {
+	bottom: calc(var(--music-nav-item-height) + var(--default-grid-baseline, 0px));
+	z-index: 1;
+}
+
+#app-navigation #music-nav-settings {
+	bottom: 0;
+}
+
+#app-navigation #music-nav-settings > a {
+	display: block;
+	padding-left: 14px;
+	padding-right: 12px;
+	line-height: var(--music-nav-item-height);
+}
+
+#app-navigation #music-nav-settings > a:first-child img {
+	vertical-align: text-top;
+	width: 16px;
+	height: 16px;
+	margin-right: 11px;
+	margin-top: 1.5px;
+	margin-left: 0;
+}
+
+/* Compatibility for Internet Explorer which doesn't support the var() syntax; IE is supported on OC but not on NC */
+.ie #app-navigation .music-navigation-item,
+.ie #app-navigation .music-navigation-item-content,
+.ie #app-navigation .music-navigation-item-content > *,
+.ie #app-navigation .music-navigation-item-content [class^="icon-"],
+.ie #app-navigation #music-nav-settings > a {
+	height: 44px;
+	line-height: 44px;
+}
+
+.ie #app-navigation #new-playlist .track-count-badge {
+	background-color: #1d2d44;
+	color: #fff;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+}
+
+.ie #app-navigation .action.icon-checkmark, 
+.ie #app-navigation .action.icon-close {
+	margin-top: 10px;
+}
+
+.ie #app-navigation .app-navigation-separator {
+	border-color: #222;
+}
+
+.ie #app-navigation li.drag-hover {
+	background-color: #ededed;
+}
+
+.ie #app-navigation-toggle {
+	top: 45px;
+}
+
+.ie #app-navigation #music-nav-search {
+	bottom: 44px;
+}
+
+.ie .app-music #app-navigation {
+	padding-bottom: 88px !important;
+}

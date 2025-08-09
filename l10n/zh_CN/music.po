@@ -44,33 +44,33 @@ msgid "(no artist image available)"
 msgstr "没有可用的艺术家图片"
 
 #: ../js/app/controllers/maincontroller.js:54
-msgid "1 album"
+msgid "{{ count }} album"
 msgid_plural "{{ count }} albums"
 msgstr[0] "{{ count }}张专辑"
 
 #: ../js/app/controllers/maincontroller.js:87
-msgid "1 channel"
+msgid "{{ count }} channel"
 msgid_plural "{{ count }} channels"
 msgstr[0] "{{ count }}个频道"
 
 #: ../js/app/controllers/maincontroller.js:60
-msgid "1 folder"
+msgid "{{ count }} folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] "{{ count }}个文件夹"
 
 #: ../js/app/controllers/maincontroller.js:69
-msgid "1 genre"
+msgid "{{ count }} genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] "{{ count }}个类型"
 
 #: ../js/app/controllers/maincontroller.js:78
-msgid "1 station"
+msgid "{{ count }} station"
 msgid_plural "{{ count }} stations"
 msgstr[0] "{{ count }}个电台"
 
 
 #: ../js/app/controllers/maincontroller.js:49
-msgid "1 track"
+msgid "{{ count }} track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] "{{ count }}首音轨"
 

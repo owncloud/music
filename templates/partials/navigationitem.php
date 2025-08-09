@@ -15,7 +15,7 @@
 		</div>
 		<span ng-hide="playlist && $parent.showEditForm == playlist.id">{{ text }}</span>
 		<div ng-show="playlist && $parent.showEditForm == playlist.id">
-			<div class="input-container">
+			<div class="input-container with-buttons">
 				<input type="text" class="edit-list" maxlength="256"
 					on-enter="$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
@@ -95,6 +95,12 @@
 				<ul>
 					<li ng-click="$parent.addPodcast()">
 						<a><span class="icon-add icon"></span><span translate>Add from RSS feed</span></a>
+					</li>
+					<li ng-click="$parent.importPodcastsFromFile()">
+						<a><span class="icon-from-file icon svg"></span><span translate>Import from file</span></a>
+					</li>
+					<li ng-click="$parent.exportPodcastsToFile($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
+						<a><span class="icon-to-file icon svg"></span><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="$parent.reloadPodcasts($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
 						<a><span class="icon-reload icon svg"></span><span translate>Reload channels</span></a>

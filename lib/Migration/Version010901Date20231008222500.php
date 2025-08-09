@@ -18,6 +18,7 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -42,6 +43,7 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -50,7 +52,7 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 	 * Some of the foreign keys referring to entity IDs have been previously defined as signed
 	 * although the referred primary key has always been unsigned.
 	 */
-	private function fixInconsistentIdTypes(ISchemaWrapper $schema) {
+	private function fixInconsistentIdTypes(ISchemaWrapper $schema) : void {
 		$schema->getTable('music_albums')->changeColumn('album_artist_id', ['unsigned' => true]);
 		$schema->getTable('music_tracks')->changeColumn('artist_id', ['unsigned' => true])
 										->changeColumn('album_id', ['unsigned' => true]);
@@ -62,14 +64,14 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 	 * Although untypical, it's not totally impossible that some historical piece of music would
 	 * be tagged with a negative year indicating a year BCE.
 	 */
-	private function allowNegativeYear(ISchemaWrapper $schema) {
+	private function allowNegativeYear(ISchemaWrapper $schema) : void {
 		$schema->getTable('music_tracks')->changeColumn('year', ['unsigned' => false]);
 	}
 
 	/**
 	 * Add the new fields to the `music_ampache_sessions` table
 	 */
-	private function ampacheSessionChanges(ISchemaWrapper $schema) {
+	private function ampacheSessionChanges(ISchemaWrapper $schema) : void {
 		// On SQLite, it's not possible to add notnull columns to an existing table without a default value, see
 		// https://stackoverflow.com/questions/3170634/cannot-add-a-not-null-column-with-default-value-null-in-sqlite3.
 
@@ -89,7 +91,7 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 	/**
 	 * Add the new field 'rating' to applicable tables
 	 */
-	private function addRatingFields(ISchemaWrapper $schema) {
+	private function addRatingFields(ISchemaWrapper $schema) : void {
 		$tableNames = [
 			'music_artists',
 			'music_albums',
@@ -108,7 +110,10 @@ class Version010901Date20231008222500 extends SimpleMigrationStep {
 		$this->setColumn($schema->getTable('music_playlists'), 'starred', 'datetime', ['notnull' => false]);
 	}
 
-	private function setColumn($table, string $name, string $type, array $args) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setColumn($table, string $name, string $type, array $args) : void {
 		if (!$table->hasColumn($name)) {
 			$table->addColumn($name, $type, $args);
 		}

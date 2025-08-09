@@ -5,41 +5,25 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 /**
  * This controller implements the search/filtering logic for all views. The details
  * of the search still vary per-view.
- * 
- * When the search query is written to the searchbox, the core automatically sends the query
- * to the backend. However, we disregard any results from the back-end and conduct the search
- * on our own, on the front-end.
  */
 angular.module('Music').controller('SearchController', [
-'$scope', '$rootScope', 'libraryService', '$timeout', '$document', 'gettextCatalog',
-function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalog) {
+'$scope', '$rootScope', 'libraryService', '$timeout', 'gettextCatalog',
+function ($scope, $rootScope, libraryService, $timeout, gettextCatalog) {
 
 	const MAX_MATCHES = 5000;
 	const MAX_MATCHES_IN_PLAYLIST = 1000;
 	const MAX_FOLDER_MATCHES_IN_TREE_LAYOUT = 50;
 
-	let searchform = $('.searchbox');
-	let searchbox = $('#searchbox');
+	let searchbox = $('#search-input');
 	let treeFolderMatches = {};
 
-	if (searchbox.length === 0) { // NC 20+
-		$.initialize('.unified-search__form', function(_index, elem) {
-			searchform = $(elem);
-			searchbox = searchform.find('input');
-			init();
-		});
-	}
-	else { // NC < 20 or OC
-		init();
-		// the keyboard shortcut has to be registered manually, on NC20 this is handled by the core
-		registerCtrlF();
-	}
+	init();
 
 	function init() {
 		$scope.queryString = searchbox.val().trim();
@@ -50,33 +34,13 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 				onEnterSearchString();
 			}
 		}, 250);
-		searchbox.bind('propertychange change keyup input paste', checkQueryChange);
-
-		/** Handle clearing the searchbox. This has to be registered to the parent form
-		 *  of the #searchbox element.
-		 */
-		searchform.on('reset', function() {
-			$scope.queryString = '';
-			$scope.$apply(startProgress);
-			$timeout(clearSearch);
-		});
+		searchbox.on('propertychange change keyup input paste', checkQueryChange);
 
 		/** Run search when enter pressed within the searchbox */
-		searchbox.bind('keydown', function (event) {
+		searchbox.on('keydown', function (event) {
 			if (event.which === 13) {
 				onEnterSearchString();
 			}
-		});
-	}
-
-	function registerCtrlF() {
-		/** Catch ctrl+f except when the Settings view is active */
-		$document.bind('keydown', function(e) {
-			if ($rootScope.currentView !== '#/settings' && e.ctrlKey && e.key === 'f') {
-				searchbox.focus();
-				return false;
-			}
-			return true;
 		});
 	}
 

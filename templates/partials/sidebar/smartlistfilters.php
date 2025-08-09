@@ -8,12 +8,9 @@
 	</div>
 
 	<div>
-		<label for="filter-from-year" translate>From year</label>
+		<label for="filter-from-year" translate>Years</label>
 		<input id="filter-from-year" type="number" ng-model="smartListParams.fromYear"/>
-	</div>
-
-	<div>
-		<label for="filter-to-year" translate>To year</label>
+		—&nbsp;
 		<input id="filter-to-year" type="number" ng-model="smartListParams.toYear"/>
 	</div>
 
@@ -31,16 +28,33 @@
 		</select>
 	</div>
 
-	<div title="{{ 'Note that this selection makes any difference only when the library has more than requested number of matches' | translate }}">
-		<label for="filter-play-rate" translate>Play history</label>
-		<select id="filter-play-rate" ng-model="smartListParams.playRate">
+	<div>
+		<label for="filter-favorite" translate>Favorite</label>
+		<select id="filter-favorite" ng-model="smartListParams.favorite">
 			<option value=""></option>
-			<option value="recently" translate>Recently played</option>
-			<option value="not-recently" translate>Not recently played</option>
-			<option value="often" translate>Often played</option>
-			<option value="rarely" translate>Rarely played</option>
+			<option value="track" translate>Favorite track</option>
+			<option value="album" translate>Favorite album</option>
+			<option value="artist" translate>Favorite artist</option>
+			<option value="track_album_artist" translate>Favorite track, album, or artist</option>
 		</select>
 	</div>
 
+	<div title="{{ 'Note that this selection makes any difference only when the library has more than the requested number of matches. In the strict mode, only the best matching songs are included with no element of randomness.' | translate }}">
+		<label for="filter-history" translate>History</label>
+		<select id="filter-history" ng-model="smartListParams.history">
+			<option value=""></option>
+			<option value="recently-played" translate>Recently played</option>
+			<option value="not-recently-played" translate>Not recently played</option>
+			<option value="often-played" translate>Often played</option>
+			<option value="rarely-played" translate>Rarely played</option>
+			<option value="recently-added" translate>Recently added</option>
+			<option value="not-recently-added" translate>Not recently added</option>
+		</select>
+		<label for="filter-history-strict" id="filter-history-strict-label" translate>Strict</label>
+		<input id="filter-history-strict" type="checkbox" ng-model="smartListParams.historyStrict" />
+	</div>
+
 	<div><button id="update-button" ng-click="onUpdateButton()" ng-disabled="!fieldsValid" translate>Update</button></div>
+
+	<div class="hint" translate translate-params-url="'#/search'">Hint: To list tracks with more refined criteria, try <a href="{{url}}">Advanced search</a></div>
 </div>

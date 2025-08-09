@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -19,7 +19,8 @@ use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
-use OCA\Music\Utility\Util;
+use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\Random;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
@@ -29,7 +30,8 @@ use OCP\IL10N;
  * @phpstan-template EntityType of Entity
  */
 abstract class BusinessLayer {
-	protected $mapper;
+	/** @phpstan-var BaseMapper<EntityType> */
+	protected BaseMapper $mapper;
 
 	// Some SQLite installations can't handle more than 999 query args. Remember that `user_id` takes one slot in most queries.
 	public const MAX_SQL_ARGS = 999;
@@ -39,15 +41,6 @@ abstract class BusinessLayer {
 	 */
 	public function __construct(BaseMapper $mapper) {
 		$this->mapper = $mapper;
-	}
-
-	/**
-	 * Update an entity in the database
-	 * @phpstan-param EntityType $entity
-	 * @phpstan-return EntityType
-	 */
-	public function update(Entity $entity) : Entity {
-		return $this->mapper->update($entity);
 	}
 
 	/**
@@ -122,7 +115,7 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+	public function findById(array $ids, ?string $userId=null, bool $preserveOrder=false) : array {
 		$entities = [];
 		if (\count($ids) > 0) {
 			// don't use more than 999 SQL args in one query since that may be a problem for SQLite
@@ -133,7 +126,7 @@ abstract class BusinessLayer {
 		}
 
 		if ($preserveOrder) {
-			$lut = Util::createIdLookupTable($entities);
+			$lut = ArrayUtil::createIdLookupTable($entities);
 			$result = [];
 			foreach ($ids as $id) {
 				$result[] = $lut[$id];
@@ -159,7 +152,7 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAll(
-			string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
+			string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		return $this->mapper->findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
@@ -192,6 +185,14 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Find IDSs of all starred entities
+	 * @return int[]
+	 */
+	public function findAllStarredIds(string $userId) : array {
+		return $this->mapper->findAllStarredIds($userId);
+	}
+
+	/**
 	 * Find all entities with user-given rating 1-5
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
@@ -207,17 +208,31 @@ abstract class BusinessLayer {
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question,
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of 
-	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
+	 * 				 '>=', '<=', '=', '!=', '>', '<', 'before', 'after', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @param Random $random When the randomization utility is passed, the result set will be in random order (still supporting proper paging).
+	 * 						 In this case, the argument $sortBy is ignored.
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(
+			string $conjunction, array $rules, string $userId, int $sortBy=SortBy::Name,
+			?Random $random=null, ?int $limit=null, ?int $offset=null) : array {
+
 		if ($conjunction !== 'and' && $conjunction !== 'or') {
 			throw new BusinessLayerException("Bad conjunction '$conjunction'");
 		}
 		try {
-			return $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+			if ($random !== null) {
+				// in case the random order is requested, the limit/offset handling happens after the DB query
+				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, SortBy::Name);
+				$indices = $random->getIndices(\count($entities), $offset, $limit, $userId, 'adv_search_'.$this->mapper->unprefixedTableName());
+				$entities = ArrayUtil::multiGet($entities, $indices);
+			} else {
+				$entities = $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $sortBy, $limit, $offset);
+			}
+			return $entities;
 		} catch (\Exception $e) {
 			// catch everything as many kinds of DB exceptions are possible on various cloud versions
 			throw new BusinessLayerException($e->getMessage());
@@ -234,6 +249,20 @@ abstract class BusinessLayer {
 			return $this->mapper->findAllIds($userId, $ids);
 		} else {
 			return [];
+		}
+	}
+
+	/**
+	 * Find all entity IDs grouped by the given parent entity IDs. Not applicable on all entity types.
+	 * @param int[] $parentIds
+	 * @return array<int, int[]> like [parentId => childIds[]]; some parents may have an empty array of children
+	 * @throws BusinessLayerException if the entity type handled by this business layer doesn't have a parent relation
+	 */
+	public function findAllIdsByParentIds(string $userId, array $parentIds) : ?array {
+		try {
+			return $this->mapper->findAllIdsByParentIds($userId, $parentIds);
+		} catch (\DomainException $ex) {
+			throw new BusinessLayerException($ex->getMessage());
 		}
 	}
 
@@ -298,10 +327,24 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Set rating for the entity by id
+	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
+	 * @throws \BadMethodCallException if the entity type of this business layer doesn't support rating
+	 * @phpstan-return EntityType
+	 */
+	public function setRating(int $id, int $rating, string $userId) : Entity {
+		$entity = $this->find($id, $userId);
+		if (\property_exists($entity, 'rating')) {
+			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
+			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore method.notFound
+			return $this->mapper->update($entity);
+		} else {
+			throw new \BadMethodCallException('rating not supported on the entity type ' . \get_class($entity));
+		}
+	}
+
+	/**
 	 * Tests if entity with given ID and user ID exists in the database
-	 * @param int $id
-	 * @param string $userId
-	 * @return bool
 	 */
 	public function exists(int $id, string $userId) : bool {
 		return $this->mapper->exists($id, $userId);
@@ -309,10 +352,16 @@ abstract class BusinessLayer {
 
 	/**
 	 * Get the number of entities
-	 * @param string $userId
 	 */
 	public function count(string $userId) : int {
 		return $this->mapper->count($userId);
+	}
+
+	/**
+	 * Get the largest entity ID of the user
+	 */
+	public function maxId(string $userId) : ?int {
+		return $this->mapper->maxId($userId);
 	}
 
 	/**

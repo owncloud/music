@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2023 Pauli Järvinen
+ * @copyright 2017 - 2024 Pauli Järvinen
  *
  */
 
@@ -16,6 +16,7 @@ export interface Artist {
 	id : number;
 	name : string;
 	sortName : string;
+	favorite : boolean;
 	albums : Album[];
 }
 
@@ -23,6 +24,9 @@ export interface Album {
 	id : number;
 	name : string;
 	artist : Artist;
+	disk : number;
+	diskCount : number;
+	favorite : boolean;
 	tracks : Track[];
 }
 
@@ -35,9 +39,13 @@ export interface Track extends BaseTrack {
 	title : string;
 	album : Album;
 	artistId : number;
+	number : number|null;
+	disk : number;
 	artist : Artist;
 	folder : Folder;
 	genre : Genre;
+	favorite : boolean;
+	get formattedNumber() : string|null;
 }
 
 export interface RadioStation extends BaseTrack {
@@ -52,7 +60,18 @@ export interface PlaylistEntry<T extends BaseTrack> {
 export interface Playlist {
 	id : number;
 	name : string;
+	favorite : boolean;
 	tracks : PlaylistEntry<Track>[];
+}
+
+export interface AdvSearchResult {
+	id : number;
+	tracks? : Track[];
+	albums? : Album[];
+	artists? : Artist[];
+	playlists? : Playlist[];
+	podcastEpisodes? : PodcastEpisode[];
+	podcastChannels? : PodcastChannel[];
 }
 
 export interface Folder {
@@ -70,6 +89,7 @@ export interface PodcastChannel {
 	id : number;
 	title : string;
 	hash : string;
+	favorite : boolean;
 	episodes : PodcastEpisode[];
 }
 
@@ -77,6 +97,7 @@ export interface PodcastEpisode {
 	id : number;
 	title : string;
 	channel : PodcastChannel;
+	favorite : boolean;
 	type : string;
 }
 
@@ -100,6 +121,7 @@ export class LibraryService {
 	#albumsCount : number = 0;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
+	#advSearchResult : AdvSearchResult = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
 	#radioStations : PlaylistEntry<RadioStation>[] = null;
@@ -111,16 +133,16 @@ export class LibraryService {
 	 * Note2: The array is sorted in-place instead of returning a new array.
 	 */
 	#sortByTextField<T>(items : T[], field : string) : void {
-		let getSortProperty = _.property(field);
-		let locale = OCA.Music.Utils.getLocale();
+		const getSortProperty = _.property(field);
+		const locale = OCA.Music.Utils.getLocale();
 
 		items.sort((a : T, b : T) => {
-			let aProp : any = getSortProperty(a);
-			let bProp : any = getSortProperty(b);
+			const aProp : any = getSortProperty(a);
+			const bProp : any = getSortProperty(b);
 
-			if (aProp === null) {
+			if (aProp == null) {
 				return -1;
-			} else if (bProp === null) {
+			} else if (bProp == null) {
 				return 1;
 			} else {
 				return aProp.localeCompare(bProp, locale);
@@ -165,6 +187,21 @@ export class LibraryService {
 		return name;
 	}
 
+	
+	/**
+	 * Formats a track number, possible including disk number, for displaying in tracklist directive
+	 */
+	#formatTrackNumber(track : Track) : string|null {
+		if (track.album.diskCount <= 1) {
+			return track.number ? String(track.number) : null;
+		} else {
+			// multi-disk album
+			let number = track.disk + '-';
+			number += track.number ?? '?';
+			return number;
+		}
+	}
+
 	/**
 	 * Sort the passed in collection alphabetically, and set up parent references
 	 */
@@ -172,14 +209,20 @@ export class LibraryService {
 		// setup all the parent references and sort on each level
 		_.forEach(collection, (artist) => {
 			artist.sortName = this.#createArtistSortName(artist.name);
+			artist.favorite = false;
 			artist.albums = this.#sortByYearAndName(artist.albums);
 			_.forEach(artist.albums, (album) => {
 				album.artist = artist;
+				album.favorite = false;
 				album.tracks = this.#sortByDiskNumberAndTitle(album.tracks);
 				_.forEach(album.tracks, (track) => {
 					track.artist = this.getArtist(track.artistId);
 					track.album = album;
 					track.type = 'song';
+					track.favorite = false;
+					Object.defineProperty(track, 'formattedNumber', {
+						get: () => this.#formatTrackNumber(track)
+					});
 				});
 			});
 		});
@@ -204,7 +247,11 @@ export class LibraryService {
 			artistId : null,
 			artist : null,
 			folder : null,
-			genre : null
+			genre : null,
+			number : null,
+			disk : null,
+			favorite : false,
+			formattedNumber : null
 		};
 	}
 
@@ -254,9 +301,11 @@ export class LibraryService {
 	}
 
 	#initPodcastChannel(channel : PodcastChannel) : void {
+		channel.favorite = false;
 		_.forEach(channel.episodes, (episode) => {
 			episode.channel = channel;
 			episode.type = 'podcast';
+			episode.favorite = false;
 		});
 	}
 
@@ -284,7 +333,7 @@ export class LibraryService {
 		let quoted = query.match(regExQuoted) || <string[]>[];
 		quoted = _.map(quoted, (str) => str.slice(1, -1));
 
-		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
+		// remove the quoted substrings and stray quotation marks, and extract the rest of the parts
 		query = query.replace(regExQuoted, ' ');
 		query = query.replace('"', ' ');
 		let unquoted = query.match(/\S+/g) || [];
@@ -307,7 +356,7 @@ export class LibraryService {
 		// has to be found but the whitespace is disregarded.
 		let queryParts = this.#splitSearchQuery(query);
 
-		// @a fields may be an array or an idividual string
+		// @a fields may be an array or an individual string
 		if (!Array.isArray(fields)) {
 			fields = [fields];
 		}
@@ -376,6 +425,7 @@ export class LibraryService {
 	}
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
+		_(this.#playlists).forEach((list) => list.favorite = false);
 		this.sortPlaylists();
 	}
 	setSmartList(list : any) : void {
@@ -385,6 +435,22 @@ export class LibraryService {
 			this.#smartList = this.#wrapPlaylist(list);
 		}
 	}
+	setAdvancedSearchResult(list : any) : AdvSearchResult|null {
+		if (!list) {
+			this.#advSearchResult = null;
+		} else {
+			this.#advSearchResult = {
+				id: list.id,
+				tracks: _(list.trackIds).map((id) => this.getTrack(id)).value(),
+				albums: _(list.albumIds).map((id) => this.getAlbum(id)).value(),
+				artists: _(list.artistIds).map((id) => this.getArtist(id)).value(),
+				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
+				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
+				podcastChannels: _(list.podcastChannelIds).map((id) => this.getPodcastChannel(id)).value(),
+			};
+		}
+		return this.#advSearchResult;
+	}
 	setFolders(folderData : any[]|null) : void {
 		if (!folderData) {
 			this.#folders = null;
@@ -392,6 +458,8 @@ export class LibraryService {
 			let protoFolders = _.map(folderData, (folder) => this.#wrapFolder(folder));
 			this.#sortByTextField(protoFolders, 'name');
 			// the tracks within each folder are sorted by the file name by the back-end
+
+			const rootFolder = _.find(protoFolders, {parent: null});
 
 			// create temporary look-up-table for the folders to speed up setting up the parent references
 			let foldersLut : {[id: number] : any} = {};
@@ -401,7 +469,10 @@ export class LibraryService {
 
 			_.forEach(protoFolders, (folder) => {
 				// substitute parent id with a reference to the parent folder
-				folder.parent = foldersLut[folder.parent] ?? null;
+				if (folder.parent !== null) {
+					// default to the root folder as NC28 returns bad parent IDs for externally mounted and shared folders
+					folder.parent = foldersLut[folder.parent] ?? rootFolder;
+				}
 				// set parent folder references for the contained tracks
 				_.forEach(folder.tracks, (entry) => entry.track.folder = folder);
 				// init subfolder array
@@ -444,6 +515,16 @@ export class LibraryService {
 
 			this.#tracksInGenreOrder = _(this.#genres).map('tracks').flatten().value();
 		}
+	}
+	setFavorites(favoriteData : any) : void {
+		_.forEach(favoriteData.tracks, (id : number) => this.#tracksIndex[id].favorite = true);
+		_.forEach(favoriteData.albums, (id : number) => this.#albumsIndex[id].favorite = true);
+		_.forEach(favoriteData.artists, (id : number) => this.#artistsIndex[id].favorite = true);
+		_.forEach(favoriteData.playlists, (id : number) => _(this.#playlists).find({id: id}).favorite = true);
+		_.forEach(favoriteData.podcast_channels, (id : number) => _(this.#podcastChannels).find({id: id}).favorite = true);
+		_.forEach(favoriteData.podcast_episodes, (id : number) => {
+			_(this.#podcastChannels).map('episodes').flatten().find({id: id}).favorite = true;
+		});
 	}
 	setRadioStations(radioStationsData : any[]) : void {
 		this.#radioStations = _.map(radioStationsData, (station) => this.#wrapRadioStation(station));
@@ -594,10 +675,13 @@ export class LibraryService {
 	getSmartListTrackCount() : number {
 		return this.#smartList?.tracks?.length ?? 0;
 	}
-	getSmartList() : Playlist {
+	getSmartList() : Playlist|null {
 		return this.#smartList;
 	}
-	getPlaylist(id : number) : Playlist {
+	getAdvancedSearchResult() : AdvSearchResult|null {
+		return this.#advSearchResult;
+	}
+	getPlaylist(id : number) : Playlist|undefined {
 		return _.find(this.#playlists, { id: Number(id) });
 	}
 	getAllPlaylists() : Playlist[] {
@@ -642,8 +726,8 @@ export class LibraryService {
 	getPodcastChannelsCount() : number {
 		return this.#podcastChannels?.length ?? 0;
 	}
-	findTracksByArtist(artistId : number) : {[id: number] : Track} {
-		return _.filter(this.#tracksIndex, {artistId: Number(artistId)});
+	findTracksByArtist(artistId : number) : Track[] {
+		return _(this.#tracksInAlphaOrder).filter(e => e.track.artistId == artistId).map('track').value();
 	}
 	collectionLoaded() : boolean {
 		return this.#collection !== null;

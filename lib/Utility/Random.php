@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2023
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Utility;
@@ -16,8 +16,8 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Cache;
 
 class Random {
-	private $cache;
-	private $logger;
+	private Cache $cache;
+	private Logger $logger;
 
 	public function __construct(Cache $cache, Logger $logger) {
 		$this->cache = $cache;
@@ -25,7 +25,7 @@ class Random {
 	}
 
 	/**
-	 * Create cryptographicaly secure random string
+	 * Create cryptographically secure random string
 	 */
 	public static function secure(int $length) : string {
 		return \bin2hex(\random_bytes($length));
@@ -33,6 +33,10 @@ class Random {
 
 	/**
 	 * Get one random item from the given array. Return null if the array is empty.
+	 *
+	 * @phpstan-template T
+	 * @phpstan-param T[] $itemArray
+	 * @phpstan-return ?T
 	 */
 	public static function pickItem(array $itemArray) {
 		if (empty($itemArray)) {
@@ -46,9 +50,9 @@ class Random {
 	/**
 	 * Get desired number of random items from the given array
 	 *
-	 * @param array $itemArray
-	 * @param int $count
-	 * @return array
+	 * @phpstan-template T
+	 * @phpstan-param T[] $itemArray
+	 * @phpstan-return T[]
 	 */
 	public static function pickItems(array $itemArray, int $count) : array {
 		$count = \min($count, \count($itemArray)); // can't return more than all items
@@ -62,7 +66,7 @@ class Random {
 			}
 			\shuffle($indices);
 
-			return Util::arrayMultiGet($itemArray, $indices);
+			return ArrayUtil::multiGet($itemArray, $indices);
 		}
 	}
 
@@ -77,11 +81,11 @@ class Random {
 	 * page 0 is requested. Also, if the size of the array in question has changed
 	 * since the previous call, then the indices are reshuffled.
 	 *
-	 * @param int $arrSize Size of the aray for which random indices are to be generated
+	 * @param int $arrSize Size of the array for which random indices are to be generated
 	 * @param int|null $offset Offset to get only part of the results (paging), null implies offset 0
 	 * @param int|null $count Result size to get only part of the results (paging), null gets all the remaining indices from the @a offset
 	 * @param string $userId The current user ID
-	 * @param string $arrId Identier for the logical array to facilitate paging
+	 * @param string $arrId Identifier for the logical array to facilitate paging
 	 * @return int[]
 	 */
 	public function getIndices(int $arrSize, ?int $offset, ?int $count, string $userId, string $arrId) : array {
@@ -104,15 +108,21 @@ class Random {
 		return \array_slice($indices, $offset, $count);
 	}
 
-	private static function encodeIndices($indices) {
+	/**
+	 * @param int[] $indices
+	 */
+	private static function encodeIndices(array $indices) : string {
 		return \implode(',', $indices);
 	}
 
-	private static function decodeIndices($buffer) {
+	/**
+	 * @return int[]
+	 */
+	private static function decodeIndices(?string $buffer) : array {
 		if (empty($buffer)) {
 			return [];
 		} else {
-			return \explode(',', $buffer);
+			return \array_map('intval', \explode(',', $buffer));
 		}
 	}
 }

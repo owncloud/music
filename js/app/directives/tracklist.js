@@ -7,7 +7,7 @@
  * @author Moritz Meißelbach <moritz@meisselba.ch>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2017 Moritz Meißelbach
- * @copyright 2018 - 2023 Pauli Järvinen
+ * @copyright 2018 - 2025 Pauli Järvinen
  *
  */
 
@@ -23,13 +23,28 @@
  * removed and listeners de-registered once the list instance leaves the viewport.
  */
 
-angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog',
-function ($rootScope, $interpolate, gettextCatalog) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog', 'albumartService',
+function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 
-	const trackTemplate = '<div class="play-pause"></div>' +
-		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
-		'<span title="{{ tooltip }}">{{ title }}</span>';
-	const trackRenderer = $interpolate(trackTemplate);
+	const trackNoArtRenderer = $interpolate(`
+		<div class="play-pause"></div>
+		<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>
+		<span title="{{ tooltip }}">{{ title }}</span>
+	`);
+
+	const trackWithArtRenderer = $interpolate(`
+		<span class="ordinal muted">{{ number ? number + ".&nbsp;" : "" }}</span>
+		<div class="albumart"></div>
+		<div class="play-pause overlay"></div>
+		<div class="title-lines">
+			<div title="{{ tooltip }}">{{ title }}</div>
+			<div class="muted" title="{{ tooltip2 }}">{{ title2 }}</div>
+		</div>
+	`);
+
+	function trackRenderer(trackData) {
+		return trackData.art ? trackWithArtRenderer(trackData) : trackNoArtRenderer(trackData);
+	}
 
 	// Localized strings
 	const lessText = gettextCatalog.getString('Show less …');
@@ -126,7 +141,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			}
 
 			for (var i = 0; i < tracksToShow; i++) {
-				trackListFragment.appendChild(getTrackNode(data.tracks[i], i));
+				trackListFragment.appendChild(createTrackNode(data.tracks[i], i));
 			}
 
 			if (data.tracks.length > data.collapseLimit) {
@@ -151,18 +166,19 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * @param string className (optional)
 		 * @returns {HTMLLIElement}
 		 */
-		function getTrackNode(track, index, className = null) {
+		function createTrackNode(track, index, className = null) {
 			let listItem = document.createElement('li');
 
 			let listItemContent = document.createElement('div');
 			let trackData = data.getTrackData(track, index, data.scope);
 			listItemContent.innerHTML = trackRenderer(trackData);
 			listItemContent.setAttribute('draggable', data.getDraggable !== undefined);
+			listItemContent.className = 'item-info';
 			listItem.appendChild(listItemContent);
 
 			if (data.showTrackDetails) {
 				let detailsButton = document.createElement('button');
-				detailsButton.className = 'icon-details';
+				detailsButton.className = 'icon-details action';
 				detailsButton.title = detailsText;
 				listItem.appendChild(detailsButton);
 			}
@@ -176,6 +192,11 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				if (trackMatchedInSearch(trackData.id)) {
 					listItem.className += ' matched';
 				}
+			}
+
+			if (trackData.art) {
+				const $albumart = $(listItem).find('.albumart');
+				albumartService.setArt($albumart, trackData.art);
 			}
 
 			return listItem;
@@ -197,7 +218,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				let trackListFragment = document.createDocumentFragment();
 
 				for (var i = data.collapseLimit - 1; i < data.tracks.length; i++) {
-					trackListFragment.appendChild(getTrackNode(data.tracks[i], i, 'collapsible'));
+					trackListFragment.appendChild(createTrackNode(data.tracks[i], i, 'collapsible'));
 				}
 				let toggle = htmlElem.getElementsByClassName('muted more-less collapsible');
 				htmlElem.insertBefore(trackListFragment, toggle[0]);
@@ -214,10 +235,11 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		data.element.on('click', 'li', function(event) {
 			let trackId = trackIdFromElementId(this.id);
 			if (trackId) {
-				if (event.target.className == 'icon-details') {
+				if (event.target.className.includes('icon-details')) {
 					data.showTrackDetails(trackId);
-				} else {
-					data.playTrack(trackId);
+				} else if ($(event.target).closest('.item-info').length > 0) {
+					// target is .item-info or any of its descendants
+					data.playTrack(trackId, $(this).index());
 					data.scope.$apply();
 				}
 			}
@@ -309,7 +331,11 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				rowCount = Math.min(data.tracks.length, data.collapseLimit);
 			}
 		}
-		return 31.4833 * rowCount;
+
+		const hasArt = (rowCount > 0 && data.getTrackData(data.tracks[0], 0, data.scope).art !== undefined);
+		const rowHeight = hasArt ? 49 : 31;
+
+		return rowHeight * rowCount;
 	}
 
 	/**

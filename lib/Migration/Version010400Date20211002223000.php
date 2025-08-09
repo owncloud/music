@@ -18,6 +18,7 @@ class Version010400Date20211002223000 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function preSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
@@ -39,11 +40,12 @@ class Version010400Date20211002223000 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 * @return void
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 	}
 
-	private function migrateMusicTracks(ISchemaWrapper $schema) {
+	private function migrateMusicTracks(ISchemaWrapper $schema) : void {
 		$table = $schema->getTable('music_tracks');
 		$this->setColumns($table, [
 			[ 'play_count',		'integer',	['notnull' => true, 'unsigned' => true, 'default' => 0] ],
@@ -51,13 +53,19 @@ class Version010400Date20211002223000 extends SimpleMigrationStep {
 		]);
 	}
 
-	private function setColumn($table, string $name, string $type, array $args) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setColumn($table, string $name, string $type, array $args) : void {
 		if (!$table->hasColumn($name)) {
 			$table->addColumn($name, $type, $args);
 		}
 	}
 
-	private function setColumns($table, array $nameTypeArgsPerCol) {
+	/**
+	 * @param \Doctrine\DBAL\Schema\Table $table
+	 */
+	private function setColumns($table, array $nameTypeArgsPerCol) : void {
 		foreach ($nameTypeArgsPerCol as $nameTypeArgs) {
 			list($name, $type, $args) = $nameTypeArgs;
 			$this->setColumn($table, $name, $type, $args);

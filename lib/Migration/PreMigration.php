@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -19,11 +19,8 @@ use OCP\Migration\IRepairStep;
 
 class PreMigration implements IRepairStep {
 
-	/** @var IDBConnection */
-	private $db;
-
-	/** @var IConfig */
-	private $config;
+	private IDBConnection $db;
+	private IConfig $config;
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;
@@ -36,6 +33,7 @@ class PreMigration implements IRepairStep {
 
 	/**
 	 * @inheritdoc
+	 * @return void
 	 */
 	public function run(IOutput $output) {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
@@ -47,7 +45,7 @@ class PreMigration implements IRepairStep {
 				'music_playlist_tracks'
 		]);
 
-		// Wipe clean the tables which have chenged so that the old data does not
+		// Wipe clean the tables which have changed so that the old data does not
 		// fulfill the new schema.
 		$tablesToErase = [];
 
@@ -73,7 +71,7 @@ class PreMigration implements IRepairStep {
 		$this->eraseTables($tablesToErase);
 	}
 
-	private function dropTables(array $tables) {
+	private function dropTables(array $tables) : void {
 		foreach ($tables as $table) {
 			if ($this->db->tableExists($table)) {
 				$this->db->dropTable($table);
@@ -81,7 +79,7 @@ class PreMigration implements IRepairStep {
 		}
 	}
 
-	private function eraseTables(array $tables) {
+	private function eraseTables(array $tables) : void {
 		foreach ($tables as $table) {
 			if ($this->db->tableExists($table)) {
 				$this->db->executeQuery("DELETE FROM `*PREFIX*$table`");

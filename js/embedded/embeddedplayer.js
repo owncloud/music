@@ -5,35 +5,41 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 import playIconPath from '../../img/play-big.svg';
 import pauseIconPath from '../../img/pause-big.svg';
 import skipPreviousIconPath from '../../img/skip-previous.svg';
 import skipNextIconPath from '../../img/skip-next.svg';
-import soundOffIconPath from '../../img/sound-off.svg';
-import soundIconPath from '../../img/sound.svg';
 import closeIconPath from '../../img/close.svg';
 import radioIconPath from '../../img/radio-file.svg';
+import { VolumeControl } from 'shared/volumecontrol';
+import { ProgressInfo } from 'shared/progressinfo';
+import { BrowserMediaSession } from 'shared/browsermediasession';
 
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio) {
+OCA.Music.EmbeddedPlayer = function() {
 
 	let player = new OCA.Music.PlayerWrapper();
+	let volumeControl = new VolumeControl(player);
+	let progressInfo = new ProgressInfo(player);
+	let browserMediaSession = new BrowserMediaSession(player);
 
-	let volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
-	player.setVolume(volume);
-	let lastVolume = null;
+	// callbacks
+	let onClose = null;
+	let onNext = null;
+	let onPrev = null;
+	let onMenuOpen = null;
+	let onShowList = null;
+	let onImportList = null;
+	let onImportRadio = null;
+
 	let nextPrevEnabled = false;
 	let playDelayTimer = null;
 	let currentFileId = null;
-	let playTimePreview_tf = null; // Transient mouse movement filter (Type: Number/Timer-Handle)
-	let playTimePreview_ts = null; // Activation time stamp (Type: Date)
-	let playTimePreview_s = null;
-	let playTime_s = 0;
 
 	// UI elements (jQuery)
 	let musicControls = null;
@@ -41,7 +47,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	let pauseButton = null;
 	let prevButton = null;
 	let nextButton = null;
-	let coverImage = null;
+	let coverImageContainer = null;
 	let titleText = null;
 	let artistText = null;
 	let playlistText = null;
@@ -72,14 +78,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function close() {
 		player.stop();
-		musicControls.css('display', 'none');
+		musicControls?.css('display', 'none');
 		$('footer').css('display', ''); // undo hiding the footer in public shares
-		onClose();
+		if (onClose) {
+			onClose();
+		}
 	}
 
 	function previous() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if (playTime_s > 2.0 && !isExternalStream()) {
+		if (player.playPosition() > 2000 && !isExternalStream()) {
 			player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -120,7 +128,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		playlistNumberText = $(document.createElement('span'));
 		area.append(playlistNumberText);
 
-		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
+		if (typeof OCA.Music.playlistTabView != 'undefined') {
 			let menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
 			// "more" button which toggles the popup menu open/closed
 			menuContainer.append($(document.createElement('button'))
@@ -212,200 +220,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createCoverImage() {
-		return $(document.createElement('div')).attr('id', 'albumart');
-	}
-
-	function createProgressInfo() {
-		const fmt = OCA.Music.Utils.formatPlayTime; // give a shorthand name for the utility function
-
-		let container = $(document.createElement('div')).attr('class', 'progress-info');
-
-		let text = $(document.createElement('span')).attr('class', 'progress-text');
-		let text_playTime = $(document.createElement('span'));
-		let text_seperator = $(document.createElement('span')).append('\xa0/\xa0');
-		let text_songLength = $(document.createElement('span'));
-
-		text.append(text_playTime);
-		text.append(text_seperator);
-		text.append(text_songLength);
-
-		let seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
-		let playBar = $(document.createElement('div')).attr('class', 'play-bar');
-		let transBar = $(document.createElement('div')).attr('class', 'play-bar translucent');
-		let bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
-
-		seekBar.append(playBar);
-		seekBar.append(transBar);
-		seekBar.append(bufferBar);
-
-		let loadingText = $(document.createElement('span')).attr('class', 'progress-text').text(t('music', 'Loading…')).hide();
-
-		container.append(loadingText);
-		container.append(text);
-		container.append(seekBar);
-
-		// Progress updating
-		let songLength_s = 0;
-
-		function updateProgress() {
-			let ratio = 0;
-			let previewRatio = null;
-			if ($.isNumeric(songLength_s)) {
-				// Filter transient mouse movements
-				let preview = playTimePreview_tf ? null : playTimePreview_s;
-
-				text_playTime.text(fmt(preview ?? playTime_s));
-				text_playTime.css('font-style', (preview !== null) ? 'italic' : 'normal');
-				ratio = playTime_s / songLength_s;
-
-				// Show progress again instead of preview after a timeout of 2000ms
-				if (playTimePreview_ts) {
-					let timeSincePreview = Date.now() - playTimePreview_ts;
-					if (timeSincePreview >= 2000) {
-						seekSetPreview(null);
-					} else {
-						previewRatio = preview / songLength_s;
-					}
-				}
-
-				text_seperator.show();
-				text_songLength.show();
-			} else {
-				text_playTime.text(fmt(playTime_s));
-				text_seperator.hide();
-				text_songLength.hide();
-			}
-
-			if (previewRatio === null) {
-				playBar.css('width', 100 * ratio + '%');
-				transBar.css('width', '0');
-			} else {
-				playBar.css('width', Math.min(ratio, previewRatio) * 100 + '%');
-				transBar.css('left', Math.min(ratio, previewRatio) * 100 + '%');
-				transBar.css('width', Math.abs(ratio - previewRatio) * 100 + '%');
-			}
-		}
-
-		function setCursorType(type) {
-			seekBar.css('cursor', type);
-			playBar.css('cursor', type);
-			bufferBar.css('cursor', type);
-		}
-
-		function loadingHide() {
-			loadingText.hide();
-			text.show();
-		}
-
-		function loadingShow() {
-			loadingText.show();
-			text.hide();
-		}
-
-		player.on('loading', function() {
-			playTimePreview_tf = null;
-			playTimePreview_ts = null;
-			playTimePreview_s = null;
-			playTime_s = 0;
-			songLength_s = null;
-			loadingShow();
-			updateProgress();
-			bufferBar.css('width', '0');
-			setCursorType('default');
-		});
-		player.on('ready', function() {
-			loadingHide();
-		});
-		player.on('buffer', function(percent) {
-			bufferBar.css('width', Math.round(percent) + '%');
-		});
-		player.on('progress', function(msecs) {
-			playTime_s = msecs/1000;
-			updateProgress();
-		});
-		player.on('duration', function(msecs) {
-			songLength_s = msecs/1000;
-			text_songLength.text(fmt(songLength_s));
-			loadingHide();
-			updateProgress();
-			if (player.seekingSupported()) {
-				setCursorType('pointer');
-			}
-		});
-		player.on('play', function() {
-			playButton.css('display', 'none');
-			pauseButton.css('display', 'inline-block');
-			setMediaSessionStatePlaying(true);
-		});
-		player.on('pause', function() {
-			playButton.css('display', 'inline-block');
-			pauseButton.css('display', 'none');
-			setMediaSessionStatePlaying(false);
-		});
-
-		// Seeking
-		function seekPositionPercentage(event) {
-			let posX = $(seekBar).offset().left;
-			return (event.pageX - posX) / seekBar.width();
-		}
-		function seekPositionTotal(event) {
-			let percentage = seekPositionPercentage(event);
-			return percentage * player.getDuration();
-		}
-		function seekSetPreview(value) {
-			playTimePreview_ts = (value !== null) ? Date.now() : null;
-			playTimePreview_s = value;
-
-			// manually update is necessary if player is not progressing
-			// it also feels choppy if we rely on the progress event only
-			updateProgress();
-		}
-		seekBar.click(function (event) {
-			let percentage = seekPositionPercentage(event);
-			player.seek(percentage);
-			seekSetPreview(null); // Reset seek preview
-		});
-
-		// Seekbar preview mouse support
-		seekBar.mousemove(function(event) {
-			if (player.seekingSupported()) {
-				seekSetPreview(seekPositionTotal(event) / 1000);
-			}
-		});
-		seekBar.mouseenter(function() {
-			// Simple filter for transient mouse movements
-			playTimePreview_tf = setTimeout(function() {
-				playTimePreview_tf = null;
-				updateProgress();
-			}, 100);
-		});
-		seekBar.mouseleave(function() {
-			seekSetPreview(null);
-			text_playTime.css('font-style', 'normal');
-		});
-
-		// Seekbar preview touch support
-		seekBar.bind('touchmove', function($event) {
-			if (!player.seekingSupported()) return;
-
-			let rect = $event.target.getBoundingClientRect();
-			let x = $event.targetTouches[0].clientX - rect.x;
-			let offsetX = Math.min(Math.max(0, x), rect.width);
-			let ratio = offsetX / rect.width;
-
-			seekSetPreview(ratio * songLength_s);
-		});
-
-		seekBar.bind('touchend', function($event) {
-			if (!player.seekingSupported() || $event?.type !== 'touchend') return;
-			
-			// Reverse calculate on seek position
-			player.seek(playTimePreview_s / songLength_s);
-			
-			seekSetPreview(null);
-			text_playTime.css('font-style', 'normal');
-		});
-
+		const container = $(document.createElement('div')).attr('id', 'albumart-container');
+		container.append($(document.createElement('div')).attr('id', 'albumart'));
 		return container;
 	}
 
@@ -420,60 +236,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		let infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
 		infoProgressContainer.append(songInfo);
-		infoProgressContainer.append(createProgressInfo());
+		progressInfo.addToContainer(infoProgressContainer);
 		return infoProgressContainer;
-	}
-
-	function createVolumeControl() {
-		let volumeControl = $(document.createElement('div'))
-			.attr('class', 'volume-control');
-
-		let volumeIcon = $(document.createElement('img'))
-			.attr('id', 'volume-icon')
-			.attr('class', 'control small svg')
-			.attr('src', soundIconPath)
-			.on('click', function() {
-				const setVolume = function(value) {
-					volumeSlider.val(value);
-					volumeSlider.trigger('input');
-				};
-
-				if (lastVolume) {
-					setVolume(lastVolume);
-					lastVolume = null;
-				}
-				else {
-					lastVolume = volume;
-					setVolume('0');
-				}
-			});
-
-		let volumeSlider = $(document.createElement('input'))
-			.attr('id', 'volume-slider')
-			.attr('min', '0')
-			.attr('max', '100')
-			.attr('type', 'range')
-			.attr('value', volume)
-			.on('input change', function() {
-				const value = $(this).val();
-
-				// Reset last known volume, if a new value is selected via the slider
-				if (value && lastVolume && lastVolume !== volume) {
-					lastVolume = null;
-				}
-
-				volume = value;
-				player.setVolume(volume);
-				OCA.Music.Storage.set('volume', volume);
-				
-				// Show correct icon if muted 
-				volumeIcon.attr('src', volume == 0 ? soundOffIconPath : soundIconPath);
-			});
-
-		volumeControl.append(volumeIcon);
-		volumeControl.append(volumeSlider);
-
-		return volumeControl;
 	}
 
 	function createCloseButton() {
@@ -492,16 +256,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		pauseButton = createPauseButton();
 		prevButton = createPrevButton();
 		nextButton = createNextButton();
-		coverImage = createCoverImage();
+		coverImageContainer = createCoverImage();
 
 		musicControls.append(createPlaylistArea());
 		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(nextButton);
-		musicControls.append(coverImage);
+		musicControls.append(coverImageContainer);
 		musicControls.append(createInfoProgressContainer());
-		musicControls.append(createVolumeControl());
+		volumeControl.addToContainer(musicControls);
 		musicControls.append(createCloseButton());
 
 		// Round also the bottom left corner on NC25 on the share page. The bottom right corner is rounded by default.
@@ -511,6 +275,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		let parentContainer = $('div#app-content');
 		if (parentContainer.length === 0) {
+			// On NC28, the name and type of the app content container has changed
+			parentContainer = $('main#app-content-vue');
+		}
+		if (parentContainer.length === 0) {
 			// On share page before NC25, there's no #app-content. Use #preview element as parent, instead.
 			parentContainer = $('div#preview');
 			musicControls.css('left', '0');
@@ -519,7 +287,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			let width = parentContainer.width();
 			// On the OC share page and in NC14-24, the parent width has the scroll bar width
 			// already subtracted.
-			if (OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
+			if (OCA.Music.Utils.getScrollContainer()[0] !== window.document) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;
@@ -554,7 +322,19 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', onNext);
+		// bind the player events to change the states of the UI controls
+		player.on('play', () => {
+			playButton.css('display', 'none');
+			pauseButton.css('display', 'inline-block');
+		});
+		player.on('pause', () => {
+			playButton.css('display', 'inline-block');
+			pauseButton.css('display', 'none');
+		});
+
+		if (onNext) {
+			player.on('end', onNext);
+		}
 	}
 
 	function musicAppLinkElements() {
@@ -566,9 +346,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		artistText.text(data.artist);
 
 		let cover = data.cover || OC.imagePath('core', 'filetypes/audio');
-		coverImage.css('background-image', 'url("' + cover + '")');
+		coverImageContainer.find(':first-child').css('background-image', 'url("' + cover + '")');
 
-		updateMediaSession(data);
+		browserMediaSession.showInfo(data);
 	}
 
 	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback = null) {
@@ -591,12 +371,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	}
 
-	function resolveExtUrl(url, callback) {
-		$.get(OC.generateUrl('apps/music/api/radio/streamurl'), {url: url}, callback);
+	function resolveExtUrl(url, token, callback) {
+		$.get(OC.generateUrl('apps/music/api/radio/streamurl'), {url: url, token: token}, callback);
 	}
 
 	function changePlayingUrl(playCallback) {
 		player.stop();
+
+		// enable controls which may be disabled while loading a playlist
+		musicControls.find('.control').removeClass('disabled');
+		updateNextButtonStatus();
 
 		musicAppLinkElements().css('cursor', 'default').off('click').attr('title', '');
 		player.trigger('loading');
@@ -614,7 +398,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function loadFileInfo(fileId, fallbackTitle) {
-		let url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
+		let url  = OC.generateUrl('apps/music/api/files/{fileId}/info', {'fileId':fileId});
 		loadFileInfoFromUrl(url, fallbackTitle, fileId, updateMusicAppLink);
 	}
 
@@ -648,56 +432,29 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 	}
 
-	/**
-	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
-	 * version 83. In Firefox, it is still disabled in the version 77, but a partially working support can
-	 * be enabled via the advanced settings.
-	 *
-	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
-	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
-	 */
-	if ('mediaSession' in navigator) {
-		let registerMediaControlHandler = function(action, handler) {
-			try {
-				navigator.mediaSession.setActionHandler(action, handler);
-			} catch (error) {
-				console.log('The media control "' + action + '" is not supported by the browser');
-			}
-		};
-
-		registerMediaControlHandler('play', play);
-		registerMediaControlHandler('pause', pause);
-		registerMediaControlHandler('stop', close);
-		registerMediaControlHandler('seekbackward', seekBackward);
-		registerMediaControlHandler('seekforward', seekForward);
-		registerMediaControlHandler('previoustrack', previous);
-		registerMediaControlHandler('nexttrack', next);
-	}
-
-	function updateMediaSession(data) {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.metadata = new MediaMetadata({
-				title: data.title,
-				artist: data.artist,
-				album: '',
-				artwork: [{
-					sizes: '200x200',
-					src: data.cover,
-					type: ''
-				}]
-			});
-		}
-	}
-
-	function setMediaSessionStatePlaying(isPlaying) {
-		if ('mediaSession' in navigator) {
-			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-		}
-	}
+	browserMediaSession.registerControls({
+		play: play,
+		pause: pause,
+		stop: close,
+		seekBackward: seekBackward,
+		seekForward: seekForward,
+		previousTrack: previous,
+		nextTrack: next
+	});
 
 	/**
-	 * PUBLIC INTEFACE
+	 * PUBLIC INTERFACE
 	 */
+
+	this.setCallbacks = function(closeCb, nextCb, prevCb, menuCb, showListCb, importListCb, importRadioCb) {
+		onClose = closeCb;
+		onNext = nextCb;
+		onPrev = prevCb;
+		onMenuOpen = menuCb;
+		onShowList = showListCb;
+		onImportList = importListCb;
+		onImportRadio = importRadioCb;
+	};
 
 	this.show = function(playlistName = null) {
 		if (!musicControls) {
@@ -706,6 +463,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		if (playlistName) {
 			musicControls.addClass('with-playlist');
+			musicControls.find('.control').addClass('disabled');
+			updateMetadata({
+				title: t('music', 'Loading…'),
+				artist: '',
+				cover: null
+			});
+			playlistNumberText.hide();
 			playlistText.text(OCA.Music.Utils.dropFileExtension(playlistName));
 		} else {
 			musicControls.removeClass('with-playlist');
@@ -715,6 +479,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		// On NC25, the footer shown on publicly shared folders is laid over the music controls. Get rid of it.
 		$('footer').css('display', 'none');
+	};
+
+	this.showBusy = function(isBusy) {
+		if (isBusy) {
+			coverImageContainer.addClass('icon-loading');
+			$('#menu-container').hide();
+		} else {
+			coverImageContainer.removeClass('icon-loading');
+			$('#menu-container').show();
+		}
 	};
 
 	this.playFile = function(url, mime, fileId, fileName, shareToken = null) {
@@ -738,7 +512,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	};
 
-	this.playExtUrl = function(url, caption, shareToken = null) {
+	this.playExtUrl = function(url, urlToken, caption) {
 		currentFileId = null;
 		updateMetadata({
 			title: caption,
@@ -746,23 +520,24 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			cover: radioIconPath
 		});
 		changePlayingUrl(function() {
-			resolveExtUrl(url, function(resolved) {
-				if (shareToken && resolved.hls) {
-					OC.Notification.showTemporary(t('music', 'Stream type not supported on shared file'));
-				} else {
-					player.fromExtUrl(resolved.url, resolved.hls);
-					play();
-				}
+			resolveExtUrl(url, urlToken, function(resolved) {
+				player.fromExtUrl(resolved.url, resolved.hls);
+				play();
 			});
 		});
 	};
 
 	this.setPlaylistIndex = function(currentIndex, totalCount) {
 		playlistNumberText.text((currentIndex + 1) + ' / ' + totalCount);
+		playlistNumberText.show();
 	};
 
 	this.togglePlayback = togglePlayback;
 
+	this.stop = function() {
+		player.stop();
+	};
+	
 	this.close = close;
 
 	this.setNextAndPrevEnabled = function(enabled) {
@@ -773,6 +548,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	this.isVisible = function() {
 		return musicControls !== null && musicControls.is(':visible');
+	};
+
+	this.canPlayMime = function(mime) {
+		return player.canPlayMime(mime);
 	};
 };
 

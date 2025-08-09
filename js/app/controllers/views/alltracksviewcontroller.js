@@ -5,13 +5,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2023
+ * @copyright Pauli Järvinen 2018 - 2024
  */
 
 
 angular.module('Music').controller('AllTracksViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
+	'$rootScope', '$scope', 'playQueueService', 'libraryService', 'alphabetIndexingService', '$timeout',
+	function ($rootScope, $scope, playQueueService, libraryService, alphabetIndexingService, $timeout) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
@@ -24,7 +24,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		const BUCKET_MAX_SIZE = 100;
 		$scope.trackBuckets = null;
 
-		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		// $rootScope listeners must be unsubscribed manually when the control is destroyed
 		let _unsubFuncs = [];
 
 		function subscribe(event, handler) {
@@ -36,11 +36,11 @@ angular.module('Music').controller('AllTracksViewController', [
 		});
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('alltracks', _tracks, startIndex);
-			playlistService.publish('play');
+			playQueueService.setPlaylist('alltracks', _tracks, startIndex);
+			playQueueService.publish('play');
 		}
 
-		// Call playlistService to play all songs in the current playlist from the beginning
+		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
 			play();
 		};
@@ -48,8 +48,9 @@ angular.module('Music').controller('AllTracksViewController', [
 		// Play the list, starting from a specific track
 		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
-			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
-				playlistService.publish('togglePlayback');
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === trackId && currentTrack.type == 'song') {
+				playQueueService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
@@ -59,15 +60,18 @@ angular.module('Music').controller('AllTracksViewController', [
 		};
 
 		/**
-		 * Gets track data to be dislayed in the tracklist directive
+		 * Gets track data to be displayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(listItem, index, scope) {
 			let track = listItem.track;
 			return {
-				title: track.artist.name + ' - ' + track.title,
-				tooltip: '',
+				title: track.title,
+				title2: track.artist.name,
+				tooltip: track.title,
+				tooltip2: track.artist.name,
 				number: scope.$parent.bucket.baseIndex + index + 1,
-				id: track.id
+				id: track.id,
+				art: track.album
 			};
 		};
 

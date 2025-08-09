@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 namespace OCA\Music\Command;
@@ -20,8 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetDatabase extends BaseCommand {
 
-	/** @var Maintenance */
-	private $maintenance;
+	private Maintenance $maintenance;
 
 	public function __construct(\OCP\IUserManager $userManager,
 			\OCP\IGroupManager $groupManager, Maintenance $maintenance) {

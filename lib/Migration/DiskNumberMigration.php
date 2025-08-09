@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 namespace OCA\Music\Migration;
@@ -19,17 +19,10 @@ use OCP\Migration\IRepairStep;
 
 class DiskNumberMigration implements IRepairStep {
 
-	/** @var IDBConnection */
-	private $db;
-
-	/** @var IConfig */
-	private $config;
-
-	/** @var int[] */
-	private $obsoleteAlbums;
-
-	/** @var int[] */
-	private $mergeFailureAlbums;
+	private IDBConnection $db;
+	private IConfig $config;
+	private array $obsoleteAlbums;
+	private array $mergeFailureAlbums;
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;
@@ -44,6 +37,7 @@ class DiskNumberMigration implements IRepairStep {
 
 	/**
 	 * @inheritdoc
+	 * @return void
 	 */
 	public function run(IOutput $output) {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
@@ -58,12 +52,12 @@ class DiskNumberMigration implements IRepairStep {
 		}
 	}
 
-	private function executeMigrationSteps(IOutput $output) {
+	private function executeMigrationSteps(IOutput $output) : void {
 		$n = $this->copyDiskNumberToTracks();
 		$output->info("$n tracks were updated with a disk number");
 
 		$n = $this->combineMultiDiskAlbums();
-		$output->info("$n tracks were assinged to new albums when combining multi-disk albums");
+		$output->info("$n tracks were assigned to new albums when combining multi-disk albums");
 
 		$n = $this->removeObsoleteAlbums();
 		$output->info("$n obsolete album entries were removed from the database");
@@ -72,7 +66,7 @@ class DiskNumberMigration implements IRepairStep {
 		$output->info("$n albums were updated with new hashes");
 
 		$n = $this->removeAlbumsWhichFailedMerging();
-		$output->info("$n albums were removed because merging them failed; these need to be rescanned by the user");
+		$output->info("$n albums were removed because merging them failed; these need to be re-scanned by the user");
 
 		$n = $this->removeDiskNumbersFromAlbums();
 		$output->info("obsolete disk number field was nullified in $n albums");

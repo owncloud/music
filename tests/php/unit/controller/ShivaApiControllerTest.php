@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\Controller;
@@ -25,6 +25,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
+	private $detailsService;
+	private $scanner;
 	private $request;
 	private $controller;
 	private $userId = 'john';
@@ -55,6 +57,12 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->detailsService = $this->getMockBuilder('\OCA\Music\Service\DetailsService')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Service\Scanner')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
 			->disableOriginalConstructor()
 			->getMock();
@@ -65,6 +73,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
+			$this->detailsService,
+			$this->scanner,
 			$this->userId,
 			$this->l10n,
 			$this->logger);
@@ -72,13 +82,13 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.shivaApi.artist':	return "/link/to/artist/{$args['artistId']}";
-			case 'music.shivaApi.album':	return "/link/to/album/{$args['albumId']}";
-			case 'music.shivaApi.track':	return "/link/to/track/{$args['trackId']}";
-			case 'music.api.download':		return "/link/to/file/{$args['fileId']}";
-			case 'music.api.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
-			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
-			default:						return "(mock missing for route $route)";
+			case 'music.shivaApi.artist':		return "/link/to/artist/{$args['id']}";
+			case 'music.shivaApi.album':		return "/link/to/album/{$args['id']}";
+			case 'music.shivaApi.track':		return "/link/to/track/{$args['id']}";
+			case 'music.musicApi.download':		return "/link/to/file/{$args['fileId']}";
+			case 'music.coverApi.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
+			case 'music.coverApi.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
+			default:							return "(mock missing for route $route)";
 		}
 	}
 

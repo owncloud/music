@@ -6,20 +6,23 @@
 	<description><![CDATA[A stand-alone music player app and a "lite" player for the Files app
 
 - On modern browsers, supports audio types .mp3, .ogg, .m4a, .m4b, .flac, .wav, and more
-- Playlist support with import from m3u, m3u8, and pls files
+- Playlist support with import from .m3u, .m3u8, .pls, and .wpl files
+- Show lyrics from the file metadata or .lrc files
 - Browse by artists, albums, genres, or folders
 - Gapless play
 - Filter the shown content with the search function
+- Advanced search to freely use and combine dozens of search criteria
 - Play internet radio and podcast channels
 - Setup Last.fm connection to see background information on artists, albums, and songs
 - Control with media control keys on the keyboard or OS
 - The app can handle libraries consisting of thousands of albums and tens of thousands of songs
-- Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on various external apps e.g. on Android or iPhone]]></description>
+- Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on dozens of external apps on Android, iOS, Windows, Linux, etc.
+- Widget for the Nextcloud Dashboard]]></description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>1.9.1</version>
+	<version>2.2.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128608-34dc576b-07b7-424c-ae81-a63b9128f3d7.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128615-554d117c-786f-4847-b110-cd4018b65186.png</screenshot>
@@ -30,9 +33,9 @@
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<php min-version="7.1" max-version="8.2"/>
-		<owncloud min-version="10" max-version="10" />
-		<nextcloud min-version="13" max-version="27" />
+		<php min-version="7.4" max-version="8.4"/>
+		<owncloud min-version="10.5" max-version="10" />
+		<nextcloud min-version="20" max-version="31" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

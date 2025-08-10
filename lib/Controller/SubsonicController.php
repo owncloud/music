@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\Node;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUserManager;
@@ -95,6 +96,7 @@ class SubsonicController extends ApiController {
 	private AmpacheImageService $imageService;
 	private Random $random;
 	private Logger $logger;
+	private IConfig $configManager;
 	private ?string $userId;
 	private ?int $keyId;
 	private array $ignoredArticles;
@@ -122,7 +124,8 @@ class SubsonicController extends ApiController {
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
 								Random $random,
-								Logger $logger) {
+								Logger $logger,
+								\OCP\IConfig $configManager) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -145,6 +148,7 @@ class SubsonicController extends ApiController {
 		$this->imageService = $imageService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->configManager = $configManager;
 		$this->userId = null;
 		$this->keyId = null;
 		$this->ignoredArticles = [];
@@ -1067,48 +1071,42 @@ class SubsonicController extends ApiController {
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function getPlayQueue() : array {
-		$playQueue = ['entry' => [], 'changedBy' => $this->userId];
-		$playlists = $this->playlistBusinessLayer->findAllByName('Queue', $this->userId);
-		if (\count($playlists) > 1) {
-			return $this->subsonicErrorResponse(10, 'Found multiple play queues');
-		} elseif (\count($playlists) == 1) {
-			$playlist = $playlists[0];
-			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($playlist->id, $this->userId);
-			$playQueue['entry'] = $this->tracksToApi($tracks);
-			$playQueue['changed'] = Util::formatZuluDateTime($playlist->getUpdated());
-			$comment = $playlist->getComment();
-			if (!empty($comment) && $additional = \json_decode($comment, true)) {
-				$playQueue = \array_merge($playQueue, $additional);
-			}
-		}
+	protected function getPlayQueue() {
+		$defaultResponse = [
+			'entry' => [],
+            'changedBy' => ''
+		];
+		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
+        $tracks = array_map(
+			fn ($trackId) => $this->trackBusinessLayer->find($trackId, $this->user()),
+			$playQueue['entry']
+		);
+		$playQueue['entry'] = $this->tracksToApi($tracks);
+
 		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function savePlayQueue(array $id, ?string $current = null, ?int $position = null) {
-		$playlists = $this->playlistBusinessLayer->findAllByName('Queue', $this->userId);
-		if (\count($playlists) == 0) {
-			$playlist = $this->playlistBusinessLayer->create('Queue', $this->userId);
-		} elseif (\count($playlists) > 1) {
-			return $this->subsonicErrorResponse(10, 'Found multiple play queues');
-		} else {
-			$playlist = $playlists[0];
-		}
+	protected function savePlayQueue(array $id, ?string $current = null, ?int $position = null, ?string $c = null) : Response {
+		/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
+		$changedDateTime = new \DateTime();
+		$changeTime = $changedDateTime->format('Y-m-d\TH:i:s.v\Z');
+		$playQueue = [
+			'entry' => array_map([self::class, 'ripIdPrefix'], $id),
+			'changedBy' => $c ?? '',
+			'changed' => $changeTime
+		];
 
-		$this->playlistBusinessLayer->setTracks(
-			\array_map('self::ripIdPrefix', $id),
-			$playlist->id,
-			$this->userId
-		);
-		$additional = [];
 		if (isset($current))
-			$additional['current'] = $current;
+			$playQueue['current'] = $current;
 		if (isset($position))
-			$additional['position'] = $position;
-		$this->playlistBusinessLayer->setComment(\json_encode($additional), $playlist->id, $this->userId);
+			$playQueue['position'] = $position;
+
+		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
+		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
+
 		return $this->subsonicResponse([]);
 	}
 

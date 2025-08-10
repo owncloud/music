@@ -1074,7 +1074,7 @@ class SubsonicController extends ApiController {
 	protected function getPlayQueue() {
 		$defaultResponse = [
 			'entry' => [],
-            'changedBy' => ''
+			'changedBy' => ''
 		];
 		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
 

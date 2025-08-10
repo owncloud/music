@@ -1105,10 +1105,12 @@ class SubsonicController extends ApiController {
 			'changed' => $changeTime
 		];
 
-		if (isset($current))
+		if ($current) {
 			$playQueue['current'] = $current;
-		if (isset($position))
+		}
+		if ($position) {
 			$playQueue['position'] = $position;
+		}
 
 		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);

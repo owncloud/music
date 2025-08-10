@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\Node;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUserManager;
@@ -95,6 +96,7 @@ class SubsonicController extends ApiController {
 	private AmpacheImageService $imageService;
 	private Random $random;
 	private Logger $logger;
+	private IConfig $configManager;
 	private ?string $userId;
 	private ?int $keyId;
 	private array $ignoredArticles;
@@ -122,7 +124,8 @@ class SubsonicController extends ApiController {
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
 								Random $random,
-								Logger $logger) {
+								Logger $logger,
+								\OCP\IConfig $configManager) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -145,6 +148,7 @@ class SubsonicController extends ApiController {
 		$this->imageService = $imageService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->configManager = $configManager;
 		$this->userId = null;
 		$this->keyId = null;
 		$this->ignoredArticles = [];
@@ -517,7 +521,7 @@ class SubsonicController extends ApiController {
 						return $line;
 					}, $lyrics['lines'], \array_keys($lyrics['lines']))
 				];
-			}, $allLyrics) 
+			}, $allLyrics)
 		]];
 	}
 
@@ -1067,17 +1071,48 @@ class SubsonicController extends ApiController {
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function getPlayQueue() : array {
-		// TODO: not supported yet
-		return ['playQueue' => []];
+	protected function getPlayQueue() : Response {
+		$defaultResponse = [
+			'entry' => [],
+			'changedBy' => ''
+		];
+		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
+
+		foreach ($playQueue['entry'] as &$entry) {
+			[$type, $id] = self::parseEntityId($entry);
+			if ($type === 'track') {
+				$entry = $this->trackToApi(
+					$this->trackBusinessLayer->find($id, $this->user())
+				);
+			} else if ($type === 'podcast_episode') {
+				$entry = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+			}
+		}
+
+		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function savePlayQueue() : array {
-		// TODO: not supported yet
-		return [];
+	protected function savePlayQueue(array $id, ?string $current = null, ?int $position = null, ?string $c = null) : Response {
+		/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
+		$changedDateTime = new \DateTime();
+		$playQueue = array_filter([
+			'entry' => array_filter(
+				$id,
+				fn (string $entityId) => in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
+			),
+			'changedBy' => $c,
+			'position' => $position,
+			'current' => $current,
+			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z')
+		], fn ($val) => $val !== null);
+
+		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
+		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
+
+		return $this->subsonicResponse([]);
 	}
 
 	/**
@@ -1613,7 +1648,7 @@ class SubsonicController extends ApiController {
 		if ($albumId === null) {
 			throw new SubsonicException("Unexpected ID format: $id", 0);
 		}
-		
+
 		$info = $this->lastfmService->getAlbumInfo($albumId, $this->user());
 
 		if (isset($info['album'])) {

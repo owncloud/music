@@ -1107,7 +1107,7 @@ class SubsonicController extends ApiController {
 			'position' => $position,
 			'current' => $current,
 			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z')
-		]);
+		], fn ($val) => $val !== null);
 
 		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);

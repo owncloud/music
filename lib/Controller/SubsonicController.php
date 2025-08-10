@@ -1077,11 +1077,17 @@ class SubsonicController extends ApiController {
             'changedBy' => ''
 		];
 		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
-        $tracks = array_map(
-			fn ($trackId) => $this->trackBusinessLayer->find($trackId, $this->user()),
-			$playQueue['entry']
-		);
-		$playQueue['entry'] = $this->tracksToApi($tracks);
+
+		foreach ($playQueue['entry'] as &$entry) {
+			[$type, $id] = self::parseEntityId($entry);
+			if ($type === 'track') {
+				$entry = $this->trackToApi(
+					$this->trackBusinessLayer->find($id, $this->user())
+				);
+			} else if ($type === 'podcast_episode') {
+				$entry = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+			}
+		}
 
 		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}
@@ -1094,7 +1100,7 @@ class SubsonicController extends ApiController {
 		$changedDateTime = new \DateTime();
 		$changeTime = $changedDateTime->format('Y-m-d\TH:i:s.v\Z');
 		$playQueue = [
-			'entry' => array_map([self::class, 'ripIdPrefix'], $id),
+			'entry' => $id,
 			'changedBy' => $c ?? '',
 			'changed' => $changeTime
 		];

@@ -1098,19 +1098,16 @@ class SubsonicController extends ApiController {
 	protected function savePlayQueue(array $id, ?string $current = null, ?int $position = null, ?string $c = null) : Response {
 		/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
 		$changedDateTime = new \DateTime();
-		$changeTime = $changedDateTime->format('Y-m-d\TH:i:s.v\Z');
-		$playQueue = [
-			'entry' => $id,
-			'changedBy' => $c ?? '',
-			'changed' => $changeTime
-		];
-
-		if ($current) {
-			$playQueue['current'] = $current;
-		}
-		if ($position) {
-			$playQueue['position'] = $position;
-		}
+		$playQueue = array_filter([
+			'entry' => array_filter(
+				$id,
+				fn (string $entityId) => in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
+			),
+			'changedBy' => $c,
+			'position' => $position,
+			'current' => $current,
+			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z')
+		]);
 
 		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);

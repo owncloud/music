@@ -1092,7 +1092,11 @@ class SubsonicController extends ApiController {
                 if ($type === 'track' && isset($apiTracks[$id])) {
                     $pqEntries[] = $apiTracks[$id];
                 } else if ($type === 'podcast_episode') {
-                    $pqEntries[] = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+                    try {
+                        $pqEntries[] = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+                    } catch (\Throwable $t) {
+                        // catch missing podcast episode exceptions; maybe episode was deleted after being added to queue
+                    }
                 }
                 return $pqEntries;
             },

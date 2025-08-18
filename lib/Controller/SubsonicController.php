@@ -1078,16 +1078,26 @@ class SubsonicController extends ApiController {
 		];
 		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
 
-		foreach ($playQueue['entry'] as &$entry) {
-			[$type, $id] = self::parseEntityId($entry);
-			if ($type === 'track') {
-				$entry = $this->trackToApi(
-					$this->trackBusinessLayer->find($id, $this->user())
-				);
-			} else if ($type === 'podcast_episode') {
-				$entry = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
-			}
-		}
+        $parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
+        $trackEntries = \array_filter($parsedEntries,fn ($parsedEntry) => $parsedEntry[0] === 'track');
+        $tracksById = ArrayUtil::createIdLookupTable($this->trackBusinessLayer->findById(
+            \array_map(fn ($trackEntry) => $trackEntry[1], $trackEntries), $this->user()
+        ));
+        $apiTracks = $this->tracksToApi($tracksById);
+
+        $playQueue['entry'] = \array_reduce(
+            $parsedEntries,
+            function ($pqEntries, $parsedEntry) use ($apiTracks) {
+                [$type, $id] = $parsedEntry;
+                if ($type === 'track' && isset($apiTracks[$id])) {
+                    $pqEntries[] = $apiTracks[$id];
+                } else if ($type === 'podcast_episode') {
+                    $pqEntries[] = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+                }
+                return $pqEntries;
+            },
+            []
+        );
 
 		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}

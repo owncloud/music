@@ -1072,11 +1072,12 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getPlayQueue() {
-		$defaultResponse = [
-			'entry' => [],
-			'changedBy' => ''
-		];
-		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true) ?: $defaultResponse;
+        /** @var array|false $playQueue */
+		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
+
+        if (!$playQueue) {
+            return $this->subsonicResponse([]);
+        }
 
         $parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
         $trackEntries = \array_filter($parsedEntries,fn ($parsedEntry) => $parsedEntry[0] === 'track');

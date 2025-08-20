@@ -20,9 +20,13 @@ jobs:
             php: 7.4
             db: sqlite
           - cloud: nextcloud
-            version: 31.0.7
-            php: 8.4
+            version: 31.0.8
+            php: 8.2
             db: pgsql
+          - cloud: nextcloud
+            version: 32.0.0beta1
+            php: 8.4
+            db: mysql
           - cloud: owncloud
             version: 10.5.0
             php: 7.4

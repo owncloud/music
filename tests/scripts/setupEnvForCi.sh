@@ -51,8 +51,12 @@ if [ $CLOUD == 'nextcloud' ]; then
     rm apps/music/appinfo/app.php
 fi
 
-# activate the Music app
-php occ app:enable music
+# Activate the Music app. On NC, we may install the app also on officially unsupported cloud versions but the --force flag doesn't exits on OC.
+if [ $CLOUD == 'nextcloud' ]; then
+    php occ app:enable music --force
+else
+    php occ app:enable music
+fi
 
 # download and scan the test content
 ./apps/music/tests/scripts/downloadTestData.sh /tmp/oc_music_ci/data/ampache

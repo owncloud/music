@@ -20,6 +20,8 @@ cd /tmp/oc_music_ci
 # download the cloud and setup folders
 if [ $CLOUD == 'owncloud' ]; then
     URL=https://download.owncloud.com/server/stable
+elif [[ $VERSION == *"beta"* ]]; then
+    URL=https://download.nextcloud.com/server/prereleases
 else
     URL=https://download.nextcloud.com/server/releases
 fi

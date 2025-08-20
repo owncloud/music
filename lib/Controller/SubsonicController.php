@@ -1111,7 +1111,6 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function savePlayQueue(array $id, string $c, string $u, ?string $current = null, ?int $position = null) : Response {
-		/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
 		$changedDateTime = new \DateTime();
 		$playQueue = array_filter([
 			'entry' => array_filter(
@@ -1121,6 +1120,7 @@ class SubsonicController extends ApiController {
 			'changedBy' => $c,
 			'position' => $position,
 			'current' => $current,
+			/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
 			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z'),
 			'username' => $u
 		], fn ($val) => $val !== null);

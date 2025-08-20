@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### Added
+- Support for Nextcloud 32 (tested on beta1)
 - Russian translation
   [#1219](https://github.com/owncloud/music/pull/1219) @mexvod
 

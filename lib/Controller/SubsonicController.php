@@ -1072,37 +1072,37 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getPlayQueue() {
-        /** @var array|false $playQueue */
+		/** @var array|false $playQueue */
 		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
 
-        if (!$playQueue) {
-            return $this->subsonicResponse([]);
-        }
+		if (!$playQueue) {
+			return $this->subsonicResponse([]);
+		}
 
-        $parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
-        $trackEntries = \array_filter($parsedEntries,fn ($parsedEntry) => $parsedEntry[0] === 'track');
-        $tracksById = ArrayUtil::createIdLookupTable($this->trackBusinessLayer->findById(
-            \array_map(fn ($trackEntry) => $trackEntry[1], $trackEntries), $this->user()
-        ));
-        $apiTracks = $this->tracksToApi($tracksById);
+		$parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
+		$trackEntries = \array_filter($parsedEntries,fn ($parsedEntry) => $parsedEntry[0] === 'track');
+		$tracksById = ArrayUtil::createIdLookupTable($this->trackBusinessLayer->findById(
+			\array_map(fn ($trackEntry) => $trackEntry[1], $trackEntries), $this->user()
+		));
+		$apiTracks = $this->tracksToApi($tracksById);
 
-        $playQueue['entry'] = \array_reduce(
-            $parsedEntries,
-            function ($pqEntries, $parsedEntry) use ($apiTracks) {
-                [$type, $id] = $parsedEntry;
-                if ($type === 'track' && isset($apiTracks[$id])) {
-                    $pqEntries[] = $apiTracks[$id];
-                } else if ($type === 'podcast_episode') {
-                    try {
-                        $pqEntries[] = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
-                    } catch (\Throwable $t) {
-                        // catch missing podcast episode exceptions; maybe episode was deleted after being added to queue
-                    }
-                }
-                return $pqEntries;
-            },
-            []
-        );
+		$playQueue['entry'] = \array_reduce(
+			$parsedEntries,
+			function ($pqEntries, $parsedEntry) use ($apiTracks) {
+				[$type, $id] = $parsedEntry;
+				if ($type === 'track' && isset($apiTracks[$id])) {
+					$pqEntries[] = $apiTracks[$id];
+				} else if ($type === 'podcast_episode') {
+					try {
+						$pqEntries[] = $this->podcastEpisodeBusinessLayer->find($id, $this->user())->toSubsonicApi();
+					} catch (\Throwable $t) {
+						// catch missing podcast episode exceptions; maybe episode was deleted after being added to queue
+					}
+				}
+				return $pqEntries;
+			},
+			[]
+		);
 
 		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}

@@ -1081,43 +1081,44 @@ class SubsonicController extends ApiController {
 
 		$parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
 
-		$typeLookupMap = [
-			'track' => [
-				'lookupFn' => [$this->trackBusinessLayer, 'findById'],
-				'toApiFn' => [$this, 'trackstoApi']
+		$typeHandlers = [
+			[
+				'track',
+				[$this->trackBusinessLayer, 'findById'],
+				[$this, 'trackstoApi']
 			],
-			'podcast_episode' => [
-				'lookupFn' => [$this->podcastEpisodeBusinessLayer, 'findById'],
-				'toApiFn' => [$this, 'podcastEpisodestoApi']
+			[
+				'podcast_episode',
+				[$this->podcastEpisodeBusinessLayer, 'findById'],
+				[$this, 'podcastEpisodestoApi']
 			]
 		];
 
 		/** @var array{'track': Track[], 'podcast_episode': PodcastEpisode[]} $apiEntries */
 		$apiEntries = array_merge([], ...array_map(
-			fn ($type, $methods) => [$type => $methods['toApiFn'](
-				ArrayUtil::createIdLookupTable($methods['lookupFn'](
-					\array_map(
-						fn ($entry) => $entry[1],
-						\array_filter($parsedEntries, fn ($parsedEntry) => $parsedEntry[0] === $type)
-					),
-					$this->user()
-				))
-			)],
-			array_keys($typeLookupMap),
-			array_values($typeLookupMap)
+			function ($handlers) use ($parsedEntries) {
+				[$type, $lookupFn, $toApiFn] = $handlers;
+				$typeEntryIds = \array_map(
+					fn ($entry) => $entry[1],
+					\array_filter($parsedEntries, fn ($parsedEntry) => $parsedEntry[0] === $type)
+				);
+
+				$entryInstances = $lookupFn($typeEntryIds, $this->user());
+
+				return [
+					$type => $toApiFn(ArrayUtil::createIdLookupTable($entryInstances))
+				];
+			},
+			$typeHandlers
 		));
 
-		$playQueue['entry'] = \array_reduce(
-			$parsedEntries,
-			function ($pqEntries, $parsedEntry) use ($apiEntries) {
+		$playQueue['entry'] = \array_filter(\array_map(
+			function ($parsedEntry) use ($apiEntries) {
 				[$type, $id] = $parsedEntry;
-				if (isset($apiEntries[$type][$id])) {
-					$pqEntries[] = $apiEntries[$type][$id];
-				}
-				return $pqEntries;
+				return $apiEntries[$type][$id] ?? false;
 			},
-			[]
-		);
+			$parsedEntries
+		));
 
 		return $this->subsonicResponse(['playQueue' => $playQueue]);
 	}
@@ -1523,7 +1524,7 @@ class SubsonicController extends ApiController {
 		return $this->tracksToApi([$track])[0];
 	}
 
-   	/**
+	/**
 	 * @param PodcastEpisode[] $episodes
 	 */
 	private function podcastEpisodestoApi(array $episodes) : array {

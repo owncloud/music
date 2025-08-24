@@ -1071,12 +1071,12 @@ class SubsonicController extends ApiController {
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function getPlayQueue() {
+	protected function getPlayQueue() : array {
 		/** @var array|false $playQueue */
 		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
 
 		if (!$playQueue) {
-			return $this->subsonicResponse([]);
+			return [];
 		}
 
 		$parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
@@ -1120,13 +1120,13 @@ class SubsonicController extends ApiController {
 			$parsedEntries
 		));
 
-		return $this->subsonicResponse(['playQueue' => $playQueue]);
+		return ['playQueue' => $playQueue];
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function savePlayQueue(array $id, string $c, ?string $current = null, ?int $position = null) : Response {
+	protected function savePlayQueue(array $id, string $c, ?string $current = null, ?int $position = null) : array {
 		$changedDateTime = new \DateTime();
 		$playQueue = array_filter([
 			'entry' => array_filter(
@@ -1144,7 +1144,7 @@ class SubsonicController extends ApiController {
 		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
 
-		return $this->subsonicResponse([]);
+		return [];
 	}
 
 	/**

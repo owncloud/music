@@ -4,6 +4,8 @@
 - Support for Nextcloud 32 (tested on beta1)
 - Russian translation
   [#1219](https://github.com/owncloud/music/pull/1219) @mexvod
+- Hungarian translation
+  [#1245](https://github.com/owncloud/music/pull/1245) @rkrisztian
 
 ### Changed
 - Human-friendly formatting for bitrate and sample rate in the track details pane

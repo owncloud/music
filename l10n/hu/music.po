@@ -1,5 +1,5 @@
 # Cloned from ../l10n\hu_HU\music.po by duplicate-lang.py
-# 
+#
 # Translators:
 # bela erdei <bela@dandre.hu>, 2013
 # János Fehér <feher.janos@mindworks.hu>, 2014
@@ -8,161 +8,2256 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-09-19 20:12+0000\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2025-08-24 20:41+0200\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Hungarian (Hungary) (http://www.transifex.com/owncloud-org/owncloud/language/hu_HU/)\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/owncloud-org/"
+"owncloud/language/hu_HU/)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: ../templates/main.php:60
-msgid "+ New Playlist"
+#: templates/partials/sidebar/albumdetails.php:36
+#: templates/partials/sidebar/artistdetails.php:39
+msgid "(Failed to connect Last.fm)"
+msgstr "(Sikertelen kapcsolódás a Last.fm-hez)"
+
+#: templates/partials/sidebar/albumdetails.php:33
+#: templates/partials/sidebar/artistdetails.php:36
+msgid "(Last.fm has not been set up)"
+msgstr "(A Last.fm nincs beállítva)"
+
+#: templates/fake-template.php:9 musicwidget.ts:238
+msgid "(library root)"
+msgstr "(könyvtár gyökér)"
+
+#: templates/partials/sidebar/artistdetails.php:5
+msgid "(no artist image available)"
+msgstr "(nincs szerzőkép)"
+
+#: templates/fake-template.php:14
+msgid "(press and hold for more)"
+msgstr "(tartsa nyomva a folytatásért)"
+
+#: templates/partials/views/advancedsearchview.php:26
+msgid "10 matches"
+msgstr "10 egyezésre"
+
+#: templates/partials/views/advancedsearchview.php:28
+msgid "100 matches"
+msgstr "100 egyezésre"
+
+#: templates/partials/views/advancedsearchview.php:27
+msgid "30 matches"
+msgstr "30 egyezésre"
+
+#: templates/partials/views/advancedsearchview.php:29
+msgid "500 matches"
+msgstr "500 egyezésre"
+
+#: templates/partials/views/settingsview.php:30
+msgid ""
+"<strong>**</strong> matches zero or more arbitrary characters including path "
+"segment separators '/'"
 msgstr ""
+"A <strong>**</strong> nulla vagy több tetszőleges karakterre illeszkedik, "
+"beleértve az útvonalrész-elválasztókat ( '/')"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:55
+#: templates/partials/views/settingsview.php:29
+msgid ""
+"<strong>*</strong> matches zero or more arbitrary characters within a path "
+"segment"
+msgstr ""
+"A <strong>*</strong> nulla vagy több tetszőleges karakterre illeszkedik egy "
+"útvonalrészben"
+
+#: templates/partials/views/settingsview.php:28
+msgid "<strong>?</strong> matches any one character within a path segment"
+msgstr ""
+"A <strong>?</strong> egy darab tetszőleges karakterre illeszkedik egy "
+"útvonalrészben"
+
+#: templates/partials/views/settingsview.php:132
+msgid "<strong>CTRL+F</strong>"
+msgstr "<strong>CTRL+F</strong>"
+
+#: templates/partials/views/settingsview.php:125
+msgid "<strong>CTRL+LEFT</strong>"
+msgstr "<strong>CTRL+BALRA</strong>"
+
+#: templates/partials/views/settingsview.php:126
+msgid "<strong>CTRL+RIGHT</strong>"
+msgstr "<strong>CTRL+JOBBRA</strong>"
+
+#: templates/partials/views/settingsview.php:123
+msgid "<strong>LEFT</strong> or <strong>J</strong>"
+msgstr "<strong>BALRA</strong> vagy <strong>J</strong>"
+
+#: templates/partials/views/settingsview.php:127
+msgid "<strong>M</strong>"
+msgstr "<strong>M</strong>"
+
+#: templates/partials/views/settingsview.php:128
+msgid "<strong>NUMPAD MINUS</strong>"
+msgstr "<strong>NUMERIKUS MÍNUSZ</strong>"
+
+#: templates/partials/views/settingsview.php:129
+msgid "<strong>NUMPAD PLUS</strong>"
+msgstr "<strong>NUMERIKUS PLUSZ</strong>"
+
+#: templates/partials/views/settingsview.php:124
+msgid "<strong>RIGHT</strong> or <strong>L</strong>"
+msgstr "<strong>JOBBRA</strong> vagy <strong>L</strong>"
+
+#: templates/partials/views/settingsview.php:130
+msgid "<strong>SHIFT+COMMA</strong>"
+msgstr "<strong>SHIFT+VESSZŐ</strong>"
+
+#: templates/partials/views/settingsview.php:131
+msgid "<strong>SHIFT+PERIOD</strong>"
+msgstr "<strong>SHIFT+PONT</strong>"
+
+#: templates/partials/views/settingsview.php:122
+msgid "<strong>SHIFT+SPACE</strong> or <strong>SHIFT+K</strong>"
+msgstr "<strong>SHIFT+SZÓKÖZ</strong> vagy <strong>SHIFT+K</strong>"
+
+#: templates/partials/views/settingsview.php:121
+msgid "<strong>SPACE</strong> or <strong>K</strong>"
+msgstr "<strong>SZÓKÖZ</strong> vagy <strong>K</strong>"
+
+#: templates/partials/views/settingsview.php:189
+msgid "About"
+msgstr "Az alkalmazásról"
+
+#: js/app/services/podcastservice.ts:132
+msgid "Add a new podcast channel from an RSS feed"
+msgstr "Podcast csatorna hozzáadása RSS-hírfolyamból"
+
+#: js/app/services/podcastservice.ts:133
+msgid "Add channel"
+msgstr "Csatorna hozzáadása"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:105
+#: js/app/controllers/views/advancedsearchviewcontroller.js:163
+#: js/app/controllers/views/advancedsearchviewcontroller.js:216
+#: js/app/controllers/views/advancedsearchviewcontroller.js:253
+#: js/app/controllers/views/advancedsearchviewcontroller.js:274
+#: js/app/controllers/views/advancedsearchviewcontroller.js:301
+msgid "Add date"
+msgstr "Dátum hozzáadása"
+
+#: templates/partials/navigationitem.php:97
+msgid "Add from RSS feed"
+msgstr "Hozzáadás RSS-hírfolyamból"
+
+#: templates/partials/navigationitem.php:85
+msgid "Add manually"
+msgstr "Hozzáadás kézzel"
+
+#: templates/partials/views/playlistview.php:41
+msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr ""
+"Adjon hozzá számokat az albumokból vagy más lejátszólistákból a fogd és vidd "
+"funkcióval"
+
+#: templates/partials/views/settingsview.php:182
+msgid "Admin"
+msgstr "Admin"
+
+#: templates/partials/sidebar/albumdetails.php:34
+msgid ""
+"Admin may set up the Last.fm API key to show album background information "
+"here. See the Settings view for details."
+msgstr ""
+"Az adminisztrátor beállíthat Last.fm API-kulcsot, hogy itt megjelenjen az "
+"albumok háttérinformációja. Nézze meg a Beállításokat a részletekért."
+
+#: templates/partials/sidebar/artistdetails.php:37
+msgid ""
+"Admin may set up the Last.fm API key to show artist biography here. See the "
+"Settings view for details."
+msgstr ""
+"Az adminisztrátor beállíthat Last.fm API-kulcsot, hogy itt megjelenjen az "
+"előadók életrajza. Nézze meg a Beállításokat a részletekért."
+
+#: templates/partials/navigation.php:67
+#: templates/partials/views/advancedsearchview.php:2
+msgid "Advanced search"
+msgstr "Haladó keresés"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:347
+msgid "After"
+msgstr "Utána"
+
+#: js/app/controllers/playercontroller.js:758
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
+msgid "Album"
+msgstr "Album"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:146
+#: js/app/controllers/views/advancedsearchviewcontroller.js:90
+msgid "Album artist name"
+msgstr "Album előadó neve"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:204
+msgid "Album count"
+msgstr "Albumok száma"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:153
+#: js/app/controllers/views/advancedsearchviewcontroller.js:96
+msgid "Album genre"
+msgstr "Album műfaja"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:143
+msgid "Album metadata"
+msgstr "Album metaadatai"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:201
+#: js/app/controllers/views/advancedsearchviewcontroller.js:88
+msgid "Album name"
+msgstr "Album neve"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:118
+#: js/app/controllers/views/advancedsearchviewcontroller.js:228
+msgid "Album rating"
+msgstr "Album értékelése"
+
+#: js/app/controllers/playercontroller.js:751
+#: templates/partials/navigation.php:8
+#: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
 msgstr "Albumok"
 
-#: ../templates/main.php:56
-msgid "All tracks"
-msgstr ""
+#: templates/partials/sidebar/artistdetails.php:66
+msgid "Albums by {{artist}}"
+msgstr "{{artist}} albumjai"
 
-#: ../templates/fake-template.php:6
+#: js/app/services/podcastservice.ts:267
+msgid "All channels were already up-to-date"
+msgstr "Már minden csatorna naprakész volt"
+
+#: js/app/controllers/playercontroller.js:754
+#: templates/partials/navigation.php:14
+#: templates/partials/views/alltracksview.php:4
+#: Controller/AmpacheController.php:1880 musicwidget.ts:57
+msgid "All tracks"
+msgstr "Minden szám"
+
+#: templates/partials/views/settingsview.php:138
+msgid "Ampache and Subsonic"
+msgstr "Ampache és Subsonic"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:81
+msgid "Any searchable text"
+msgstr "Bármilyen kereshető szöveg"
+
+#: js/app/services/playlistfileservice.ts:210
+msgid "Append to an existing playlist?"
+msgstr "Hozzátoldjam a meglévő lejátszólistához?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:193
+msgid ""
+"Are you sure to permanently erase all the configured internet radio stations?"
+msgstr ""
+"Biztosan véglegesen törölni akar minden beállított internetes rádióállomást?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:223
+msgid "Are you sure to permanently erase all the configured podcast channels?"
+msgstr "Biztosan véglegesen törölni akar minden beállított podcast csatornát?"
+
+#: js/app/controllers/navigationcontroller.js:173
+msgid "Are you sure to remove the playlist \"{{ name }}\"?"
+msgstr "Biztosan eltávolítja ezt a lejátszólistát: „{{ name }}”?"
+
+#: js/app/services/podcastservice.ts:311
+msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
+msgstr "Biztosan eltávolítja ezt a podcast csatornát: „{{ title }}”?"
+
+#: js/app/controllers/views/radioviewcontroller.js:38
+msgid "Are you sure to remove the radio station \"{{ name }}\"?"
+msgstr "Biztosan eltávolítja ezt a rádióállomást: „{{ name }}”?"
+
+#: js/app/controllers/views/settingsviewcontroller.js:150
+msgid ""
+"Are you sure to reset the music collection? This removes all scanned tracks "
+"and user-created playlists!"
+msgstr ""
+"Biztosan alaphelyzetbe állítja a zenegyűjteményét? Ezzel eltávolítja az "
+"összes feltérképezett számot és az Ön által létrehozott lejátszólistákat!"
+
+#: templates/partials/views/settingsview.php:102
+msgid "Articles to ignore on artist names"
+msgstr "Mellőzendő névelők az előadónevekből"
+
+#: js/app/controllers/playercontroller.js:759
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
+msgid "Artist"
+msgstr "Előadó"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:206
+#: js/app/controllers/views/advancedsearchviewcontroller.js:97
+msgid "Artist genre"
+msgstr "Előadó műfaja"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:198
+msgid "Artist metadata"
+msgstr "Előadó metaadatai"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:89
+msgid "Artist name"
+msgstr "Előadó neve"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:119
+#: js/app/controllers/views/advancedsearchviewcontroller.js:175
+msgid "Artist rating"
+msgstr "Előadó értékelése"
+
+#: templates/partials/sidebar/albumdetails.php:14
+#: templates/partials/sidebar/smartlistfilters.php:25
+#: Controller/SubsonicController.php:239
 msgid "Artists"
 msgstr "Előadók"
 
-#: ../templates/main.php:146
-msgid "Click here to start the scan"
-msgstr ""
+#: templates/partials/sidebar/albumdetails.php:64
+msgid "Artists featured on {{album}}"
+msgstr "A(z) {{album}} előadói"
 
-#: ../templates/fake-template.php:13
+#: js/app/controllers/views/advancedsearchviewcontroller.js:346
+msgid "Before"
+msgstr "Előtte"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:94
+#: templates/partials/sidebar/radiostationdetails.php:44
+msgid "Bit rate"
+msgstr "Bitráta"
+
+#: templates/partials/sidebar/radiostationdetails.php:32
+msgid "Broadcasted name"
+msgstr "Közvetített név"
+
+#: templates/partials/views/settingsview.php:58
+msgid "Changes on this setting take effect only upon rescan of the library."
+msgstr ""
+"Ezen beállítás változásai csak a könyvtár újbóli feltérképezésekor lépnek "
+"érvénybe."
+
+#: templates/partials/views/settingsview.php:33
+msgid "Changes to the excluded paths will only take effect upon rescan."
+msgstr ""
+"A kizárt útvonalak változásai csak az újbóli feltérképezéskor lépnek "
+"érvénybe."
+
+#: js/app/services/podcastservice.ts:270
+msgid "Changes were loaded for one channel"
+msgid_plural "Changes were loaded for {{ count }} channels"
+msgstr[0] "Változások betöltve egy csatornához"
+msgstr[1] "Változások betöltve {{ count }} csatornához"
+
+#: js/app/controllers/playercontroller.js:763
+msgid "Channel"
+msgstr "Csatorna"
+
+#: js/app/controllers/sidebar/smartlistfilterscontroller.js:74
+msgid "Check the filter values"
+msgstr "Ellenőrizze a szűrőértékeket"
+
+#: templates/main.php:63
+msgid "Click here to rescan these files"
+msgstr "Kattintson ide a felderítés újbóli elindításához"
+
+#: templates/main.php:55
+msgid "Click here to start the scan"
+msgstr "Kattintson ide a felderítés elindításához"
+
+#: templates/partials/views/podcastsview.php:41
+msgid "Click to add your first podcast channel"
+msgstr "Kattintson az első podcast csatorna hozzáadásához"
+
+#: js/app/directives/collapsiblehtml.js:12
+msgid "Click to expand"
+msgstr "Kattintson a kinyitáshoz"
+
+#: templates/partials/views/genresview.php:33
+msgid "Click to rescan"
+msgstr "Kattintson az újbóli felderítéshez"
+
+#: templates/partials/views/radioview.php:38
+msgid "Click to show \"Getting started\""
+msgstr "Kattintson a „Kezdeti lépések” mutatásához"
+
+#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:248
+msgid "Close"
+msgstr "Bezárás"
+
+#: templates/partials/sidebar/playlistdetails.php:22
+msgid "Comment"
+msgstr "Megjegyzés"
+
+#: templates/partials/navigationitem.php:120
+msgid "Compact layout"
+msgstr "Tömör elrendezés"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:319
+msgid "Contains"
+msgstr "Tartalmaz"
+
+#: js/app/services/podcastservice.ts:294 js/app/services/podcastservice.ts:304
+msgid "Could not remove the channel \"{{ title }}\""
+msgstr "Nem tudtam eltávolítani ezt a csatornát: „{{ title }}”"
+
+#: js/app/services/podcastservice.ts:29
+msgid "Could not update the channel \"{{ title }}\" from the source"
+msgstr "Nem tudtam frissíteni ezt a csatornát a forrásából: „{{ title }}”"
+
+#: templates/partials/sidebar/playlistdetails.php:16
+#: templates/partials/sidebar/radiostationdetails.php:26
+msgid "Created"
+msgstr "Létrehozva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:273
+#: js/app/controllers/views/advancedsearchviewcontroller.js:300
+msgid "Date published"
+msgstr "Közzététel dátuma"
+
+#: templates/partials/views/settingsview.php:130
+msgid "Decrease playback speed"
+msgstr "Lejátszási sebesség csökkentése"
+
+#: templates/partials/views/settingsview.php:128
+msgid ""
+"Decrease volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Hangerő csökkentése. Állítsa erősebben a <strong>SHIFT</strong>-tel, vagy "
+"gyengébben az <strong>ALT</strong>-tal."
+
+#: templates/partials/navigationitem.php:64
+#: templates/partials/views/radioview.php:25
+msgid "Delete"
+msgstr "Törlés"
+
+#: templates/partials/sidebar/radiostationdetails.php:35
+#: templates/partials/views/settingsview.php:158
 msgid "Description"
 msgstr "Leírás"
 
-#: ../templates/fake-template.php:14
+#: templates/partials/views/settingsview.php:168
 msgid "Description (e.g. App name)"
 msgstr "Leírás (például az alkalmazás neve)"
 
-#: ../templates/fake-template.php:15
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
+#: templates/partials/navigationitem.php:33
+#: templates/partials/views/playlistview.php:30
+#: templates/partials/views/radioview.php:23
+msgid "Details"
+msgstr "Részletek"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:152
+msgid "Disk count"
+msgstr "Lemezek száma"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:320
+msgid "Does not contain"
+msgstr "Nem tartalmaz"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:334
+msgid "Does not equal"
+msgstr "Nem egyenlő"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:328
+msgid "Does not match regular expression"
+msgstr "Nem illeszkedik a reguláris kifejezésre"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:326
+msgid "Does not sound like"
+msgstr "Nem úgy hangzik, mint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:150
+#: js/app/controllers/views/advancedsearchviewcontroller.js:203
+#: js/app/controllers/views/advancedsearchviewcontroller.js:267
+#: js/app/controllers/views/advancedsearchviewcontroller.js:294
+#: js/app/controllers/views/advancedsearchviewcontroller.js:93
+msgid "Duration (seconds)"
+msgstr "Időtartam (másodperc)"
+
+#: templates/partials/views/settingsview.php:52
+msgid "Enable metadata scanning"
+msgstr "Metaadatok feltérképezésének engedélyezése"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:322
+msgid "Ends with"
+msgstr "Úgy végződik, hogy"
+
+#: js/app/controllers/playercontroller.js:764
+msgid "Episode"
+msgstr "Epizód"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:333
+msgid "Equals"
+msgstr "Egyenlő"
+
+#: js/app/controllers/playercontroller.js:138
+msgid "Error playing URL:"
+msgstr "Hiba az URL lejátszásakor:"
+
+#: js/app/services/playlistfileservice.ts:96
+msgid "Export playlist to a file in the selected folder"
+msgstr "Lejátszólista exportálása fájlba a kiválasztott mappában"
+
+#: js/app/services/podcastservice.ts:160
+msgid "Export podcasts to an OPML file in the selected folder"
+msgstr "Podcast exportálása OPML fájlba a kiválasztott könyvtárban"
+
+#: js/app/services/playlistfileservice.ts:136
+msgid "Export radio stations to a file in the selected folder"
+msgstr "Rádióállomások exportálása fájlba a kiválasztott könyvtárban"
+
+#: templates/partials/navigationitem.php:103
+#: templates/partials/navigationitem.php:42
+#: templates/partials/navigationitem.php:82
+msgid "Export to file"
+msgstr "Exportálás fájlba"
+
+#: js/app/services/podcastservice.ts:114
+msgid "Failed to add the podcast channel"
+msgstr "Nem sikerült hozzáadni a podcast csatornát"
+
+#: js/app/controllers/maincontroller.js:247
+msgid ""
+"Failed to check for new audio files (error {{ code }}); check the server "
+"logs for details"
+msgstr ""
+"Nem sikerült új hangfájlokat keresni (hibakód: {{ code }}); ellenőrizze a "
+"szervernaplókat a részletekért"
+
+#: js/app/controllers/views/radioviewcontroller.js:72
+msgid "Failed to delete the radio station:"
+msgstr "Nem sikerült törölni a rádióállomást:"
+
+#: templates/partials/views/settingsview.php:170
+msgid "Failed to generate new Ampache/Subsonic password"
+msgstr "Nem sikerült új Ampache/Subsonic jelszót előállítani"
+
+#: js/app/services/playlistfileservice.ts:192
+msgid "Failed to import playlist from the file {{ file }}"
+msgstr "Nem sikerült lejátszólistát importálni ebből a fájlból: {{ file }}"
+
+#: js/app/services/podcastservice.ts:223
+msgid "Failed to import podcasts from the file {{ file }}"
+msgstr "Nem sikerült podcastokat importálni ebből a fájlból: {{ file }}"
+
+#: js/app/services/playlistfileservice.ts:246
+msgid "Failed to import radio stations from the file {{ file }}"
+msgstr "Nem sikerült rádióállomásokat importálni ebből a fájlból: {{ file }}"
+
+#: js/app/controllers/maincontroller.js:197
+msgid "Failed to load the collection:"
+msgstr "Nem sikerült a gyűjteményt betölteni:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:173
+msgid "Failed to reset the collection:"
+msgstr "Nem sikerült a gyűjteményt alaphelyzetbe állítani:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:241
+msgid "Failed to reset the podcast channels:"
+msgstr "Nem sikerült a podcast csatornákat alaphelyzetbe állítani:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:211
+msgid "Failed to reset the radio stations:"
+msgstr "Nem sikerült a rádióállomásokat alaphelyzetbe állítani:"
+
+#: templates/partials/views/settingsview.php:48
+msgid "Failed to save the ignored paths"
+msgstr "Nem sikerült a mellőzött útvonalakat elmenteni"
+
+#: templates/partials/views/settingsview.php:12
+msgid "Failed to save the music collection path"
+msgstr "Nem sikerült a zenegyűjtemény útvonalát elmenteni"
+
+#: templates/partials/views/settingsview.php:106
+#: templates/partials/views/settingsview.php:56
+msgid "Failed to save the setting"
+msgstr "Nem sikerült a beállításokat elmenteni"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:114
+#: js/app/controllers/views/advancedsearchviewcontroller.js:172
+#: js/app/controllers/views/advancedsearchviewcontroller.js:225
+#: js/app/controllers/views/advancedsearchviewcontroller.js:257
+#: js/app/controllers/views/advancedsearchviewcontroller.js:283
+#: js/app/controllers/views/advancedsearchviewcontroller.js:310
+#: templates/partials/sidebar/smartlistfilters.php:32
+msgid "Favorite"
+msgstr "Kedvenc"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:115
+#: templates/partials/sidebar/smartlistfilters.php:36
+msgid "Favorite album"
+msgstr "Kedvenc album"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:116
+#: templates/partials/sidebar/smartlistfilters.php:37
+msgid "Favorite artist"
+msgstr "Kedvenc előadó"
+
+#: templates/partials/sidebar/smartlistfilters.php:35
+msgid "Favorite track"
+msgstr "Kedvenc szám"
+
+#: templates/partials/sidebar/smartlistfilters.php:38
+msgid "Favorite track, album, or artist"
+msgstr "Kedvenc szám, album vagy előadó"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:102
+#: js/app/controllers/views/advancedsearchviewcontroller.js:160
+#: js/app/controllers/views/advancedsearchviewcontroller.js:213
+msgid "File data"
+msgstr "Fájl adatai"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:104
+#: js/app/controllers/views/advancedsearchviewcontroller.js:162
+#: js/app/controllers/views/advancedsearchviewcontroller.js:215
+#: js/app/services/playlistfileservice.ts:66
+#: js/app/services/podcastservice.ts:80
+msgid "File name"
+msgstr "Fájl neve"
+
+#: templates/partials/navigationitem.php:148
+msgid "Filters"
+msgstr "Szűrők"
+
+#: templates/partials/navigationitem.php:134
+msgid "Flat layout"
+msgstr "Lapos elrendezés"
+
+#: js/app/controllers/playercontroller.js:760
+msgid "Folder"
+msgstr "Mappa"
+
+#: js/app/controllers/playercontroller.js:752
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
+#: musicwidget.ts:55
+msgid "Folders"
+msgstr "Mappák"
+
+#: templates/partials/sidebar/sidebar.php:20
+msgid "Follow playback"
+msgstr "Visszajátszás követése"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:110
+msgid "GUID"
+msgstr "GUID"
+
+#: templates/partials/sidebar/trackdetails.php:9
+msgid "General"
+msgstr "Általános"
+
+#: templates/partials/views/settingsview.php:169
 msgid "Generate API password"
 msgstr "API-jelszó előállítása"
 
-#: ../templates/fake-template.php:18
+#: js/app/controllers/navigationcontroller.js:282
+msgid "Generated {{ datetime }}"
+msgstr "Előállítás ideje: {{ datetime }}"
+
+#: js/app/controllers/playercontroller.js:761
+#: templates/partials/sidebar/radiostationdetails.php:41
+msgid "Genre"
+msgstr "Műfaj"
+
+#: js/app/controllers/playercontroller.js:753
+#: templates/partials/navigation.php:12
+#: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
+msgid "Genres"
+msgstr "Műfajok"
+
+#: templates/partials/navigationitem.php:76
+msgid "Getting started"
+msgstr "Kezdeti lépések"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:156
+#: js/app/controllers/views/advancedsearchviewcontroller.js:209
+msgid "Has image"
+msgstr "Van képe"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:155
+#: js/app/controllers/views/advancedsearchviewcontroller.js:208
+#: js/app/controllers/views/advancedsearchviewcontroller.js:98
+msgid "Has no genre"
+msgstr "Nincs műfaja"
+
+#: templates/partials/views/settingsview.php:153
 msgid ""
-"Here you can generate passwords to use with the Ampache API, because they "
-"can't be stored in a really secure way due to the design of the Ampache API."
-" You can generate as many passwords as you want and revoke them anytime."
-msgstr "Itt hozhat létre jelszavakat, amikkel távolról használhatja az Ampache szolgáltatást. Azért van szükség másik jelszóra, mert az Amapche protokoll miatt a használt jelszó nem tárolható igazán biztonságosan. Bármikor visszavonhatja az Ampache jelszavát és újat hozhat létre (sőt tobbfélét is használhat a különböző eszközeihez)."
+"Here you can generate passwords to use with the Ampache or Subsonic API. "
+"Separate passwords are used because they can't be stored in a really secure "
+"way due to the design of the APIs. You can generate as many passwords as you "
+"want and revoke them at anytime."
+msgstr ""
+"Itt hozhat létre jelszavakat, amikkel távolról használhatja az Ampache "
+"szolgáltatást. Azért van szükség másik jelszóra, mert az Ampache protokoll "
+"miatt a használt jelszó nem tárolható igazán biztonságosan. Bármikor "
+"visszavonhatja az Ampache jelszavát és újat hozhat létre (sőt tobbfélét is "
+"használhat a különböző eszközeihez)."
 
-#: ../templates/fake-template.php:10
-msgid "Invalid path"
-msgstr "Érvénytelen útvonal"
-
-#: ../templates/fake-template.php:19
+#: templates/partials/sidebar/smartlistfilters.php:59
 msgid ""
-"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
-"free to report your experience with this feature in the corresponding <a "
-"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
-" like to have a list of clients to test with. Thanks"
-msgstr "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a szolgáltatást. Köszönöm!"
+"Hint: To list tracks with more refined criteria, try <a "
+"href=\"{{url}}\">Advanced search</a>"
+msgstr ""
+"Tipp: A számok kifinomultabb feltételek alapján történő listázásához "
+"próbálja ki a <a href=\"{{url}}\">Részletes keresés</a>-t"
 
-#: ../templates/fake-template.php:3
+#: js/app/controllers/views/advancedsearchviewcontroller.js:271
+#: js/app/controllers/views/advancedsearchviewcontroller.js:298
+#: templates/partials/sidebar/smartlistfilters.php:43
+msgid "History"
+msgstr "Előzmények"
+
+#: templates/partials/views/settingsview.php:146
+msgid "If this URL doesn't work try to append '/server/xml.server.php'."
+msgstr ""
+"Ha ez az URL nem működik, próbáld hozzátoldani ezt: „/server/xml.server.php”."
+
+#: templates/partials/sidebar/radiohint.php:10
+msgid ""
+"If you have a PLS or M3U file containing the stream URL, then first upload "
+"the file to your cloud using the Files app, press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Import from file\". Find "
+"the previously uploaded playlist file and press \"Choose\"."
+msgstr ""
+"Ha van PLS vagy M3U fájlja, amely a stream URL-t tartalmazza, akkor először "
+"töltse fel a fájlt a felhőjébe a Fájlok alkalmazás segítségével, nyomja meg "
+"a … szimbólumot az „Internetes rádió” navigációs elem mellett, és válassza "
+"az „Importálás fájlból” lehetőséget. Keresse meg a korábban feltöltött "
+"lejátszólistát, és nyomja meg a „Kiválasztás” gombot."
+
+#: templates/partials/sidebar/radiohint.php:8
+msgid ""
+"If you know the stream URL to add, then press the … symbol next to the "
+"navigation item \"Internet radio\", and select \"Add manually\"."
+msgstr ""
+"Ha ismeri az hozzáadandó stream URL-t, nyomd meg a … szimbólumot az "
+"„internetes rádió” navigációs elem mellett, és válaszd a „Kézi hozzáadás” "
+"lehetőséget."
+
+#: templates/partials/navigationitem.php:100
+#: templates/partials/navigationitem.php:39
+#: templates/partials/navigationitem.php:79
+msgid "Import from file"
+msgstr "Importálás fájlból"
+
+#: js/app/services/playlistfileservice.ts:201
+msgid "Import playlist contents from the selected file"
+msgstr "Lejátszólista tartalmának importálása a kiválasztott fájlból"
+
+#: js/app/services/podcastservice.ts:200
+msgid "Import podcast channels from the selected OPML file"
+msgstr "Podcast csatornák importálása a kiválasztott OPML fájlból"
+
+#: js/app/services/playlistfileservice.ts:254
+msgid "Import radio stations from the selected file"
+msgstr "Rádióállomások importálása a kiválasztott fájlból"
+
+#: js/app/services/playlistfileservice.ts:234
+msgid "Imported {{ count }} radio stations from the file {{ file }}."
+msgstr "Importálva {{ count }} rádióállomás ebből a fájlból: {{ file }}."
+
+#: js/app/services/playlistfileservice.ts:180
+msgid "Imported {{ count }} tracks from the file {{ file }}."
+msgstr "Importálva {{ count }} szám ebből a fájlból: {{ file }}."
+
+#: templates/partials/views/settingsview.php:108
+msgid ""
+"In addition to the web interface, this setting is respected in the Subsonic "
+"interface although not necessarily by all clients."
+msgstr ""
+"A webes felületen kívül ez a beállítás a Subsonic felületére is vonatkozik, "
+"bár nem minden kliens alkalmazza feltétlenül."
+
+#: templates/partials/sidebar/radiohint.php:14
+msgid ""
+"In case your stream does not play, see <a href=\"{{url}}\" "
+"target=\"_blank\">troubleshooting</a>"
+msgstr ""
+"Ha nem megy a stream lejátszás, nézd meg a <a href=\"{{url}}\" "
+"target=\"_blank\">hibaelhárítás</a> oldalt"
+
+#: templates/partials/views/settingsview.php:131
+msgid "Increase playback speed"
+msgstr "Lejátszási sebesség növelése"
+
+#: templates/partials/views/settingsview.php:129
+msgid ""
+"Increase volume. Adjust more with <strong>SHIFT</strong> or less with "
+"<strong>ALT</strong>."
+msgstr ""
+"Hangerő növelése. Állítsa erősebben a <strong>SHIFT</strong>-tel, vagy "
+"gyengébben az <strong>ALT</strong>-tal."
+
+#: templates/partials/sidebar/albumdetails.php:8
+#: templates/partials/sidebar/artistdetails.php:11
+msgid "Info"
+msgstr "Infó"
+
+#: js/app/controllers/maincontroller.js:188
+msgid "Internal server error"
+msgstr "Belső szerverhiba"
+
+#: js/app/controllers/playercontroller.js:734
+#: js/app/controllers/playercontroller.js:756
+#: js/app/services/playlistfileservice.ts:139
+#: templates/partials/navigation.php:17 musicwidget.ts:59
+msgid "Internet radio"
+msgstr "Internetes rádió"
+
+#: templates/partials/views/radioview.php:4
+msgid "Internet radio stations"
+msgstr "Internetes rádióállomások"
+
+#: js/app/services/podcastservice.ts:110
+msgid "Invalid RSS feed URL"
+msgstr "Érvénytelen RSS-hírfolyam URL"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:323
+msgid "Is"
+msgstr "Az"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:350
+msgid "Is equal to"
+msgstr "Egyenlő"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:343
+msgid "Is false"
+msgstr "Hamis"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:335
+msgid "Is greater than"
+msgstr "Nagyobb mint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:331
+msgid "Is greater than or equal to"
+msgstr "Nagyobb vagy egyenlő"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:336
+msgid "Is less than"
+msgstr "Kisebb mint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:332
+msgid "Is less than or equal to"
+msgstr "Kisebb vagy egyenlő"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:324
+msgid "Is not"
+msgstr "Az nem"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:351
+msgid "Is not equal to"
+msgstr "Nem egyenlő"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:128
+#: js/app/controllers/views/advancedsearchviewcontroller.js:184
+#: js/app/controllers/views/advancedsearchviewcontroller.js:237
+msgid "Is played"
+msgstr "Lejátszva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:129
+msgid "Is played album"
+msgstr "Lejátszott album"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:130
+#: js/app/controllers/views/advancedsearchviewcontroller.js:185
+msgid "Is played artist"
+msgstr "Lejátszott előadó"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:342
+msgid "Is true"
+msgstr "Igaz"
+
+#: templates/partials/views/settingsview.php:126
+msgid "Jump to the next track"
+msgstr "Ugrás a következő számra"
+
+#: templates/partials/views/settingsview.php:125
+msgid "Jump to the previous track"
+msgstr "Ugrás az előző számra"
+
+#: templates/partials/views/settingsview.php:112
+msgid "Keyboard shortcuts"
+msgstr "Billentyűparancsok"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:126
+#: js/app/controllers/views/advancedsearchviewcontroller.js:182
+#: js/app/controllers/views/advancedsearchviewcontroller.js:235
+msgid "Last played"
+msgstr "Utoljára lejátszva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:339
+msgid "Limit"
+msgstr "Korlát"
+
+#: templates/partials/sidebar/smartlistfilters.php:6
+msgid "List size"
+msgstr "Listahossz"
+
+#: templates/partials/sidebar/trackdetails.php:12
+msgid "Lyrics"
+msgstr "Dalszöveg"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:106
+msgid "MIME type"
+msgstr "MIME típus"
+
+#: templates/partials/views/settingsview.php:57
+msgid ""
+"Many features of the Music app are based on the metadata stored in the audio "
+"files. However, scanning this data may consume a lot of time on some systems "
+"using external storage. When disabled, the library structure is built based "
+"on the file and folder names only."
+msgstr ""
+"A Zene alkalmazás számos funkciója a hangfájlokban tárolt metaadatokon "
+"alapul. Azonban ennek a adatnak a beolvasása sok időt vehet igénybe egyes "
+"rendszereken külső tárhely használata esetén. Ha ki van kapcsolva, a "
+"könyvtárszerkezet csak a fájl- és mappaneveken alapul."
+
+#: templates/partials/views/settingsview.php:116
+msgid ""
+"Many functionalities of the Music app web UI can be controlled with keyboard "
+"shortcuts."
+msgstr ""
+"A Zene alkalmazás webes felületének számos funkciója billentyűparancsokkal "
+"vezérelhető."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:327
+msgid "Matches regular expression"
+msgstr "Egyezik reguláris kifejezésre"
+
+#: templates/partials/sidebar/playlistdetails.php:19
+#: templates/partials/sidebar/radiostationdetails.php:29
+msgid "Modified"
+msgstr "Módosítva"
+
+#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
+#: Search/Provider.php:76
 msgid "Music"
 msgstr "Zene"
 
-#: ../templates/main.php:145
+#: templates/fake-template.php:8 templates/partials/views/settingsview.php:4
+msgid "Music library"
+msgstr "Zenekönyvtár"
+
+#: templates/partials/sidebar/albumdetails.php:44
+#: templates/partials/sidebar/artistdetails.php:58
+#: templates/partials/sidebar/trackdetails.php:60
+msgid "MusicBrainz"
+msgstr "MusicBrainz"
+
+#: templates/fake-template.php:15
+msgid "Mute"
+msgstr "Némítás"
+
+#: templates/partials/views/settingsview.php:127
+msgid "Mute / Unmute"
+msgstr "Némítás / Hangosítás"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:145
+#: js/app/controllers/views/advancedsearchviewcontroller.js:200
+#: js/app/controllers/views/advancedsearchviewcontroller.js:252
+#: js/app/controllers/views/advancedsearchviewcontroller.js:265
+#: js/app/controllers/views/advancedsearchviewcontroller.js:292
+#: js/app/controllers/views/advancedsearchviewcontroller.js:87
+#: templates/partials/sidebar/radiostationdetails.php:8
+msgid "Name"
+msgstr "Név"
+
+#: templates/partials/navigation.php:28 templates/partials/navigation.php:31
+msgid "New Playlist"
+msgstr "Új lejátszólista"
+
+#: templates/main.php:54
 msgid "New music available"
-msgstr ""
+msgstr "Új zene elérhető"
 
-#: ../templates/main.php:140 ../templates/main.php:141
+#: templates/main.php:95 templates/main.php:96
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Új zene elérhető. Kattintson ide a zenekönyvtár újratöltéséhez."
 
-#: ../templates/main.php:91
+#: templates/partials/sidebar/radiostationdetails.php:5
+msgid "New radio station"
+msgstr "Új rádióállomás"
+
+#: templates/partials/controls.php:53 templates/partials/controls.php:54
+#: embeddedplayer.js:218
 msgid "Next"
 msgstr "Következő"
 
-#: ../templates/main.php:134
-msgid "No music found"
-msgstr ""
+#: templates/partials/views/podcastsview.php:40
+msgid "No channels"
+msgstr "Nincsenek csatornák"
 
-#: ../templates/fake-template.php:9
+#: templates/main.php:46
+msgid "No music found"
+msgstr "Nem található zene"
+
+#: templates/main.php:86
+msgid "No search results in this view for <strong>{{ queryString }}</strong>"
+msgstr ""
+"Nincs találat ebben a nézetben erre: <strong>{{ queryString }}</strong>"
+
+#: templates/partials/views/radioview.php:37
+msgid "No stations"
+msgstr "Nincsenek állomások"
+
+#: templates/partials/views/playlistview.php:40
+msgid "No tracks"
+msgstr "Nincsenek számok"
+
+#: templates/partials/views/smartlistview.php:24
+msgid "No tracks matching the filters"
+msgstr "Nincsenek számok a megadott szűrőre"
+
+#: templates/partials/navigationitem.php:117
+msgid "Normal layout"
+msgstr "Normál elrendezés"
+
+#: templates/partials/sidebar/smartlistfilters.php:51
+msgid "Not recently added"
+msgstr "Régebben volt hozzáadva"
+
+#: templates/partials/sidebar/smartlistfilters.php:47
+msgid "Not recently played"
+msgstr "Régebben volt játszva"
+
+#: templates/partials/views/settingsview.php:140
+msgid ""
+"Note that Music may not be compatible with all Ampache/Subsonic clients. "
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" "
+"target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" "
+"target=\"_blank\">Subsonic clients</a>."
+msgstr ""
+"Megjegyzés: A Zene alkalmazás nem feltétlenül kompatibilis minden Ampache/"
+"Subsonic klienssel. Ellenőrizd a megerősített <a "
+"href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache klienseket</a> és "
+"<a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic klienseket</a>."
+
+#: templates/partials/sidebar/smartlistfilters.php:42
+msgid ""
+"Note that this selection makes any difference only when the library has more "
+"than the requested number of matches. In the strict mode, only the best "
+"matching songs are included with no element of randomness."
+msgstr ""
+"Megjegyzés: Ennek a beállításnak csak akkor van hatása, ha a könyvtárban "
+"több elem található, mint amennyi egyező számot kértél. A szigorú üzemmódban "
+"csak a legjobban illeszkedő dalok kerülnek be, véletlenszerű elemek nélkül."
+
+#: templates/partials/views/settingsview.php:14
+msgid ""
+"Note: When the path is changed, any previously scanned files outside the new "
+"path are removed from the collection and any playlists."
+msgstr ""
+"Megjegyzés: Ha az útvonal megváltozik, minden olyan korábban beolvasott "
+"fájl, amely nem esik az új útvonal alá, törlődik a gyűjteményből és minden "
+"lejátszási listából."
+
+#: templates/partials/sidebar/artistdetails.php:25
+msgid "Number of albums"
+msgstr "Albumok száma"
+
+#: templates/partials/sidebar/artistdetails.php:31
+msgid "Number of performed tracks"
+msgstr "Lejátszott számok száma"
+
+#: templates/partials/sidebar/albumdetails.php:25
+#: templates/partials/sidebar/playlistdetails.php:10
+msgid "Number of tracks"
+msgstr "Számok száma"
+
+#: templates/partials/sidebar/artistdetails.php:28
+msgid "Number of tracks on albums"
+msgstr "Számok száma az albumon"
+
+#: js/app/controllers/playercontroller.js:779
+#: js/app/controllers/playercontroller.js:788
+msgid "Off"
+msgstr "Ki"
+
+#: templates/partials/sidebar/smartlistfilters.php:48
+msgid "Often played"
+msgstr "Gyakran lejátszva"
+
+#: js/app/services/playlistfileservice.ts:35
+#: js/app/services/podcastservice.ts:73
+msgid "Overwrite existing file"
+msgstr "Létező fájl felülírása"
+
+#: templates/partials/views/settingsview.php:176
+msgid "Password:"
+msgstr "Jelszó:"
+
+#: js/app/controllers/views/settingsviewcontroller.js:75
+msgid "Path to exclude from your music collection"
+msgstr "Útvonal kizárása a zenegyűjteményből"
+
+#: js/app/controllers/views/settingsviewcontroller.js:40
+#: templates/partials/views/settingsview.php:7
 msgid "Path to your music collection"
 msgstr "A zenegyűjtemény útvonala"
 
-#: ../templates/main.php:89
+#: templates/partials/views/settingsview.php:18
+msgid "Paths to exclude from your music collection"
+msgstr "Útvonalak kizárása a zenegyűjteményből"
+
+#: templates/partials/views/settingsview.php:32
+msgid ""
+"Paths with a leading '/' character are resolved relative to the user home "
+"directory and others relative to the music library base path."
+msgstr ""
+"A „/” karakterrel kezdődő útvonalak a felhasználói könyvtárhoz képest "
+"kerülnek feloldásra, a többi pedig a zenekönyvtár alapútvonalához képest."
+
+#: templates/fake-template.php:13 embeddedplayer.js:199
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../templates/main.php:87
+#: js/app/directives/listheading.js:23 templates/fake-template.php:12
+#: templates/partials/views/advancedsearchview.php:69
+#: templates/partials/views/albumsview.php:27
+#: templates/partials/views/alltracksview.php:5
+#: templates/partials/views/playlistview.php:5
+#: templates/partials/views/podcastsview.php:18
+#: templates/partials/views/radioview.php:5
+#: templates/partials/views/smartlistview.php:5 embeddedplayer.js:189
+#: folderview.js:254 folderview.js:322
 msgid "Play"
 msgstr "Lejátszás"
 
-#: ../templates/main.php:85
+#: templates/partials/views/settingsview.php:121
+msgid "Play / Pause"
+msgstr "Lejátszás / Szünet"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:123
+#: js/app/controllers/views/advancedsearchviewcontroller.js:179
+#: js/app/controllers/views/advancedsearchviewcontroller.js:232
+msgid "Play history"
+msgstr "Lejátszási előzmények"
+
+#: templates/partials/controls.php:46
+msgid "Playback rate"
+msgstr "Lejátszás sebessége"
+
+#: js/app/controllers/playercontroller.js:372
+msgid "Playback speed not adjustible for the current song"
+msgstr "A lejátszás sebessége nem állítható a jelenlegi dalhoz"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:125
+#: js/app/controllers/views/advancedsearchviewcontroller.js:181
+#: js/app/controllers/views/advancedsearchviewcontroller.js:234
+msgid "Played times"
+msgstr "Lejátszások száma"
+
+#: js/app/controllers/playercontroller.js:762
+#: js/app/controllers/views/advancedsearchviewcontroller.js:134
+#: js/app/controllers/views/advancedsearchviewcontroller.js:136
+#: js/app/controllers/views/advancedsearchviewcontroller.js:189
+#: js/app/controllers/views/advancedsearchviewcontroller.js:191
+#: js/app/controllers/views/advancedsearchviewcontroller.js:241
+#: js/app/controllers/views/advancedsearchviewcontroller.js:243
+#: playlisttabview.js:17
+msgid "Playlist"
+msgstr "Lejátszólista"
+
+#: js/app/services/playlistfileservice.ts:109
+msgid "Playlist exported to file {{ path }}"
+msgstr "Lejátszólista exportálva ebbe a fájlba: {{ path }}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:137
+#: js/app/controllers/views/advancedsearchviewcontroller.js:192
+#: js/app/controllers/views/advancedsearchviewcontroller.js:244
+msgid "Playlist name"
+msgstr "Lejátszólista neve"
+
+#: js/app/services/playlistfileservice.ts:48
+#: js/app/services/podcastservice.ts:53
+msgid "Playlist or folder not found"
+msgstr "Nem található a lejátszólista vagy mappa"
+
+#: templates/partials/views/settingsview.php:197
+msgid ""
+"Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">issue tracker</a>"
+msgstr ""
+"Kérjük, jelezze a hibákat és problémákat a <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">hibakövetőn</a>"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:266
+msgid "Podcast channel"
+msgstr "Podcast csatorna"
+
+#: js/app/services/podcastservice.ts:101
+msgid "Podcast channel \"{{ title }}\" added"
+msgstr "Podcast csatorna hozzáadva: „{{ title }}”"
+
+#: js/app/services/podcastservice.ts:173
+msgid "Podcast channels exported to file {{ path }}"
+msgstr "Podcast csatorna exportálva ebbe a fájlba: {{ path }}"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:293
+msgid "Podcast episode"
+msgstr "Podcast epizód"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:263
+#: js/app/controllers/views/advancedsearchviewcontroller.js:290
+msgid "Podcast metadata"
+msgstr "Podcast metaadatai"
+
+#: js/app/controllers/playercontroller.js:757
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
+#: musicwidget.ts:60
+msgid "Podcasts"
+msgstr "Podcastok"
+
+#: templates/partials/controls.php:37 templates/partials/controls.php:5
+#: templates/partials/controls.php:6 embeddedplayer.js:209
 msgid "Previous"
 msgstr "Előző"
 
-#: ../templates/main.php:118
+#: templates/partials/sidebar/albumdetails.php:37
+#: templates/partials/sidebar/artistdetails.php:40
+msgid "Problem connecting Last.fm. The API key may be invalid."
+msgstr "Sikertelen kapcsolódás a Last.fm-re. Az API-kulcs érvénytelen lehet."
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:94
+msgid "RSS URL"
+msgstr "RSS URL"
+
+#: templates/partials/sidebar/radiostationdetails.php:4
+msgid "Radio station"
+msgstr "Rádióállomás"
+
+#: js/app/controllers/playercontroller.js:294
+msgid "Radio station not found"
+msgstr "Nem található a rádióállomás"
+
+#: js/app/services/playlistfileservice.ts:149
+msgid "Radio stations exported to file {{ path }}"
+msgstr "Rádióállomás exportálva ebbe a fájlba: {{ path }}"
+
+#: templates/partials/sidebar/smartlistfilters.php:49
+msgid "Rarely played"
+msgstr "Ritkán játszva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:112
+#: js/app/controllers/views/advancedsearchviewcontroller.js:117
+#: js/app/controllers/views/advancedsearchviewcontroller.js:170
+#: js/app/controllers/views/advancedsearchviewcontroller.js:173
+#: js/app/controllers/views/advancedsearchviewcontroller.js:223
+#: js/app/controllers/views/advancedsearchviewcontroller.js:226
+#: js/app/controllers/views/advancedsearchviewcontroller.js:281
+#: js/app/controllers/views/advancedsearchviewcontroller.js:284
+#: js/app/controllers/views/advancedsearchviewcontroller.js:308
+#: js/app/controllers/views/advancedsearchviewcontroller.js:311
+msgid "Rating"
+msgstr "Értékelés"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:107
+#: js/app/controllers/views/advancedsearchviewcontroller.js:165
+#: js/app/controllers/views/advancedsearchviewcontroller.js:218
+#: js/app/controllers/views/advancedsearchviewcontroller.js:255
+#: js/app/controllers/views/advancedsearchviewcontroller.js:276
+#: js/app/controllers/views/advancedsearchviewcontroller.js:303
+#: templates/partials/sidebar/smartlistfilters.php:50
+msgid "Recently added"
+msgstr "Nemrég hozzáadva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:127
+#: js/app/controllers/views/advancedsearchviewcontroller.js:183
+#: js/app/controllers/views/advancedsearchviewcontroller.js:236
+#: templates/partials/sidebar/smartlistfilters.php:46
+msgid "Recently played"
+msgstr "Nemrég lejátszva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:108
+#: js/app/controllers/views/advancedsearchviewcontroller.js:166
+#: js/app/controllers/views/advancedsearchviewcontroller.js:219
+#: js/app/controllers/views/advancedsearchviewcontroller.js:256
+#: js/app/controllers/views/advancedsearchviewcontroller.js:277
+#: js/app/controllers/views/advancedsearchviewcontroller.js:304
+msgid "Recently updated"
+msgstr "Nemrég frissítve"
+
+#: templates/partials/views/smartlistview.php:25
+msgid "Refine the filters defined for the smart playlist"
+msgstr "Finomítsa az okos lejátszási listához definiált szűrőket"
+
+#: templates/fake-template.php:5 templates/partials/navigationitem.php:145
+msgid "Reload"
+msgstr "Újratöltés"
+
+#: templates/partials/navigationitem.php:106
+msgid "Reload channels"
+msgstr "Csatornák újratöltése"
+
+#: templates/partials/views/playlistview.php:33
+#: templates/partials/views/settingsview.php:40
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: js/app/services/podcastservice.ts:312
+msgid "Remove channel"
+msgstr "Csatornák eltávolítása"
+
+#: templates/partials/navigationitem.php:61
+msgid "Remove duplicates"
+msgstr "Másodpéldányok eltávolítása"
+
+#: js/app/controllers/navigationcontroller.js:174
+msgid "Remove playlist"
+msgstr "Lejátszólista eltávolítása"
+
+#: js/app/controllers/views/radioviewcontroller.js:39
+msgid "Remove radio station"
+msgstr "Rádióállomás eltávolítása"
+
+#: templates/partials/views/playlistview.php:33
+msgid "Remove track from playlist"
+msgstr "Szám eltávolítása a lejátszólistáról"
+
+#: templates/partials/navigationitem.php:36
+msgid "Rename"
+msgstr "Átnevezés"
+
+#: js/app/controllers/playercontroller.js:784
+#: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr "Ismétlés"
 
-#: ../templates/fake-template.php:16
+#: js/app/controllers/views/albumsviewcontroller.js:275
+#: js/app/controllers/views/playlistviewcontroller.js:196
+msgid "Requested entry was not found"
+msgstr "A kért bejegyzés nem található"
+
+#: templates/partials/views/settingsview.php:61
+msgid "Reset"
+msgstr "Alaphelyzetbe állítás"
+
+#: js/app/controllers/views/settingsviewcontroller.js:194
+#: templates/partials/views/settingsview.php:74
+msgid "Reset internet radio stations"
+msgstr "Rádióállomások alaphelyzetbe állítása"
+
+#: js/app/controllers/views/settingsviewcontroller.js:151
+#: templates/partials/views/settingsview.php:64
+msgid "Reset music collection"
+msgstr "A zenegyűjtemény alaphelyzetbe állítása"
+
+#: js/app/controllers/views/settingsviewcontroller.js:224
+#: templates/partials/views/settingsview.php:83
+msgid "Reset podcast channels"
+msgstr "Podcast csatornák alaphelyzetbe állítása"
+
+#: templates/partials/views/settingsview.php:159
 msgid "Revoke API password"
 msgstr "API-jelszó visszavonása"
 
-#: ../templates/main.php:151
-msgid "Scanning music …"
-msgstr ""
+#: templates/partials/views/advancedsearchview.php:32
+msgid "Rules"
+msgstr "Szabályok"
 
-#: ../templates/main.php:116
+#: templates/partials/navigationitem.php:151
+msgid "Save playlist"
+msgstr "Lejátszólista mentése"
+
+#: js/app/services/playlistfileservice.ts:67
+#: js/app/services/podcastservice.ts:81
+msgid "Save with given file name"
+msgstr "Mentés a megadott fájlnévvel"
+
+#: templates/main.php:70
+msgid "Scanning music …"
+msgstr "Zenék feltérképezése …"
+
+#: templates/partials/navigation.php:54 templates/partials/navigation.php:56
+#: templates/partials/views/advancedsearchview.php:62
+#: templates/partials/views/settingsview.php:132
+msgid "Search"
+msgstr "Keresés"
+
+#: templates/partials/views/advancedsearchview.php:6
+msgid "Search for"
+msgstr "Keresés erre:"
+
+#: js/app/controllers/searchcontroller.js:98
+msgid "Search not available in this view"
+msgstr "A keresés nem elérhető ebben a nézetben"
+
+#: js/app/controllers/sidebar/albumdetailscontroller.js:68
+msgid "See the album on Last.fm"
+msgstr "Album megtekintése a Last.fm-en"
+
+#: js/app/controllers/sidebar/trackdetailscontroller.js:89
+msgid "See the track on Last.fm"
+msgstr "Szám megtekintése a Last.fm-en"
+
+#: templates/partials/views/settingsview.php:123
+msgid ""
+"Seek backwards. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Ugrás vissza. Gyorsabb ugráshoz nyomd a <strong>SHIFT</strong>-et, "
+"lassabbhoz az <strong>ALT</strong>-ot."
+
+#: templates/partials/views/settingsview.php:124
+msgid ""
+"Seek forward. Seek faster with <strong>SHIFT</strong> or slower with "
+"<strong>ALT</strong>."
+msgstr ""
+"Ugrás előre. Ugorj gyorsabban a <strong>SHIFT</strong>-tel, vagy lassabban "
+"az <strong>ALT</strong>-tal."
+
+#: templates/partials/views/settingsview.php:39 musicwidget.ts:234
+msgid "Select folder"
+msgstr "Könyvtár kiválasztása"
+
+#: templates/partials/favoritetoggle.php:3
+msgid "Set favorite"
+msgstr "Kedvencekhez adás"
+
+#: templates/partials/sidebar/radiohint.php:4
+msgid "Setting up radio stations"
+msgstr "Rádió állomások beállítása"
+
+#: templates/partials/navigation.php:77
+#: templates/partials/views/settingsview.php:2
+msgid "Settings"
+msgstr "Beállítások"
+
+#: js/app/controllers/views/podcastsviewcontroller.js:114
+msgid "Show all {{ count }} episodes …"
+msgstr "Mutassa mind a(z) {{ count }} epizódot …"
+
+#: js/app/directives/tracklist.js:53
+msgid "Show all {{ count }} songs …"
+msgstr "Mutassa mind a(z) {{ count }} dalt …"
+
+#: templates/partials/sidebar/artistdetails.php:54
+#: templates/partials/views/settingsview.php:117
+msgid "Show all…"
+msgstr "Mutassa mindet…"
+
+#: templates/partials/views/settingsview.php:97
+msgid ""
+"Show desktop notification when the playing song changes. You also need to "
+"have the desktop notifications allowed in your browser for this site."
+msgstr ""
+"Mutasson asztali értesítést, amikor a lejátszott dal megváltozik. Ehhez "
+"engedélyeznie kell az asztali értesítéseket a böngészőjében is ehhez az "
+"oldalhoz."
+
+#: templates/partials/sidebar/trackdetails.php:5
+msgid "Show in Files"
+msgstr "Mutassa a Fájlokban"
+
+#: js/app/directives/tracklist.js:50
+msgid "Show less …"
+msgstr "Mutasson kevesebbet …"
+
+#: templates/partials/views/settingsview.php:23
+msgid "Show more…"
+msgstr "Mutasson többet…"
+
+#: js/app/controllers/playercontroller.js:778
+#: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr "Keverés"
 
-#: ../js/public/app.js:629
+#: templates/partials/sidebar/artistdetails.php:47
+msgid "Similar to"
+msgstr "Hasonlók"
+
+#: js/app/controllers/playercontroller.js:755
+#: templates/partials/navigation.php:22
+#: templates/partials/views/smartlistview.php:4
+msgid "Smart playlist"
+msgstr "Okos lejátszólista"
+
+#: templates/partials/sidebar/smartlistfilters.php:3
+msgid "Smart playlist filters"
+msgstr "Okos lejátszólista szűrők"
+
+#: js/app/controllers/playercontroller.js:529
 msgid "Some not playable tracks were skipped."
 msgstr "Néhány szám kimaradt, amit a rendszer nem tud lejátszani."
 
-#: ../templates/fake-template.php:11
-msgid "This setting specifies the folder which will be scanned for music."
-msgstr "Ez a beállítás határozza meg, hogy melyik mappát figyelje a rendszer, amikor az zenei tartalmakat keresi."
+#: templates/main.php:62
+msgid "Some of the previously scanned files may have changed"
+msgstr "Néhány, előzőleg feltérképezett fájl megváltozhatott"
 
-#: ../templates/fake-template.php:8
+#: templates/main.php:79
+msgid "Some search results are omitted"
+msgstr "Néhány keresési találat kihagyva"
+
+#: templates/partials/views/genresview.php:34
+msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr ""
+"Néhány számot a könyvtáradban újra fel kell térképezni a műfajának "
+"mutatásához"
+
+#: templates/partials/views/settingsview.php:94
+msgid "Song change notifications"
+msgstr "Dalváltási értesítések"
+
+#: templates/partials/navigationitem.php:45
+msgid "Sort …"
+msgstr "Rendezés …"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:325
+msgid "Sounds like"
+msgstr "Úgy hangzik, mint"
+
+#: templates/partials/views/settingsview.php:22
+msgid ""
+"Specify folders within your music collection path which shall be excluded "
+"from the scanning."
+msgstr ""
+"Adjon meg mappákat a zenegyűjteménye útvonalán belül, amelyeket ki kell "
+"zárni a feltérképezésből."
+
+#: templates/partials/views/settingsview.php:107
+msgid ""
+"Specify space-delimited list of articles which should be ignored when "
+"ordering the artists alphabetically. The articles are case-insensitive."
+msgstr ""
+"Adjon meg szóközzel elválasztott névelőket, amelyeket figyelmen kívül kell "
+"hagyni az előadók betűrend szerinti rendezéséből. A névelők kis- és "
+"nagybetűérzékenyek."
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:321
+msgid "Starts with"
+msgstr "Úgy kezdődik, hogy"
+
+#: templates/partials/controls.php:14 templates/partials/controls.php:15
+#: templates/partials/controls.php:27
+#: templates/partials/views/settingsview.php:122
+msgid "Stop"
+msgstr "Megállítás"
+
+#: templates/partials/sidebar/radiostationdetails.php:14
+msgid "Stream URL"
+msgstr "Stream URL"
+
+#: templates/partials/sidebar/smartlistfilters.php:53
+msgid "Strict"
+msgstr "Szigorú"
+
+#: templates/partials/sidebar/albumdetails.php:41
+#: templates/partials/sidebar/artistdetails.php:44
+#: templates/partials/sidebar/trackdetails.php:57
+msgid "Tags"
+msgstr "Címkék"
+
+#: templates/partials/sidebar/trackdetails.php:15
+msgid "Technical"
+msgstr "Technikai"
+
+#: js/app/controllers/views/settingsviewcontroller.js:334
+msgid "Text copied to clipboard"
+msgstr "A szöveg másolva a vágólapra"
+
+#: js/app/services/podcastservice.ts:240
+msgid "The channel was already up-to-date"
+msgstr "A csatorna már a legfrissebb volt"
+
+#: js/app/services/podcastservice.ts:237
+msgid "The channel was updated from the source"
+msgstr "A csatorna frissítve volt a forrásából"
+
+#: js/app/services/playlistfileservice.ts:32
+#: js/app/services/podcastservice.ts:70
+msgid ""
+"The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
+"overwrite it. Select \"No\" to save with another name."
+msgstr ""
+"E mappában már létezik egy „{{ filename }}” nevű fájl. Válassza az „Igen”-t "
+"a felülírásához. Válassza a „Nem”-et egy másik névvel mentéshez."
+
+#: js/app/services/playlistfileservice.ts:208
+msgid ""
+"The playlist already contains some tracks. Imported tracks will be appended "
+"after the existing contents. Proceed?"
+msgstr ""
+"A lejátszólistán már vannak számok. Az importált számok az eddigi tartalom "
+"után lesznek hozzátoldva. Folytatja?"
+
+#: templates/partials/views/settingsview.php:184
+msgid ""
+"There is no settings UI for the server-wide settings of the Music app but "
+"some settings are available by adding specific key-value pairs to the file "
+"<samp>{{filename}}</samp>. The available keys are documented <a "
+"href=\"{{url}}\" target=\"_blank\">here</a>."
+msgstr ""
+"A Zene alkalmazás szerverszintű beállításaihoz nincs beállítási felület, de "
+"néhány beállítás elérhető a(z) <samp>{{filename}}</samp> fájlba írt kulcs-"
+"érték párok hozzáadásával. A rendelkezésre álló kulcsok dokumentációja <a "
+"href=\"{{url}}\" target=\"_blank\">itt</a> található."
+
+#: templates/partials/views/settingsview.php:88
+msgid "This action erases all the channels shown in the \"Podcasts\" view."
+msgstr ""
+"Ez a művelet törli az összes, a „Podcastok” nézetben megjelenő csatornát."
+
+#: templates/partials/views/settingsview.php:79
+msgid ""
+"This action erases all the stations shown in the \"Internet radio\" view."
+msgstr ""
+"Ez a művelet törli az összes, az „Internetes rádió” nézetben megjelenő "
+"állomást."
+
+#: templates/partials/views/settingsview.php:69
+msgid ""
+"This action resets all the scanned tracks and all the user-created "
+"playlists. After this, the collection can be scanned again from scratch."
+msgstr ""
+"Ez a művelet alaphelyzetbe állítja az összes beolvasott számot és az összes, "
+"Ön által létrehozott lejátszási listát. Ezután elölről lehet kezdeni a "
+"gyűjteményt feltérképezését."
+
+#: js/app/services/podcastservice.ts:112
+msgid "This channel is already subscribed"
+msgstr "Erre a csatornára már feliratkozott"
+
+#: templates/partials/views/settingsview.php:70
+msgid ""
+"This may be desirable after changing the excluded paths, or if the database "
+"would somehow get corrupted. If the latter happens, please report a bug to "
+"the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
+msgstr ""
+"Ez kívánatos lehet a kizárt útvonalak megváltoztatása után, vagy ha az "
+"adatbázis valahogy megromlana. Ha ez utóbbi történik, kérjük, jelezze a "
+"hibát a <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">hibakövetőn</a>."
+
+#: templates/partials/views/settingsview.php:13
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+"Ez a beállítás határozza meg, hogy melyik mappát figyelje a rendszer, amikor "
+"feltérképezi a zenei tartalmakat."
+
+#: js/app/controllers/maincontroller.js:191
+msgid "Timeout"
+msgstr "Időkifutás"
+
+#: templates/partials/sidebar/radiohint.php:12
+msgid ""
+"To find radio streams, you may use the <a href=\"{{url}}\" "
+"target=\"_blank\">Community Radio Browser</a>. There, you can find channels "
+"e.g. by name, language, or style. You may save the results as PLS and follow "
+"the instructions above to import them to the Music app."
+msgstr ""
+"Rádiófolyamok kereséséhez használja a <a href=\"{{url}}\" "
+"target=\"_blank\">Közösségi Rádió Böngészőt</a>. Ott csatornákat találhat "
+"pl. név, nyelv vagy stílus alapján. A találatokat PLS fájlként mentheti, és "
+"a fenti utasításokat követve importálhatja a Zenealkalmazásba."
+
+#: templates/partials/sidebar/albumdetails.php:28
+#: templates/partials/sidebar/playlistdetails.php:13
+msgid "Total length"
+msgstr "Teljes hossz"
+
+#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
+msgid "Track"
+msgstr "Szám"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:147
+msgid "Track artist name"
+msgstr "Szám előadójának neve"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:151
+#: js/app/controllers/views/advancedsearchviewcontroller.js:205
+msgid "Track count"
+msgstr "Számok száma"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:154
+#: js/app/controllers/views/advancedsearchviewcontroller.js:207
+#: js/app/controllers/views/advancedsearchviewcontroller.js:95
+msgid "Track genre"
+msgstr "Szám műfaja"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:85
+msgid "Track metadata"
+msgstr "Szám metaadatai"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:148
+#: js/app/controllers/views/advancedsearchviewcontroller.js:202
+msgid "Track name"
+msgstr "Szám címe"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:91
+msgid "Track number"
+msgstr "Szám sorszáma"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:174
+#: js/app/controllers/views/advancedsearchviewcontroller.js:227
+msgid "Track rating"
+msgstr "Szám értékelése"
+
+#: templates/partials/sidebar/albumdetails.php:11
+#: templates/partials/sidebar/artistdetails.php:17
 msgid "Tracks"
 msgstr "Számok"
 
-#: ../templates/fake-template.php:4
+#: templates/partials/sidebar/artistdetails.php:93
+msgid "Tracks by {{artist}}"
+msgstr "{{artist}} számai"
+
+#: templates/partials/sidebar/albumdetails.php:51
+msgid "Tracks on {{album}}"
+msgstr "{{album}} számai"
+
+#: templates/partials/navigationitem.php:131
+msgid "Tree layout"
+msgstr "Fa elrendezés"
+
+#: templates/main.php:80
+msgid "Try to refine the search"
+msgstr "Próbálja meg finomítani a keresést"
+
+#: js/app/services/podcastservice.ts:146
+msgid "URL"
+msgstr "URL"
+
+#: js/app/services/playlistfileservice.ts:56
+#: js/app/services/podcastservice.ts:61
+msgid "Unexpected error"
+msgstr "Váratlan hiba"
+
+#: js/app/services/podcastservice.ts:38
+msgid "Unexpected error when updating the channel \"{{ title }}\""
+msgstr "Váratlan hiba e csatornának a frissítésekor: „{{ title }}”"
+
+#: templates/partials/views/settingsview.php:98
+msgid ""
+"Unlike the other settings, this switch is stored per browser and not per "
+"user account."
+msgstr ""
+"Ez a kapcsoló a többi beállítástól eltérően böngészőnként tárolódik, nem "
+"felhasználói fiókonként."
+
+#: templates/fake-template.php:16
+msgid "Unmute"
+msgstr "Hangosítás"
+
+#: templates/partials/favoritetoggle.php:5
+msgid "Unset favorite"
+msgstr "Kedvencekből kivesz"
+
+#: templates/partials/sidebar/smartlistfilters.php:57
+msgid "Update"
+msgstr "Frissítés"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:106
+#: js/app/controllers/views/advancedsearchviewcontroller.js:164
+#: js/app/controllers/views/advancedsearchviewcontroller.js:217
+#: js/app/controllers/views/advancedsearchviewcontroller.js:254
+#: js/app/controllers/views/advancedsearchviewcontroller.js:275
+#: js/app/controllers/views/advancedsearchviewcontroller.js:302
+msgid "Update date"
+msgstr "Frissítés dátuma"
+
+#: js/app/controllers/sidebar/artistdetailscontroller.js:68
+msgid ""
+"Upload image named \"{{name}}\" to anywhere within your library path to see "
+"it here."
+msgstr ""
+"Töltsön fel egy „{{name}}” nevű képet a könyvtárútvonalán belül bárhol, hogy "
+"itt láthassa."
+
+#: templates/main.php:47
+msgid "Upload music in the files app to listen to it here"
+msgstr "Töltse fel zenéit a Fájlok alkalmazásban, hogy itt hallgassa"
+
+#: templates/partials/views/settingsview.php:172
+msgid ""
+"Use the following credentials to connect to this Ampache/Subsonic instance."
+msgstr ""
+"Használja a következő hitelesítési adatokat ehhez az Ampache/Subsonic "
+"kiszolgálóhoz csatlakozáshoz."
+
+#: templates/partials/views/settingsview.php:151
+msgid ""
+"Use this address to browse your music collection from a Subsonic compatible "
+"player."
+msgstr ""
+"Ezt a címet használva a zenegyűjtemény bármely Subsonic-kompatibilis "
+"lejátszóval böngészhető."
+
+#: templates/partials/views/settingsview.php:146
+msgid ""
+"Use this address to browse your music collection from an Ampache compatible "
+"player."
+msgstr ""
+"Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis "
+"lejátszóval böngészhető."
+
+#: js/app/controllers/navigationcontroller.js:284
+msgid "Used filters: {{ params }}"
+msgstr "Használt szűrők: {{ params }}"
+
+#: templates/partials/views/settingsview.php:91
+msgid "User interface"
+msgstr "Felhasználói felület"
+
+#: templates/partials/views/settingsview.php:174
+msgid "Username:"
+msgstr "Felhasználónév:"
+
+#: templates/partials/controls.php:102 templates/partials/controls.php:98
+msgid "Volume"
+msgstr "Hangerő"
+
+#: templates/partials/sidebar/radiostationdetails.php:38
+msgid "Website"
+msgstr "Webhely"
+
+#: js/app/services/playlistfileservice.ts:52
+#: js/app/services/podcastservice.ts:57
+msgid "Writing to the file is not allowed"
+msgstr "Nem engedélyezett az írás a fájlba"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:149
+#: js/app/controllers/views/advancedsearchviewcontroller.js:92
+msgid "Year"
+msgstr "Év"
+
+#: templates/partials/sidebar/smartlistfilters.php:11
+msgid "Years"
+msgstr "Évek"
+
+#: templates/partials/views/settingsview.php:139
+msgid ""
+"You can browse and play your music collection from external applications "
+"which support either Ampache or Subsonic API."
+msgstr ""
+"A zenegyűjteményét böngészheti és lejátszhatja külső alkalmazásokból, "
+"amelyek támogatják az Ampache vagy a Subsonic API-t."
+
+#: templates/partials/views/settingsview.php:26
+msgid "You can use the wild cards '?', '*', and '**':"
+msgstr "Használhatja a „?”, „*”, és „**” helyettesítő karaktereket:"
+
+#: templates/partials/sidebar/radiohint.php:6
+msgid ""
+"You may add radio stations either by manually entering the stream URL or by "
+"importing a playlist file containing one or more stream URLs."
+msgstr ""
+"Hozzáadhat rádióállomásokat manuálisan a stream URL megadásával vagy egy "
+"lejátszólista-fájl importálásával, amely egy vagy több stream URL-t "
+"tartalmaz."
+
+#: templates/partials/views/advancedsearchview.php:9
+msgid "albums"
+msgstr "albumok"
+
+#: templates/partials/views/advancedsearchview.php:10
+msgid "artists"
+msgstr "előadók"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:97
+msgid "author"
+msgstr "előadó"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:109
+msgid "bit rate"
+msgstr "bitráta"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:100
+msgid "build date"
+msgstr "fordítás dátuma"
+
+#: templates/partials/navigationitem.php:55
+msgid "by album"
+msgstr "album szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:36
+#: js/app/controllers/views/advancedsearchviewcontroller.js:45
+#: templates/partials/navigationitem.php:52
+msgid "by artist"
+msgstr "előadó szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:63
+msgid "by channel"
+msgstr "csatorna szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:35
+#: js/app/controllers/views/advancedsearchviewcontroller.js:44
+#: js/app/controllers/views/advancedsearchviewcontroller.js:51
+#: js/app/controllers/views/advancedsearchviewcontroller.js:57
+#: js/app/controllers/views/advancedsearchviewcontroller.js:62
+#: js/app/controllers/views/advancedsearchviewcontroller.js:69
+msgid "by name"
+msgstr "név szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:38
+msgid "by play count"
+msgstr "lejátszások száma szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:40
+#: js/app/controllers/views/advancedsearchviewcontroller.js:47
+#: js/app/controllers/views/advancedsearchviewcontroller.js:53
+#: js/app/controllers/views/advancedsearchviewcontroller.js:65
+#: js/app/controllers/views/advancedsearchviewcontroller.js:71
+msgid "by rating"
+msgstr "értékelés szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:39
+msgid "by recent play"
+msgstr "legutóbbi lejátszás szerint"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:37
+#: js/app/controllers/views/advancedsearchviewcontroller.js:46
+#: js/app/controllers/views/advancedsearchviewcontroller.js:52
+#: js/app/controllers/views/advancedsearchviewcontroller.js:58
+#: js/app/controllers/views/advancedsearchviewcontroller.js:64
+#: js/app/controllers/views/advancedsearchviewcontroller.js:70
+msgid "by time added"
+msgstr "hozzáadás ideje szerint"
+
+#: templates/partials/navigationitem.php:49
+msgid "by title"
+msgstr "cím szerint"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:98
+msgid "category"
+msgstr "kategória"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:104
+msgid "channel"
+msgstr "csatorna"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:96
+msgid "copyright"
+msgstr "szerzői jog"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:92
+msgid "description"
+msgstr "leírás"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:107
+msgid "duration"
+msgstr "időtartam"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:102
+msgid "episode"
+msgstr "epizód"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:111
+msgid "keywords"
+msgstr "kulcsszavak"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:95
+msgid "language"
+msgstr "nyelv"
+
+#: templates/partials/views/advancedsearchview.php:23
+msgid "limiting to"
+msgstr "korlátozva"
+
+#: templates/partials/views/advancedsearchview.php:16
+msgid "matching all rules"
+msgstr "minden szabályra egyezve"
+
+#: templates/partials/views/advancedsearchview.php:17
+msgid "matching any rule"
+msgstr "bármely szabályra egyezve"
+
+#: templates/partials/views/advancedsearchview.php:19
+msgid "ordering results"
+msgstr "rendezve"
+
+#: templates/partials/views/advancedsearchview.php:11
+msgid "playlists"
+msgstr "lejátszólisták"
+
+#: templates/partials/views/advancedsearchview.php:13
+msgid "podcast channels"
+msgstr "podcast csatornák"
+
+#: templates/partials/views/advancedsearchview.php:12
+msgid "podcast episodes"
+msgstr "podcast epizódok"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:99
+msgid "published"
+msgstr "kiadva"
+
+#: js/app/controllers/views/advancedsearchviewcontroller.js:41
+#: js/app/controllers/views/advancedsearchviewcontroller.js:48
+#: js/app/controllers/views/advancedsearchviewcontroller.js:54
+#: js/app/controllers/views/advancedsearchviewcontroller.js:59
+#: js/app/controllers/views/advancedsearchviewcontroller.js:66
+#: js/app/controllers/views/advancedsearchviewcontroller.js:72
+msgid "randomly"
+msgstr "véletlenszerűen"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:103
+msgid "season"
+msgstr "évad"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:108
+msgid "size"
+msgstr "méret"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:105
+msgid "stream URL"
+msgstr "stream URL"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:91
+msgid "title"
+msgstr "cím"
+
+#: templates/partials/views/advancedsearchview.php:8
+msgid "tracks"
+msgstr "számok"
+
+#: templates/partials/views/advancedsearchview.php:25
+msgid "unlimited"
+msgstr "korlátlan"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:101
+msgid "updates checked"
+msgstr "frissítések ellenőrizve"
+
+#: templates/partials/views/settingsview.php:195
+msgid "version history"
+msgstr "verzió előzmények"
+
+#: js/app/controllers/sidebar/podcastdetailscontroller.js:93
+msgid "website"
+msgstr "webhely"
+
+#: js/app/controllers/maincontroller.js:69
+msgid "{{ count }} album"
+msgid_plural "{{ count }} albums"
+msgstr[0] "{{ count }} album"
+msgstr[1] "{{ count }} album"
+
+#: js/app/controllers/maincontroller.js:102
+msgid "{{ count }} channel"
+msgid_plural "{{ count }} channels"
+msgstr[0] "{{ count }} csatorna"
+msgstr[1] "{{ count }} csatorna"
+
+#: js/app/controllers/navigationcontroller.js:159
+msgid "{{ count }} duplicate track was removed"
+msgid_plural "{{ count }} duplicate tracks were removed"
+msgstr[0] "{{ count }} szám másodpéldánya eltávoltva"
+msgstr[1] "{{ count }} szám másodpéldánya eltávoltva"
+
+#: js/app/services/playlistfileservice.ts:237
+msgid "{{ count }} entries were skipped."
+msgstr "{{ count }} bejegyzés kihagyva."
+
+#: js/app/services/playlistfileservice.ts:183
+msgid "{{ count }} files were skipped."
+msgstr "{{ count }} fájl kihagyva."
+
+#: js/app/controllers/maincontroller.js:75
+msgid "{{ count }} folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] "{{ count }} mappa"
+msgstr[1] "{{ count }} mappa"
+
+#: js/app/controllers/maincontroller.js:84
+msgid "{{ count }} genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] "{{ count }} műfaj"
+msgstr[1] "{{ count }} műfaj"
+
+#: js/app/controllers/maincontroller.js:93
+msgid "{{ count }} station"
+msgid_plural "{{ count }} stations"
+msgstr[0] "{{ count }} állomás"
+msgstr[1] "{{ count }} állomás"
+
+#: js/app/controllers/maincontroller.js:59
+#: js/app/controllers/maincontroller.js:64
+msgid "{{ count }} track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] "{{ count }} szám"
+msgstr[1] "{{ count }} szám"
+
+#: templates/partials/views/advancedsearchview.php:68
+msgid "{{ resultCount() }} result"
+msgid_plural "{{ resultCount() }} results"
+msgstr[0] "{{ resultCount() }} találat"
+msgstr[1] "{{ resultCount() }} találat"
+
+#: templates/main.php:71
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
+
+#: templates/partials/sidebar/artistdetails.php:78
+msgid "{{artist}} appears on albums"
+msgstr "{{artist}} megjelenik ezeken az albumokon"
+
+#: Db/Album.php:270
 msgid "Unknown album"
 msgstr "Ismeretlen album"
 
-#: ../templates/fake-template.php:5
+#: Db/Artist.php:134
 msgid "Unknown artist"
 msgstr "Ismeretlen előadó"
 
-#: ../templates/main.php:135
-msgid "Upload music in the files app to listen to it here"
-msgstr ""
+#: Db/Bookmark.php:47
+msgid "(no comment)"
+msgstr "(nincs megjegyzés)"
 
-#: ../templates/fake-template.php:12
+#: Db/Genre.php:84
+msgid "(Unknown genre)"
+msgstr "Ismeretlen műfaj"
+
+#: musicwidget.ts:52
+msgid "Album artists"
+msgstr "Album előadói"
+
+#: musicwidget.ts:53
+msgid "Track artists"
+msgstr "Szám előadói"
+
+#: musicwidget.ts:58
+msgid "Playlists"
+msgstr "Lejátszólisták"
+
+#: musicwidget.ts:62
+msgid "Select mode"
+msgstr "Mód kiválasztása"
+
+#: musicwidget.ts:182 musicwidget.ts:209
+msgid "Select artist"
+msgstr "Előadó kiválasztása"
+
+#: musicwidget.ts:190
+msgid "(All albums)"
+msgstr "(Minden album)"
+
+#: musicwidget.ts:192 musicwidget.ts:221
+msgid "Select album"
+msgstr "Album kiválasztása"
+
+#: musicwidget.ts:247
+msgid "Select genre"
+msgstr "Műfaj kiválasztása"
+
+#: musicwidget.ts:263
+msgid "Select playlist"
+msgstr "Lejátszólista kiválasztása"
+
+#: musicwidget.ts:279
+msgid "Select channel"
+msgstr "Csatorna kiválasztása"
+
+#: embeddedplayer.js:136
+msgid "Actions"
+msgstr "Műveletek"
+
+#: embeddedplayer.js:162
+msgid "Import radio to Music"
+msgstr "Rádió importálása a Zenébe"
+
+#: embeddedplayer.js:163
+msgid "Import list to Music"
+msgstr "Lista importálása a Zenébe"
+
+#: embeddedplayer.js:164
+msgid "Show playlist"
+msgstr "Lejátszólista mutatása"
+
+#: embeddedplayer.js:414
+msgid "Continue playing in Music"
+msgstr "Lejátszás folytatása a Zenében"
+
+#: embeddedplayer.js:417
+msgid "(file is not within your music collection folder)"
+msgstr "(fa fájl nincs a zenegyűjteményének mappájában)"
+
+#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
+msgid "Loading…"
+msgstr "Betöltés…"
+
+#: folderview.js:143
 msgid ""
-"Use this address to browse your music collection from any Ampache compatible"
-" player."
-msgstr "Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis lejátszóval böngészhető."
+"The option is available only while the parent folder of the playlist file is "
+"shown"
+msgstr ""
+"Ez a beállítás csak akkor érhető el, ha a lejátszólista-fájl szülőmappája "
+"látható"
 
-#: ../templates/fake-template.php:17
+#: folderview.js:156
+msgid "None of the playlist files are within your music library"
+msgstr "Egyik lejátszólista-fájl sincs a zenegyűjteményében"
+
+#: folderview.js:161
 msgid ""
-"Use your username and following password to connect to this Ampache "
-"instance:"
-msgstr "Használja a felhasználónevét és a következő jelszót, ha csatlakozni kíván ehhez az Ampache kiszolgálóhoz:"
-
-#: ../templates/main.php:121 ../templates/main.php:123
-msgid "Volume"
+"{inCount} out of {totalCount} files are within your music library and can be "
+"imported"
 msgstr ""
+"{inCount} / {totalCount} fájl a zenegyűjteményedben van, és importálható"
 
-#: ../templates/main.php:57 ../templates/main.php:77
-msgid "tracks"
-msgstr ""
+#: folderview.js:362
+msgid "No files from the playlist could be found"
+msgstr "Nem található fájl a lejátszólistában"
 
-#: ../templates/main.php:152
-msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+#: folderview.js:365
+msgid "The playlist contained {count} invalid path(s)."
+msgstr "A lejátszólista {count} érvénytelen útvonalat tartalmazott."
+
+#: folderview.js:370
+msgid "See the playlist file details."
+msgstr "Nézze meg a lejátszólista-fájl részleteit."
+
+#: folderview.js:386 playlisttabview.js:90
+msgid "Error reading playlist file"
+msgstr "Hiba a lejátszólista fájl olvasása közben"
+
+#: playlistfileservice.js:53
+msgid "Imported {count} tracks to a new playlist '{name}'."
+msgstr "{count} számot importáltunk egy új „{name}” nevű lejátszólistába."
+
+#: playlistfileservice.js:56
+msgid "{count} files were skipped."
+msgstr "{count} fájl ki lett hagyva."
+
+#: playlistfileservice.js:62 playlistfileservice.js:86
+msgid "Failed to import the playlist file {file}"
+msgstr "Nem sikerült importálni a lejátszólista-fájlt: {file}"
+
+#: playlistfileservice.js:67
+msgid "Failed to create a new playlist"
+msgstr "Nem sikerült új lejátszólistát létrehozni"
+
+#: playlistfileservice.js:78
+msgid "Imported {count} radio stations."
+msgstr "Importálva {count} rádióállomás."
+
+#: playlistfileservice.js:80
+msgid "{count} entries were skipped."
+msgstr "{count} bejegyzés ki lett hagyva."
+
+#: playlisttabview.js:76
+msgid "Some files on the playlist were not found"
+msgstr "Néhány fájl nem volt található a lejátszólistán"
+
+#~ msgid "Invalid path"
+#~ msgstr "Érvénytelen útvonal"
+
+#~ msgid ""
+#~ "Keep in mind, that the Ampache API is just a preview and is unstable. "
+#~ "Feel free to report your experience with this feature in the "
+#~ "corresponding <a href=\"https://github.com/owncloud/music/"
+#~ "issues/60\">issue</a>. I would also like to have a list of clients to "
+#~ "test with. Thanks"
+#~ msgstr ""
+#~ "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető "
+#~ "stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/"
+#~ "owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a "
+#~ "tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a "
+#~ "szolgáltatást. Köszönöm!"

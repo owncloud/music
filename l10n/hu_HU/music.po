@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-08-24 18:52+0200\n"
+"PO-Revision-Date: 2025-08-24 20:24+0200\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/hu_HU/)\n"
@@ -1472,7 +1472,7 @@ msgstr "Keverés"
 
 #: templates/partials/sidebar/artistdetails.php:47
 msgid "Similar to"
-msgstr "Hasonlít ehhez"
+msgstr "Hasonló(k)"
 
 #: js/app/controllers/playercontroller.js:755
 #: templates/partials/navigation.php:22

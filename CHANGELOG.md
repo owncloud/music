@@ -6,6 +6,8 @@
   [#1219](https://github.com/owncloud/music/pull/1219) @mexvod
 - Hungarian translation
   [#1245](https://github.com/owncloud/music/pull/1245) @rkrisztian
+- Subsonic: Support for methods `savePlayQueue` and `getPlayQueue`
+  [#1241](https://github.com/owncloud/music/pull/1241) @mattwellss
 
 ### Changed
 - Human-friendly formatting for bitrate and sample rate in the track details pane

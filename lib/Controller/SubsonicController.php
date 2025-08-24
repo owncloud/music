@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\Node;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUserManager;
@@ -95,6 +96,7 @@ class SubsonicController extends ApiController {
 	private AmpacheImageService $imageService;
 	private Random $random;
 	private Logger $logger;
+	private IConfig $configManager;
 	private ?string $userId;
 	private ?int $keyId;
 	private array $ignoredArticles;
@@ -122,7 +124,8 @@ class SubsonicController extends ApiController {
 								PodcastService $podcastService,
 								AmpacheImageService $imageService,
 								Random $random,
-								Logger $logger) {
+								Logger $logger,
+								\OCP\IConfig $configManager) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -145,6 +148,7 @@ class SubsonicController extends ApiController {
 		$this->imageService = $imageService;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->configManager = $configManager;
 		$this->userId = null;
 		$this->keyId = null;
 		$this->ignoredArticles = [];
@@ -1068,15 +1072,78 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getPlayQueue() : array {
-		// TODO: not supported yet
-		return ['playQueue' => []];
+		/** @var array|false $playQueue */
+		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
+
+		if (!$playQueue) {
+			return [];
+		}
+
+		$parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
+
+		$typeHandlers = [
+			[
+				'track',
+				[$this->trackBusinessLayer, 'findById'],
+				[$this, 'trackstoApi']
+			],
+			[
+				'podcast_episode',
+				[$this->podcastEpisodeBusinessLayer, 'findById'],
+				[$this, 'podcastEpisodestoApi']
+			]
+		];
+
+		/** @var array{'track': Track[], 'podcast_episode': PodcastEpisode[]} $apiEntries */
+		$apiEntries = array_merge([], ...array_map(
+			function ($handlers) use ($parsedEntries) {
+				[$type, $lookupFn, $toApiFn] = $handlers;
+				$typeEntryIds = \array_map(
+					fn ($entry) => $entry[1],
+					\array_filter($parsedEntries, fn ($parsedEntry) => $parsedEntry[0] === $type)
+				);
+
+				$entryInstances = $lookupFn($typeEntryIds, $this->user());
+
+				return [
+					$type => $toApiFn(ArrayUtil::createIdLookupTable($entryInstances))
+				];
+			},
+			$typeHandlers
+		));
+
+		$playQueue['entry'] = \array_filter(\array_map(
+			function ($parsedEntry) use ($apiEntries) {
+				[$type, $id] = $parsedEntry;
+				return $apiEntries[$type][$id] ?? false;
+			},
+			$parsedEntries
+		));
+
+		return ['playQueue' => $playQueue];
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function savePlayQueue() : array {
-		// TODO: not supported yet
+	protected function savePlayQueue(array $id, string $c, ?string $current = null, ?int $position = null) : array {
+		$changedDateTime = new \DateTime();
+		$playQueue = array_filter([
+			'entry' => array_filter(
+				$id,
+				fn (string $entityId) => in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
+			),
+			'changedBy' => $c,
+			'position' => $position,
+			'current' => $current,
+			/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
+			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z'),
+			'username' => $this->user()
+		], fn ($val) => $val !== null);
+
+		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
+		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
+
 		return [];
 	}
 
@@ -1455,6 +1522,13 @@ class SubsonicController extends ApiController {
 
 	private function trackToApi(Track $track) : array {
 		return $this->tracksToApi([$track])[0];
+	}
+
+	/**
+	 * @param PodcastEpisode[] $episodes
+	 */
+	private function podcastEpisodestoApi(array $episodes) : array {
+		return \array_map(fn(PodcastEpisode $p) => $p->toSubsonicApi(), $episodes);
 	}
 
 	/**

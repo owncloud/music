@@ -18,6 +18,7 @@
 		"angular-sanitize": "^1.8.3",
 		"angular-scroll": "^1.0.2",
 		"blueimp-md5": "^2.19.0",
+		"buffer": "^6.0.3",
 		"chosen-js": "^1.8.7",
 		"core-js": "^3.31.1",
 		"hls.js": "^0.14.17",

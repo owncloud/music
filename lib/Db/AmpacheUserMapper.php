@@ -125,7 +125,7 @@ class AmpacheUserMapper {
 		$params = [$userId, $hash, $description];
 		$affectedRows = $this->db->executeUpdate($sql, $params);
 
-		return ($affectedRows > 0) ? $this->db->lastInsertId('*PREFIX*music_ampache_users') : null;
+		return ($affectedRows > 0) ? (int)$this->db->lastInsertId('*PREFIX*music_ampache_users') : null;
 	}
 
 	public function removeUserKey(string $userId, int $id) : void {

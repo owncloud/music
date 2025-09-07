@@ -194,7 +194,9 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #controls .volume-control {
 	position: absolute;
-	right: 167px;
+	width: 66px;
+	height: 66px;
+	right: 100px;
 }
 
 .ie.lte9 #controls .volume-control {
@@ -277,7 +279,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 }
 
 #controls.two-line .volume-control {
-	right: 75px;
+	right: 9px;
 }
 
 #controls.two-line .song-info {

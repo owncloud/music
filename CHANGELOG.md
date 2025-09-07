@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Added
+- Mouse wheel can be used to adjust volume while hovering over the volume control
+
+### Changed
+
+### Fixed
+
 ## 2.3.0 - 2025-08-31
 
 ### Added

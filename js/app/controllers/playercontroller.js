@@ -379,6 +379,20 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	});
 
+	$scope.mouseWheelOnVolume = function($event) {
+		const event = $event.originalEvent;
+		if (!event.ctrlKey) {
+			$event.preventDefault();
+			console.log(event.deltaY);
+			let step = -Math.sign(event.deltaY);
+			if (event.shiftKey) {
+				step *= 5;
+			}
+
+			$scope.offsetVolume(step);
+		}
+	};
+
 	$scope.offsetVolume = function (offset) {
 		const value = $scope.volume + offset;
 		$scope.volume = Math.max(0, Math.min(100, value)); // Clamp to 0-100

@@ -94,7 +94,7 @@
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ repeatTooltip() }}"
 		src="{{ repeat === 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
 		ng-class="{active: repeat != 'false' }" ng-click="toggleRepeat()" />
-	<div class="volume-control">
+	<div class="volume-control" ng-on-wheel="mouseWheelOnVolume($event)">
 		<img id="volume-icon" class="control toggle small svg" alt="{{ 'Volume' | translate }}" ng-click="toggleVolume()"
 			ng-src="{{ volume === 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}"
 			title="{{ volume === 0 ? ('Unmute' | translate) : ('Mute' | translate) }} [M]" />

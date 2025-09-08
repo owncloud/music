@@ -15,25 +15,25 @@ const soundIconPath = require('../../img/sound.svg') as string;
 
 export class VolumeControl {
 
-    #player : PlayerWrapper;
-    #elem : JQuery<HTMLElement>;
-    #volume : number;
-    #lastVolume : number;
+	#player : PlayerWrapper;
+	#elem : JQuery<HTMLElement>;
+	#volume : number;
+	#lastVolume : number;
 
-    constructor(player : PlayerWrapper) {
-        this.#player = player;
+	constructor(player : PlayerWrapper) {
+		this.#player = player;
 
-        this.#volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
-        player.setVolume(this.#volume);
+		this.#volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
+		player.setVolume(this.#volume);
 
-        this.#createHtml();
-    }
+		this.#createHtml();
+	}
 
 	addToContainer(container : JQuery<HTMLElement>) {
 		container.append(this.#elem);
 	}
 
-    #createHtml() {
+	#createHtml() {
 		this.#elem = $(document.createElement('div'))
 			.attr('class', 'music-volume-control');
 
@@ -79,8 +79,8 @@ export class VolumeControl {
 				volumeIcon.attr('src', value == 0 ? soundOffIconPath : soundIconPath);
 			});
 
-        this.#elem.append(volumeIcon);
-        this.#elem.append(volumeSlider);
+		this.#elem.append(volumeIcon);
+		this.#elem.append(volumeSlider);
 	}
 
 }

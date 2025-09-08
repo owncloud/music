@@ -5,8 +5,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2023, 2024
+ * @copyright Pauli Järvinen 2023 - 2025
  */
+
+.music-volume-control {
+	width: 66px;
+	height: 66px;
+}
 
 .music-volume-control .volume-icon {
 	position: absolute;

@@ -383,7 +383,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		const event = $event.originalEvent;
 		if (!event.ctrlKey) {
 			$event.preventDefault();
-			console.log(event.deltaY);
 			let step = -Math.sign(event.deltaY);
 			if (event.shiftKey) {
 				step *= 5;

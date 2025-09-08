@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 import { PlayerWrapper } from "./playerwrapper";
@@ -33,30 +33,37 @@ export class VolumeControl {
 		container.append(this.#elem);
 	}
 
+	setVolume(value : number) {
+		value = Math.max(0, Math.min(100, value)); // Clamp to 0-100
+		const volumeSlider = this.#elem.find('.volume-slider');
+		volumeSlider.val(value);
+		volumeSlider.trigger('input');
+	}
+
+	offsetVolume(offset : number) : void {
+		this.setVolume(this.#volume + offset);
+	}
+
+	toggleMute() : void {
+		if (this.#lastVolume) {
+			this.setVolume(this.#lastVolume);
+			this.#lastVolume = null;
+		} else {
+			this.#lastVolume = this.#volume;
+			this.setVolume(0);
+		}
+	}
+
 	#createHtml() {
 		this.#elem = $(document.createElement('div'))
 			.attr('class', 'music-volume-control');
 
+		const self = this;
 		let volumeIcon = $(document.createElement('img'))
 			.attr('class', 'volume-icon control small svg')
 			.attr('src', soundIconPath)
-			.on('click', () => {
-				const setVolume = (value : number) => {
-					volumeSlider.val(value);
-					volumeSlider.trigger('input');
-				};
+			.on('click', () => self.toggleMute());
 
-				if (this.#lastVolume) {
-					setVolume(this.#lastVolume);
-					this.#lastVolume = null;
-				}
-				else {
-					this.#lastVolume = this.#volume;
-					setVolume(0);
-				}
-			});
-
-		const self = this;
 		let volumeSlider = $(document.createElement('input'))
 			.attr('class', 'volume-slider')
 			.attr('min', '0')
@@ -64,7 +71,7 @@ export class VolumeControl {
 			.attr('type', 'range')
 			.attr('value', this.#volume)
 			.on('input change', function() {
-				const value = $(this).val() as number;
+				const value = parseInt($(this).val() as string);
 
 				// Reset last known volume, if a new value is selected via the slider
 				if (value && self.#lastVolume && self.#lastVolume !== self.#volume) {
@@ -78,6 +85,19 @@ export class VolumeControl {
 				// Show correct icon if muted 
 				volumeIcon.attr('src', value == 0 ? soundOffIconPath : soundIconPath);
 			});
+
+		this.#elem.on('wheel', ($event) => {
+			const event = $event.originalEvent as WheelEvent;
+			if (!event.ctrlKey) {
+				$event.preventDefault();
+				let step = -Math.sign(event.deltaY);
+				if (event.shiftKey) {
+					step *= 5;
+				}
+
+				self.offsetVolume(step);
+			}
+		});
 
 		this.#elem.append(volumeIcon);
 		this.#elem.append(volumeSlider);

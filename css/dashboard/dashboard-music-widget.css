@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 .music-widget {
@@ -99,6 +99,8 @@
 
 .music-widget .player-controls .music-volume-control {
 	position: relative;
+	width: 64px;
+	height: 50px;
 }
 
 .music-widget .player-controls .music-volume-control .volume-icon {

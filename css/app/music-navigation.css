@@ -68,10 +68,14 @@
 	height: var(--music-nav-item-height);
 	line-height: var(--music-nav-item-height);
 	width: 100%;
-	overflow: hidden;
 	white-space: nowrap;
-	text-overflow: ellipsis;
 	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content > span {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: calc(100% - 84px);
 }
 
 #app-navigation .music-navigation-item-content * {
@@ -129,7 +133,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	padding: 5px;
 }
 
-#app-navigation .action.icon-checkmark, 
+#app-navigation .action.icon-checkmark,
 #app-navigation .action.icon-close {
 	margin-top: calc((var(--music-nav-item-height) - 24px) / 2);
 }
@@ -138,6 +142,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	display: inline-block;
 	width: 40px;
 	height: 100%;
+	vertical-align: top;
 	background-size: 16px;
 }
 

@@ -8,6 +8,8 @@
 ### Fixed
 - Favorite toggle in the details pane not working (since v2.3.0)
   [#1250](https://github.com/owncloud/music/issues/1250)
+- Overly long playlist names shown only as ellipses (…) in the navigation pane
+  [#1236](https://github.com/owncloud/music/issues/1236)
 
 ## 2.3.0 - 2025-08-31
 

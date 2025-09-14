@@ -1,11 +1,13 @@
 ## [Unreleased]
 
 ### Added
-- Mouse wheel can be used to adjust volume while hovering over the volume control
+- Mouse wheel can be used to adjust volume while hovering over the volume control (slow by default, faster with SHIFT)
 
 ### Changed
 
 ### Fixed
+- Favorite toggle in the details pane not working (since v2.3.0)
+  [#1250](https://github.com/owncloud/music/issues/1250)
 
 ## 2.3.0 - 2025-08-31
 

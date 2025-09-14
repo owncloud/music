@@ -75,48 +75,54 @@ class FavoritesController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoriteTrack(int $id, ?string $status) : JSONResponse {
+	public function setFavoriteTrack(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->trackBusinessLayer, $id, $status);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoriteAlbum(int $id, ?string $status) : JSONResponse {
+	public function setFavoriteAlbum(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->albumBusinessLayer, $id, $status);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoriteArtist(int $id, ?string $status) : JSONResponse {
+	public function setFavoriteArtist(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->artistBusinessLayer, $id, $status);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoritePlaylist(int $id, ?string $status) : JSONResponse {
+	public function setFavoritePlaylist(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->playlistBusinessLayer, $id, $status);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoriteChannel(int $id, ?string $status) : JSONResponse {
+	public function setFavoriteChannel(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->podcastChannelBusinessLayer, $id, $status);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string|int|bool|null $status
 	 */
-	public function setFavoriteEpisode(int $id, ?string $status) : JSONResponse {
+	public function setFavoriteEpisode(int $id, /*mixed*/ $status) : JSONResponse {
 		return $this->setFavorite($this->podcastEpisodeBusinessLayer, $id, $status);
 	}
 

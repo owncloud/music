@@ -4,6 +4,8 @@
 - Mouse wheel can be used to adjust volume while hovering over the volume control (slow by default, faster with SHIFT)
 
 ### Changed
+- Playlist tooltip on the navigation pane now shows also the playlist name
+  [#1236](https://github.com/owncloud/music/issues/1236)
 
 ### Fixed
 - Favorite toggle in the details pane not working (since v2.3.0)

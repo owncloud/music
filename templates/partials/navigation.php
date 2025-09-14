@@ -44,7 +44,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 			ui-on-drop="dropOnPlaylist($data, playlist)"
 			drop-validate="allowDrop(playlist, $data)"
 			drag-hover-class="drag-hover"
-			title="{{ trackCountText(playlist) }}"
+			title="{{ playlist.name + ' (' + trackCountText(playlist) + ')' }}"
 			icon="'playlist'">
 		</li>
 		<li id="music-nav-search" class="docked-navigation-item item-with-actions" ng-class="{active: currentView=='#/search'}"

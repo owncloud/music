@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 - 2022 Pauli Järvinen
+ * @copyright 2019 - 2025 Pauli Järvinen
  *
  */
 
@@ -110,7 +110,7 @@ function ($rootScope, gettextCatalog) {
 				icon.className = 'icon icon-' + action.icon;
 				let text = document.createElement('span');
 				text.innerText = gettextCatalog.getString(action.text);
-				// Note: l10n-extract cannot find localised string defined like above.
+				// Note: l10n-extract cannot find localized string defined like above.
 				// Ensure that the same string can be extracted from somewhere else.
 				$(listitem).data('callback', action.callback);
 				link.appendChild(icon);
@@ -233,8 +233,8 @@ function ($rootScope, gettextCatalog) {
 			return {
 				post: function(scope, element, attrs, controller) {
 					let data = {
-						heading: scope.$eval(attrs.heading),
-						headingExt: scope.$eval(attrs.headingExt),
+						heading: _.escape(scope.$eval(attrs.heading)),
+						headingExt: _.escape(scope.$eval(attrs.headingExt)),
 						tooltip: scope.$eval(attrs.tooltip),
 						showPlayIcon: scope.$eval(attrs.showPlayIcon),
 						model: scope.$eval(attrs.model),

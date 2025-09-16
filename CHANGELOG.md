@@ -8,6 +8,7 @@
 ### Changed
 - Playlist tooltip on the navigation pane now shows also the playlist name
   [#1236](https://github.com/owncloud/music/issues/1236)
+- Prevent HTML injection from track metadata to the web UI
 
 ### Fixed
 - Favorite toggle in the details pane not working (since v2.3.0)

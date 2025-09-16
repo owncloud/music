@@ -150,8 +150,9 @@ angular.module('Music').controller('AlbumsViewController', [
 		/**
 		 * Gets track data to be displayed in the tracklist directive
 		 */
-		$scope.getTrackData = function(track, index, scope) {
+		$scope.getTrackData = function(track, _index, scope) {
 			return {
+				preEscaped: true,
 				title: getTitleString(track, scope.artist, false),
 				tooltip: getTitleString(track, scope.artist, true),
 				number: track.formattedNumber,
@@ -163,9 +164,9 @@ angular.module('Music').controller('AlbumsViewController', [
 		 * Formats a track title string for displaying in tracklist directive
 		 */
 		function getTitleString(track, artist, plaintext) {
-			let att = track.title;
+			let att = _.escape(track.title);
 			if (track.artistId !== artist.id) {
-				let artistName = ' (' + track.artist.name + ') ';
+				let artistName = ' (' + _.escape(track.artist.name) + ') ';
 				if (!plaintext) {
 					artistName = ' <span class="muted">' + artistName + '</span>';
 				}

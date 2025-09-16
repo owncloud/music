@@ -43,6 +43,13 @@ function ($rootScope, $interpolate, gettextCatalog, albumartService) {
 	`);
 
 	function trackRenderer(trackData) {
+		if (!trackData.preEscaped) { // parent controller needs to handle the escaping if it provides a HTML-formatted title
+			trackData.title = _.escape(trackData.title);
+			trackData.title2 = _.escape(trackData.title2);
+			trackData.tooltip = _.escape(trackData.tooltip);
+			trackData.tooltip2 = _.escape(trackData.tooltip2);
+		}
+
 		return trackData.art ? trackWithArtRenderer(trackData) : trackNoArtRenderer(trackData);
 	}
 

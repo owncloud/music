@@ -13,6 +13,13 @@ import { PlayerWrapper } from "./playerwrapper";
 const soundOffIconPath = require('../../img/sound-off.svg') as string;
 const soundIconPath = require('../../img/sound.svg') as string;
 
+declare function t(module : string, text : string) : string;
+
+interface VolumeControlOptions {
+	tooltipSuffix? : string;
+	muteTooltipSuffix? : string;
+}
+
 export class VolumeControl {
 
 	#player : PlayerWrapper;
@@ -20,17 +27,18 @@ export class VolumeControl {
 	#volume : number;
 	#lastVolume : number;
 
-	constructor(player : PlayerWrapper) {
+	constructor(player : PlayerWrapper, options : VolumeControlOptions = {}) {
 		this.#player = player;
-
-		this.#volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
-		player.setVolume(this.#volume);
-
-		this.#createHtml();
+		this.#createHtml(options);
+		this.setVolume(parseInt(OCA.Music.Storage.get('volume')) || 50); // volume can be 0~100
 	}
 
 	addToContainer(container : JQuery<HTMLElement>) {
 		container.append(this.#elem);
+	}
+
+	getElement() : JQuery<HTMLElement> {
+		return this.#elem;
 	}
 
 	setVolume(value : number) {
@@ -54,7 +62,7 @@ export class VolumeControl {
 		}
 	}
 
-	#createHtml() {
+	#createHtml(options : VolumeControlOptions = {}) {
 		this.#elem = $(document.createElement('div'))
 			.attr('class', 'music-volume-control');
 
@@ -69,7 +77,7 @@ export class VolumeControl {
 			.attr('min', '0')
 			.attr('max', '100')
 			.attr('type', 'range')
-			.attr('value', this.#volume)
+			.attr('title', t('music', 'Volume') + (options.tooltipSuffix || ''))
 			.on('input change', function() {
 				const value = parseInt($(this).val() as string);
 
@@ -83,7 +91,14 @@ export class VolumeControl {
 				OCA.Music.Storage.set('volume', value);
 
 				// Show correct icon if muted 
-				volumeIcon.attr('src', value == 0 ? soundOffIconPath : soundIconPath);
+				if (value == 0) {
+					volumeIcon.attr('src', soundOffIconPath)
+						.attr('title', t('music', 'Unmute') + (options.muteTooltipSuffix || ''));
+				} else {
+					volumeIcon.attr('src', soundIconPath)
+						.attr('title', t('music', 'Mute') + (options.muteTooltipSuffix || ''));
+				}
+				
 			});
 
 		this.#elem.on('wheel', ($event) => {

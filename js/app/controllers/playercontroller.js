@@ -22,7 +22,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	$scope.player = Audio;
 	$scope.currentTrack = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
 	$scope.repeat = OCA.Music.Storage.get('repeat') || 'false';
 	$scope.shuffle = (OCA.Music.Storage.get('shuffle') === 'true');
 	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
@@ -37,7 +36,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		current: 0,
 		total: 0
 	};
-	let lastVolume = null;
 	let scrobblePending = false;
 	let scheduledRadioTitleFetch = null;
 	let abortRadioTitleFetch = null;
@@ -358,16 +356,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	};
 
-	$scope.$watch('volume', function(newValue, oldValue) {
-		// Reset last known volume, if a new value is selected via the slider
-		if (newValue && lastVolume && lastVolume !== oldValue) {
-			lastVolume = null;
-		}
-
-		$scope.player.setVolume(newValue);
-		OCA.Music.Storage.set('volume', newValue);
-	});
-
 	const notifyPlaybackRateNotAdjustible = _.debounce(
 		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
 		1000, {leading: true, trailing: false}
@@ -379,34 +367,12 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	});
 
-	$scope.mouseWheelOnVolume = function($event) {
-		const event = $event.originalEvent;
-		if (!event.ctrlKey) {
-			$event.preventDefault();
-			let step = -Math.sign(event.deltaY);
-			if (event.shiftKey) {
-				step *= 5;
-			}
-
-			$scope.offsetVolume(step);
-		}
-	};
-
 	$scope.offsetVolume = function (offset) {
-		const value = $scope.volume + offset;
-		$scope.volume = Math.max(0, Math.min(100, value)); // Clamp to 0-100
-		lastVolume = null;
+		$scope.$broadcast('offsetVolume', offset);
 	};
 
 	$scope.toggleVolume = function() {
-		if (lastVolume) {
-			$scope.volume = lastVolume;
-			lastVolume = null;
-		}
-		else {
-			lastVolume = $scope.volume;
-			$scope.volume = 0;
-		}
+		$scope.$broadcast('toggleMute');
 	};
 
 	$scope.toggleShuffle = function() {

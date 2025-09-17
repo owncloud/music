@@ -192,65 +192,9 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	opacity: 1;
 }
 
-#controls .volume-control {
+#controls .music-volume-control {
 	position: absolute;
-	width: 66px;
-	height: 66px;
 	right: 100px;
-}
-
-.ie.lte9 #controls .volume-control {
-	display: none;
-}
-
-#controls #volume-icon {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-#controls .volume-control input[type=range] {
-	position: absolute;
-	width: 58px;
-	height: 3px;
-	min-height: 3px;
-	top: 31px;
-	left: 21px;
-	margin: 0;
-	-webkit-appearance: none;
-	background-color: silver;
-	transform: rotate(270deg);
-}
-
-.ie #controls .volume-control input[type=range] {
-	height:auto;
-	top: 3px;
-	left: 26px;
-	background-color: transparent;
-}
-
-::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	background-color: #666;
-	border-radius: 100%;
-	width: 10px;
-	height: 10px;
-}
-
-:hover::-webkit-slider-thumb {
-	cursor: pointer;
-}
-
-::-moz-range-thumb {
-	-moz-appearance: none;
-	background-color: #666;
-	border-radius: 100%;
-	width: 10px;
-	height: 10px;
-}
-
-:hover::-moz-range-thumb {
-	cursor: pointer;
 }
 
 
@@ -278,7 +222,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	top: 38px;
 }
 
-#controls.two-line .volume-control {
+#controls.two-line .music-volume-control {
 	right: 9px;
 }
 

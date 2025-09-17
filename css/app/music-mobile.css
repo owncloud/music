@@ -9,7 +9,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 .mobile #app-view {
@@ -137,7 +137,7 @@
 
 /* extra narrow screen matches small smart phones; drop non-essential elements and margins */
 .mobile.portrait.extra-narrow #controls .albumart,
-.mobile.portrait.extra-narrow #controls #volume-icon {
+.mobile.portrait.extra-narrow #controls .volume-icon {
 	display: none;
 }
 .mobile.portrait.extra-narrow #controls.two-line .song-info {
@@ -156,7 +156,7 @@
 
 /* min-width screen may result on desktop browser when manually resizing the window; here we need to drop also essential elements */
 .mobile.portrait.min-width #controls .progress,
-.mobile.portrait.min-width #controls .volume-control {
+.mobile.portrait.min-width #controls .music-volume-control {
 	display: none;
 }
 .mobile.portrait.min-width #controls.two-line .song-info {

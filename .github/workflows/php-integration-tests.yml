@@ -24,7 +24,7 @@ jobs:
             php: 8.2
             db: pgsql
           - cloud: nextcloud
-            version: 32.0.0beta4
+            version: 32.0.0rc3
             php: 8.4
             db: mysql
           - cloud: owncloud

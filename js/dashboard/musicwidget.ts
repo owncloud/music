@@ -440,9 +440,9 @@ function createSelect(items: any[], placeholder: string|null, onChange: (selecte
 }
 
 function trackTitle(track: any, parentId: string|null = null) : {asHtml: string, asPlain: string} {
-	const result = { asHtml: track.name, asPlain: track.name };
+	const result = { asHtml: _.escape(track.name), asPlain: track.name };
 	if ('artist' in track && track.artist.id != parentId) {
-		result.asHtml += ` <span class="dimmed">(${track.artist.name})</span>`;
+		result.asHtml += ` <span class="dimmed">(${_.escape(track.artist.name)})</span>`;
 		result.asPlain += ` (${track.artist.name})`
 	}
 	return result;
@@ -454,7 +454,7 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 		const title = trackTitle(this, parentId);
 		// Each item stores a `data` reference to its index. This is done using the jQuery .attr() instead of .data() because
 		// the latter doesn't store the reference to the DOM itself, making finding the element by the attribute impossible.
-		$(`<li title="${title.asPlain}">${title.asHtml}</li>`).attr('data-index', index).appendTo($ul);
+		$('<li/>').html(title.asHtml).attr('title', title.asPlain).attr('data-index', index).appendTo($ul);
 	});
 
 	return $ul;

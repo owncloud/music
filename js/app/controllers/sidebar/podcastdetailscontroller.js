@@ -28,7 +28,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 
 			// Descriptions from the feeds are sometimes HTML-formatted and sometimes they are not. Our template 
 			// always renders them as HTML but this has the side-effect of removing any newline characters.
-			// Solution: If it doesn't look like HTML-formatted, then substitue any newline with <br/>.
+			// Solution: If it doesn't look like HTML-formatted, then substitute any newline with <br/>.
 			if (!patternLooksLikeHtml.test(rawValue)) {
 				desc = desc.replaceAll(patternNewline, '\n<br>');
 

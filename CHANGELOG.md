@@ -2,6 +2,8 @@
 
 ### Added
 - Mouse wheel can be used to adjust volume while hovering over the volume control (slow by default, faster with SHIFT)
+- Belarusian translation
+  [#1254](https://github.com/owncloud/music/pull/1254) @pavel-miniutka
 
 ### Changed
 - Playlist tooltip on the navigation pane now shows also the playlist name

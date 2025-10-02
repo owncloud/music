@@ -15,11 +15,12 @@
   [#1250](https://github.com/owncloud/music/issues/1250)
 - Overly long playlist names shown only as ellipses (…) in the navigation pane
   [#1236](https://github.com/owncloud/music/issues/1236)
+- "Unshare from self" not removing songs from the user's library (since v2.3.0)
 
 ## 2.3.0 - 2025-08-31
 
 ### Added
-- Support for Nextcloud 32 (tested on beta4)
+- Support for Nextcloud 32
 - Russian translation
   [#1219](https://github.com/owncloud/music/pull/1219) @mexvod
 - Hungarian translation

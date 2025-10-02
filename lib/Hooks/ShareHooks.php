@@ -67,7 +67,7 @@ class ShareHooks {
 	public static function itemUnsharedFromSelf(array $params) : void {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
-		$removeFromUsers = [ self::inject('receivingUserId') ];
+		$removeFromUsers = [ self::inject('userId') ];
 
 		self::removeSharedItem($params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 	}

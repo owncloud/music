@@ -230,12 +230,34 @@ div:hover > .play-pause,
 	opacity: 0.85;
 }
 
-#app-content .emptycontent.clickable:hover * {
+/** All children of .emptycontent.clickable except the .close when hovering the .emptycontent but not the .close */
+#app-content .emptycontent.clickable:hover:not(:has(.close:hover)) :not(.close) {
+	opacity: 1;
+}
+
+#app-content .emptycontent .close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 44px;
+	height: 44px;
+	padding: 14px;
+	background-size: auto;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+	border-radius: 50%;
+	opacity: 0.5;
+}
+
+#app-content .emptycontent .close:hover {
 	opacity: 1;
 }
 
 #app-view .emptycontent {
 	margin-left: -14px; /* to cancel out the #app-view padding */
+}
+
+#app-content .emptycontent.emptycontent:not(.collapsed) .close {
+	display: none;
 }
 
 /* hide popups and navigation until the angularjs framework is up and running and can do the dynamic hiding and interpolation */

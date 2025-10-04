@@ -54,6 +54,7 @@ HtmlUtil::addWebpackStyle('app');
 					<h2 translate>New music available</h2>
 					<p translate>Click here to start the scan</p>
 				</div>
+				<a class="close icon-close" alt="Close" ng-click="hideScanBar($event)"></a>
 			</div>
 
 			<div id="toRescan" class="emptycontent clickable" ng-show="!scanning && !unscannedFiles.length && dirtyFiles.length && viewingLibrary()" ng-click="startScanning(dirtyFiles)">
@@ -62,6 +63,7 @@ HtmlUtil::addWebpackStyle('app');
 					<h2 translate>Some of the previously scanned files may have changed</h2>
 					<p translate>Click here to rescan these files</p>
 				</div>
+				<a class="close icon-close" alt="Close" ng-click="hideScanBar($event)"></a>
 			</div>
 
 			<div id="scanning" class="emptycontent" ng-show="scanning && viewingLibrary()">

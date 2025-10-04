@@ -393,6 +393,14 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$rootScope.$emit('hideDetails');
 	};
 
+	$scope.hideScanBar = function(event) {
+		event.stopPropagation();
+		// Acknowledge the scanning needs without taking any action. The page needs to be reloaded
+		// to check them again.
+		$scope.unscannedFiles = null;
+		$scope.dirtyFile = null;
+	};
+
 	function scrollOffset() {
 		let controls = document.getElementById('controls');
 		let offset = controls?.offsetHeight ?? 0;

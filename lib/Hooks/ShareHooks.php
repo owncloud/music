@@ -20,6 +20,12 @@ use OCP\Files\Folder;
 use OCP\IGroupManager;
 
 class ShareHooks {
+
+	// NC32 removed the legacy constants under OCP\Share::SHARE_TYPE_* but the alternative OCP\Share\IShare::TYPE_*
+	// are not present on OC (or NC < 17). The numeric values are compatible, though, so redefine them here.
+	const SHARE_TYPE_USER = 0;
+	const SHARE_TYPE_GROUP = 1;
+
 	private static function removeSharedItem(
 			string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {
 		/** @var Scanner $scanner */
@@ -45,9 +51,9 @@ class ShareHooks {
 		$shareType = $params['shareType'];
 
 		// react only on user and group shares
-		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
+		if ($shareType == self::SHARE_TYPE_USER) {
 			$receivingUserIds = [ $params['shareWith'] ];
-		} elseif ($shareType == \OCP\Share::SHARE_TYPE_GROUP) {
+		} elseif ($shareType == self::SHARE_TYPE_GROUP) {
 			$groupManager = self::inject(IGroupManager::class);
 			$groupMembers = $groupManager->displayNamesInGroup($params['shareWith']);
 			$receivingUserIds = \array_keys($groupMembers);
@@ -81,7 +87,7 @@ class ShareHooks {
 		// thousands of audio files, and indexing them could take minutes or hours. The sharee
 		// user will be prompted to update database the next time she opens the Music app.
 		// Similarly, do not auto-update on group shares.
-		if ($params['itemType'] === 'file' && $params['shareType'] == \OCP\Share::SHARE_TYPE_USER) {
+		if ($params['itemType'] === 'file' && $params['shareType'] == self::SHARE_TYPE_USER) {
 			$scanner = self::inject(Scanner::class);
 
 			$sharingUser = self::inject('userId');

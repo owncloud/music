@@ -16,6 +16,8 @@
 - Overly long playlist names shown only as ellipses (…) in the navigation pane
   [#1236](https://github.com/owncloud/music/issues/1236)
 - "Unshare from self" not removing songs from the user's library (since v2.3.0)
+- Sharing files on NC32 broken while Music enabled (due to unannounced API change)
+  [#1253](https://github.com/owncloud/music/issues/1253)
 
 ## 2.3.0 - 2025-08-31
 

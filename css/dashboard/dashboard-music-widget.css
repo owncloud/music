@@ -103,7 +103,8 @@
 	height: 50px;
 }
 
-.music-widget .player-controls .music-volume-control .volume-icon {
+.music-widget .player-controls .music-volume-control .volume-icon-and-percent {
+	position: absolute;
 	left: 10px;
 	top: 4px;
 }
@@ -151,13 +152,16 @@
 	opacity: .5;
 }
 
-.music-widget .control {
-	cursor: pointer;
-	opacity: .5;
+.music-widget .svg {
 	filter: var(--background-invert-if-dark);
 }
 
-.music-widget .control:hover,
+.music-widget .control {
+	cursor: pointer;
+	opacity: .5;
+}
+
+.music-widget .control:not(.volume-percent):hover,
 .music-widget .control.toggle.active {
 	opacity: 1;
 }

@@ -2,6 +2,7 @@
 
 ### Added
 - Mouse wheel can be used to adjust volume while hovering over the volume control (slow by default, faster with SHIFT)
+- Volume percent is displayed in place of the volume icon while adjusting
 - Button to dismiss the "files to scan" banner without taking any action (it will be shown again on page reload)
   [#1251](https://github.com/owncloud/music/issues/1251)
 - Belarusian translation

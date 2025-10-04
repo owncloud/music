@@ -9,6 +9,7 @@
  */
 
 import { PlayerWrapper } from "./playerwrapper";
+import * as _ from 'lodash';
 
 const soundOffIconPath = require('../../img/sound-off.svg') as string;
 const soundIconPath = require('../../img/sound.svg') as string;
@@ -53,9 +54,8 @@ export class VolumeControl {
 	}
 
 	toggleMute() : void {
-		if (this.#lastVolume) {
-			this.setVolume(this.#lastVolume);
-			this.#lastVolume = null;
+		if (this.#volume == 0) {
+			this.setVolume(this.#lastVolume || 50);
 		} else {
 			this.#lastVolume = this.#volume;
 			this.setVolume(0);
@@ -63,16 +63,27 @@ export class VolumeControl {
 	}
 
 	#createHtml(options : VolumeControlOptions = {}) {
-		this.#elem = $(document.createElement('div'))
-			.attr('class', 'music-volume-control');
+		this.#elem = $('<div class="music-volume-control"/>');
 
 		const self = this;
-		let volumeIcon = $(document.createElement('img'))
+
+		const iconPercentContainer = $('<div class="volume-icon-and-percent"/>');
+
+		const volumeIcon = $('<img/>')
 			.attr('class', 'volume-icon control small svg')
 			.attr('src', soundIconPath)
 			.on('click', () => self.toggleMute());
 
-		let volumeSlider = $(document.createElement('input'))
+		const volumePercent = $('<span class="volume-percent control small"/>');
+
+		var mouseDrag = false;
+		const debouncedEndAdjustment = _.debounce(() => {
+			if (!mouseDrag) {
+				self.#elem.removeClass('adjusting');
+			}
+		}, 1000);
+
+		const volumeSlider = $('<input/>')
 			.attr('class', 'volume-slider')
 			.attr('min', '0')
 			.attr('max', '100')
@@ -80,11 +91,6 @@ export class VolumeControl {
 			.attr('title', t('music', 'Volume') + (options.tooltipSuffix || ''))
 			.on('input change', function() {
 				const value = parseInt($(this).val() as string);
-
-				// Reset last known volume, if a new value is selected via the slider
-				if (value && self.#lastVolume && self.#lastVolume !== self.#volume) {
-					self.#lastVolume = null;
-				}
 
 				self.#volume = value;
 				self.#player.setVolume(value);
@@ -98,7 +104,24 @@ export class VolumeControl {
 					volumeIcon.attr('src', soundIconPath)
 						.attr('title', t('music', 'Mute') + (options.muteTooltipSuffix || ''));
 				}
-				
+
+				// Show the new percent value except when muted
+				volumePercent.text(value);
+
+				if (value == 0) {
+					self.#elem.removeClass('adjusting');
+				} else {
+					self.#elem.addClass('adjusting');
+					debouncedEndAdjustment();
+				}
+			})
+			.on('mousedown', function() {
+				mouseDrag = true;
+				self.#elem.addClass('adjusting');
+			})
+			.on('mouseup', function() {
+				mouseDrag = false;
+				self.#elem.removeClass('adjusting');
 			});
 
 		this.#elem.on('wheel', ($event) => {
@@ -114,7 +137,9 @@ export class VolumeControl {
 			}
 		});
 
-		this.#elem.append(volumeIcon);
+		iconPercentContainer.append(volumeIcon);
+		iconPercentContainer.append(volumePercent);
+		this.#elem.append(iconPercentContainer);
 		this.#elem.append(volumeSlider);
 	}
 

@@ -13,10 +13,25 @@
 	height: 66px;
 }
 
-.music-volume-control .volume-icon {
+.music-volume-control .volume-icon-and-percent * {
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+
+.music-volume-control .volume-icon-and-percent .volume-percent {
+	visibility: hidden;
+	text-align: center;
+	font-weight: bolder;
+	cursor: default;
+}
+
+.music-volume-control.adjusting .volume-percent {
+	visibility: visible;
+}
+
+.music-volume-control.adjusting .volume-icon {
+	visibility: hidden;
 }
 
 .music-volume-control .volume-slider {

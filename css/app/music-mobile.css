@@ -137,7 +137,7 @@
 
 /* extra narrow screen matches small smart phones; drop non-essential elements and margins */
 .mobile.portrait.extra-narrow #controls .albumart,
-.mobile.portrait.extra-narrow #controls .volume-icon {
+.mobile.portrait.extra-narrow #controls .volume-icon-and-percent {
 	display: none;
 }
 .mobile.portrait.extra-narrow #controls.two-line .song-info {

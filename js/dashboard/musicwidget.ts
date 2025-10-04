@@ -463,9 +463,9 @@ function createTrackList(tracks: any[], parentId: string|null) : JQuery<HTMLULis
 function createProgressAndOrder(progress : ProgressInfo, onShuffleBtn : () => void, onRepeatBtn : () => void) : JQuery<HTMLElement>
 {
 	const $container = $('<div class="progress-and-order"/>');
-	$('<div class="control toggle icon-shuffle"/>').appendTo($container).on('click', onShuffleBtn);
+	$('<div class="control svg toggle icon-shuffle"/>').appendTo($container).on('click', onShuffleBtn);
 	progress.addToContainer($container);
-	$('<div class="control toggle icon-repeat"/>').appendTo($container).on('click', onRepeatBtn);
+	$('<div class="control svg toggle icon-repeat"/>').appendTo($container).on('click', onRepeatBtn);
 	return $container;
 }
 
@@ -478,10 +478,10 @@ function createControls(
 		volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
 	$('<div class="albumart"/>').appendTo($container).on('click', onCoverClick);
-	$('<div class="playback control icon-skip-prev"/>').appendTo($container).on('click', onPrev);
-	$('<div class="playback control icon-play"/>').appendTo($container).on('click', onPlay);
-	$('<div class="playback control icon-pause"/>').appendTo($container).on('click', onPause).hide();
-	$('<div class="playback control icon-skip-next"/>').appendTo($container).on('click', onNext);
+	$('<div class="playback control svg icon-skip-prev"/>').appendTo($container).on('click', onPrev);
+	$('<div class="playback control svg icon-play"/>').appendTo($container).on('click', onPlay);
+	$('<div class="playback control svg icon-pause"/>').appendTo($container).on('click', onPause).hide();
+	$('<div class="playback control svg icon-skip-next"/>').appendTo($container).on('click', onNext);
 	volumeControl.addToContainer($container);
 	return $container;
 }

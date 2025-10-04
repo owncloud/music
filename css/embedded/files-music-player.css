@@ -128,6 +128,11 @@
 	opacity: 1;
 }
 
+#music-controls .control.volume-percent:hover:not(.disabled) {
+	opacity: .4;
+	cursor: default;
+}
+
 #music-controls .svg {
 	filter: var(--background-invert-if-dark);
 }

@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.4.0 - 2025-10-05
 
 ### Added
 - Mouse wheel can be used to adjust volume while hovering over the volume control (slow by default, faster with SHIFT)

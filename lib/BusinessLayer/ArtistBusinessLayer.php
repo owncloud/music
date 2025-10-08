@@ -38,7 +38,7 @@ use OCP\Files\File;
 class ArtistBusinessLayer extends BusinessLayer {
 	private Logger $logger;
 
-	private const FORBIDDEN_CHARS_IN_FILE_NAME = '<>:"/\|?*'; // chars forbidden in Windows, on Linux only '/' is technically forbidden
+	private const REPLACEABLE_CHARS_IN_FILE_NAME = ' <>:"/\|?*'; // space and chars forbidden in Windows may be replaced by '_', on Linux only '/' is technically forbidden
 
 	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
@@ -170,7 +170,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 		// a huge amount of them. Any of the characters forbidden in Windows file names
 		// may be replaced with an underscore, which is taken into account when building
 		// the LUT.
-		$replacedChars = \str_split(self::FORBIDDEN_CHARS_IN_FILE_NAME);
+		$replacedChars = \str_split(self::REPLACEABLE_CHARS_IN_FILE_NAME);
 		\assert(\is_array($replacedChars)); // for scrutinizer
 		$imageLut = [];
 		foreach ($imageFiles as $imageFile) {
@@ -244,7 +244,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 		} else {
 			// iterate over all the bytes and require that all the other bytes are equal but
 			// underscores are allowed to match any forbidden filesystem character
-			$matchedChars = self::FORBIDDEN_CHARS_IN_FILE_NAME . '_';
+			$matchedChars = self::REPLACEABLE_CHARS_IN_FILE_NAME . '_';
 			for ($i = 0; $i < $length; ++$i) {
 				if ($filename[$i] === '_') {
 					if (\strpos($matchedChars, $artistName[$i]) === false) {

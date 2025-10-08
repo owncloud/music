@@ -3,6 +3,8 @@
 ### Added
 
 ### Changed
+- In artist image names, spaces may be optionally replaced with underscores (_)
+  [#1246](https://github.com/owncloud/music/issues/1246)
 
 ### Fixed
 - The dismiss button added in v2.4.0 not working on the "dirty files to rescan" banner

@@ -398,7 +398,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		// Acknowledge the scanning needs without taking any action. The page needs to be reloaded
 		// to check them again.
 		$scope.unscannedFiles = null;
-		$scope.dirtyFile = null;
+		$scope.dirtyFiles = null;
 	};
 
 	function scrollOffset() {

@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+- The dismiss button added in v2.4.0 not working on the "dirty files to rescan" banner
+  [#1251](https://github.com/owncloud/music/issues/1251)
+
 ## 2.4.0 - 2025-10-05
 
 ### Added

@@ -1,6 +1,4 @@
-## [Unreleased]
-
-### Added
+## 2.4.1 - 2025-10-12
 
 ### Changed
 - In artist image names, spaces may be optionally replaced with underscores (_)

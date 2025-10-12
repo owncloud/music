@@ -47,4 +47,27 @@ class Entity extends \OCP\AppFramework\Db\Entity {
 			return 'UNIMPLEMENTED';
 		}
 	}
+
+	/**
+	 * Override the property setter from the platform base class.
+	 *
+	 * NOTE: Type declarations should not be used on the parameters because OC and NC < 26
+	 * don't use them in the parent class. On those platforms, using the declarations in this
+	 * override method would break the PHP contravariance rules.
+	 *
+	 * @param string $name
+	 * @param mixed[] $args
+	 */
+	protected function setter($name, $args) : void {
+		parent::setter($name, $args);
+		/**
+		 * The parent implementation has such a feature that it doesn't mark a field updated
+		 * if the new value is the same as the previous value. This is problematic in case
+		 * we have created a new Entity and the new value is the same as the default value.
+		 * We may still use that new Entity with Mapper::update with the intention to change
+		 * that field on an existing row to its default value. This is what caused
+		 * https://github.com/owncloud/music/issues/1251 and probably some other subtle bugs, too.
+		 */
+		$this->markFieldUpdated($name);
+	}
 }

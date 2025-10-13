@@ -126,7 +126,7 @@ msgstr "<strong>SPACE</strong> або <strong>K</strong>"
 
 #: templates/partials/views/settingsview.php:189
 msgid "About"
-msgstr "АБ праграме"
+msgstr "Аб праграме"
 
 #: js/app/services/podcastservice.ts:132
 msgid "Add a new podcast channel from an RSS feed"
@@ -443,7 +443,7 @@ msgstr "Апісанне"
 
 #: templates/partials/views/settingsview.php:168
 msgid "Description (e.g. App name)"
-msgstr "Апісанне (напр., Назва праграмы)"
+msgstr "Апісанне (напрыклад, назва праграмы)"
 
 #: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
 #: templates/partials/navigationitem.php:33
@@ -1379,7 +1379,7 @@ msgstr "Пошук"
 
 #: templates/partials/views/advancedsearchview.php:6
 msgid "Search for"
-msgstr "Пошук"
+msgstr "Пошук па"
 
 #: js/app/controllers/searchcontroller.js:98
 msgid "Search not available in this view"
@@ -1589,7 +1589,7 @@ msgid ""
 "href=\"{{url}}\" target=\"_blank\">here</a>."
 msgstr ""
 "Карыстальніцкага інтэрфейсу агульнасерверных налад праграмы Музыка няма, але "
-"некаторыя налады даступны праз даданне пэўных пар ключ-значэнне ў файл "
+"некаторыя налады даступны праз дадаванне пэўных пар ключ-значэнне ў файл "
 "<samp>{{filename}}</samp>. Даступныя ключы задакументаваны <a href=\"{{url}}"
 "\" target=\"_blank\">тут</a>."
 

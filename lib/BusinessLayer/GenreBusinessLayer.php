@@ -20,6 +20,7 @@ use OCA\Music\Db\GenreMapper;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
+use OCA\Music\Utility\LocalCacheTrait;
 use OCA\Music\Utility\StringUtil;
 
 /**
@@ -31,6 +32,9 @@ use OCA\Music\Utility\StringUtil;
  * @phpstan-extends BusinessLayer<Genre>
  */
 class GenreBusinessLayer extends BusinessLayer {
+	/** @phpstan-use LocalCacheTrait<Genre> */
+	use LocalCacheTrait;
+
 	private TrackMapper $trackMapper;
 	private Logger $logger;
 
@@ -45,12 +49,15 @@ class GenreBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateGenre(string $name, string $userId) : Genre {
 		$name = StringUtil::truncate($name, 64); // some DB setups can't truncate automatically to column max size
+		$lowerName = \mb_strtolower($name ?? '');
 
-		$genre = new Genre();
-		$genre->setName($name);
-		$genre->setLowerName(\mb_strtolower($name ?? ''));
-		$genre->setUserId($userId);
-		return $this->mapper->updateOrInsert($genre);
+		return $this->cachedGet($userId, $lowerName, function () use ($name, $userId, $lowerName) {
+			$genre = new Genre();
+			$genre->setName($name);
+			$genre->setLowerName($lowerName);
+			$genre->setUserId($userId);
+			return $this->mapper->updateOrInsert($genre);
+		});
 	}
 
 	/**

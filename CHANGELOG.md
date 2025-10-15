@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+- Optimization for the scan speed (most significant on slow DB like SQLite)
+
+### Fixed
+
 ## 2.4.1 - 2025-10-12
 
 ### Changed

@@ -21,6 +21,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
+use OCA\Music\Utility\LocalCacheTrait;
 use OCA\Music\Utility\StringUtil;
 
 use OCP\IL10N;
@@ -36,6 +37,9 @@ use OCP\Files\File;
  * @phpstan-extends BusinessLayer<Artist>
  */
 class ArtistBusinessLayer extends BusinessLayer {
+	/** @phpstan-use LocalCacheTrait<Artist> */
+	use LocalCacheTrait;
+
 	private Logger $logger;
 
 	private const REPLACEABLE_CHARS_IN_FILE_NAME = ' <>:"/\|?*'; // space and chars forbidden in Windows may be replaced by '_', on Linux only '/' is technically forbidden
@@ -124,11 +128,13 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @return Artist The added/updated artist
 	 */
 	public function addOrUpdateArtist(?string $name, string $userId) : Artist {
-		$artist = new Artist();
-		$artist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
-		$artist->setUserId($userId);
-		$artist->setHash(\hash('md5', \mb_strtolower($name ?? '')));
-		return $this->mapper->updateOrInsert($artist);
+		return $this->cachedGet($userId, $name, function() use ($name, $userId) {
+			$artist = new Artist();
+			$artist->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+			$artist->setUserId($userId);
+			$artist->setHash(\hash('md5', \mb_strtolower($name ?? '')));
+			return $this->mapper->updateOrInsert($artist);
+		});
 	}
 
 	/**

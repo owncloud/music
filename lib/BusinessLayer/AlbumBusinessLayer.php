@@ -25,6 +25,7 @@ use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Utility\ArrayUtil;
+use OCA\Music\Utility\LocalCacheTrait;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
@@ -35,6 +36,9 @@ use OCA\Music\Utility\Util;
  * @property AlbumMapper $mapper
  */
 class AlbumBusinessLayer extends BusinessLayer {
+	/** @phpstan-use LocalCacheTrait<Album> */
+	use LocalCacheTrait;
+
 	private Logger $logger;
 
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
@@ -311,18 +315,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album The added/updated album
 	 */
 	public function addOrUpdateAlbum(?string $name, int $albumArtistId, string $userId) : Album {
-		$album = new Album();
-		$album->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
-		$album->setUserId($userId);
-		$album->setAlbumArtistId($albumArtistId);
-
 		// Generate hash from the set of fields forming the album identity to prevent duplicates.
 		// The uniqueness of album name is evaluated in case-insensitive manner.
-		$lowerName = \mb_strtolower($album->getName() ?? '');
+		$lowerName = \mb_strtolower($name ?? '');
 		$hash = \hash('md5', "$lowerName|$albumArtistId");
-		$album->setHash($hash);
 
-		return $this->mapper->updateOrInsert($album);
+		return $this->cachedGet($userId, $hash, function () use ($name, $albumArtistId, $userId, $hash) {
+			$album = new Album();
+			$album->setName(StringUtil::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+			$album->setUserId($userId);
+			$album->setAlbumArtistId($albumArtistId);
+			$album->setHash($hash);
+			return $this->mapper->updateOrInsert($album);
+		});
 	}
 
 	/**

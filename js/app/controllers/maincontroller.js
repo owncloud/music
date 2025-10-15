@@ -228,7 +228,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.updateRadio();
 	$scope.updatePodcasts();
 
-	const FILES_TO_SCAN_PER_STEP = 10;
+	const FILES_TO_SCAN_PER_STEP = 20;
 	let filesToScan = null;
 	$scope.unscannedFiles = null;
 	$scope.dirtyFiles = null;

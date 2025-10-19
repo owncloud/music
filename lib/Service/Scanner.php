@@ -555,17 +555,20 @@ class Scanner extends PublicEmitter {
 	 * @return int[]
 	 */
 	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
-		$fileIds = $this->trackBusinessLayer->findDirtyFileIds($userId);
-
-		// filter by path if given
+		$folderId = null;
 		if (!empty($path)) {
 			try {
-				$folder = $this->getMusicFolder($userId, $path);
+				$folderId = $this->getMusicFolder($userId, $path)->getId();
+				if ($folderId == $this->getMusicFolder($userId, null)->getId()) {
+					// the path just pointed to the root of the library so it doesn't actually limit anything
+					$folderId = null;
+				}
 			} catch (\OCP\Files\NotFoundException $e) {
 				return [];
 			}
-			$fileIds = \array_filter($fileIds, fn(int $fileId) => (\count($folder->getById($fileId)) > 0));
 		}
+
+		$fileIds = $this->trackBusinessLayer->findDirtyFileIds($userId, $folderId);
 
 		return \array_values($fileIds); // make the array non-sparse
 	}

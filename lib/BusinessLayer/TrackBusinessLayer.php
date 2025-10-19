@@ -168,10 +168,12 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * The track may be considered "dirty" for one of two reasons:
 	 * - its 'modified' time in the file system (actually in the cloud's file cache) is later than the 'updated' field of the entity in the database
 	 * - it has been specifically marked as dirty, maybe in response to being moved to another directory
+	 * Optionally, limit the search to files residing (directly or indirectly) in the given folder.
 	 * @return int[]
 	 */
-	public function findDirtyFileIds(string $userId) : array {
-		return $this->mapper->findDirtyFileIds($userId);
+	public function findDirtyFileIds(string $userId, ?int $folderId=null) : array {
+		$parentIds = ($folderId !== null) ? $this->findAllDescendantFolders($folderId) : null;
+		return $this->mapper->findDirtyFileIds($userId, $parentIds);
 	}
 
 	/**
@@ -321,6 +323,23 @@ class TrackBusinessLayer extends BusinessLayer {
 				$foldersToProcess[] = $lut[$folderId] = \array_merge($nameAndParent, ['trackIds' => []]);
 			}
 		}
+	}
+
+	/**
+	 * Find all direct and indirect sub folders of the given folder. The result will include also the start folder.
+	 * NOTE: This does not return the mounted or shared folders even in case the $folderId points to user home directory.
+	 * @return int[]
+	 */
+	private function findAllDescendantFolders(int $folderId) : array {
+		$descendants = [];
+		$foldersToProcess = [$folderId];
+
+		while(\count($foldersToProcess)) {
+			$descendants = \array_merge($descendants, $foldersToProcess);
+			$foldersToProcess = $this->mapper->findSubFolderIds($foldersToProcess);
+		}
+
+		return $descendants;
 	}
 
 	/**

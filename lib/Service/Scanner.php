@@ -480,8 +480,21 @@ class Scanner extends PublicEmitter {
 		});
 	}
 
-	private function getScannedFileIds(string $userId) : array {
-		return $this->trackBusinessLayer->findAllFileIds($userId);
+	private function getScannedFileIds(string $userId, ?string $path = null) : array {
+		$folderId = null;
+		if (!empty($path)) {
+			try {
+				$folderId = $this->getMusicFolder($userId, $path)->getId();
+				if ($folderId == $this->getMusicFolder($userId, null)->getId()) {
+					// the path just pointed to the root of the library so it doesn't actually limit anything
+					$folderId = null;
+				}
+			} catch (\OCP\Files\NotFoundException $e) {
+				return [];
+			}
+		}
+
+		return $this->trackBusinessLayer->findAllFileIds($userId, $folderId);
 	}
 
 	private function getMusicFolder(string $userId, ?string $path) : Folder {

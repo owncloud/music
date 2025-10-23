@@ -122,11 +122,24 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find file IDs of scanned files. Optionally, limit to files which are direct children of the given folders.
+	 * @param ?int[] $parentIds
 	 * @return int[]
 	 */
-	public function findAllFileIds(string $userId) : array {
-		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
-		$result = $this->execute($sql, [$userId]);
+	public function findAllFileIds(string $userId, ?array $parentIds=null) : array {
+		if (empty($parentIds)) {
+			$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
+			$params = [$userId];
+		} else {
+			$sql = 'SELECT `track`.`file_id`
+					FROM `*PREFIX*music_tracks` `track`
+					INNER JOIN `*PREFIX*filecache` `file`
+					ON `track`.`file_id` = `file`.`fileid`
+					WHERE `track`.`user_id` = ?
+					AND `file`.`parent` IN ' . $this->questionMarks(\count($parentIds));
+			$params = \array_merge([$userId], $parentIds);
+		}
+		$result = $this->execute($sql, $params);
 		return $result->fetchAll(\PDO::FETCH_COLUMN);
 	}
 

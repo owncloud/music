@@ -156,11 +156,13 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns file IDs of all indexed tracks of the user
+	 * Returns file IDs of all indexed tracks of the user.
+	 * Optionally, limit the search to files residing (directly or indirectly) in the given folder.
 	 * @return int[]
 	 */
-	public function findAllFileIds(string $userId) : array {
-		return $this->mapper->findAllFileIds($userId);
+	public function findAllFileIds(string $userId, ?int $folderId=null) : array {
+		$parentIds = ($folderId !== null) ? $this->findAllDescendantFolders($folderId) : null;
+		return $this->mapper->findAllFileIds($userId, $parentIds);
 	}
 
 	/**

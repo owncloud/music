@@ -126,18 +126,25 @@ class Scan extends BaseCommand {
 		if (\count($filesToScan)) {
 			$stats = $this->scanner->scanFiles($user, $filesToScan, $debug ? $output : null);
 			$output->writeln("Added {$stats['count']} files to database of <info>$user</info>");
-			$output->writeln('Time consumed to analyze files: ' . ($stats['anlz_time'] / 1000) . ' s');
-			$output->writeln('Time consumed to update DB: ' . ($stats['db_time'] / 1000) . ' s');
+			$output->writeln('  Time consumed to analyze files: ' . ($stats['anlz_time'] / 1000) . ' s');
+			$output->writeln('  Time consumed to update DB: ' . ($stats['db_time'] / 1000) . ' s');
 		}
 
+		$output->writeln("");
 		$output->writeln("Searching cover images for albums with no cover art set...");
+		$startTime = \hrtime(true);
 		if ($this->scanner->findAlbumCovers($user)) {
-			$output->writeln("Some album cover image(s) were found and added");
+			$output->writeln("  Some album cover image(s) were found and added");
 		}
+		$albumCoverTime = (int)((\hrtime(true) - $startTime) / 1000000);
+		$output->writeln("  Search took $albumCoverTime ms");
 
 		$output->writeln("Searching cover images for artists with no cover art set...");
+		$startTime = \hrtime(true);
 		if ($this->scanner->findArtistCovers($user)) {
-			$output->writeln("Some artist cover image(s) were found and added");
+			$output->writeln("  Some artist cover image(s) were found and added");
 		}
+		$artistCoverTime = (int)((\hrtime(true) - $startTime) / 1000000);
+		$output->writeln("  Search took $artistCoverTime ms");
 	}
 }

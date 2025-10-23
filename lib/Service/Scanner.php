@@ -481,20 +481,43 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function getScannedFileIds(string $userId, ?string $path = null) : array {
+		try {
+			$folderId = $this->pathInLibToFolderId($userId, $path);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return [];
+		}
+		return $this->trackBusinessLayer->findAllFileIds($userId, $folderId);
+	}
+
+	/**
+	 * Find already scanned music files which have been modified since the time they were scanned
+	 *
+	 * @return int[]
+	 */
+	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
+		try {
+			$folderId = $this->pathInLibToFolderId($userId, $path);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return [];
+		}
+		return $this->trackBusinessLayer->findDirtyFileIds($userId, $folderId);
+	}
+
+	/**
+	 * Convert given path to a folder ID, provided that the path is within the music library.
+	 * The result if null if the $path points to th root of the music library. The $path null
+	 * is considered to point to the root of the lib (like in getMusicFolder).
+	 */
+	private function pathInLibToFolderId(string $userId, ?string $path = null) : ?int {
 		$folderId = null;
 		if (!empty($path)) {
-			try {
-				$folderId = $this->getMusicFolder($userId, $path)->getId();
-				if ($folderId == $this->getMusicFolder($userId, null)->getId()) {
-					// the path just pointed to the root of the library so it doesn't actually limit anything
-					$folderId = null;
-				}
-			} catch (\OCP\Files\NotFoundException $e) {
-				return [];
+			$folderId = $this->getMusicFolder($userId, $path)->getId();
+			if ($folderId == $this->getMusicFolder($userId, null)->getId()) {
+				// the path just pointed to the root of the library so it doesn't actually limit anything
+				$folderId = null;
 			}
 		}
-
-		return $this->trackBusinessLayer->findAllFileIds($userId, $folderId);
+		return $folderId;
 	}
 
 	private function getMusicFolder(string $userId, ?string $path) : Folder {
@@ -560,30 +583,6 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $unscannedIds;
-	}
-
-	/**
-	 * Find already scanned music files which have been modified since the time they were scanned
-	 *
-	 * @return int[]
-	 */
-	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
-		$folderId = null;
-		if (!empty($path)) {
-			try {
-				$folderId = $this->getMusicFolder($userId, $path)->getId();
-				if ($folderId == $this->getMusicFolder($userId, null)->getId()) {
-					// the path just pointed to the root of the library so it doesn't actually limit anything
-					$folderId = null;
-				}
-			} catch (\OCP\Files\NotFoundException $e) {
-				return [];
-			}
-		}
-
-		$fileIds = $this->trackBusinessLayer->findDirtyFileIds($userId, $folderId);
-
-		return \array_values($fileIds); // make the array non-sparse
 	}
 
 	/**

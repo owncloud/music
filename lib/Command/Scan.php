@@ -39,7 +39,7 @@ class Scan extends BaseCommand {
 	protected function doConfigure() : void {
 		$this
 			->setName('music:scan')
-			->setDescription('scan and index any unindexed audio files')
+			->setDescription('scan and index any unindexed or dirty audio files')
 			->addOption(
 					'debug',
 					null,
@@ -50,7 +50,7 @@ class Scan extends BaseCommand {
 					'clean-obsolete',
 					null,
 					InputOption::VALUE_NONE,
-					'also check availability of any previously scanned tracks, removing obsolete entries'
+					'also remove any obsolete file references from the library'
 			)
 			->addOption(
 					'rescan',
@@ -59,10 +59,16 @@ class Scan extends BaseCommand {
 					'rescan also any previously scanned tracks'
 			)
 			->addOption(
-					'rescan-modified',
+					'skip-dirty',
 					null,
 					InputOption::VALUE_NONE,
-					'rescan files which have modification time later than the previous scan time (new files not scanned)'
+					'do not rescan the files marked "dirty" or having timestamp after the latest scan time'
+			)
+			->addOption(
+					'skip-art',
+					null,
+					InputOption::VALUE_NONE,
+					'do not search for album and artist cover art images'
 			)
 			->addOption(
 					'folder',
@@ -79,8 +85,8 @@ class Scan extends BaseCommand {
 			$this->scanner->listen(Scanner::class, 'exclude', fn($path) => $output->writeln("!! Removing <info>$path</info>"));
 		}
 
-		if ($input->getOption('rescan') && $input->getOption('rescan-modified')) {
-			throw new \InvalidArgumentException('The options <error>rescan</error> and <error>rescan-modified</error> are mutually exclusive');
+		if ($input->getOption('rescan') && $input->getOption('skip-dirty')) {
+			throw new \InvalidArgumentException('The options <error>rescan</error> and <error>skip-dirty</error> are mutually exclusive');
 		}
 
 		if ($input->getOption('all')) {
@@ -93,7 +99,8 @@ class Scan extends BaseCommand {
 					$user,
 					$output,
 					$input->getOption('rescan'),
-					$input->getOption('rescan-modified'),
+					$input->getOption('skip-dirty'),
+					$input->getOption('skip-art'),
 					$input->getOption('clean-obsolete'),
 					$input->getOption('folder'),
 					$input->getOption('debug')
@@ -102,34 +109,57 @@ class Scan extends BaseCommand {
 	}
 
 	protected function scanUser(
-			string $user, OutputInterface $output, bool $rescan, bool $rescanModified,
+			string $user, OutputInterface $output, bool $rescan, bool $skipDirty, bool $skipArt,
 			bool $cleanObsolete, ?string $folder, bool $debug) : void {
 
-		if ($cleanObsolete) {
-			$output->writeln("Checking availability of previously scanned files of <info>$user</info>...");
-			$removedCount = $this->scanner->removeUnavailableFiles($user);
-			if ($removedCount > 0) {
-				$output->writeln("Removed $removedCount tracks which are no longer within the library of <info>$user</info>");
+		$output->writeln("Check library scan status for <info>$user</info>"  . ($folder ? " in path '$folder'..." : '...'));
+		$startTime = \hrtime(true);
+		\extract($this->scanner->getStatusOfLibraryFiles($user, $folder)); // populate $unscannedFiles, $obsoleteFiles, $dirtyFiles, $scannedCount
+		$statusTime = (int)((\hrtime(true) - $startTime) / 1000000);
+		$unscannedCount = \count($unscannedFiles);
+		$dirtyCount = \count($dirtyFiles);
+		$obsoleteCount = \count($obsoleteFiles);
+
+		$output->writeln("  Status got in $statusTime ms");
+		$output->writeln("  Scanned files: $scannedCount");
+		$output->writeln("  Unscanned files: $unscannedCount");
+		$output->writeln("  Dirty files: $dirtyCount" . (($dirtyCount && $skipDirty) ? ' (skipped)' : ''));
+		$output->writeln("  Obsolete files: $obsoleteCount" . (($obsoleteCount && !$cleanObsolete) ? ' (use --clean-obsolete to remove)' : ''));
+		$output->writeln("");
+
+		if ($cleanObsolete && !empty($obsoleteFiles)) {
+			if ($this->scanner->deleteAudio($obsoleteFiles, [$user])) {
+				$output->writeln("The obsolete files no longer available in the the library of <info>$user</info> were removed");
+			} else {
+				$output->writeln("<error>Failed</error> to remove any obsolete files of <info>$user</info>!");
 			}
 		}
 
-		$output->writeln("Start scan for <info>$user</info>");
 		if ($rescan) {
 			$filesToScan = $this->scanner->getAllMusicFileIds($user, $folder);
-		} elseif ($rescanModified) {
-			$filesToScan = $this->scanner->getDirtyMusicFileIds($user, $folder);
 		} else {
-			$filesToScan = $this->scanner->getUnscannedMusicFileIds($user, $folder);
+			$filesToScan = $unscannedFiles;
+			if (!$skipDirty) {
+				$filesToScan = \array_merge($filesToScan, $dirtyFiles);
+			}
 		}
-		$output->writeln('Found ' . \count($filesToScan) . ' music files to scan' . ($folder ? " in '$folder'" : ''));
+		$output->writeln('Total ' . \count($filesToScan) . ' files to scan' . ($folder ? " in '$folder'" : ''));
 
 		if (\count($filesToScan)) {
 			$stats = $this->scanner->scanFiles($user, $filesToScan, $debug ? $output : null);
-			$output->writeln("Added {$stats['count']} files to database of <info>$user</info>");
+			$output->writeln("Added or updated {$stats['count']} files in database of <info>$user</info>");
 			$output->writeln('  Time consumed to analyze files: ' . ($stats['anlz_time'] / 1000) . ' s');
 			$output->writeln('  Time consumed to update DB: ' . ($stats['db_time'] / 1000) . ' s');
 		}
 
+		if ($skipArt) {
+			$output->writeln("Cover art search skipped");
+		} else {
+			$this->searchArt($user, $output);
+		}
+	}
+
+	private function searchArt(string $user, OutputInterface $output) : void {
 		$output->writeln("");
 		$output->writeln("Searching cover images for albums with no cover art set...");
 		$startTime = \hrtime(true);

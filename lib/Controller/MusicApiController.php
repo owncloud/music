@@ -160,11 +160,7 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getScanState() : JSONResponse {
-		return new JSONResponse([
-			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId),
-			'dirtyFiles' => $this->scanner->getDirtyMusicFileIds($this->userId),
-			'scannedCount' => $this->trackBusinessLayer->count($this->userId)
-		]);
+		return new JSONResponse($this->scanner->getStatusOfLibraryFiles($this->userId));
 	}
 
 	/**

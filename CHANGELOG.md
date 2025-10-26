@@ -4,6 +4,11 @@
 
 ### Changed
 - Optimization for the scan speed (most significant on slow DB like SQLite)
+- Changes to `occ music:scan`
+  * Always check the presence of obsolete tracks although `--clean-obsolete` still has to be given to remove them
+  * Scan also any dirty files by default, `--skip-dirty` option may be used to opt out
+  * Option `--rescan-modified` removed
+  * Possibility to opt out of the cover art updating with the option `--skip-art`
 
 ### Fixed
 

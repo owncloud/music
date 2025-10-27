@@ -4,6 +4,7 @@
 
 ### Changed
 - Optimization for the scan speed (most significant on slow DB like SQLite)
+- On web UI load, check presence of obsolete files and offer to remove them from the library
 - Changes to `occ music:scan`
   * Always check the presence of obsolete tracks although `--clean-obsolete` still has to be given to remove them
   * Scan also any dirty files by default, `--skip-dirty` option may be used to opt out

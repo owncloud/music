@@ -141,7 +141,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			});
 
 			// Load playlists once the collection has been loaded
-			Restangular.all('playlists').getList({type: 'musicapp'}).then(function(playlists) {
+			Restangular.all('playlists').getList({type: 'music-app'}).then(function(playlists) {
 				libraryService.setPlaylists(playlists);
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
@@ -232,6 +232,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	let filesToScan = null;
 	$scope.unscannedFiles = null;
 	$scope.dirtyFiles = null;
+	$scope.obsoleteFiles = null;
 
 	function updateFilesToScan() {
 		$scope.checkingUnscanned = true;
@@ -239,6 +240,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$scope.checkingUnscanned = false;
 			$scope.unscannedFiles = state.unscannedFiles;
 			$scope.dirtyFiles = state.dirtyFiles;
+			$scope.obsoleteFiles = state.obsoleteFiles;
 			$scope.noMusicAvailable = (state.scannedCount + state.unscannedFiles.length === 0);
 		},
 		function(error) {
@@ -301,9 +303,17 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
+	$scope.removeObsolete = function() {
+		Restangular.all('removescanned').post({files: $scope.obsoleteFiles.join(',')}).then(_result => {
+			$scope.obsoleteFiles = null;
+			$scope.update();
+		});
+	};
+
 	$scope.resetScanned = function() {
 		$scope.unscannedFiles = null;
 		$scope.dirtyFiles = null;
+		$scope.obsoleteFiles = null;
 		filesToScan = null;
 		// Genre and artist IDs have got invalidated while resetting the library, drop any related filters
 		if ($scope.smartListParams !== null) {
@@ -399,6 +409,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		// to check them again.
 		$scope.unscannedFiles = null;
 		$scope.dirtyFiles = null;
+		$scope.obsoleteFiles = null;
 	};
 
 	function scrollOffset() {
@@ -531,9 +542,9 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 		// the "no content"/"click to scan"/"scanning" banner has the same width as controls,
 		// subtracting the alphabet-navigation width
-		const aphaNaviWidth = 50;
-		$('#app-content .emptycontent').css('width', controlsWidth - aphaNaviWidth);
-		$('#app-content .emptycontent').css('min-width', controlsWidth - aphaNaviWidth);
+		const alphaNaviWidth = 50;
+		$('#app-content .emptycontent').css('width', controlsWidth - alphaNaviWidth);
+		$('#app-content .emptycontent').css('min-width', controlsWidth - alphaNaviWidth);
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See music-mobile.css and music-tablet.css.

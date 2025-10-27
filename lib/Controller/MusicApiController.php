@@ -196,6 +196,17 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
+	public function removeScanned(string $files) : JSONResponse {
+		$fileIds = \array_map('intval', \explode(',', $files));
+		$anythingRemoved = $this->scanner->deleteAudio($fileIds, [$this->userId]);
+		return new JSONResponse(['filesRemoved' => $anythingRemoved]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @UseSession to keep the session reserved while execution in progress
+	 */
 	public function resetScanned() : JSONResponse {
 		$this->maintenance->resetLibrary($this->userId);
 		return new JSONResponse(['success' => true]);

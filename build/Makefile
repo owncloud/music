@@ -40,7 +40,7 @@ l10n-extract:
 	npm run l10n-extract
 	cd ../l10n && perl l10n.pl music read
 
-l10n-compile:
+l10n-compile: l10n-clone
 	npm run l10n-compile
 	cd ../l10n && perl l10n.pl music write
 

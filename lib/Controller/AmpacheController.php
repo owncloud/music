@@ -70,6 +70,7 @@ use OCA\Music\Service\AmpacheImageService;
 use OCA\Music\Service\AmpachePreferences;
 use OCA\Music\Service\CoverService;
 use OCA\Music\Service\DetailsService;
+use OCA\Music\Service\FileSystemService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
@@ -99,6 +100,7 @@ class AmpacheController extends ApiController {
 	private AmpacheImageService $imageService;
 	private CoverService $coverService;
 	private DetailsService $detailsService;
+	private FileSystemService $fileSystemService;
 	private LastfmService $lastfmService;
 	private LibrarySettings $librarySettings;
 	private Random $random;
@@ -134,6 +136,7 @@ class AmpacheController extends ApiController {
 								AmpacheImageService $imageService,
 								CoverService $coverService,
 								DetailsService $detailsService,
+								FileSystemService $fileSystemService,
 								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
 								Random $random,
@@ -158,6 +161,7 @@ class AmpacheController extends ApiController {
 		$this->imageService = $imageService;
 		$this->coverService = $coverService;
 		$this->detailsService = $detailsService;
+		$this->fileSystemService = $fileSystemService;
 		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
@@ -728,7 +732,7 @@ class AmpacheController extends ApiController {
 	protected function folders(int $limit, int $offset=0) : array {
 		$userId = $this->userId();
 		$musicFolder = $this->librarySettings->getFolder($userId);
-		$folders = $this->trackBusinessLayer->findAllFolders($userId, $musicFolder);
+		$folders = $this->fileSystemService->findAllFolders($userId, $musicFolder);
 
 		// disregard any (parent) folders without any direct track children
 		$folders = \array_filter($folders, fn($folder) => \count($folder['trackIds']) > 0);

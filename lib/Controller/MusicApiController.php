@@ -31,6 +31,7 @@ use OCA\Music\Http\FileStreamResponse;
 use OCA\Music\Service\CollectionService;
 use OCA\Music\Service\CoverService;
 use OCA\Music\Service\DetailsService;
+use OCA\Music\Service\FileSystemService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\Scanner;
@@ -45,6 +46,7 @@ class MusicApiController extends Controller {
 	private CollectionService $collectionService;
 	private CoverService $coverService;
 	private DetailsService $detailsService;
+	private FileSystemService $fileSystemService;
 	private LastfmService $lastfmService;
 	private Maintenance $maintenance;
 	private LibrarySettings $librarySettings;
@@ -59,6 +61,7 @@ class MusicApiController extends Controller {
 								CollectionService $collectionService,
 								CoverService $coverService,
 								DetailsService $detailsService,
+								FileSystemService $fileSystemService,
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
@@ -71,6 +74,7 @@ class MusicApiController extends Controller {
 		$this->collectionService = $collectionService;
 		$this->coverService = $coverService;
 		$this->detailsService = $detailsService;
+		$this->fileSystemService = $fileSystemService;
 		$this->lastfmService = $lastfmService;
 		$this->maintenance = $maintenance;
 		$this->librarySettings = $librarySettings;
@@ -125,7 +129,7 @@ class MusicApiController extends Controller {
 	 */
 	public function folders() : JSONResponse {
 		$musicFolder = $this->librarySettings->getFolder($this->userId);
-		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $musicFolder);
+		$folders = $this->fileSystemService->findAllFolders($this->userId, $musicFolder);
 		return new JSONResponse($folders);
 	}
 

@@ -14,10 +14,14 @@
 
 namespace OCA\Music\BusinessLayer;
 
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Track;
+use OCA\Music\Db\TrackMapper;
+use OCA\Music\Service\FileSystemService;
 
 class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $mapper;
+	private $fileSystemService;
 	private $logger;
 	private $trackBusinessLayer;
 	private $userId;
@@ -26,13 +30,16 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $fileId;
 
 	protected function setUp() : void {
-		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\TrackMapper')
+		$this->mapper = $this->getMockBuilder(TrackMapper::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+		$this->fileSystemService = $this->getMockBuilder(FileSystemService::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper, $this->logger);
+		$this->logger = $this->getMockBuilder(Logger::class)
+			->disableOriginalConstructor()
+			->getMock();
+		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper, $this->fileSystemService, $this->logger);
 		$this->userId = 'jack';
 		$this->artistId = 3;
 		$this->albumId = 3;

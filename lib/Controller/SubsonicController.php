@@ -60,6 +60,7 @@ use OCA\Music\Middleware\SubsonicException;
 use OCA\Music\Service\AmpacheImageService;
 use OCA\Music\Service\CoverService;
 use OCA\Music\Service\DetailsService;
+use OCA\Music\Service\FileSystemService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
@@ -91,6 +92,7 @@ class SubsonicController extends ApiController {
 	private IL10N $l10n;
 	private CoverService $coverService;
 	private DetailsService $detailsService;
+	private FileSystemService $fileSystemService;
 	private LastfmService $lastfmService;
 	private PodcastService $podcastService;
 	private AmpacheImageService $imageService;
@@ -119,6 +121,7 @@ class SubsonicController extends ApiController {
 								TrackBusinessLayer $trackBusinessLayer,
 								LibrarySettings $librarySettings,
 								CoverService $coverService,
+								FileSystemService $fileSystemService,
 								DetailsService $detailsService,
 								LastfmService $lastfmService,
 								PodcastService $podcastService,
@@ -142,6 +145,7 @@ class SubsonicController extends ApiController {
 		$this->l10n = $l10n;
 		$this->librarySettings = $librarySettings;
 		$this->coverService = $coverService;
+		$this->fileSystemService = $fileSystemService;
 		$this->detailsService = $detailsService;
 		$this->lastfmService = $lastfmService;
 		$this->podcastService = $podcastService;
@@ -1515,7 +1519,7 @@ class SubsonicController extends ApiController {
 	private function tracksToApi(array $tracks) : array {
 		$userId = $this->user();
 		$musicFolder = $this->librarySettings->getFolder($userId);
-		$this->trackBusinessLayer->injectFolderPathsToTracks($tracks, $userId, $musicFolder);
+		$this->fileSystemService->injectFolderPathsToTracks($tracks, $userId, $musicFolder);
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 		return \array_map(fn($t) => $t->toSubsonicApi($this->l10n, $this->ignoredArticles), $tracks);
 	}

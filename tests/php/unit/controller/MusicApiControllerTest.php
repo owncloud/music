@@ -29,6 +29,7 @@ class MusicApiControllerTest extends ControllerTestUtility {
 	private $appname = 'music';
 	private $scanner;
 	private $coverService;
+	private $fileSystemService;
 	private $detailsService;
 	private $lastfmService;
 	private $maintenance;
@@ -57,6 +58,9 @@ class MusicApiControllerTest extends ControllerTestUtility {
 		$this->detailsService = $this->getMockBuilder('\OCA\Music\Service\DetailsService')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->fileSystemService = $this->getMockBuilder('\OCA\Music\Service\FileSystemService')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Service\LastfmService')
 			->disableOriginalConstructor()
 			->getMock();
@@ -78,6 +82,7 @@ class MusicApiControllerTest extends ControllerTestUtility {
 			$this->collectionService,
 			$this->coverService,
 			$this->detailsService,
+			$this->fileSystemService,
 			$this->lastfmService,
 			$this->maintenance,
 			$this->librarySettings,

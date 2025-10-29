@@ -157,12 +157,12 @@ class TrackMapper extends BaseMapper {
 				WHERE `track`.`user_id` = ?
 				AND (`track`.`dirty` = '1' OR $updatedEpoch < `file`.`mtime`)";
 		$params = [$userId];
-		$result = $this->execute($sql, $params);
 
 		if (!empty($parentIds)) {
 			$sql .= ' AND `file`.`parent` IN ' . $this->questionMarks(\count($parentIds));
 			$params = \array_merge($params, $parentIds);
 		}
+		$result = $this->execute($sql, $params);
 
 		return $result->fetchAll(\PDO::FETCH_COLUMN);
 	}

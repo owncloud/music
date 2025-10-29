@@ -122,18 +122,33 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find file IDs of scanned files. Optionally, limit to files which are direct children of the given folders.
+	 * @param ?int[] $parentIds
 	 * @return int[]
 	 */
-	public function findAllFileIds(string $userId) : array {
-		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
-		$result = $this->execute($sql, [$userId]);
+	public function findAllFileIds(string $userId, ?array $parentIds=null) : array {
+		if (empty($parentIds)) {
+			$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
+			$params = [$userId];
+		} else {
+			$sql = 'SELECT `track`.`file_id`
+					FROM `*PREFIX*music_tracks` `track`
+					INNER JOIN `*PREFIX*filecache` `file`
+					ON `track`.`file_id` = `file`.`fileid`
+					WHERE `track`.`user_id` = ?
+					AND `file`.`parent` IN ' . $this->questionMarks(\count($parentIds));
+			$params = \array_merge([$userId], $parentIds);
+		}
+		$result = $this->execute($sql, $params);
 		return $result->fetchAll(\PDO::FETCH_COLUMN);
 	}
 
 	/**
+	 * Find file IDs of dirty files. Optionally, limit to files which are direct children of the given folders.
+	 * @param ?int[] $parentIds
 	 * @return int[]
 	 */
-	public function findDirtyFileIds(string $userId) : array {
+	public function findDirtyFileIds(string $userId, ?array $parentIds=null) : array {
 		$updatedEpoch = $this->sqlDateToEpoch('`track`.`updated`');
 		$sql = "SELECT `track`.`file_id`
 				FROM `*PREFIX*music_tracks` `track`
@@ -141,7 +156,14 @@ class TrackMapper extends BaseMapper {
 				ON `track`.`file_id` = `file`.`fileid`
 				WHERE `track`.`user_id` = ?
 				AND (`track`.`dirty` = '1' OR $updatedEpoch < `file`.`mtime`)";
-		$result = $this->execute($sql, [$userId]);
+		$params = [$userId];
+		$result = $this->execute($sql, $params);
+
+		if (!empty($parentIds)) {
+			$sql .= ' AND `file`.`parent` IN ' . $this->questionMarks(\count($parentIds));
+			$params = \array_merge($params, $parentIds);
+		}
+
 		return $result->fetchAll(\PDO::FETCH_COLUMN);
 	}
 
@@ -404,8 +426,8 @@ class TrackMapper extends BaseMapper {
 
 		if (!empty($nodeIds)) {
 			$sql = 'SELECT `fileid`, `name`, `parent`
-					FROM `*PREFIX*filecache` `filecache`
-					WHERE `filecache`.`fileid` IN '. $this->questionMarks(\count($nodeIds));
+					FROM `*PREFIX*filecache`
+					WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
 
 			$rows = $this->execute($sql, $nodeIds)->fetchAll();
 
@@ -415,6 +437,29 @@ class TrackMapper extends BaseMapper {
 					'parent' => (int)$row['parent']
 				];
 			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Find all immediate sub-folders of the given folders
+	 * @param int[] $folderIds
+	 * @return int[]
+	 */
+	public function findSubFolderIds(array $folderIds) : array {
+		$result = [];
+
+		if (!empty($folderIds)) {
+			$sql = 'SELECT `fileid`
+					FROM `*PREFIX*filecache` `files`
+					INNER JOIN `*PREFIX*mimetypes` `mimes`
+					ON `files`.`mimetype` = `mimes`.`id`
+					WHERE `mimes`.`mimetype` = \'httpd/unix-directory\'
+					AND `parent` IN '. $this->questionMarks(\count($folderIds));
+
+			$rows = $this->execute($sql, $folderIds);
+			$result = $rows->fetchAll(\PDO::FETCH_COLUMN);
 		}
 
 		return $result;

@@ -21,6 +21,9 @@ trait LocalCacheTrait {
 	protected array $localCache = [];
 
 	/**
+	 * Read value from the local cache or fall back to using the supplied factory function.
+	 * In the latter case, the value is cached after obtaining it.
+	 *
 	 * @phpstan-param callable():CachedType $createItem
 	 * @phpstan-return CachedType
 	 */

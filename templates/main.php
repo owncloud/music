@@ -66,6 +66,17 @@ HtmlUtil::addWebpackStyle('app');
 				<a class="close icon-close" alt="Close" ng-click="hideScanBar($event)"></a>
 			</div>
 
+			<div id="toRemove" class="emptycontent clickable" ng-show="!scanning && !unscannedFiles.length && !dirtyFiles.length && obsoleteFiles.length && viewingLibrary()" ng-click="removeObsolete()">
+				<div class="icon-delete"></div>
+				<div>
+					<h2 translate translate-n="obsoleteFiles.length" translate-plural="{{ $count }} previously scanned files are no longer available">
+						{{ $count }} previously scanned file is no longer available
+					</h2>
+					<p translate translate-n="obsoleteFiles.length" translate-plural="Click here to remove these files">Click here to remove this file</p>
+				</div>
+				<a class="close icon-close" alt="Close" ng-click="hideScanBar($event)"></a>
+			</div>
+
 			<div id="scanning" class="emptycontent" ng-show="scanning && viewingLibrary()">
 				<div class="icon-loading svg"></div>
 				<div>

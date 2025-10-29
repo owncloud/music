@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud music 5.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-06-08 23:39+0300\n"
+"POT-Creation-Date: 2025-10-29 20:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,8 +178,8 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:758
-#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
+#: js/app/controllers/playercontroller.js:737
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:63
 msgid "Album"
 msgstr ""
 
@@ -211,7 +211,7 @@ msgstr ""
 msgid "Album rating"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:751
+#: js/app/controllers/playercontroller.js:730
 #: templates/partials/navigation.php:8
 #: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
@@ -225,10 +225,10 @@ msgstr ""
 msgid "All channels were already up-to-date"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:754
+#: js/app/controllers/playercontroller.js:733
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1880 musicwidget.ts:57
+#: Controller/AmpacheController.php:1855 musicwidget.ts:57
 msgid "All tracks"
 msgstr ""
 
@@ -275,8 +275,8 @@ msgstr ""
 msgid "Articles to ignore on artist names"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:759
-#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
+#: js/app/controllers/playercontroller.js:738
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:62
 msgid "Artist"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:239
+#: Controller/SubsonicController.php:250
 msgid "Artists"
 msgstr ""
 
@@ -335,7 +335,7 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/app/controllers/playercontroller.js:763
+#: js/app/controllers/playercontroller.js:742
 msgid "Channel"
 msgstr ""
 
@@ -343,7 +343,13 @@ msgstr ""
 msgid "Check the filter values"
 msgstr ""
 
-#: templates/main.php:63
+#: templates/main.php:75
+msgid "Click here to remove this file"
+msgid_plural "Click here to remove these files"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/main.php:64
 msgid "Click here to rescan these files"
 msgstr ""
 
@@ -425,7 +431,7 @@ msgstr ""
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:58
 #: templates/partials/navigationitem.php:33
 #: templates/partials/views/playlistview.php:30
 #: templates/partials/views/radioview.php:23
@@ -468,7 +474,7 @@ msgstr ""
 msgid "Ends with"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:764
+#: js/app/controllers/playercontroller.js:743
 msgid "Episode"
 msgstr ""
 
@@ -476,7 +482,7 @@ msgstr ""
 msgid "Equals"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:138
+#: js/app/controllers/playercontroller.js:136
 msgid "Error playing URL:"
 msgstr ""
 
@@ -502,7 +508,7 @@ msgstr ""
 msgid "Failed to add the podcast channel"
 msgstr ""
 
-#: js/app/controllers/maincontroller.js:247
+#: js/app/controllers/maincontroller.js:249
 msgid ""
 "Failed to check for new audio files (error {{ code }}); check the server "
 "logs for details"
@@ -607,12 +613,12 @@ msgstr ""
 msgid "Flat layout"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:760
+#: js/app/controllers/playercontroller.js:739
 msgid "Folder"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
+#: js/app/controllers/playercontroller.js:731
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:251
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr ""
@@ -637,12 +643,12 @@ msgstr ""
 msgid "Generated {{ datetime }}"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:761
+#: js/app/controllers/playercontroller.js:740
 #: templates/partials/sidebar/radiostationdetails.php:41
 msgid "Genre"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:753
+#: js/app/controllers/playercontroller.js:732
 #: templates/partials/navigation.php:12
 #: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
 msgid "Genres"
@@ -758,8 +764,8 @@ msgstr ""
 msgid "Internal server error"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:734
-#: js/app/controllers/playercontroller.js:756
+#: js/app/controllers/playercontroller.js:713
+#: js/app/controllers/playercontroller.js:735
 #: js/app/services/playlistfileservice.ts:139
 #: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
@@ -886,7 +892,7 @@ msgid "Modified"
 msgstr ""
 
 #: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
-#: Search/Provider.php:76
+#: Search/Provider.php:77
 msgid "Music"
 msgstr ""
 
@@ -900,7 +906,7 @@ msgstr ""
 msgid "MusicBrainz"
 msgstr ""
 
-#: templates/fake-template.php:15
+#: templates/fake-template.php:15 volumecontrol.ts:105
 msgid "Mute"
 msgstr ""
 
@@ -926,7 +932,7 @@ msgstr ""
 msgid "New music available"
 msgstr ""
 
-#: templates/main.php:95 templates/main.php:96
+#: templates/main.php:108 templates/main.php:109
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
@@ -947,7 +953,7 @@ msgstr ""
 msgid "No music found"
 msgstr ""
 
-#: templates/main.php:86
+#: templates/main.php:99
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 
@@ -1013,8 +1019,8 @@ msgstr ""
 msgid "Number of tracks on albums"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:779
-#: js/app/controllers/playercontroller.js:788
+#: js/app/controllers/playercontroller.js:758
+#: js/app/controllers/playercontroller.js:767
 msgid "Off"
 msgstr ""
 
@@ -1080,7 +1086,7 @@ msgstr ""
 msgid "Playback rate"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:372
+#: js/app/controllers/playercontroller.js:360
 msgid "Playback speed not adjustible for the current song"
 msgstr ""
 
@@ -1090,7 +1096,7 @@ msgstr ""
 msgid "Played times"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:762
+#: js/app/controllers/playercontroller.js:741
 #: js/app/controllers/views/advancedsearchviewcontroller.js:134
 #: js/app/controllers/views/advancedsearchviewcontroller.js:136
 #: js/app/controllers/views/advancedsearchviewcontroller.js:189
@@ -1143,7 +1149,7 @@ msgstr ""
 msgid "Podcast metadata"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:757
+#: js/app/controllers/playercontroller.js:736
 #: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
 #: musicwidget.ts:60
 msgid "Podcasts"
@@ -1167,7 +1173,7 @@ msgstr ""
 msgid "Radio station"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:294
+#: js/app/controllers/playercontroller.js:292
 msgid "Radio station not found"
 msgstr ""
 
@@ -1259,12 +1265,12 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:784
+#: js/app/controllers/playercontroller.js:763
 #: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr ""
 
-#: js/app/controllers/views/albumsviewcontroller.js:275
+#: js/app/controllers/views/albumsviewcontroller.js:276
 #: js/app/controllers/views/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr ""
@@ -1305,7 +1311,7 @@ msgstr ""
 msgid "Save with given file name"
 msgstr ""
 
-#: templates/main.php:70
+#: templates/main.php:83
 msgid "Scanning music …"
 msgstr ""
 
@@ -1323,7 +1329,7 @@ msgstr ""
 msgid "Search not available in this view"
 msgstr ""
 
-#: js/app/controllers/sidebar/albumdetailscontroller.js:68
+#: js/app/controllers/sidebar/albumdetailscontroller.js:67
 msgid "See the album on Last.fm"
 msgstr ""
 
@@ -1364,7 +1370,7 @@ msgstr ""
 msgid "Show all {{ count }} episodes …"
 msgstr ""
 
-#: js/app/directives/tracklist.js:53
+#: js/app/directives/tracklist.js:60
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
@@ -1383,7 +1389,7 @@ msgstr ""
 msgid "Show in Files"
 msgstr ""
 
-#: js/app/directives/tracklist.js:50
+#: js/app/directives/tracklist.js:57
 msgid "Show less …"
 msgstr ""
 
@@ -1391,7 +1397,7 @@ msgstr ""
 msgid "Show more…"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:778
+#: js/app/controllers/playercontroller.js:757
 #: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr ""
@@ -1400,7 +1406,7 @@ msgstr ""
 msgid "Similar to"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:755
+#: js/app/controllers/playercontroller.js:734
 #: templates/partials/navigation.php:22
 #: templates/partials/views/smartlistview.php:4
 msgid "Smart playlist"
@@ -1410,15 +1416,15 @@ msgstr ""
 msgid "Smart playlist filters"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:529
+#: js/app/controllers/playercontroller.js:508
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: templates/main.php:62
+#: templates/main.php:63
 msgid "Some of the previously scanned files may have changed"
 msgstr ""
 
-#: templates/main.php:79
+#: templates/main.php:92
 msgid "Some search results are omitted"
 msgstr ""
 
@@ -1558,7 +1564,7 @@ msgstr ""
 msgid "Total length"
 msgstr ""
 
-#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
+#: js/app/controllers/playercontroller.js:770 Search/Provider.php:64
 msgid "Track"
 msgstr ""
 
@@ -1612,7 +1618,7 @@ msgstr ""
 msgid "Tree layout"
 msgstr ""
 
-#: templates/main.php:80
+#: templates/main.php:93
 msgid "Try to refine the search"
 msgstr ""
 
@@ -1635,7 +1641,7 @@ msgid ""
 "user account."
 msgstr ""
 
-#: templates/fake-template.php:16
+#: templates/fake-template.php:16 volumecontrol.ts:102
 msgid "Unmute"
 msgstr ""
 
@@ -1693,10 +1699,6 @@ msgstr ""
 
 #: templates/partials/views/settingsview.php:174
 msgid "Username:"
-msgstr ""
-
-#: templates/partials/controls.php:102 templates/partials/controls.php:98
-msgid "Volume"
 msgstr ""
 
 #: templates/partials/sidebar/radiostationdetails.php:38
@@ -1914,6 +1916,12 @@ msgstr ""
 msgid "website"
 msgstr ""
 
+#: templates/main.php:72
+msgid "{{ $count }} previously scanned file is no longer available"
+msgid_plural "{{ $count }} previously scanned files are no longer available"
+msgstr[0] ""
+msgstr[1] ""
+
 #: js/app/controllers/maincontroller.js:69
 msgid "{{ count }} album"
 msgid_plural "{{ count }} albums"
@@ -1971,7 +1979,7 @@ msgid_plural "{{ resultCount() }} results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/main.php:71
+#: templates/main.php:84
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""
 
@@ -1979,11 +1987,11 @@ msgstr ""
 msgid "{{artist}} appears on albums"
 msgstr ""
 
-#: Db/Album.php:270
+#: Db/Album.php:292
 msgid "Unknown album"
 msgstr ""
 
-#: Db/Artist.php:134
+#: Db/Artist.php:136
 msgid "Unknown artist"
 msgstr ""
 
@@ -1991,7 +1999,7 @@ msgstr ""
 msgid "(no comment)"
 msgstr ""
 
-#: Db/Genre.php:84
+#: Db/Genre.php:85
 msgid "(Unknown genre)"
 msgstr ""
 
@@ -2051,15 +2059,15 @@ msgstr ""
 msgid "Show playlist"
 msgstr ""
 
-#: embeddedplayer.js:414
+#: embeddedplayer.js:420
 msgid "Continue playing in Music"
 msgstr ""
 
-#: embeddedplayer.js:417
+#: embeddedplayer.js:423
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
+#: embeddedplayer.js:474 embeddedplayer.js:505 progressinfo.ts:57
 msgid "Loading…"
 msgstr ""
 
@@ -2121,4 +2129,8 @@ msgstr ""
 
 #: playlisttabview.js:76
 msgid "Some files on the playlist were not found"
+msgstr ""
+
+#: volumecontrol.ts:91
+msgid "Volume"
 msgstr ""

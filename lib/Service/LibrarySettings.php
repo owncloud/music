@@ -14,6 +14,7 @@ namespace OCA\Music\Service;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Utility\FilesUtil;
+use OCA\Music\Utility\LocalCacheTrait;
 use OCA\Music\Utility\StringUtil;
 
 use OCP\Files\Folder;
@@ -24,6 +25,13 @@ use OCP\IConfig;
  * Manage the user-specific music folder setting
  */
 class LibrarySettings {
+	/**
+	 * Caching the values is useful when the same value is used tens of thousands of times within a
+	 * single request, like when checking the scan status of a huge music library.
+	 * @phpstan-use LocalCacheTrait<mixed>
+	 */
+	use LocalCacheTrait;
+
 	private string $appName;
 	private IConfig $configManager;
 	private IRootFolder $rootFolder;
@@ -75,6 +83,7 @@ class LibrarySettings {
 			$success = true;
 		}
 
+		$this->invalidateCache($userId);
 		return $success;
 	}
 
@@ -88,6 +97,7 @@ class LibrarySettings {
 	 */
 	public function setExcludedPaths(string $userId, array $paths) : bool {
 		$this->configManager->setUserValue($userId, $this->appName, 'excluded_paths', \json_encode($paths));
+		$this->invalidateCache($userId);
 		return true;
 	}
 
@@ -95,30 +105,39 @@ class LibrarySettings {
 	 * @return string[]
 	 */
 	public function getExcludedPaths(string $userId) : array {
-		$paths = $this->configManager->getUserValue($userId, $this->appName, 'excluded_paths');
-		if (empty($paths)) {
-			return [];
-		} else {
-			return \json_decode($paths);
-		}
+		return $this->cachedGet($userId, 'excluded_paths', function() use ($userId) {
+			$paths = $this->configManager->getUserValue($userId, $this->appName, 'excluded_paths');
+			if (empty($paths)) {
+				return [];
+			} else {
+				return \json_decode($paths);
+			}
+		});
 	}
 
 	public function getFolder(string $userId) : Folder {
-		$userHome = $this->rootFolder->getUserFolder($userId);
-		$path = $this->getPath($userId);
-		return FilesUtil::getFolderFromRelativePath($userHome, $path);
+		return $this->cachedGet($userId, 'music_folder', fn() => FilesUtil::getFolderFromRelativePath(
+			$this->rootFolder->getUserFolder($userId), $this->getPath($userId)));
 	}
 
 	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {
 		$filePath = self::normalizePath($filePath);
-		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());
+		$musicPath = $this->getAbsoluteLibPath($userId);
 
 		return StringUtil::startsWith($filePath, $musicPath)
-				&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
+			&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
+	}
+
+	private function getAbsoluteLibPath(string $userId) : string {
+		return $this->cachedGet($userId, 'music_folder_abs_path', fn() => self::normalizePath($this->getFolder($userId)->getPath()));
+	}
+
+	private function getHomePath(string $userId) : string {
+		return $this->cachedGet($userId, 'home_path', fn() => $this->rootFolder->getUserFolder($userId)->getPath());
 	}
 
 	private function pathIsExcluded(string $filePath, string $musicPath, string $userId) : bool {
-		$userRootPath = $this->rootFolder->getUserFolder($userId)->getPath();
+		$userRootPath = $this->getHomePath($userId);
 		$excludedPaths = $this->getExcludedPaths($userId);
 
 		foreach ($excludedPaths as $excludedPath) {

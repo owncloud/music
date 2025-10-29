@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-06-08 23:39+0300\n"
-"PO-Revision-Date: 2025-06-08 23:43+0300\n"
+"POT-Creation-Date: 2025-10-29 20:53+0200\n"
+"PO-Revision-Date: 2025-10-29 20:55+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -188,8 +188,8 @@ msgstr "Tarkennettu haku"
 msgid "After"
 msgstr "Jälkeen"
 
-#: js/app/controllers/playercontroller.js:758
-#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
+#: js/app/controllers/playercontroller.js:737
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:63
 msgid "Album"
 msgstr "Albumi"
 
@@ -221,7 +221,7 @@ msgstr "Albumin nimi"
 msgid "Album rating"
 msgstr "Albumin arvosana"
 
-#: js/app/controllers/playercontroller.js:751
+#: js/app/controllers/playercontroller.js:730
 #: templates/partials/navigation.php:8
 #: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
@@ -235,10 +235,10 @@ msgstr "Albumit esittäjältä {{artist}}"
 msgid "All channels were already up-to-date"
 msgstr "Kaikki kanavat olivat jo ajan tasalla"
 
-#: js/app/controllers/playercontroller.js:754
+#: js/app/controllers/playercontroller.js:733
 #: templates/partials/navigation.php:14
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1880 musicwidget.ts:57
+#: Controller/AmpacheController.php:1855 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -288,8 +288,8 @@ msgstr ""
 msgid "Articles to ignore on artist names"
 msgstr "Etuliitteet, joita ei huomioida esittäjän nimessä"
 
-#: js/app/controllers/playercontroller.js:759
-#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:61
+#: js/app/controllers/playercontroller.js:738
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:62
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -313,7 +313,7 @@ msgstr "Esittäjän arvosana"
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:239
+#: Controller/SubsonicController.php:250
 msgid "Artists"
 msgstr "Esittäjät"
 
@@ -352,7 +352,7 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Yhdelle kanavalle ladattiin muutoksia"
 msgstr[1] "{{ count }} kanavalle ladattiin muutoksia"
 
-#: js/app/controllers/playercontroller.js:763
+#: js/app/controllers/playercontroller.js:742
 msgid "Channel"
 msgstr "Kanava"
 
@@ -360,7 +360,13 @@ msgstr "Kanava"
 msgid "Check the filter values"
 msgstr "Tarkista suodattimien arvot"
 
-#: templates/main.php:63
+#: templates/main.php:75
+msgid "Click here to remove this file"
+msgid_plural "Click here to remove these files"
+msgstr[0] "Klikkaa tästä poistaaksesi tämän tiedoston"
+msgstr[1] "Klikkaa tästä poistaaksesi nämä tiedostot"
+
+#: templates/main.php:64
 msgid "Click here to rescan these files"
 msgstr "Napsauta skannataksesi uudestaan nämä tiedostot"
 
@@ -444,7 +450,7 @@ msgstr "Kuvaus"
 msgid "Description (e.g. App name)"
 msgstr "Kuvaus (esim. sovelluksen nimi)"
 
-#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:51
+#: js/app/directives/listheading.js:24 js/app/directives/tracklist.js:58
 #: templates/partials/navigationitem.php:33
 #: templates/partials/views/playlistview.php:30
 #: templates/partials/views/radioview.php:23
@@ -487,7 +493,7 @@ msgstr "Skannaa metatiedot"
 msgid "Ends with"
 msgstr "Päättyy"
 
-#: js/app/controllers/playercontroller.js:764
+#: js/app/controllers/playercontroller.js:743
 msgid "Episode"
 msgstr "Jakso"
 
@@ -495,7 +501,7 @@ msgstr "Jakso"
 msgid "Equals"
 msgstr "On sama kuin"
 
-#: js/app/controllers/playercontroller.js:138
+#: js/app/controllers/playercontroller.js:136
 msgid "Error playing URL:"
 msgstr "Virhe toistettaessa:"
 
@@ -521,7 +527,7 @@ msgstr "Vie tiedostoon"
 msgid "Failed to add the podcast channel"
 msgstr "Podcast-kanavan lisääminen epäonnistui"
 
-#: js/app/controllers/maincontroller.js:247
+#: js/app/controllers/maincontroller.js:249
 msgid ""
 "Failed to check for new audio files (error {{ code }}); check the server "
 "logs for details"
@@ -628,12 +634,12 @@ msgstr "Suotimet"
 msgid "Flat layout"
 msgstr "Litteä asettelu"
 
-#: js/app/controllers/playercontroller.js:760
+#: js/app/controllers/playercontroller.js:739
 msgid "Folder"
 msgstr "Kansio"
 
-#: js/app/controllers/playercontroller.js:752
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:240
+#: js/app/controllers/playercontroller.js:731
+#: templates/partials/navigation.php:10 Controller/SubsonicController.php:251
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr "Kansiot"
@@ -658,12 +664,12 @@ msgstr "Luo API-salasana"
 msgid "Generated {{ datetime }}"
 msgstr "Generoitu {{ datetime }}"
 
-#: js/app/controllers/playercontroller.js:761
+#: js/app/controllers/playercontroller.js:740
 #: templates/partials/sidebar/radiostationdetails.php:41
 msgid "Genre"
 msgstr "Genre"
 
-#: js/app/controllers/playercontroller.js:753
+#: js/app/controllers/playercontroller.js:732
 #: templates/partials/navigation.php:12
 #: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
 msgid "Genres"
@@ -801,8 +807,8 @@ msgstr "Tietoja"
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
-#: js/app/controllers/playercontroller.js:734
-#: js/app/controllers/playercontroller.js:756
+#: js/app/controllers/playercontroller.js:713
+#: js/app/controllers/playercontroller.js:735
 #: js/app/services/playlistfileservice.ts:139
 #: templates/partials/navigation.php:17 musicwidget.ts:59
 msgid "Internet radio"
@@ -936,7 +942,7 @@ msgid "Modified"
 msgstr "Muokattu"
 
 #: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
-#: Search/Provider.php:76
+#: Search/Provider.php:77
 msgid "Music"
 msgstr "Musiikki"
 
@@ -950,7 +956,7 @@ msgstr "Musiikkikirjasto"
 msgid "MusicBrainz"
 msgstr "MusicBrainz"
 
-#: templates/fake-template.php:15
+#: templates/fake-template.php:15 volumecontrol.ts:105
 msgid "Mute"
 msgstr "Vaimenna"
 
@@ -976,7 +982,7 @@ msgstr "Uusi soittolista"
 msgid "New music available"
 msgstr "Uusia kappaleita saatavilla"
 
-#: templates/main.php:95 templates/main.php:96
+#: templates/main.php:108 templates/main.php:109
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 "Uusia kappaleita saatavilla. Napsauta päivittääksesi musiikkikirjastosi."
@@ -998,7 +1004,7 @@ msgstr "Ei kanavia"
 msgid "No music found"
 msgstr "Musiikkia ei löytynyt"
 
-#: templates/main.php:86
+#: templates/main.php:99
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 "Hakusanalla <strong>{{ queryString }}</strong> ei löytynyt tuloksia tästä "
@@ -1075,8 +1081,8 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: js/app/controllers/playercontroller.js:779
-#: js/app/controllers/playercontroller.js:788
+#: js/app/controllers/playercontroller.js:758
+#: js/app/controllers/playercontroller.js:767
 msgid "Off"
 msgstr "Pois"
 
@@ -1144,7 +1150,7 @@ msgstr "Soittohistoria"
 msgid "Playback rate"
 msgstr "Toistonopeus"
 
-#: js/app/controllers/playercontroller.js:372
+#: js/app/controllers/playercontroller.js:360
 msgid "Playback speed not adjustible for the current song"
 msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 
@@ -1154,7 +1160,7 @@ msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 msgid "Played times"
 msgstr "Soittokerrat"
 
-#: js/app/controllers/playercontroller.js:762
+#: js/app/controllers/playercontroller.js:741
 #: js/app/controllers/views/advancedsearchviewcontroller.js:134
 #: js/app/controllers/views/advancedsearchviewcontroller.js:136
 #: js/app/controllers/views/advancedsearchviewcontroller.js:189
@@ -1209,7 +1215,7 @@ msgstr "Podcast-jakso"
 msgid "Podcast metadata"
 msgstr "Podcastin tiedot"
 
-#: js/app/controllers/playercontroller.js:757
+#: js/app/controllers/playercontroller.js:736
 #: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
 #: musicwidget.ts:60
 msgid "Podcasts"
@@ -1234,7 +1240,7 @@ msgstr "RSS-osoite"
 msgid "Radio station"
 msgstr "Radioasema"
 
-#: js/app/controllers/playercontroller.js:294
+#: js/app/controllers/playercontroller.js:292
 msgid "Radio station not found"
 msgstr "Radioasemaa ei löydy"
 
@@ -1326,12 +1332,12 @@ msgstr "Poista kappale soittolistalta"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: js/app/controllers/playercontroller.js:784
+#: js/app/controllers/playercontroller.js:763
 #: templates/partials/controls.php:94
 msgid "Repeat"
 msgstr "Kertaa"
 
-#: js/app/controllers/views/albumsviewcontroller.js:275
+#: js/app/controllers/views/albumsviewcontroller.js:276
 #: js/app/controllers/views/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr "Pyydettyä riviä ei löytynyt"
@@ -1372,7 +1378,7 @@ msgstr "Tallenna soittolista"
 msgid "Save with given file name"
 msgstr "Tallenna annetulla tiedostonimellä"
 
-#: templates/main.php:70
+#: templates/main.php:83
 msgid "Scanning music …"
 msgstr "Skannataan musiikkia …"
 
@@ -1390,7 +1396,7 @@ msgstr "Etsi"
 msgid "Search not available in this view"
 msgstr "Haku ei ole käytettävissä tässä näkymässä"
 
-#: js/app/controllers/sidebar/albumdetailscontroller.js:68
+#: js/app/controllers/sidebar/albumdetailscontroller.js:67
 msgid "See the album on Last.fm"
 msgstr "Katso albumia Last.fm-palvelussa"
 
@@ -1435,7 +1441,7 @@ msgstr "Asetukset"
 msgid "Show all {{ count }} episodes …"
 msgstr "Näytä kaikki {{ count }} jaksoa…"
 
-#: js/app/directives/tracklist.js:53
+#: js/app/directives/tracklist.js:60
 msgid "Show all {{ count }} songs …"
 msgstr "Näytä kaikki {{ count }} kappaletta…"
 
@@ -1456,7 +1462,7 @@ msgstr ""
 msgid "Show in Files"
 msgstr "Näytä Tiedostoissa"
 
-#: js/app/directives/tracklist.js:50
+#: js/app/directives/tracklist.js:57
 msgid "Show less …"
 msgstr "Näytä vähemmän…"
 
@@ -1464,7 +1470,7 @@ msgstr "Näytä vähemmän…"
 msgid "Show more…"
 msgstr "Näytä enemmän…"
 
-#: js/app/controllers/playercontroller.js:778
+#: js/app/controllers/playercontroller.js:757
 #: templates/partials/controls.php:92
 msgid "Shuffle"
 msgstr "Sekoita"
@@ -1473,7 +1479,7 @@ msgstr "Sekoita"
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
-#: js/app/controllers/playercontroller.js:755
+#: js/app/controllers/playercontroller.js:734
 #: templates/partials/navigation.php:22
 #: templates/partials/views/smartlistview.php:4
 msgid "Smart playlist"
@@ -1483,15 +1489,15 @@ msgstr "Älykäs soittolista"
 msgid "Smart playlist filters"
 msgstr "Älykkään soittolistan suotimet"
 
-#: js/app/controllers/playercontroller.js:529
+#: js/app/controllers/playercontroller.js:508
 msgid "Some not playable tracks were skipped."
 msgstr "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa."
 
-#: templates/main.php:62
+#: templates/main.php:63
 msgid "Some of the previously scanned files may have changed"
 msgstr "Jotkin aiemmin skannatut tiedostot ovat ehkä muuttuneet"
 
-#: templates/main.php:79
+#: templates/main.php:92
 msgid "Some search results are omitted"
 msgstr "Joitain hakutuloksia ei näytetä"
 
@@ -1655,7 +1661,7 @@ msgstr ""
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
-#: js/app/controllers/playercontroller.js:791 Search/Provider.php:63
+#: js/app/controllers/playercontroller.js:770 Search/Provider.php:64
 msgid "Track"
 msgstr "Kappale"
 
@@ -1709,7 +1715,7 @@ msgstr "Kappaleet albumilla {{album}}"
 msgid "Tree layout"
 msgstr "Puumainen asettelu"
 
-#: templates/main.php:80
+#: templates/main.php:93
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
 
@@ -1734,7 +1740,7 @@ msgstr ""
 "Toisin kuin muut asetukset, tämä valitsin tallennetaan selainkohtaisesti "
 "eikä käyttäjätilikohtaisesti."
 
-#: templates/fake-template.php:16
+#: templates/fake-template.php:16 volumecontrol.ts:102
 msgid "Unmute"
 msgstr "Poista vaimennus"
 
@@ -1803,10 +1809,6 @@ msgstr "Käyttöliittymä"
 #: templates/partials/views/settingsview.php:174
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
-
-#: templates/partials/controls.php:102 templates/partials/controls.php:98
-msgid "Volume"
-msgstr "Äänenvoimakkuus"
 
 #: templates/partials/sidebar/radiostationdetails.php:38
 msgid "Website"
@@ -2028,6 +2030,12 @@ msgstr "versiohistoria"
 msgid "website"
 msgstr "verkkosivu"
 
+#: templates/main.php:72
+msgid "{{ $count }} previously scanned file is no longer available"
+msgid_plural "{{ $count }} previously scanned files are no longer available"
+msgstr[0] "{{ $count }} aiemmin skannattu tiedosto ei ole enää saatavilla"
+msgstr[1] "{{ $count }} aiemmin skannattua tiedostoa ei ole enää saatavilla"
+
 #: js/app/controllers/maincontroller.js:69
 msgid "{{ count }} album"
 msgid_plural "{{ count }} albums"
@@ -2085,7 +2093,7 @@ msgid_plural "{{ resultCount() }} results"
 msgstr[0] "{{ resultCount() }} tulos"
 msgstr[1] "{{ resultCount() }} tulosta"
 
-#: templates/main.php:71
+#: templates/main.php:84
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 
@@ -2093,11 +2101,11 @@ msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 msgid "{{artist}} appears on albums"
 msgstr "{{artist}} esiintyy albumeilla"
 
-#: Db/Album.php:270
+#: Db/Album.php:292
 msgid "Unknown album"
 msgstr "Tuntematon albumi"
 
-#: Db/Artist.php:134
+#: Db/Artist.php:136
 msgid "Unknown artist"
 msgstr "Tuntematon esittäjä"
 
@@ -2105,7 +2113,7 @@ msgstr "Tuntematon esittäjä"
 msgid "(no comment)"
 msgstr "(ei kommenttia)"
 
-#: Db/Genre.php:84
+#: Db/Genre.php:85
 msgid "(Unknown genre)"
 msgstr "(Tuntumaton genre)"
 
@@ -2165,15 +2173,15 @@ msgstr "Tuo lista Muisiikkiin"
 msgid "Show playlist"
 msgstr "Näytä soittolista"
 
-#: embeddedplayer.js:414
+#: embeddedplayer.js:420
 msgid "Continue playing in Music"
 msgstr "Jatka soittamista Musiikissa"
 
-#: embeddedplayer.js:417
+#: embeddedplayer.js:423
 msgid "(file is not within your music collection folder)"
 msgstr "(tiedosto ei ole musiikkikokoelmakansiossasi)"
 
-#: embeddedplayer.js:468 embeddedplayer.js:499 progressinfo.ts:57
+#: embeddedplayer.js:474 embeddedplayer.js:505 progressinfo.ts:57
 msgid "Loading…"
 msgstr "Ladataan…"
 
@@ -2240,6 +2248,10 @@ msgstr "{count} riviä ohitettiin."
 #: playlisttabview.js:76
 msgid "Some files on the playlist were not found"
 msgstr "Joitakin soittolistan tiedostoja ei löytynyt"
+
+#: volumecontrol.ts:91
+msgid "Volume"
+msgstr "Äänenvoimakkuus"
 
 #~ msgid ""
 #~ "In the search results view, press the \"diskette\" icon on an individual "

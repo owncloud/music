@@ -160,11 +160,7 @@ class MusicApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getScanState() : JSONResponse {
-		return new JSONResponse([
-			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId),
-			'dirtyFiles' => $this->scanner->getDirtyMusicFileIds($this->userId),
-			'scannedCount' => $this->trackBusinessLayer->count($this->userId)
-		]);
+		return new JSONResponse($this->scanner->getStatusOfLibraryFiles($this->userId));
 	}
 
 	/**
@@ -193,6 +189,17 @@ class MusicApiController extends Controller {
 			'filesScanned' => $filesScanned,
 			'albumCoversUpdated' => $albumCoversUpdated
 		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @UseSession to keep the session reserved while execution in progress
+	 */
+	public function removeScanned(string $files) : JSONResponse {
+		$fileIds = \array_map('intval', \explode(',', $files));
+		$anythingRemoved = $this->scanner->deleteAudio($fileIds, [$this->userId]);
+		return new JSONResponse(['filesRemoved' => $anythingRemoved]);
 	}
 
 	/**

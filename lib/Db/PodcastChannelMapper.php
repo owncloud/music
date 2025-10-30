@@ -31,8 +31,10 @@ class PodcastChannelMapper extends BaseMapper {
 	public function findAllIdsWithNoUpdateSince(string $userId, \DateTime $timeLimit) : array {
 		$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `user_id` = ? AND `update_checked` < ?";
 		$result = $this->execute($sql, [$userId, $timeLimit->format(BaseMapper::SQL_DATE_FORMAT)]);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
 
-		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+		return \array_map('intval', $rows);
 	}
 
 	/**

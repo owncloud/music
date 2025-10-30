@@ -140,7 +140,10 @@ class TrackMapper extends BaseMapper {
 			$params = \array_merge([$userId], $parentIds);
 		}
 		$result = $this->execute($sql, $params);
-		return $result->fetchAll(\PDO::FETCH_COLUMN);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
+
+		return $rows;
 	}
 
 	/**
@@ -162,9 +165,12 @@ class TrackMapper extends BaseMapper {
 			$sql .= ' AND `file`.`parent` IN ' . $this->questionMarks(\count($parentIds));
 			$params = \array_merge($params, $parentIds);
 		}
-		$result = $this->execute($sql, $params);
 
-		return $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result = $this->execute($sql, $params);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
+
+		return $rows;
 	}
 
 	/**
@@ -206,6 +212,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
 		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return (int)$row['count'];
 	}
 
@@ -213,6 +220,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return (int)$row['count'];
 	}
 
@@ -223,6 +231,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return (int)$row['duration'];
 	}
 
@@ -233,6 +242,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
 		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return (int)$row['duration'];
 	}
 
@@ -242,17 +252,20 @@ class TrackMapper extends BaseMapper {
 	 * @return array {int => int} where keys are track IDs and values are corresponding durations
 	 */
 	public function getDurations(array $trackIds) : array {
-		$result = [];
+		$return = [];
 
 		if (!empty($trackIds)) {
 			$sql = 'SELECT `id`, `length` FROM `*PREFIX*music_tracks` WHERE `id` IN ' .
 						$this->questionMarks(\count($trackIds));
-			$rows = $this->execute($sql, $trackIds)->fetchAll();
+			$result = $this->execute($sql, $trackIds);
+			$rows = $result->fetchAll();
+			$result->closeCursor();
+
 			foreach ($rows as $row) {
-				$result[$row['id']] = (int)$row['length'];
+				$return[$row['id']] = (int)$row['length'];
 			}
 		}
-		return $result;
+		return $return;
 	}
 
 	/**
@@ -401,19 +414,21 @@ class TrackMapper extends BaseMapper {
 				ON `track`.`file_id` = `file`.`fileid`
 				WHERE `track`.`user_id` = ?';
 
-		$rows = $this->execute($sql, [$userId])->fetchAll();
+		$result = $this->execute($sql, [$userId]);
+		$rows = $result->fetchAll();
+		$result->closeCursor();
 
 		// Sort the results according the file names. This can't be made using ORDERBY in the
 		// SQL query because then we couldn't use the "natural order" comparison algorithm
 		\usort($rows, fn($a, $b) => \strnatcasecmp($a['filename'], $b['filename']));
 
 		// group the files to parent folder "buckets"
-		$result = [];
+		$return = [];
 		foreach ($rows as $row) {
-			$result[(int)$row['parent']][] = (int)$row['id'];
+			$return[(int)$row['parent']][] = (int)$row['id'];
 		}
 
-		return $result;
+		return $return;
 	}
 
 	/**
@@ -422,24 +437,26 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are the node IDs and values are associative arrays like { 'name' => string, 'parent' => int };
 	 */
 	public function findNodeNamesAndParents(array $nodeIds) : array {
-		$result = [];
+		$return = [];
 
 		if (!empty($nodeIds)) {
 			$sql = 'SELECT `fileid`, `name`, `parent`
 					FROM `*PREFIX*filecache`
 					WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
 
-			$rows = $this->execute($sql, $nodeIds)->fetchAll();
+			$result = $this->execute($sql, $nodeIds);
+			$rows = $result->fetchAll();
+			$result->closeCursor();
 
 			foreach ($rows as $row) {
-				$result[$row['fileid']] = [
+				$return[$row['fileid']] = [
 					'name' => $row['name'],
 					'parent' => (int)$row['parent']
 				];
 			}
 		}
 
-		return $result;
+		return $return;
 	}
 
 	/**
@@ -448,7 +465,7 @@ class TrackMapper extends BaseMapper {
 	 * @return int[]
 	 */
 	public function findSubFolderIds(array $folderIds) : array {
-		$result = [];
+		$rows = [];
 
 		if (!empty($folderIds)) {
 			$sql = 'SELECT `fileid`
@@ -458,11 +475,12 @@ class TrackMapper extends BaseMapper {
 					WHERE `mimes`.`mimetype` = \'httpd/unix-directory\'
 					AND `parent` IN '. $this->questionMarks(\count($folderIds));
 
-			$rows = $this->execute($sql, $folderIds);
-			$result = $rows->fetchAll(\PDO::FETCH_COLUMN);
+			$result = $this->execute($sql, $folderIds);
+			$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+			$result->closeCursor();
 		}
 
-		return $result;
+		return $rows;
 	}
 
 	/**
@@ -472,8 +490,10 @@ class TrackMapper extends BaseMapper {
 	public function getGenresByArtistId(int $artistId, string $userId) : array {
 		$sql = 'SELECT DISTINCT(`genre_id`) FROM `*PREFIX*music_tracks` WHERE
 				`genre_id` IS NOT NULL AND `user_id` = ? AND `artist_id` = ?';
-		$rows = $this->execute($sql, [$userId, $artistId]);
-		return $rows->fetchAll(\PDO::FETCH_COLUMN);
+		$result = $this->execute($sql, [$userId, $artistId]);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
+		return $rows;
 	}
 
 	/**
@@ -483,14 +503,16 @@ class TrackMapper extends BaseMapper {
 	public function mapGenreIdsToTrackIds(string $userId) : array {
 		$sql = 'SELECT `id`, `genre_id` FROM `*PREFIX*music_tracks`
 				WHERE `genre_id` IS NOT NULL and `user_id` = ?';
-		$rows = $this->execute($sql, [$userId])->fetchAll();
+		$result = $this->execute($sql, [$userId]);
+		$rows = $result->fetchAll();
+		$result->closeCursor();
 
-		$result = [];
+		$return = [];
 		foreach ($rows as $row) {
-			$result[(int)$row['genre_id']][] = (int)$row['id'];
+			$return[(int)$row['genre_id']][] = (int)$row['id'];
 		}
 
-		return $result;
+		return $return;
 	}
 
 	/**
@@ -504,8 +526,10 @@ class TrackMapper extends BaseMapper {
 				INNER JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`
 				WHERE `genre_id` IS NULL and `user_id` = ?';
-		$rows = $this->execute($sql, [$userId]);
-		return $rows->fetchAll(\PDO::FETCH_COLUMN);
+		$result = $this->execute($sql, [$userId]);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
+		return $rows;
 	}
 
 	/**
@@ -518,8 +542,12 @@ class TrackMapper extends BaseMapper {
 				SET `last_played` = ?, `play_count` = `play_count` + 1
 				WHERE `user_id` = ? AND `id` = ?';
 		$params = [$timeOfPlay->format(BaseMapper::SQL_DATE_FORMAT), $userId, $trackId];
+
 		$result = $this->execute($sql, $params);
-		return ($result->rowCount() > 0);
+		$updated = ($result->rowCount() > 0);
+		$result->closeCursor();
+		
+		return $updated;
 	}
 
 	/**
@@ -541,7 +569,10 @@ class TrackMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		return $result->rowCount();
+		$updated = $result->rowCount();
+		$result->closeCursor();
+
+		return $updated;
 	}
 
 	/**

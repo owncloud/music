@@ -173,8 +173,9 @@ abstract class BaseMapper extends Mapper {
 		if (\property_exists($this->entityClass, 'starred')) {
 			$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `starred` IS NOT NULL AND `user_id` = ?";
 			$result = $this->execute($sql, [$userId]);
-	
-			return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+			$return = \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+			$result->closeCursor();
+			return $return;
 		} else {
 			return [];
 		}
@@ -244,7 +245,9 @@ abstract class BaseMapper extends Mapper {
 
 		$result = $this->execute($sql, $params);
 
-		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+		$return = \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+		$result->closeCursor();
+		return $return;
 	}
 
 	/**
@@ -258,21 +261,23 @@ abstract class BaseMapper extends Mapper {
 			throw new \DomainException("Finding by parent is not applicable for the table {$this->getTableName()}");
 		}
 
-		$result = [];
+		$return = [];
 		if (\count($parentIds) > 0) {
 			$sql = "SELECT `id`, `{$this->parentIdColumn}` AS `parent_id` FROM `{$this->getTableName()}`
 					WHERE `user_id` = ? AND `{$this->parentIdColumn}` IN " . $this->questionMarks(\count($parentIds));
 			$params = \array_merge([$userId], $parentIds);
-			$rows = $this->execute($sql, $params)->fetchAll();
+			$result = $this->execute($sql, $params);
+			$rows = $result->fetchAll();
+			$result->closeCursor();
 
 			// ensure that the result contains also "parents" with no children and has the same order as $parentIds
-			$result = \array_fill_keys($parentIds, []);
+			$return = \array_fill_keys($parentIds, []);
 			foreach ($rows as $row) {
-				$result[(int)$row['parent_id']][] = (int)$row['id'];
+				$return[(int)$row['parent_id']][] = (int)$row['id'];
 			}
 		}	
 
-		return $result;
+		return $return;
 	}
 
 	/**
@@ -323,8 +328,10 @@ abstract class BaseMapper extends Mapper {
 		}
 
 		$result = $this->execute($sql, $params);
+		$rows = $result->fetchAll();
+		$result->closeCursor();
 
-		return $result->fetchAll();
+		return $rows;
 	}
 
 	/**
@@ -334,8 +341,9 @@ abstract class BaseMapper extends Mapper {
 	public function findAllUsers() : array {
 		$sql = "SELECT DISTINCT(`user_id`) FROM `{$this->getTableName()}`";
 		$result = $this->execute($sql);
-
-		return $result->fetchAll(\PDO::FETCH_COLUMN);
+		$rows = $result->fetchAll(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
+		return $rows;
 	}
 
 	/**
@@ -357,7 +365,8 @@ abstract class BaseMapper extends Mapper {
 	 */
 	protected function deleteByCond(string $condition, array $params) : void {
 		$sql = "DELETE FROM `{$this->getTableName()}` WHERE ". $condition;
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		$result->closeCursor();
 	}
 
 	/**
@@ -365,7 +374,8 @@ abstract class BaseMapper extends Mapper {
 	 */
 	public function deleteAll(string $userId) : void {
 		$sql = "DELETE FROM `{$this->getTableName()}` WHERE `user_id` = ?";
-		$this->execute($sql, [$userId]);
+		$result = $this->execute($sql, [$userId]);
+		$result->closeCursor();
 	}
 
 	/**
@@ -375,6 +385,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "SELECT 1 FROM `{$this->getTableName()}` WHERE `id` = ? AND `user_id` = ?";
 		$result = $this->execute($sql, [$id, $userId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return (bool)$row;
 	}
 
@@ -385,6 +396,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "SELECT COUNT(*) AS count FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		return \intval($row['count']);
 	}
 
@@ -395,6 +407,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "SELECT MAX(`id`) AS max_id FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
+		$result->closeCursor();
 		$max = $row['max_id'];
 		return $max === null ? null : (int)$max;
 	}
@@ -509,13 +522,18 @@ abstract class BaseMapper extends Mapper {
 		$sql = "UPDATE `{$this->getTableName()}` SET `starred` = ?
 				WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
 		$params = \array_merge([$date], $ids, [$userId]);
-		return $this->execute($sql, $params)->rowCount();
+		$result = $this->execute($sql, $params);
+		$modCount = $result->rowCount();
+		$result->closeCursor();
+
+		return $modCount;
 	}
 
 	public function latestInsertTime(string $userId) : ?\DateTime {
 		$sql = "SELECT MAX(`{$this->getTableName()}`.`created`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
 
 		return ($createdTime === null) ? null : new \DateTime($createdTime);
 	}
@@ -524,6 +542,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "SELECT MAX(`{$this->getTableName()}`.`updated`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+		$result->closeCursor();
 
 		return ($createdTime === null) ? null : new \DateTime($createdTime);
 	}
@@ -817,6 +836,7 @@ abstract class BaseMapper extends Mapper {
 		try {
 			$result = $this->execute('SELECT EXISTS(SELECT 1 FROM `pragma_function_list` WHERE `NAME` = ?)', [$funcName]);
 			$row = $result->fetch();
+			$result->closeCursor();
 			return (bool)\current($row);
 		} catch (\Exception $e) {
 			return false;
@@ -840,6 +860,7 @@ abstract class BaseMapper extends Mapper {
 		$result = $this->execute($sql, $values);
 		/** @var string|false $id */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$id = $result->fetchColumn();
+		$result->closeCursor();
 
 		if ($id === false) {
 			throw new DoesNotExistException('Conflicting entity not found');
@@ -853,6 +874,7 @@ abstract class BaseMapper extends Mapper {
 		$result = $this->execute($sql, [$id]);
 		/** @var string|false $created */ // phpdoc for \Doctrine\DBAL\Driver\Statement::fetchColumn is erroneous and omits the `false`
 		$created = $result->fetchColumn();
+		$result->closeCursor();
 		if ($created === false) {
 			throw new DoesNotExistException('ID not found');
 		}

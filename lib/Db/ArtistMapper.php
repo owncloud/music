@@ -117,6 +117,7 @@ class ArtistMapper extends BaseMapper {
 		while ($row = $result->fetch()) {
 			$playCountByArtist[$row['artist_id']] = (int)$row['sum_count'];
 		}
+		$result->closeCursor();
 		return $playCountByArtist;
 	}
 
@@ -137,6 +138,7 @@ class ArtistMapper extends BaseMapper {
 		while ($row = $result->fetch()) {
 			$latestTimeByArtist[$row['artist_id']] = $row['latest_time'];
 		}
+		$result->closeCursor();
 		return $latestTimeByArtist;
 	}
 
@@ -158,6 +160,7 @@ class ArtistMapper extends BaseMapper {
 		while ($row = $result->fetch()) {
 			$latestTimeByArtist[$row['artist_id']] = $row['latest_time'];
 		}
+		$result->closeCursor();
 		return $latestTimeByArtist;
 	}
 
@@ -185,7 +188,8 @@ class ArtistMapper extends BaseMapper {
 					SET `cover_file_id` = NULL
 					WHERE `id` IN ' . $this->questionMarks($count);
 			$params = ArrayUtil::extractIds($artists);
-			$this->execute($sql, $params);
+			$result = $this->execute($sql, $params);
+			$result->closeCursor();
 		}
 
 		return $artists;

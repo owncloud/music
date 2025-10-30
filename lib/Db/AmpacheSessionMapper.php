@@ -46,20 +46,23 @@ class AmpacheSessionMapper extends Mapper {
 				WHERE `token` = ?';
 
 		$params = [$expiry, $token];
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		$result->closeCursor();
 	}
 
 	public function cleanUp() : void {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`
 				WHERE `expiry` < ?';
 		$params = [\time()];
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		$result->closeCursor();
 	}
 
 	public function revokeSessions(int $ampacheUserId) : void {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`
 				WHERE `ampache_user_id` = ?';
 		$params = [$ampacheUserId];
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		$result->closeCursor();
 	}
 }

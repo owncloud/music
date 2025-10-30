@@ -546,7 +546,7 @@ class TrackMapper extends BaseMapper {
 		$result = $this->execute($sql, $params);
 		$updated = ($result->rowCount() > 0);
 		$result->closeCursor();
-		
+
 		return $updated;
 	}
 

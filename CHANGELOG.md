@@ -10,6 +10,7 @@
   * Scan also any dirty files by default, `--skip-dirty` option may be used to opt out
   * Option `--rescan-modified` removed
   * Possibility to opt out of the cover art updating with the option `--skip-art`
+  * Limit also album art search to the path provided with argument `--folder`
 
 ### Fixed
 

@@ -24,6 +24,7 @@ use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
+use OCA\Music\Service\FileSystemService;
 use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\LocalCacheTrait;
 use OCA\Music\Utility\Random;
@@ -39,10 +40,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/** @phpstan-use LocalCacheTrait<Album> */
 	use LocalCacheTrait;
 
+	private FileSystemService $fileSystemService;
 	private Logger $logger;
 
-	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
+	public function __construct(AlbumMapper $albumMapper, FileSystemService $fileSystemService, Logger $logger) {
 		parent::__construct($albumMapper);
+		$this->fileSystemService = $fileSystemService;
 		$this->logger = $logger;
 	}
 
@@ -372,12 +375,15 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * try to find cover arts for albums without covers
-	 * @param string|null $userId target user; omit to target all users
+	 * @param ?string $userId target user; omit to target all users
+	 * @param ?int $folderId limit the search to files residing (directly or indirectly) in the given folder
 	 * @return string[] users whose collections got modified
 	 */
-	public function findCovers(?string $userId = null) : array {
+	public function findCovers(?string $userId = null, ?int $folderId = null) : array {
+		$parentIds = ($folderId !== null) ? $this->fileSystemService->findAllDescendantFolders($folderId) : null;
+		$albums = $this->mapper->getAlbumsWithoutCover($userId, $parentIds);
+
 		$affectedUsers = [];
-		$albums = $this->mapper->getAlbumsWithoutCover($userId);
 		foreach ($albums as $album) {
 			if ($this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId'])) {
 				$affectedUsers[$album['userId']] = 1;

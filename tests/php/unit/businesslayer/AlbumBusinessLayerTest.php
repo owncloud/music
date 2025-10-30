@@ -9,29 +9,39 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 namespace OCA\Music\BusinessLayer;
 
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Album;
+use OCA\Music\Db\AlbumMapper;
+use OCA\Music\Service\FileSystemService;
 
 class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $mapper;
+	private $fileSystemService;
 	private $logger;
 	private $albumBusinessLayer;
 	private $userId;
 	private $albums;
+	private $albumsByArtist3;
 	private $artistIds;
+	private $response;
+	private $responseByArtist3;
 
 	protected function setUp() : void {
-		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
+		$this->mapper = $this->getMockBuilder(AlbumMapper::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+		$this->fileSystemService = $this->getMockBuilder(FileSystemService::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->logger);
+		$this->logger = $this->getMockBuilder(Logger::class)
+			->disableOriginalConstructor()
+			->getMock();
+		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->fileSystemService, $this->logger);
 		$this->userId = 'jack';
 		$album1 = new Album();
 		$album2 = new Album();

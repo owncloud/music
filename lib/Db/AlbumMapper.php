@@ -375,9 +375,10 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * @param string|null $userId target user; omit to target all users
-	 * @return array of dictionaries with keys [albumId, userId, parentFolderId]
+	 * @param ?int[] $parentIds limit search to albums having tracks in these folders; omit for no limit
+	 * @return array<array{albumId: int, userId: string, parentFolderId: int}>
 	 */
-	public function getAlbumsWithoutCover(?string $userId = null) : array {
+	public function getAlbumsWithoutCover(?string $userId = null, ?array $parentIds = null) : array {
 		$sql = 'SELECT DISTINCT `albums`.`id`, `albums`.`user_id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
@@ -388,6 +389,11 @@ class AlbumMapper extends BaseMapper {
 			$sql .= ' AND `albums`.`user_id` = ?';
 			$params[] = $userId;
 		}
+		if (!empty($parentIds)) {
+			$sql .= ' AND `files`.`parent` IN ' . $this->questionMarks(\count($parentIds));
+			$params = \array_merge($params, $parentIds);
+		}
+
 		$result = $this->execute($sql, $params);
 		$return = [];
 		while ($row = $result->fetch()) {
@@ -398,6 +404,7 @@ class AlbumMapper extends BaseMapper {
 			];
 		}
 		$result->closeCursor();
+
 		return $return;
 	}
 

@@ -505,7 +505,7 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Convert given path to a folder ID, provided that the path is within the music library.
-	 * The result if null if the $path points to th root of the music library. The $path null
+	 * The result is null if the $path points to th root of the music library. The $path null
 	 * is considered to point to the root of the lib (like in getMusicFolder).
 	 */
 	private function pathInLibToFolderId(string $userId, ?string $path = null) : ?int {
@@ -742,12 +742,26 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Find external cover images for albums which do not yet have one.
-	 * Target either one user or all users.
-	 * @param string|null $userId
+	 * Target either one user or all users. 
+	 * Optionally, limit the search to only the specified path. If this path doesn't point within the library path,
+	 * then nothing will be found. Path is not supported when all users are targeted.
+	 * 
 	 * @return bool true if any albums were updated; false otherwise
 	 */
-	public function findAlbumCovers(?string $userId = null) : bool {
-		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
+	public function findAlbumCovers(?string $userId = null, ?string $path = null) : bool {
+		$folderId = null;
+		if ($path !== null) {
+			if ($userId === null) {
+				throw new \InvalidArgumentException('Argument $path is not supported without argument $userId');
+			}
+			try {
+				$folderId = $this->pathInLibToFolderId($userId, $path);
+			} catch (\OCP\Files\NotFoundException $e) {
+				return false;
+			}
+		}
+
+		$affectedUsers = $this->albumBusinessLayer->findCovers($userId, $folderId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
 			$this->cache->remove($user, 'collection');

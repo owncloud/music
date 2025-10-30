@@ -155,15 +155,15 @@ class Scan extends BaseCommand {
 		if ($skipArt) {
 			$output->writeln("Cover art search skipped");
 		} else {
-			$this->searchArt($user, $output);
+			$this->searchArt($user, $folder, $output);
 		}
 	}
 
-	private function searchArt(string $user, OutputInterface $output) : void {
+	private function searchArt(string $user, ?string $folder, OutputInterface $output) : void {
 		$output->writeln("");
 		$output->writeln("Searching cover images for albums with no cover art set...");
 		$startTime = \hrtime(true);
-		if ($this->scanner->findAlbumCovers($user)) {
+		if ($this->scanner->findAlbumCovers($user, $folder)) {
 			$output->writeln("  Some album cover image(s) were found and added");
 		}
 		$albumCoverTime = (int)((\hrtime(true) - $startTime) / 1000000);

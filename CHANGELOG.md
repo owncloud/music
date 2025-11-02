@@ -3,6 +3,7 @@
 ### Added
 - Context menu with "Save playlist" function for advanced search results
   [#1256](https://github.com/owncloud/music/issues/1256)
+- Searching for radio stations with the advanced search
 
 ### Changed
 - Optimization for the scan speed (most significant on slow DB like SQLite)

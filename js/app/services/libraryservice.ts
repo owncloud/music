@@ -72,6 +72,7 @@ export interface AdvSearchResult {
 	playlists? : Playlist[];
 	podcastEpisodes? : PodcastEpisode[];
 	podcastChannels? : PodcastChannel[];
+	radioStations? : RadioStation[];
 	date : string;
 	criteria : string;
 }
@@ -443,12 +444,13 @@ export class LibraryService {
 		} else {
 			this.#advSearchResult = {
 				id: list.id,
-				tracks: _(list.trackIds).map((id) => this.getTrack(id)).value(),
-				albums: _(list.albumIds).map((id) => this.getAlbum(id)).value(),
-				artists: _(list.artistIds).map((id) => this.getArtist(id)).value(),
-				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
-				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
-				podcastChannels: _(list.podcastChannelIds).map((id) => this.getPodcastChannel(id)).value(),
+				tracks: _(list.trackIds).map(id => this.getTrack(id)).value(),
+				albums: _(list.albumIds).map(id => this.getAlbum(id)).value(),
+				artists: _(list.artistIds).map(id => this.getArtist(id)).value(),
+				playlists: _(list.playlistIds).map(id => this.getPlaylist(id)).value(),
+				podcastEpisodes: _(list.podcastEpisodeIds).map(id => this.getPodcastEpisode(id)).value(),
+				podcastChannels: _(list.podcastChannelIds).map(id => this.getPodcastChannel(id)).value(),
+				radioStations: _(list.radioStationIds).map(id => this.getRadioStation(id)).value(),
 				date: list.date,
 				criteria: list.criteria,
 			};

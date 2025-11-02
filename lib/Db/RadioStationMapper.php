@@ -31,4 +31,18 @@ class RadioStationMapper extends BaseMapper {
 		$sql = $this->selectUserEntities("`stream_url` = ?");
 		return $this->findEntity($sql, [$userId, $url]);
 	}
+
+	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp, string $conv) : string {
+		$condForRule = [
+			'stream_url' => "$conv(`stream_url`) $sqlOp $conv(?)",
+		];
+
+		return $condForRule[$rule] ?? parent::advFormatSqlCondition($rule, $sqlOp, $conv);
+	}
 }

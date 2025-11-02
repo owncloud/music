@@ -34,7 +34,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.onResultsContextMenuButton = function(event) {
 			$scope.showResultsMenu = !$scope.showResultsMenu;
 			event.stopPropagation();
-		}
+		};
 
 		// hide the results context menu when user clicks anywhere on the page
 		$document.click(function(_event) {
@@ -80,6 +80,11 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				{ value: 'name',		text: gettextCatalog.getString('by name') },
 				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
 				{ value: 'rating',		text: gettextCatalog.getString('by rating') },
+				{ value: 'random',		text: gettextCatalog.getString('randomly') },
+			],
+			radio_station: [
+				{ value: 'name',		text: gettextCatalog.getString('by name') },
+				{ value: 'newest',		text: gettextCatalog.getString('by time added') },
 				{ value: 'random',		text: gettextCatalog.getString('randomly') },
 			],
 		};
@@ -323,6 +328,19 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					]
 				},
 			],
+			radio_station: [
+				{
+					label: null,
+					options: [
+						{ key: 'title',				name: gettextCatalog.getString('Name'),					type: 'text' },
+						{ key: 'stream_url',		name: gettextCatalog.getString('Stream URL'),			type: 'text' },
+						{ key: 'added',				name: gettextCatalog.getString('Add date'),				type: 'date' },
+						{ key: 'updated',			name: gettextCatalog.getString('Update date'),			type: 'date' },
+						{ key: 'recent_added',		name: gettextCatalog.getString('Recently added'),		type: 'numeric_limit' },
+						{ key: 'recent_updated',	name: gettextCatalog.getString('Recently updated'),		type: 'numeric_limit' },
+					]
+				},
+			],
 		};
 
 		$scope.searchRuleOperators = {
@@ -466,7 +484,8 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			const tracksFromPlaylists = _($scope.results.playlists).map('tracks').flatten().map('track').value();
 			const episodeResults = $scope.results.podcastEpisodes;
 			const episodesFromChannels = _($scope.results.podcastChannels).map('episodes').flatten().value();
-			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults, episodesFromChannels);
+			const radioResults = $scope.results.radioStations;
+			return [].concat(trackResults, tracksFromAlbums, tracksFromArtists, tracksFromPlaylists, episodeResults, episodesFromChannels, radioResults);
 		}
 
 		// Call playQueueService to play all songs in the current playlist from the beginning
@@ -484,7 +503,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.resultCount = function() {
 			const res = $scope.results;
 			return res.tracks.length + res.albums.length + res.artists.length + res.playlists.length
-					+ res.podcastEpisodes.length + res.podcastChannels.length;
+					+ res.podcastEpisodes.length + res.podcastChannels.length + res.radioStations.length;
 		};
 
 		/** Results which may be saved to a playlist */
@@ -625,6 +644,30 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			return {
 				title: listItem.title,
 				tooltip: listItem.title,
+				number: index + 1,
+				id: listItem.id,
+				art: listItem
+			};
+		};
+
+		$scope.onRadioStationClick = function(stationId) {
+			const currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && currentTrack.id === stationId && currentTrack.type == 'radio') {
+				playQueueService.publish('togglePlayback');
+			}
+			// on any other list item, start playing the list from this item
+			else {
+				const index = _.findIndex($scope.results.radioStations, { id: stationId });
+				play($scope.results.radioStations, index);
+			}
+		};
+
+		$scope.getRadioStationData = function(listItem, index, _scope) {
+			return {
+				title: listItem.name,
+				title2: listItem.stream_url,
+				tooltip: listItem.name,
+				tooltip2: listItem.stream_url,
 				number: index + 1,
 				id: listItem.id,
 				art: listItem

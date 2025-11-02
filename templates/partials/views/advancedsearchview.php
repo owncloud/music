@@ -11,6 +11,7 @@
 				<option value="playlist" translate>playlists</option>
 				<option value="podcast_episode" translate>podcast episodes</option>
 				<option value="podcast_channel" translate>podcast channels</option>
+				<option value="radio_station" translate>radio stations</option>
 			</select>
 			<select id="adv-search-conjunction" ng-model="conjunction">
 				<option value="and" translate>matching all rules</option>
@@ -126,6 +127,14 @@
 			show-track-details="showPodcastChannelDetails"
 			track-id-prefix="'podcast-channel'"
 			content-type="'podcast-channel'"
+		></track-list>
+		<track-list
+			tracks="results.radioStations"
+			get-track-data="getRadioStationData"
+			play-track="onRadioStationClick"
+			show-track-details="showRadioStationDetails"
+			track-id-prefix="'radio-station'"
+			content-type="'radio'"
 		></track-list>
 	</div>
 </div>

@@ -126,7 +126,7 @@ class AdvSearchController extends Controller {
 			'playlist' => $this->playlistBusinessLayer,
 			'podcast_channel' => $this->podcastChannelBusinessLayer,
 			'podcast_episode' => $this->podcastEpisodeBusinessLayer,
-			'radio' => $this->radioStationBusinessLayer,
+			'radio_station' => $this->radioStationBusinessLayer,
 			'track' => $this->trackBusinessLayer,
 		];
 		return $map[$type] ?? null;

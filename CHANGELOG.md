@@ -13,6 +13,7 @@
   * Limit also album art search to the path provided with argument `--folder`
 
 ### Fixed
+- Playback stopping when the title "0 results" of an emtpy advanced search clicked
 
 ## 2.4.1 - 2025-10-12
 

@@ -445,7 +445,9 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 
 		// Call playQueueService to play all songs in the current playlist from the beginning
 		$scope.onHeaderClick = function() {
-			play(getTracksFromResult());
+			if ($scope.resultCount()) {
+				play(getTracksFromResult());
+			}
 		};
 
 		$scope.getHeaderDraggable = function() {

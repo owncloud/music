@@ -411,7 +411,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 				conjunction: $scope.conjunction,
 				order: $scope.order,
 				limit: $scope.maxResults || null,
-				rules: JSON.stringify($scope.searchRules)
+				rules: angular.toJson($scope.searchRules)
 			};
 
 			Restangular.one('advanced_search').customPOST(searchArgs).then(

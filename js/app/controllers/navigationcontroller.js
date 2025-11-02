@@ -281,7 +281,7 @@ angular.module('Music').controller('NavigationController', [
 			createPlaylist(
 				gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
 				_.map(smartlist.tracks, 'track.id'),
-				gettextCatalog.getString('Used filters: {{ params }}', { params: JSON.stringify(_.omitBy(smartlist.params, _.isNil), null, 2) })
+				gettextCatalog.getString('Used filters: {{ params }}', { params: angular.toJson(_.omitBy(smartlist.params, _.isNil), 2) })
 			);
 		};
 

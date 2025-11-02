@@ -14,9 +14,10 @@
   * Option `--rescan-modified` removed
   * Possibility to opt out of the cover art updating with the option `--skip-art`
   * Limit also album art search to the path provided with argument `--folder`
+- Updated the getID3 library to the release version 1.9.24-202509040923
 
 ### Fixed
-- Playback stopping when the title "0 results" of an emtpy advanced search clicked
+- Playback stopping when clicking the title "0 results" of an empty advanced search result
 
 ## 2.4.1 - 2025-10-12
 

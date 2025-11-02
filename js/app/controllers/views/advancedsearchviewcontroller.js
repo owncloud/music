@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('AdvancedSearchViewController', [
-	'$rootScope', '$scope', 'libraryService', 'playQueueService', '$timeout', 'Restangular', 'gettextCatalog',
-	function ($rootScope, $scope, libraryService, playQueueService, $timeout, Restangular, gettextCatalog) {
+	'$rootScope', '$scope', '$document', 'libraryService', 'playQueueService', '$timeout', 'Restangular', 'gettextCatalog',
+	function ($rootScope, $scope, $document, libraryService, playQueueService, $timeout, Restangular, gettextCatalog) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
@@ -29,6 +29,17 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.order = 'name';
 		$scope.conjunction = 'and';
 		$scope.entityType = 'track';
+		$scope.showResultsMenu = false;
+
+		$scope.onResultsContextMenuButton = function(event) {
+			$scope.showResultsMenu = !$scope.showResultsMenu;
+			event.stopPropagation();
+		}
+
+		// hide the results context menu when user clicks anywhere on the page
+		$document.click(function(_event) {
+			$timeout(() => $scope.showResultsMenu = false);
+		});
 
 		$scope.availableOrders = {
 			track: [
@@ -405,6 +416,7 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 		$scope.search = function() {
 			$scope.results = libraryService.setAdvancedSearchResult(null);
 			$scope.errorDescription = null;
+			$scope.showResultsMenu = false;
 
 			const searchArgs = {
 				entity: $scope.entityType,
@@ -422,6 +434,20 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 					$scope.errorDescription = error.data.message;
 				}
 			);
+		};
+
+		$scope.saveResults = function() {
+			const trackIds = _.map(getTracksFromResult(), 'id');
+
+			const args = {
+				name: gettextCatalog.getString('Search {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime($scope.results.date) }),
+				trackIds: trackIds.join(','),
+				comment: gettextCatalog.getString('Search criteria: {{ params }}', { params: angular.toJson(_.omitBy($scope.results.criteria, _.isNil), 2) })
+			};
+			Restangular.all('playlists').post(args).then(playlist => {
+				libraryService.addPlaylist(playlist);
+				$timeout(() => $scope.navigateTo(`#playlist/${playlist.id}`));
+			});
 		};
 
 		function play(tracks, startIndex = null) {
@@ -459,6 +485,12 @@ angular.module('Music').controller('AdvancedSearchViewController', [
 			const res = $scope.results;
 			return res.tracks.length + res.albums.length + res.artists.length + res.playlists.length
 					+ res.podcastEpisodes.length + res.podcastChannels.length;
+		};
+
+		/** Results which may be saved to a playlist */
+		$scope.saveableResultCount = function() {
+			const res = $scope.results;
+			return res.tracks.length + res.albums.length + res.artists.length + res.playlists.length;
 		};
 
 		$scope.onTrackClick = function(trackId) {

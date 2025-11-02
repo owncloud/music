@@ -63,12 +63,19 @@
 	</div>
 
 	<div ng-if="results" class="flat-list-view playlist-area">
-		<h2 ui-draggable="true" drag="getHeaderDraggable()">
+		<h2 class="results-title">
 			<span ng-class="{ clickable: resultCount() }" ng-click="onHeaderClick()">
-				<span translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">{{ resultCount() }} result</span>
+				<span ui-draggable="true" drag="getHeaderDraggable()"
+					translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">{{ resultCount() }} result</span>
 				<img ng-if="resultCount()" class="play svg" alt="{{ 'Play' | translate }}"
 					src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
 			</span>
+			<button class="icon-more" ng-show="saveableResultCount()" ng-click="onResultsContextMenuButton($event)"></button>
+			<div class="popovermenu bubble heading-actions" ng-show="showResultsMenu">
+				<ul>
+					<li><a ng-click="saveResults()"><span class="icon icon-playlist svg"></span><span translate>Save playlist</span></a></li>
+				</ul>
+			</div>
 		</h2>
 		<track-list
 			tracks="results.tracks"

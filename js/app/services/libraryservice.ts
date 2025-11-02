@@ -72,6 +72,8 @@ export interface AdvSearchResult {
 	playlists? : Playlist[];
 	podcastEpisodes? : PodcastEpisode[];
 	podcastChannels? : PodcastChannel[];
+	date : string;
+	criteria : string;
 }
 
 export interface Folder {
@@ -447,6 +449,8 @@ export class LibraryService {
 				playlists: _(list.playlistIds).map((id) => this.getPlaylist(id)).value(),
 				podcastEpisodes: _(list.podcastEpisodeIds).map((id) => this.getPodcastEpisode(id)).value(),
 				podcastChannels: _(list.podcastChannelIds).map((id) => this.getPodcastChannel(id)).value(),
+				date: list.date,
+				criteria: list.criteria,
 			};
 		}
 		return this.#advSearchResult;

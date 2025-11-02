@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 #adv-search-area {
@@ -14,6 +14,11 @@
 
 #adv-search-area h1 {
 	margin: 14px;
+}
+
+#adv-search-area .results-title {
+	position: relative;
+	width: fit-content;
 }
 
 #adv-search-area select {

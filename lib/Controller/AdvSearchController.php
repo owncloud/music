@@ -29,6 +29,7 @@ use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Http\ErrorResponse;
@@ -103,7 +104,9 @@ class AdvSearchController extends Controller {
 				$entityIds = ArrayUtil::extractIds($entities);
 				return new JSONResponse([
 					'id' => \md5($entity.\serialize($entityIds)), // use hash => identical results will have identical ID
-					StringUtil::snakeToCamelCase($entity).'Ids' => $entityIds
+					StringUtil::snakeToCamelCase($entity).'Ids' => $entityIds,
+					'date' => (new \DateTime())->format(BaseMapper::SQL_DATE_FORMAT),
+					'criteria' => \compact('entity', 'rules', 'conjunction', 'order', 'limit', 'offset')
 				]);
 			} else {
 				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Entity type '$entity' is not supported");

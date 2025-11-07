@@ -72,9 +72,9 @@ HtmlUtil::printNgTemplate('navigationitem');
 			</div>
 		</li>
 		<li id="music-nav-settings" class="docked-navigation-item" ng-class="{active: currentView=='#/settings'}">
-			<a class="" ng-click="navigateTo('#/settings')">
-				<img class="svg" src="<?php HtmlUtil::printSvgPath('settings') ?>">
-				{{ 'Settings' | translate }}
+			<a class="music-navigation-item-content" ng-click="navigateTo('#/settings')">
+				<span class="icon-settings-dark"></span>
+				<span class="label" translate>Settings</span>
 			</a>
 		</li>
 	</ul>

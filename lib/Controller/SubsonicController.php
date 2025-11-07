@@ -1089,12 +1089,12 @@ class SubsonicController extends ApiController {
 			[
 				'track',
 				[$this->trackBusinessLayer, 'findById'],
-				[$this, 'trackstoApi']
+				[$this, 'tracksToApi']
 			],
 			[
 				'podcast_episode',
 				[$this->podcastEpisodeBusinessLayer, 'findById'],
-				[$this, 'podcastEpisodestoApi']
+				[$this, 'podcastEpisodesToApi']
 			]
 		];
 
@@ -1531,7 +1531,7 @@ class SubsonicController extends ApiController {
 	/**
 	 * @param PodcastEpisode[] $episodes
 	 */
-	private function podcastEpisodestoApi(array $episodes) : array {
+	private function podcastEpisodesToApi(array $episodes) : array {
 		return \array_map(fn(PodcastEpisode $p) => $p->toSubsonicApi(), $episodes);
 	}
 

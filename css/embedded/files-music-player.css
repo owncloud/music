@@ -88,9 +88,8 @@
 	box-sizing: border-box;
 }
 
-#music-controls .separator {
+#music-controls .time-separator {
 	display: inline;
-	border: none;
 }
 
 #music-controls .control {

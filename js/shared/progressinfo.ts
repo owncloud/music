@@ -50,7 +50,7 @@ export class ProgressInfo {
 
 		let text = $('<span class="progress-text text-loaded" />');
 		$('<span class="play-time" />').appendTo(text);
-		$('<span class="separator">\xa0/\xa0</span>').appendTo(text);
+		$('<span class="time-separator">\xa0/\xa0</span>').appendTo(text);
 		$('<span class="song-length" />').appendTo(text);
 
 		let seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
@@ -69,7 +69,7 @@ export class ProgressInfo {
 
 	#updateProgress() : void {
 		const text_playTime = this.#elem.find('.progress-text .play-time');
-		const text_separator = this.#elem.find('.progress-text .separator');
+		const text_separator = this.#elem.find('.progress-text .time-separator');
 		const text_songLength = this.#elem.find('.progress-text .song-length');
 		const playBar = this.#elem.find('.seek-bar .play-bar.solid');
 		const transBar = this.#elem.find('.seek-bar .play-bar.translucent');

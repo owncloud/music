@@ -261,7 +261,7 @@ export class PlayerWrapper {
 		switch (this.#underlyingPlayer) {
 			case 'html5':
 				// Amazingly, there's no 'stop' functionality in the HTML5 audio API, nor is there a way to
-				// properly remove the src attribute: setting it to null wold be interpreted as addess
+				// properly remove the src attribute: setting it to null wold be interpreted as address
 				// "<baseURI>/null" and setting it to empty string will make the src equal the baseURI.
 				// Still, resetting the source is necessary to detach the player from the mediaSession API.
 				// Just be sure to ignore the resulting 'error' events. Unfortunately, this will still print
@@ -367,7 +367,7 @@ export class PlayerWrapper {
 		}
 	}
 
-	playbackRateAdjustible() : boolean {
+	playbackRateAdjustable() : boolean {
 		return (this.#underlyingPlayer == 'html5');
 	}
 
@@ -381,7 +381,7 @@ export class PlayerWrapper {
 	#canPlayWithHtml5(mime : string) : boolean {
 		// The m4b format is almost identical with m4a (but intended for audio books).
 		// Still, browsers actually able to play m4b files seem to return false when
-		// queuring the support for the mime. Hence, a little hack.
+		// querying the support for the mime. Hence, a little hack.
 		// The m4a files use MIME type 'audio/mp4' while the m4b use 'audio/m4b'.
 		return (this.#html5audio.canPlayType(mime) !== '')
 			|| (mime == 'audio/m4b' && this.#canPlayWithHtml5('audio/mp4'));

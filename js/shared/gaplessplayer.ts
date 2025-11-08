@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022 - 2024
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 import * as _ from 'lodash';
@@ -90,8 +90,8 @@ class GaplessPlayer {
 		this.#nextPlayer.setVolume(percentage);
 	}
 
-	playbackRateAdjustible() : boolean {
-		return this.#currentPlayer.playbackRateAdjustible();
+	playbackRateAdjustable() : boolean {
+		return this.#currentPlayer.playbackRateAdjustable();
 	}
 
 	setPlaybackRate(rate : number) : void {

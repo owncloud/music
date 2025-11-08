@@ -356,14 +356,14 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	};
 
-	const notifyPlaybackRateNotAdjustible = _.debounce(
+	const notifyPlaybackRateNotAdjustable = _.debounce(
 		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
 		1000, {leading: true, trailing: false}
 	);
 	$scope.$watch('playbackRate', function(newValue, oldValue) {
 		$scope.player.setPlaybackRate(newValue);
-		if (oldValue && oldValue != newValue && !$scope.player.playbackRateAdjustible()) {
-			notifyPlaybackRateNotAdjustible();
+		if (oldValue && oldValue != newValue && !$scope.player.playbackRateAdjustable()) {
+			notifyPlaybackRateNotAdjustable();
 		}
 	});
 

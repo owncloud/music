@@ -24,10 +24,6 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	top: 50px;
 }
 
-.ie #controls {
-	top: 45px;
-}
-
 #controls, #controls * {
 	display: none;
 }
@@ -90,11 +86,6 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	margin-inline-start: 40px;
 	margin-inline-end: 10px;
 	background-color: silver;
-}
-
-.ie #controls #playback-rate-control input {
-	height: auto;
-	padding: 0;
 }
 
 #controls .albumart {
@@ -218,4 +209,67 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #controls.two-line .music-progress-info {
 	inset-inline-start: 212px;
+}
+
+
+/**
+ * Support for Internet Explorer
+ */
+
+.ie #controls {
+	top: 45px;
+}
+
+.ie #controls #playback-rate-control input {
+	height: auto;
+	padding: 0;
+}
+
+.ie #controls .music-progress-info {
+	left: 710px;
+	right: 165px;
+}
+
+.ie #shuffle {
+	right: 55px;
+}
+
+.ie #repeat {
+	right: 5px;
+}
+
+.ie #controls .music-volume-control {
+	right: 100px;
+}
+
+.ie #controls.two-line #shuffle {
+	right: unset;
+	left: 65px;
+}
+
+.ie #controls.two-line #repeat {
+	right: unset;
+	left: 130px;
+}
+
+.ie #controls.two-line .music-volume-control {
+	right: 9px;
+}
+
+.ie #controls.two-line .music-progress-info {
+	left: 270px;
+	right: 20px;
+}
+
+.ie #controls.two-line .music-progress-info .progress-text {
+	right: 0px;
+}
+
+.ie #controls.two-line .music-progress-info .seek-bar {
+	left: 0;
+	right: 90px;
+}
+
+.ie #controls.two-line .music-progress-info {
+	left: 212px;
 }

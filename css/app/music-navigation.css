@@ -324,7 +324,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	margin-inline-start: 0;
 }
 
-/* Compatibility for Internet Explorer which doesn't support the var() syntax; IE is supported on OC but not on NC */
+/* Compatibility for Internet Explorer which doesn't support the var() syntax nor bi-directionality; IE is supported on OC but not on NC */
 .ie #app-navigation .music-navigation-item,
 .ie #app-navigation .music-navigation-item-content,
 .ie #app-navigation .music-navigation-item-content > *,
@@ -365,4 +365,39 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 .ie .app-music #app-navigation {
 	padding-bottom: 88px !important;
+}
+
+.ie #app-navigation .input-container.with-buttons {
+	right: 65px;
+}
+
+.ie #app-navigation .item-with-actions .input-container:not(.with-buttons) {
+	right: 40px;
+}
+
+.ie #app-navigation .input-container #search-input {
+	padding-right: 32px;
+}
+
+.ie #app-navigation .input-container #clear-search {
+	left: -40px;
+}
+
+.ie #app-navigation .icon-checkmark {
+	right: 30px;
+}
+
+.ie #app-navigation .action {
+	margin-right: 5px;
+	float: right;
+}
+
+.ie #app-navigation .actions {
+	right: 0;
+}
+
+.ie #app-navigation .music-navigation-item-content .label {
+	padding-left: 4px;
+	right: 0;
+	left: 40px;
 }

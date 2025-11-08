@@ -149,3 +149,18 @@
 	/* in the compact mode, specifying width using a percent wouldn't work because the position is not absolute */
 	max-width: calc(100vw - 60px);
 }
+
+/**
+ * Rudimentary support for Internet Explorer
+ */
+
+.ie .album-area,
+.ie .album-area > h2 > span,
+.ie .album-area > .albumart {
+	float: left;
+}
+
+.ie .album-area > .overlay {
+	float: left;
+	margin-left: -190px;
+}

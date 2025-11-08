@@ -54,3 +54,25 @@
 body.snapjs-left #music-controls {
 	visibility: hidden;
 }
+
+/**
+ * Support for Internet Explorer
+ */
+.ie #music-controls.tablet #albumart-container {
+	margin-left: 10px;
+}
+.ie #music-controls.tablet #info-and-progress {
+	left: 230px;
+	right: 140px;
+}
+.ie #music-controls.mobile .control {
+	right: 0;
+}
+.ie #music-controls.mobile #albumart-container {
+	margin-left: 0;
+	margin-right: 0;
+}
+.ie #music-controls.mobile #info-and-progress {
+	left: 160px;
+	right: 50px;
+}

@@ -52,13 +52,6 @@
 	transform: rotate(90deg);
 }
 
-.ie .music-volume-control .volume-slider {
-	height:auto;
-	top: 3px;
-	inset-inline-start: 26px;
-	background-color: transparent;
-}
-
 .music-volume-control .volume-slider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background-color: #666;
@@ -81,4 +74,19 @@
 
 .music-volume-control .volume-slider:hover::-moz-range-thumb {
 	cursor: pointer;
+}
+
+/**
+ * Support for Internet Explorer 
+ */
+
+.ie .music-volume-control .volume-slider {
+	height:auto;
+	top: 3px;
+	left: 26px;
+	background-color: transparent;
+}
+
+.ie .music-volume-control .volume-icon-and-percent * {
+	left: 0;
 }

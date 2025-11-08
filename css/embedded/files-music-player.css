@@ -31,11 +31,6 @@
 	border-end-end-radius: var(--body-container-radius);
 }
 
-.ie #music-controls {
-	/* IE doesn't support the var() syntax */
-	background-color: rgba(255, 255, 255, .95);
-}
-
 #music-controls.with-playlist {
 	height: 90px;
 }
@@ -153,10 +148,6 @@
 	border-radius: var(--music-albumart-small-border-radius);
 }
 
-.ie #music-controls #albumart {
-	border-color: #ededed;
-}
-
 #music-controls #albumart-container.icon-loading #albumart {
 	opacity: 0.2;
 }
@@ -199,4 +190,39 @@
 #music-controls .music-volume-control {
 	position: absolute;
 	inset-inline-end: 54px;
+}
+
+
+/**
+ * Support for Internet Explorer which doesn't support the var() syntax nor bidirectional UI layout
+ */
+
+.ie #music-controls {
+	background-color: rgba(255, 255, 255, .95);
+}
+
+.ie #music-controls #albumart {
+	border-color: #ededed;
+}
+
+.ie #music-controls #playlist-area #playlist-name {
+	left: 10px;
+}
+
+.ie #music-controls #playlist-area > span,
+.ie #music-controls #playlist-area #menu-container {
+	margin-left: 10px;
+}
+
+.ie #music-controls #info-and-progress {
+	left: 260px;
+	right: 180px;
+}
+
+.ie #music-controls .music-volume-control {
+	right: 54px;
+}
+
+.ie #music-controls .control#close {
+	right: 0;
 }

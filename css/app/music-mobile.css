@@ -164,3 +164,110 @@
 .mobile.portrait.min-width #controls .music-progress-info .progress-text {
 	text-align: end;
 }
+
+
+/**
+ * Support for Internet Explorer which doesn't have bi-di support
+ */
+
+.ie .mobile #app-view {
+	padding-left: 4px;
+}
+
+.ie .mobile .artist-area > h1 {
+	margin-left: 4px;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area > .albumart,
+.ie .mobile .view-container:not(.compact) .album-area > .overlay {
+	float: left;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area > .overlay {
+	margin-left: -50px;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area h2 {
+	left: 56px;
+}
+
+.ie .mobile #app-view .heading-actions {
+	right: 5px;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area .track-list {
+	margin-left: 0;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
+	padding-left: 40px;
+}
+
+.ie .mobile .view-container:not(.compact) .album-area .track-list > li.more-less {
+	padding-left: 57px;
+}
+
+.ie #app-navigation + #app-content.mobile #controls {
+	padding-left: 20px;
+}
+
+.ie .mobile #play-controls {
+	margin-left: 20px;
+}
+
+.ie .mobile #controls.two-line .control,
+.ie .mobile #controls.two-line .song-info,
+.ie .mobile #controls .albumart {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.ie .mobile #controls.two-line .song-info {
+	left: 220px;
+}
+.ie .mobile #controls.two-line #shuffle {
+	left: 55px;
+}
+.ie .mobile #controls.two-line #repeat {
+	left: 108px;
+}
+.ie .mobile #controls.two-line .music-progress-info {
+	left: 172px;
+}
+.ie .mobile #controls #play-pause-menu {
+	right: 0;
+}
+
+.ie .mobile.portrait #controls.two-line #shuffle {
+	left: 35px;
+}
+.ie .mobile.portrait #controls.two-line #repeat {
+	left: 77px;
+}
+.ie .mobile.portrait #controls.two-line .song-info {
+	left: 172px;
+}
+.ie .mobile.portrait #controls.two-line .music-progress-info {
+	left: 124px;
+}
+
+.ie .mobile.portrait.extra-narrow #controls.two-line .song-info {
+	left: 120px;
+	right: 25px;
+}
+.ie .mobile.portrait.extra-narrow .view-container.compact .album-area .track-list {
+	margin-left: 0;
+}
+.ie .mobile.portrait.extra-narrow .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
+	padding-left: 0;
+}
+.ie .mobile.portrait.extra-narrow .view-container:not(.compact) .album-area .track-list > li.more-less {
+	padding-left: 18px;
+}
+
+.ie .mobile.portrait.min-width #controls.two-line .song-info {
+	right: 10px;
+}
+.ie .mobile.portrait.min-width #controls .music-progress-info .progress-text {
+	text-align: right;
+}

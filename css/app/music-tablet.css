@@ -54,3 +54,29 @@
 .tablet #controls .title {
 	font-size: 14px;
 }
+
+
+/**
+ * Support for Internet Explorer which doesn't have bi-di support
+ */
+
+.ie #app-navigation + #app-content.tablet #controls {
+	padding-left: 20px;
+}
+
+.ie .tablet #play-controls {
+	margin-left: 20px;
+}
+
+.ie .tablet #controls .albumart {
+	margin-left: 8px;
+	margin-right: 0;
+}
+
+.ie .tablet #controls .song-info {
+	left: 260px;
+}
+
+.ie .tablet #controls:not(.two-line) .music-progress-info {
+	left: 460px;
+}

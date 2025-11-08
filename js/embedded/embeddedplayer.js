@@ -308,7 +308,7 @@ OCA.Music.EmbeddedPlayer = function() {
 			} else if (width > 600) {
 				musicControls.addClass('tablet');
 				musicControls.removeClass('mobile extra-narrow');
-			} else if (width > 360) {
+			} else if (width > 380) {
 				musicControls.addClass('tablet mobile');
 				musicControls.removeClass('extra-narrow');
 			} else {

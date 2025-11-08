@@ -53,16 +53,14 @@
 	text-shadow: #eee 0 0 10px;
 	top: 0;
 	bottom: auto;
-	left: 0;
-	right: 0;
+	inset-inline: 0;
 	z-index: 1;
 	pointer-events: none;
 }
 
 .music-widget .current-song-label {
 	flex: 0 0 25px;
-	margin-left: 8px;
-	margin-right: 8px;
+	margin-inline: 8px;
 	margin-top: -5px;
 	text-align: center;
 	font-weight: bold;
@@ -81,8 +79,8 @@
 	width: 50px;
 	height: 50px;
 	border: 1px solid var(--color-text-lighter);
-	margin-left: 8px;
-	margin-right: 16px;
+	margin-inline-start: 8px;
+	margin-inline-end: 16px;
 	background-size: contain;
 	cursor: pointer;
 }
@@ -105,14 +103,14 @@
 
 .music-widget .player-controls .music-volume-control .volume-icon-and-percent {
 	position: absolute;
-	left: 10px;
+	inset-inline-start: 10px;
 	top: 4px;
 }
 
 .music-widget .player-controls .music-volume-control .volume-slider {
 	width: 50px;
 	top: 24px;
-	left: 30px
+	inset-inline-start: 30px
 }
 
 .music-widget select {
@@ -131,8 +129,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	padding-left: 12px;
-	padding-right: 12px;
+	padding-inline: 12px;
 	line-height: 28px;
 	border-radius: var(--border-radius-large);
 	cursor: pointer;

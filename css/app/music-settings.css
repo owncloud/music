@@ -16,8 +16,8 @@
 
 #music-user {
 	margin-top: 14px;
-	margin-left: 14px;
-	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
+	margin-inline-start: 14px;
+	margin-inline-end: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
 #music-user h1 {
@@ -43,7 +43,7 @@
 #music-user ul.info-list {
 	list-style: unset;
 	list-style-position: inside;
-	padding-left: 10px;
+	padding-inline-start: 10px;
 }
 
 #music-user .label-container {
@@ -71,7 +71,7 @@
 	display: inline-block;
 	vertical-align: middle;
 	top: -3px;
-	left: 5px;
+	inset-inline-start: 5px;
 	cursor: pointer;
 }
 
@@ -99,16 +99,16 @@
 	color: #999;
 	border-bottom: 1px solid #ebebeb;
 	padding: 0 0.5em;
-	padding-left: 0.8em;
-	text-align: left;
+	padding-inline-start: 0.8em;
+	text-align: start;
 	font-weight: normal;
 }
 
 #music-user table.grid td {
 	border-bottom: 1px solid #ebebeb;
 	padding: 0 0.5em;
-	padding-left: 0.8em;
-	text-align: left;
+	padding-inline-start: 0.8em;
+	text-align: start;
 	font-weight: normal;
 }
 
@@ -127,11 +127,11 @@
 }
 
 #music-user table.grid th.key-action {
-	padding-right: 15px;
+	padding-inline-end: 15px;
 }
 
 #music-user table.grid td.key-action, #music-user table th.key-action {
-	text-align: right;
+	text-align: end;
 }
 
 #music-user table.grid td.key-action a,
@@ -192,23 +192,23 @@
 
 #music-password-info dt,
 #music-password-info dd {
-	float: left;
+	float: inline-start;
 	padding-bottom: 0;
 	padding-top: 12px;
-	padding-right: 12px;
-	padding-left: 0;
+	padding-inline-end: 12px;
+	padding-inline-start: 0;
 }
 
 #music-password-info dt {
 	width: 40%;
-	text-align: right;
+	text-align: end;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 #music-password-info dd {
 	width: 60%;
-	text-align: left;
+	text-align: start;
 	word-wrap: break-word;
 	font-weight: bold;
 }

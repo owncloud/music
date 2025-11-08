@@ -5,28 +5,28 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021 - 2024
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 .folder-tree {
 	margin-top: 16px;
-	margin-right: -50px; /* utilize the space reserved for the alphabet navigation */
+	margin-inline-end: -50px; /* utilize the space reserved for the alphabet navigation */
 	white-space: nowrap;
 }
 
 .folder-tree h2 > span {
 	max-width: calc(100% - 36px);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: inline-block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
 }
 
 .folder-tree .subfolders {
-	margin-left: 36px;
+	margin-inline-start: 36px;
 }
 
 .folder-tree .track-list {
-	margin-left: 36px;
+	margin-inline-start: 36px;
 }
 
 .folder-tree .track-list > li .ordinal {
@@ -38,7 +38,7 @@
 }
 
 .folder-tree .track-list > li.more-less {
-	padding-left: 0;
+	padding-inline-start: 0;
 	white-space: normal;
 }
 
@@ -55,13 +55,13 @@
 .folder-tree .caret-overlay {
 	width: 36px;
 	height: 36px;
-	float: left;
+	float: inline-start;
 	background-size: contain;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .folder-tree .caret-overlay {
-	margin-left: -44px;
+	margin-inline-start: -44px;
 	margin-top: 2px;
 	margin-bottom: -2px;
 	visibility: hidden;

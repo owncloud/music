@@ -64,7 +64,7 @@
 }
 
 #app-navigation .music-navigation-item-content {
-	padding-left: 0 !important;
+	padding-inline-start: 0 !important;
 	height: var(--music-nav-item-height);
 	line-height: var(--music-nav-item-height);
 	width: 100%;
@@ -102,12 +102,12 @@
 }
 
 #app-navigation .music-navigation-item-content .label {
-	padding-left: 4px;
+	padding-inline-start: 4px;
 	box-shadow: unset;
 	position: absolute;
 	width: auto;
-	right: 0;
-	left: 40px;
+	inset-inline-end: 0;
+	inset-inline-start: 40px;
 }
 
 .app-music #app-navigation-toggle {
@@ -126,8 +126,8 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 }
 
 #app-navigation .action {
-	margin-right: 5px;
-	float: right;
+	margin-inline-end: 5px;
+	float: inline-end;
 	width: 24px;
 	height: 24px;
 	padding: 5px;
@@ -152,7 +152,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 }
 
 #app-navigation .play-pause {
-	margin-left: 16px;
+	margin-inline-start: 16px;
 }
 
 #app-navigation .current:not(.playing) :hover .play-pause {
@@ -167,7 +167,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	background-color: var(--color-primary, #1d2d44);
 	color: var(--color-primary-text, #fff);
 	border-radius: 50%;
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	width: calc(var(--music-nav-item-height) - 12px);
 	height: calc(var(--music-nav-item-height) - 12px);
 	line-height: calc(var(--music-nav-item-height) - 12px);
@@ -182,7 +182,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 #app-navigation .actions {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	height: 100%;
 	width: 44px;
 }
@@ -216,7 +216,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 #app-navigation .item-with-actions .actions .icon-loading-small {
 	display: inline-block;
 	position: absolute;
-	left: 0;
+	inset-inline-start: 0;
 	top: 0;
 	width: 100%;
 	height: 100%;
@@ -233,17 +233,17 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 #app-navigation .input-container {
 	position: absolute;
-	left: 35px;
-	right: 12px;
+	inset-inline-start: 35px;
+	inset-inline-end: 12px;
 	width: auto;
 }
 
 #app-navigation .input-container input {
 	width: 100%;
-	margin-left: 0;
+	margin-inline-start: 0;
 	margin-bottom: 4px;
 	margin-top: 4px;
-	margin-right: 5px;
+	margin-inline-end: 5px;
 	height: calc(var(--music-nav-item-height) - 6px);
 	max-height: 32px;
 	min-height: unset;
@@ -252,26 +252,26 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 }
 
 #app-navigation .input-container.with-buttons {
-	right: 65px;
+	inset-inline-end: 65px;
 }
 
 #app-navigation .input-container.with-buttons input {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
 }
 
 #app-navigation .item-with-actions .input-container:not(.with-buttons) {
-	right: 40px;
+	inset-inline-end: 40px;
 }
 
 #app-navigation .input-container #search-input {
-	padding-right: 32px;
+	padding-inline-end: 32px;
 }
 
 #app-navigation .input-container #clear-search {
 	position: relative;
 	vertical-align: middle;
-	left: -40px;
+	inset-inline-start: -40px;
 	top: -2px;
 	width: 24px;
 	height: 24px;
@@ -281,15 +281,14 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 #app-navigation .icon-checkmark {
 	position: absolute;
-	right: 30px;
+	inset-inline-end: 30px;
 	float: none;
 }
 
 #app-navigation > ul > li.docked-navigation-item {
 	position: fixed;
 	width: unset;
-	left: 0;
-	right: 0;
+	inset-inline: 0;
 	height: var(--music-nav-item-height);
 	max-width: 300px;
 	margin: calc(var(--default-grid-baseline, 0px) * 2);
@@ -311,8 +310,8 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 
 #app-navigation #music-nav-settings > a {
 	display: block;
-	padding-left: 14px;
-	padding-right: 12px;
+	padding-inline-start: 14px;
+	padding-inline-end: 12px;
 	line-height: var(--music-nav-item-height);
 }
 
@@ -320,9 +319,9 @@ body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
 	vertical-align: text-top;
 	width: 16px;
 	height: 16px;
-	margin-right: 11px;
+	margin-inline-end: 11px;
 	margin-top: 1.5px;
-	margin-left: 0;
+	margin-inline-start: 0;
 }
 
 /* Compatibility for Internet Explorer which doesn't support the var() syntax; IE is supported on OC but not on NC */

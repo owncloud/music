@@ -42,7 +42,7 @@
 }
 
 .track-list > li.more-less {
-	padding-left: 18px;
+	padding-inline-start: 18px;
 	padding-top: 6px;
 	padding-bottom: 5px;
 	display: none;
@@ -58,12 +58,12 @@
  */
 
 .album-area .track-list {
-	margin-left: 195px;
+	margin-inline-start: 195px;
 }
 
 .album-area .track-list li:not(.more-less) {
 	display: table;
-	padding-left: 2px;
+	padding-inline-start: 2px;
 	padding-top: 6px;
 	padding-bottom: 5px;
 	white-space: nowrap;
@@ -91,7 +91,7 @@
 }
 
 #albums.compact .album-area .track-list {
-	margin-left: 30px;
+	margin-inline-start: 30px;
 }
 
 #albums.compact:not(.single-col) .album-area .track-list .item-info {

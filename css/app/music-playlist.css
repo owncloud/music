@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2024
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 /**
@@ -22,7 +22,7 @@
 }
 
 .playlist-area > h1 {
-	margin-left: 14px;
+	margin-inline-start: 14px;
 	margin-bottom: 11px;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .playlist-area h2 {
-	margin-left: 14px;
+	margin-inline-start: 14px;
 	margin-top: 12px;
 	margin-bottom: 0;
 }
@@ -50,7 +50,7 @@
 
 .playlist-area .track-list .ordinal {
 	min-width: 30px;
-	text-align: right;
+	text-align: inline-end;
 }
 
 .playlist-area .track-list .albumart {
@@ -58,13 +58,13 @@
 	height: 36px;
 	line-height: 36px;
 	font-size: 18px;
-	margin-right: 6px;
+	margin-inline-end: 6px;
 }
 
 .playlist-area .track-list .play-pause.overlay {
 	width: 36px;
 	height: 36px;
-	margin-left: -46px;
+	margin-inline-start: -46px;
 }
 
 .playlist-area .current.playing .play-pause.overlay,
@@ -130,7 +130,7 @@
 
 #playlist-view,
 #smartlist-view {
-	margin-right: -50px; /* utilize the area reserved for the alphabet navigation in most views */
+	margin-inline-end: -50px; /* utilize the area reserved for the alphabet navigation in most views */
 }
 
 #playlist-view .track-list > li > div,

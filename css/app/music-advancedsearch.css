@@ -9,7 +9,7 @@
  */
 
 #adv-search-area {
-	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
+	margin-inline-end: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
 #adv-search-area h1 {
@@ -32,7 +32,7 @@
 }
 
 #adv-search-controls {
-	margin-left: 14px;
+	margin-inline-start: 14px;
 }
 
 #adv-search-rules {
@@ -68,5 +68,5 @@
 }
 
 #adv-search-common-parameters select {
-	margin-right: 16px;
+	margin-inline-end: 16px;
 }

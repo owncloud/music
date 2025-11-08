@@ -12,7 +12,7 @@
 	position: fixed;
 	height: 100%;
 	top: 0;
-	right: 0;
+	inset-inline-end: 0;
 	overflow-y: hidden;
 	contain: content;
 }
@@ -38,16 +38,16 @@
 #app-sidebar .fav-button {
 	display: block;
 	position: static;
-	float: left;
+	float: inline-start;
 	margin-bottom: -16px;
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	cursor: pointer;
 }
 
 #app-sidebar .close {
 	position: fixed;
 	top: 0;
-	right: 0;
+	inset-inline-end: 0;
 	border-radius: 50%;
 	margin: 6px;
 	padding: 14px;
@@ -113,24 +113,24 @@
 }
 
 #app-sidebar dt {
-	float: left;
+	float: inline-start;
 	width: 30%;
 	padding-top: 0;
 	padding-bottom: 6px;
-	padding-right: 12px;
+	padding-inline-end: 12px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	text-align: right;
+	text-align: end;
 	opacity: .5;
 }
 
 #app-sidebar dd {
-	float: left;
+	float: inline-start;
 	width: 70%;
 	padding-top: 0;
 	padding-bottom: 6px;
-	padding-right: 0;
+	padding-inline-end: 0;
 }
 
 #app-sidebar .clickable button {
@@ -146,7 +146,7 @@
 
 #app-sidebar h2 .icon-info {
 	margin-bottom: -2px;
-	margin-left: 4px;
+	margin-inline-start: 4px;
 }
 
 #app-sidebar :hover > button,
@@ -158,13 +158,13 @@
 #app-sidebar dd input {
 	width: 100%;
 	margin-top: -6px;
-	margin-left: -6px;
+	margin-inline-start: -6px;
 	cursor: text;
 }
 
 #app-sidebar .icon-info {
-	padding-left: 20px;
-	padding-right: 0;
+	padding-inline-start: 20px;
+	padding-inline-end: 0;
 }
 
 #app-sidebar #artist-content-counts dt {
@@ -209,7 +209,7 @@
 
 #app-sidebar #follow-playback {
 	position: fixed;
-	right: var(--body-container-margin, 0);
+	inset-inline-end: var(--body-container-margin, 0);
 	bottom: var(--body-container-margin, 0);
 	border-radius: 50%;
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
@@ -235,12 +235,12 @@
 	height: 16px;
 	width: 16px;
 	margin-top: -7px;
-	margin-left: -5px;
+	margin-inline-start: -5px;
 }
 
 #app-sidebar #favorite-toggle .icon-loading.inline::after {
 	margin-top: 4px;
-	margin-left: 6px;
+	margin-inline-start: 6px;
 }
 
 #app-sidebar #favorite-toggle {
@@ -265,7 +265,7 @@
 	width: 100%;
 	margin-top: 16px;
 	margin-bottom: 0;
-	margin-left: 0;
+	margin-inline-start: 0;
 }
 
 #app-sidebar #lastfm-info {
@@ -284,8 +284,7 @@
 #app-sidebar #lastfm-info p {
 	white-space: pre-wrap;
 	text-align: center;
-	margin-left: 16px;
-	margin-right: 16px;
+	margin-inline: 16px;
 	margin-bottom: 16px;
 }
 
@@ -299,7 +298,7 @@
 
 #app-sidebar #lastfm-info .similar-artists .icon-info {
 	padding: 0;
-	margin-right: -3px;
+	margin-inline-end: -3px;
 }
 
 #app-sidebar #lastfm-info .show-all {
@@ -329,7 +328,7 @@
 }
 
 #app-sidebar #lastfm-info .in-lib-artist .separator {
-	margin-right: 5px;
+	margin-inline-end: 5px;
 }
 
 #app-sidebar .truncated:after {
@@ -348,7 +347,7 @@
 
 #app-sidebar .tutorial ol {
 	list-style: decimal outside;
-	margin-left: 15px;
+	margin-inline-start: 15px;
 }
 
 #app-sidebar .tutorial li {
@@ -358,8 +357,7 @@
 #app-sidebar .editor-buttons button {
 	height: 24px;
 	width: 24px;
-	padding-left: 12px;
-	padding-right: 12px;
+	padding-inline: 12px;
 }
 
 #app-sidebar button.disabled {
@@ -472,7 +470,7 @@
 
 #app-sidebar #smartlist-filters #filter-history-strict-label {
 	width: 50px;
-	text-align: right;
+	text-align: end;
 }
 
 #app-sidebar #smartlist-filters #filter-history-strict {

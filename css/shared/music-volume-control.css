@@ -16,7 +16,7 @@
 .music-volume-control .volume-icon-and-percent * {
 	position: absolute;
 	top: 0;
-	left: 0;
+	inset-inline-start: 0;
 }
 
 .music-volume-control .volume-icon-and-percent .volume-percent {
@@ -40,18 +40,22 @@
 	height: 3px;
 	min-height: 3px;
 	top: 31px;
-	left: 21px;
+	inset-inline-start: 21px;
 	margin: 0;
 	-webkit-appearance: none;
 	background-color: silver;
 	transform: rotate(270deg);
 }
 
+/** On RTL languages, the default orientation of the slider is inverted so have to rotate to other direction to have high values on top */
+.music-volume-control .volume-slider:dir(rtl) {
+	transform: rotate(90deg);
+}
 
 .ie .music-volume-control .volume-slider {
 	height:auto;
 	top: 3px;
-	left: 26px;
+	inset-inline-start: 26px;
 	background-color: transparent;
 }
 

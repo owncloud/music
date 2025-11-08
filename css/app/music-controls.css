@@ -36,12 +36,6 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	display: inline-block;
 }
 
-#controls > img.right {
-	position: absolute;
-	top: 0;
-	right: 0;
-}
-
 .control {
 	background-size: contain;
 	height: 32px;
@@ -59,7 +53,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #play-controls {
 	height: 66px;
-	margin-left: 40px;
+	margin-inline-start: 40px;
 }
 
 .control.small {
@@ -75,7 +69,13 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 #controls #play-pause-menu,
 #controls #play-pause-menu::after /* the caret */ {
 	transform: translateX(50%);
-	right: 50% ;
+	inset-inline-end: 50%;
+}
+
+/** translateX has no bidirectional alternative, so handle RTL separately */
+#controls #play-pause-menu:dir(rtl),
+#controls #play-pause-menu:dir(rtl)::after /* the caret */ {
+	transform: translateX(-50%);
 }
 
 #controls #context-menu-skip-prev {
@@ -87,8 +87,8 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	min-height: 3px;
 	width: 180px;
 	margin-bottom: 10px;
-	margin-left: 40px;
-	margin-right: 10px;
+	margin-inline-start: 40px;
+	margin-inline-end: 10px;
 	background-color: silver;
 }
 
@@ -110,7 +110,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 #controls .song-info {
 	position: absolute;
 	height: 58px;
-	left: 320px;
+	inset-inline-start: 320px;
 	width: 380px;
 	margin: 0 4px 4px 4px;
 	padding: 8px;
@@ -134,20 +134,20 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 #controls .music-progress-info {
 	position: absolute;
 	top: 0px;
-	left: 710px;
-	right: 165px;
+	inset-inline-start: 710px;
+	inset-inline-end: 165px;
 	max-width: 35%;
 	margin: 7px auto 14px auto;
 }
 
 #shuffle {
 	position: absolute;
-	right: 55px;
+	inset-inline-end: 55px;
 }
 
 #repeat {
 	position: absolute;
-	right: 5px;
+	inset-inline-end: 5px;
 }
 
 .control.toggle.active,
@@ -157,7 +157,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #controls .music-volume-control {
 	position: absolute;
-	right: 100px;
+	inset-inline-end: 100px;
 }
 
 
@@ -174,29 +174,29 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 }
 
 #controls.two-line #shuffle {
-	right: unset;
-	left: 65px;
+	inset-inline-end: unset;
+	inset-inline-start: 65px;
 	top: 38px;
 }
 
 #controls.two-line #repeat {
-	right: unset;
-	left: 130px;
+	inset-inline-end: unset;
+	inset-inline-start: 130px;
 	top: 38px;
 }
 
 #controls.two-line .music-volume-control {
-	right: 9px;
+	inset-inline-end: 9px;
 }
 
 #controls.two-line .song-info {
 	width: auto;
-	right: 80px;
+	inset-inline-end: 80px;
 }
 
 #controls.two-line .music-progress-info {
-	left: 270px;
-	right: 20px;
+	inset-inline-start: 270px;
+	inset-inline-end: 20px;
 	top: 60px;
 	max-width: 100%;
 	height: 30px;
@@ -204,7 +204,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #controls.two-line .music-progress-info .progress-text {
 	position: absolute;
-	right: 0px;
+	inset-inline-end: 0px;
 	top: -8px;
 	width: 90px;
 }
@@ -212,10 +212,10 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 #controls.two-line .music-progress-info .seek-bar {
 	position: absolute;
 	width: auto;
-	left: 0;
-	right: 90px;
+	inset-inline-start: 0;
+	inset-inline-end: 90px;
 }
 
 #controls.two-line .music-progress-info {
-	left: 212px;
+	inset-inline-start: 212px;
 }

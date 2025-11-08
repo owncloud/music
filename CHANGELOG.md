@@ -18,6 +18,7 @@
 
 ### Fixed
 - Playback stopping when clicking the title "0 results" of an empty advanced search result
+- Layout being totally broken on right-to-left UI languages like Hebrew or Arabic
 
 ## 2.4.1 - 2025-10-12
 

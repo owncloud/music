@@ -529,7 +529,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 	}
 
-	$rootScope.$on('resize', function(event, appView) {
+	$rootScope.$on('resize', function(_event, appView) {
 		const appViewWidth = appView.outerWidth();
 
 		// Adjust controls bar width to not overlap with the scroll bar.
@@ -598,13 +598,13 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			let viewWidth = $('#header').outerWidth();
 
 			if (sidebarWidth < 0.27 * viewWidth) {
-				appContent.css('margin-right', sidebarWidth);
+				appContent.css('margin-inline-end', sidebarWidth);
 			} else {
-				appContent.css('margin-right', '');
+				appContent.css('margin-inline-end', '');
 			}
 		}
 		else {
-			appContent.css('margin-right', '');
+			appContent.css('margin-inline-end', '');
 		}
 	});
 

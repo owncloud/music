@@ -20,12 +20,12 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
-				const sidebarRight = parseInt($('#app-sidebar').css('right'));
+				const sidebarRight = parseInt($('#app-sidebar').css('inset-inline-end'));
 				const sidebarWidth = $('#app-sidebar').outerWidth();
 				const contentWidth = $('#app-sidebar .sidebar-content').outerWidth();
 				const offset = sidebarRight + sidebarWidth - contentWidth;
-				$('#app-sidebar .close').css('right', offset);
-				$('#app-sidebar #follow-playback').css('right', offset);
+				$('#app-sidebar .close').css('inset-inline-end', offset);
+				$('#app-sidebar #follow-playback').css('inset-inline-end', offset);
 			});
 		};
 
@@ -76,7 +76,7 @@ angular.module('Music').controller('SidebarController', [
 
 		$rootScope.$on('hideDetails', function() {
 			$('#app-sidebar').hide().addClass('disappear');
-			$('#app-content').css('margin-right', '').removeClass('with-app-sidebar').trigger(new $.Event('appresized'));
+			$('#app-content').css('margin-inline-end', '').removeClass('with-app-sidebar').trigger(new $.Event('appresized'));
 			$scope.contentId = null;
 			$scope.contentType = null;
 		});

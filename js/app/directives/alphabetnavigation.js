@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2018 - 2021 Pauli Järvinen
+ * @copyright 2018 - 2025 Pauli Järvinen
  *
  */
 
@@ -85,7 +85,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 			}
 			setUpTargets();
 
-			function onResize(_event, appView, secondCheck) {
+			function onResize(_event, appView, secondCheck=false) {
 				// top and bottom padding of 5px each
 				let height = appView.height() - 10;
 
@@ -109,11 +109,15 @@ function($rootScope, $timeout, alphabetIndexingService) {
 				// adapt line-height to spread links over the available height
 				element.css('line-height', Math.floor(height/scope.links.length) + 'px');
 
-				// anchor the alphabet navigation to the right edge of the app view
-				let appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
-				element.css('right', appViewRight);
+				// anchor the alphabet navigation to the "end" edge of the app view, taking into account possible RTL layout
+				if ($('body').attr('dir') == 'rtl') {
+					element.css('left', appView.offset().left);
+				} else {
+					const appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
+					element.css('right', appViewRight);
+				}
 
-				// There's no resize event when the navigation pane collapses on mobile layot but there is one when the
+				// There's no resize event when the navigation pane collapses on mobile layout but there is one when the
 				// view changes. When these two happen simultaneously, the event may fire while the navigation pane is
 				// still partially visible, causing the appView.offset to be greater than zero. In this case, the alphabet
 				// navigation gets placed partially or completely outside the visible screen area.

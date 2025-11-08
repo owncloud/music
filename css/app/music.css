@@ -30,9 +30,9 @@ body#body-user.dark {
 .app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
 	position: absolute;
 	top: 0px;
-	left: 300px;
-	right: 0px;
-	margin-left: 0;
+	inset-inline-start: 300px;
+	inset-inline-end: 0px;
+	margin-inline-start: 0;
 }
 
 .app-music:not(.nc14to24) #app {
@@ -40,7 +40,7 @@ body#body-user.dark {
 }
 
 #app-content.with-app-sidebar {
-	margin-right: 27%;
+	margin-inline-end: 27%;
 }
 
 /* angular JS wrapper for main controller */
@@ -60,8 +60,8 @@ body#body-user.dark {
 	right: 0;
 	left: 0;
 	position: absolute;
-	padding-left: 14px;
-	padding-right: 50px;
+	padding-inline-start: 14px;
+	padding-inline-end: 50px;
 }
 
 #app-view.started {
@@ -91,14 +91,14 @@ h1 {
 
 h1 .play {
 	margin-bottom: 2px;
-	margin-left: 10px;
+	margin-inline-start: 10px;
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
 }
 
 h2 .play {
-	margin-left: 10px;
+	margin-inline-start: 10px;
 	cursor: pointer;
 	width: 13px;
 	height: 13px;
@@ -120,8 +120,8 @@ h2 span:hover .play {
 	display: inline-block;
 	width: 10px;
 	height: 10px;
-	margin-left: 0px;
-	margin-right: 6px;
+	margin-inline-start: 0px;
+	margin-inline-end: 6px;
 	background-image: none;
 	background-size: 100% 100%;
 	background-position: center;
@@ -169,7 +169,7 @@ div:hover > .play-pause,
 
 #app-view h2 .icon-loading-small {
 	top: 11px;
-	left: 3px;
+	inset-inline-start: 3px;
 	overflow: visible;
 }
 
@@ -190,7 +190,7 @@ div:hover > .play-pause,
 	display: block;
 	font-size: 13px;
 	top: 40px;
-	right: -10px;
+	inset-inline-end: -10px;
 }
 
 .muted {
@@ -237,7 +237,7 @@ div:hover > .play-pause,
 
 #app-content .emptycontent .close {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	top: 0;
 	width: 44px;
 	height: 44px;
@@ -253,7 +253,7 @@ div:hover > .play-pause,
 }
 
 #app-view .emptycontent {
-	margin-left: -14px; /* to cancel out the #app-view padding */
+	margin-inline-start: -14px; /* to cancel out the #app-view padding */
 }
 
 #app-content .emptycontent.emptycontent:not(.collapsed) .close {

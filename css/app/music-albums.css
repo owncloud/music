@@ -22,7 +22,7 @@
 }
 
 .artist-area > h1 {
-	margin-left: 14px;
+	margin-inline-start: 14px;
 }
 
 .artist-area > h1 span:hover,
@@ -33,7 +33,7 @@
 .album-area {
 	padding: 14px;
 	width: 480px;
-	float: left;
+	float: inline-start;
 }
 
 .album-area > h2 {
@@ -50,7 +50,7 @@
 }
 
 .album-area > h2 > span {
-	float: left;
+	float: inline-start;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -66,7 +66,7 @@
 
 .album-area > .albumart,
 .album-area > .overlay {
-	float: left;
+	float: inline-start;
 	width: 190px;
 	height: 190px;
 	line-height: 190px;
@@ -76,7 +76,7 @@
 }
 
 .album-area > .overlay {
-	margin-left: -190px;
+	margin-inline-start: -190px;
 	visibility: hidden;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .view-container.compact .album-area h2 {
-	padding-left: 48px;
+	padding-inline-start: 48px;
 	font-size: 16px;
 	padding-bottom: 8px;
 	max-width: 360px;
@@ -127,7 +127,7 @@
 }
 
 .view-container.compact .album-area > .overlay {
-	margin-left: 0;
+	margin-inline-start: 0;
 }
 
 

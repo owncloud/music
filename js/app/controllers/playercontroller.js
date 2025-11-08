@@ -474,10 +474,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	};
 
-	$scope.seekBackward = $scope.player.seekBackward;
-
-	$scope.seekForward = $scope.player.seekForward;
-
 	playQueueService.subscribe('play', function(_playingView = null, startOffset = 0) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
@@ -679,8 +675,8 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		play: () => $scope.play(),
 		pause: () => $scope.pause(),
 		stop: () => $scope.stop(),
-		seekBackward: () => $scope.seekBackward(),
-		seekForward: () => $scope.seekForward(),
+		seekBackward: () => $scope.player.seekBackward(),
+		seekForward: () => $scope.player.seekForward(),
 		previousTrack: () => $scope.prev(),
 		nextTrack: () => $scope.next()
 	});

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2024
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 /**
@@ -34,7 +34,6 @@ require('node_modules/angular-sanitize');
 require('node_modules/angular-scroll');
 require('node_modules/chosen-js');
 require('node_modules/chosen-js/chosen.css');
-require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 require('node_modules/long-press-event');
 require('node_modules/restangular');
 require('vendor/aurora/alac.js');

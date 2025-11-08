@@ -319,8 +319,10 @@ OCA.Music.EmbeddedPlayer = function() {
 			const sidebarOpen = $('#app-sidebar-vue').length > 0;
 			musicControls.css('border-bottom-right-radius', sidebarOpen ? '0' : '');
 		};
-		parentContainer.resize(resizeControls);
 		resizeControls();
+
+		const resizeObs = new ResizeObserver(_entries => resizeControls());
+		resizeObs.observe(parentContainer[0]);
 
 		// While the z-index from CSS is crucial on ownCloud and older Nextcloud versions, NC28+ doesn't need it. In addition, there it
 		// causes the "overlay" scrollbar used by Firefox on Windows 11 to be hidden behind the pane which we don't want.

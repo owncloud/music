@@ -572,6 +572,24 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		} else {
 			$('#controls').removeClass('two-line');
 		}
+
+		// Work-around for NC14+: The sidebar width has been limited to 500px (normally 27%),
+		// but it's not possible to make corresponding "max margin" definition for #app-content
+		// in css. Hence, the margin width is limited here.
+		const appContent = $('#app-content');
+		if (appContent.hasClass('with-app-sidebar')) {
+			let sidebarWidth = $('#app-sidebar').outerWidth();
+			let viewWidth = $('#header').outerWidth();
+
+			if (sidebarWidth < 0.27 * viewWidth) {
+				appContent.css('margin-inline-end', sidebarWidth);
+			} else {
+				appContent.css('margin-inline-end', '');
+			}
+		}
+		else {
+			appContent.css('margin-inline-end', '');
+		}
 	});
 
 	if (OCA.Music.Utils.isLegacyLayout()) {
@@ -587,26 +605,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$('#content').css('margin-top', headerHeight);
 		$('#content').css('min-height', `var(--body-height, calc(100% - ${headerHeight}px))`);
 	}
-
-	// Work-around for NC14+: The sidebar width has been limited to 500px (normally 27%),
-	// but it's not possible to make corresponding "max margin" definition for #app-content
-	// in css. Hence, the margin width is limited here.
-	let appContent = $('#app-content');
-	appContent.resize(function() {
-		if (appContent.hasClass('with-app-sidebar')) {
-			let sidebarWidth = $('#app-sidebar').outerWidth();
-			let viewWidth = $('#header').outerWidth();
-
-			if (sidebarWidth < 0.27 * viewWidth) {
-				appContent.css('margin-inline-end', sidebarWidth);
-			} else {
-				appContent.css('margin-inline-end', '');
-			}
-		}
-		else {
-			appContent.css('margin-inline-end', '');
-		}
-	});
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

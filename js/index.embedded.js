@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2025
  */
 
 /**
@@ -27,7 +27,6 @@ require('vendor/aurora/alac.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('vendor/aurora/aac.js'); // this has to come after mp3.js, otherwise MP3 playback breaks
-require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 // jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10
 if (typeof MutationObserver !== 'undefined') {
 	require('vendor/jquery-initialize');

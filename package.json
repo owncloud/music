@@ -22,7 +22,6 @@
 		"chosen-js": "^1.8.7",
 		"core-js": "^3.31.1",
 		"hls.js": "^0.14.17",
-		"javascript-detect-element-resize": "^0.5.3",
 		"jquery": "^3.7.0",
 		"lodash": "^4.17.21",
 		"long-press-event": "^2.4.6",

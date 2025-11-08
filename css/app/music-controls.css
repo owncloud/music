@@ -131,50 +131,13 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	line-height: 29px;
 }
 
-#controls .progress-info {
+#controls .music-progress-info {
 	position: absolute;
 	top: 0px;
 	left: 710px;
 	right: 165px;
 	max-width: 35%;
-	text-align: center;
 	margin: 7px auto 14px auto;
-}
-
-#controls .progress-info span {
-	line-height: 30px;
-}
-
-#controls .progress, #controls .seek-bar {
-	width: 100%;
-	height: 15px;
-	position: relative;
-	background-color: #eee;
-}
-
-#controls.started .progress, #controls.started .seek-bar, #controls.started .play-bar, #controls .buffer-bar {
-	display: block;
-}
-
-#controls .play-bar, #controls .buffer-bar {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 15px;
-	width: 0%;
-	background-color: var(--color-primary, #1d2d44);
-}
-
-.ie #controls .play-bar, #controls .buffer-bar {
-	background-color: #1d2d44;
-}
-
-.translucent {
-	opacity: 0.75;
-}
-
-#controls .buffer-bar {
-	opacity: 0.1;
 }
 
 #shuffle {
@@ -231,27 +194,28 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 	right: 80px;
 }
 
-#controls.two-line .progress-info {
+#controls.two-line .music-progress-info {
 	left: 270px;
 	right: 20px;
 	top: 60px;
 	max-width: 100%;
+	height: 30px;
 }
 
-#controls.two-line .progress-info .progress-text {
+#controls.two-line .music-progress-info .progress-text {
 	position: absolute;
 	right: 0px;
 	top: -8px;
 	width: 90px;
 }
 
-#controls.two-line .progress-info .progress {
+#controls.two-line .music-progress-info .seek-bar {
 	position: absolute;
 	width: auto;
 	left: 0;
 	right: 90px;
 }
 
-#controls.two-line .progress-info {
+#controls.two-line .music-progress-info {
 	left: 212px;
 }

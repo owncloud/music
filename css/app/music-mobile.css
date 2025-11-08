@@ -102,7 +102,7 @@
 .mobile #controls.two-line #repeat {
 	left: 108px;
 }
-.mobile #controls.two-line .progress-info {
+.mobile #controls.two-line .music-progress-info {
 	left: 172px;
 }
 .mobile #controls #play-pause-menu {
@@ -125,13 +125,13 @@
 .mobile.portrait #controls.two-line .song-info {
 	left: 172px;
 }
-.mobile.portrait #controls.two-line .progress-info {
+.mobile.portrait #controls.two-line .music-progress-info {
 	left: 124px;
 }
 .mobile.portrait #controls #play-pause-menu {
 	right: -54px;
 }
-.mobile.portrait #controls #play-pause-menu::after /* the carret */ {
+.mobile.portrait #controls #play-pause-menu::after /* the caret */ {
 	left: 36px;
 }
 
@@ -155,13 +155,13 @@
 }
 
 /* min-width screen may result on desktop browser when manually resizing the window; here we need to drop also essential elements */
-.mobile.portrait.min-width #controls .progress,
+.mobile.portrait.min-width #controls .music-progress-info .seek-bar,
 .mobile.portrait.min-width #controls .music-volume-control {
 	display: none;
 }
 .mobile.portrait.min-width #controls.two-line .song-info {
 	right: 10px;
 }
-.mobile.portrait.min-width #controls .progress-text {
+.mobile.portrait.min-width #controls .music-progress-info .progress-text {
 	text-align: right;
 }

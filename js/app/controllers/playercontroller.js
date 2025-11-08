@@ -25,17 +25,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	$scope.repeat = OCA.Music.Storage.get('repeat') || 'false';
 	$scope.shuffle = (OCA.Music.Storage.get('shuffle') === 'true');
 	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
-	$scope.position = {
-		bufferPercent: 0,
-		currentPercent: 0,
-		previewPercent: 0,
-		currentPreview: null,
-		currentPreview_ts: null, // Activation time stamp (Type: Date)
-		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
-		previewVisible: () => ($scope.position.currentPreview !== null) && !$scope.position.currentPreview_tf,
-		current: 0,
-		total: 0
-	};
 	let scrobblePending = false;
 	let scheduledRadioTitleFetch = null;
 	let abortRadioTitleFetch = null;
@@ -80,8 +69,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	}
 
 	onPlayerEvent('buffer', function (percent) {
-		$scope.setBufferPercentage(percent);
-
 		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
 			let entry = playQueueService.peekNextTrack();
@@ -93,12 +80,8 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 			}
 		}
 	});
-	onPlayerEvent('ready', function () {
-		$scope.setLoading(false);
-	});
 	onPlayerEvent('progress', function (currentTime) {
 		if (!$scope.loading && $scope.currentTrack) {
-			$scope.setTime(currentTime/1000, $scope.position.total);
 			$rootScope.$emit('playerProgress', currentTime);
 
 			// Scrobble when the track has been listened for 10 seconds
@@ -107,8 +90,8 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 			}
 
 			// Gapless jump to the next track when the playback is very close to the end of a local track
-			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
-				let timeLeft = $scope.position.total*1000 - currentTime;
+			if ($scope.player.getDuration() > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
+				let timeLeft = $scope.player.getDuration() - currentTime;
 				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
 					let nextTrackId = playQueueService.peekNextTrack()?.track?.id;
 					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
@@ -117,21 +100,8 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 				}
 			}
 		}
-
-		// Show progress again instead of preview after a timeout of 2000ms
-		if ($scope.position.currentPreview_ts) {
-			let timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
-			if (timeSincePreview >= 2000) {
-				$scope.seekbarLeave();
-			}
-		}
 	});
 	onPlayerEvent('end', onEnd);
-	onPlayerEvent('duration', function(msecs) {
-		$scope.setTime($scope.position.current, msecs/1000);
-		// Seeking may be possible once the duration is available
-		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
-	});
 	onPlayerEvent('error', function(url) {
 		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL:') + ' ' + url);
 		// Jump automatically to the next track unless we were playing an external stream
@@ -169,10 +139,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 		scrobblePending = false;
 	}
-
-	$scope.durationKnown = function() {
-		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
-	};
 
 	$scope.$watch('currentTrack', function(newTrack) {
 		updateWindowTitle(newTrack);
@@ -264,7 +230,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			$scope.setLoading(true);
 			playTrack(track, startOffset, gapless);
 		} else {
 			$scope.stop();
@@ -343,19 +308,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		return {track: $scope.currentTrack?.id};
 	};
 
-	$scope.setLoading = function(loading) {
-		$scope.loading = loading;
-		if (loading) {
-			$scope.position.current = 0;
-			$scope.position.currentPercent = 0;
-			$scope.position.currentPreview = null;
-			$scope.position.currentPreview_ts = null;
-			$scope.position.currentPreview_tf = null;
-			$scope.position.bufferPercent = 0;
-			$scope.position.total = 0;
-		}
-	};
-
 	const notifyPlaybackRateNotAdjustable = _.debounce(
 		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
 		1000, {leading: true, trailing: false}
@@ -390,21 +342,6 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		$scope.repeat = nextState[$scope.repeat];
 		playQueueService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
 		OCA.Music.Storage.set('repeat', $scope.repeat);
-	};
-
-	$scope.setTime = function(position, duration) {
-		// sometimes the duration is reported slightly incorrectly and position may exceed it by a few seconds
-		if (duration > 0 && duration < position) {
-			duration = position;
-		}
-
-		$scope.position.current = position;
-		$scope.position.total = duration;
-		$scope.position.currentPercent = (duration > 0) ? position/duration*100 : 0;
-	};
-
-	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.min(100, percent);
 	};
 
 	$scope.play = function() {
@@ -515,7 +452,7 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs.
 		// This is disabled for radio streams where jumping to the beginning often does not work.
-		if ($scope.position.current > 2.0 && $scope.currentTrack?.type !== 'radio') {
+		if ($scope.player.playPosition() > 2000 && $scope.currentTrack?.type !== 'radio') {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -527,66 +464,14 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 		}
 	};
 
-	// Seekbar preview mouse support
-	function updateSeekPreview(xCoordinate) {
-		let seekBar = $('.seek-bar');
-		let offsetX = xCoordinate - seekBar.offset().left;
-		offsetX = Math.min(Math.max(0, offsetX), seekBar.width());
-		let ratio = offsetX / seekBar.width();
-		let timestamp = ratio * $scope.position.total;
-
-		$scope.position.previewPercent = ratio * 100;
-		$scope.position.currentPreview = timestamp;
-	}
-
-	$scope.seekbarPreview = function($event) {
+	$scope.seekOffset = function(offset_s) {
 		if ($scope.player.seekingSupported()) {
-			updateSeekPreview($event.clientX);
-			$scope.position.currentPreview_ts = Date.now();
-		}
-	};
-
-	$scope.seekbarEnter = function() {
-		// Simple filter for transient mouse movements
-		$scope.position.currentPreview_tf = $timeout(() => $scope.position.currentPreview_tf = null, 100);
-	};
-
-	$scope.seekbarLeave = function() {
-		$scope.position.currentPreview = null;
-		$scope.position.currentPreview_ts = null;
-	};
-
-	// Seekbar preview touch support
-	$scope.seekbarTouchLeave = function($event) {
-		if ($scope.player.seekingSupported() && $event?.type === 'touchend') {
-			$scope.player.seek($scope.position.previewPercent / 100);
-			$scope.seekbarLeave();
-		}
-	};
-
-	$scope.seekbarTouchPreview = function($event) {
-		if ($scope.player.seekingSupported()) {
-			updateSeekPreview($event.targetTouches[0].clientX);
-		}
-	};
-
-	$scope.seekOffset = function(offset) {
-		if ($scope.player.seekingSupported()) {
-			const target = $scope.position.current + offset;
-			let ratio = target / $scope.position.total;
+			const target = $scope.player.playPosition() + offset_s * 1000;
+			let ratio = target / $scope.player.getDuration();
 			// Clamp between the begin and end of the track
 			ratio = Math.min(Math.max(0, ratio), 1);
 			$scope.player.seek(ratio);
 		}
-	};
-
-	// Seekbar click / tap
-	$scope.seek = function($event) {
-		let seekBar = $('.seek-bar');
-		let offsetX = $event.clientX - seekBar.offset().left;
-		let ratio = offsetX / seekBar.width();
-		$scope.player.seek(ratio);
-		$scope.seekbarLeave(); // Reset seek preview
 	};
 
 	$scope.seekBackward = $scope.player.seekBackward;

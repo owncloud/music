@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2024
+ * @copyright Pauli Järvinen 2024, 2025
  */
 
 import { PlayerWrapper } from "./playerwrapper";
@@ -31,6 +31,10 @@ export class ProgressInfo {
 
 	addToContainer(container : JQuery<HTMLElement>) : void {
 		container.append(this.#elem);
+	}
+
+	getElement() : JQuery<HTMLElement> {
+		return this.#elem;
 	}
 
 	hide() : void {

@@ -9,11 +9,11 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2025
  */
 
 /* Adjust layout so that there is room for the toggle button of the collapsible navigation pane.
-   The rule has to match the one used by the core to make the pane collpsible.
+   The rule has to match the one used by the core to make the pane collapsible.
  */
 @media only screen and (max-width: 1024px) {
 	#app-view {
@@ -46,7 +46,7 @@
 	width: 200px;
 }
 
-.tablet #controls:not(.two-line) .progress-info {
+.tablet #controls:not(.two-line) .music-progress-info {
 	left: 460px;
 	max-width: 350px;
 }

@@ -64,36 +64,16 @@
 		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />
 		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
 	</div>
-	<div ng-show="currentTrack" class="progress-info">
-		<div class="progress-text">
-			<span ng-show="!loading" class="muted" ng-style="position.previewVisible() && {'font-style': 'italic'}">
-				{{ (position.previewVisible() ? position.currentPreview : position.current) | playTime }}
-			</span>
-			<span ng-show="!loading && durationKnown()" class="muted">/ {{ position.total | playTime }}</span>
-			<span ng-show="loading" class="muted">Loading...</span>
-		</div>
-		<div class="progress">
-			<div class="seek-bar" ng-style="{'cursor': seekCursorType}"
-				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseenter="seekbarEnter($event)" ng-mouseleave="seekbarLeave($event)"
-				ng-on-touchmove="seekbarTouchPreview($event)" ng-on-touchend="seekbarTouchLeave($event)"
-			>
-				<div class="buffer-bar" ng-style="{'width': position.bufferPercent + '%', 'cursor': seekCursorType}"></div>
-				<div class="play-bar" ng-show="position.total"
-					ng-style="{'width': (position.previewVisible() ? min(position.currentPercent, position.previewPercent) : position.currentPercent) + '%',
-								'cursor': seekCursorType}"></div>
-				<div class="play-bar translucent" ng-show="position.total && position.previewVisible()"
-					ng-style="{'width': abs(position.currentPercent - position.previewPercent) + '%',
-								'left': min(position.currentPercent, position.previewPercent) + '%',
-								'cursor': seekCursorType}"></div>
-			</div>
-		</div>
-	</div>
+
+	<progress-info ng-show="currentTrack" player="player">
+	</progress-info>
 
 	<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ shuffleTooltip() }}"
 		src="<?php HtmlUtil::printSvgPath('shuffle') ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ repeatTooltip() }}"
 		src="{{ repeat === 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
 		ng-class="{active: repeat != 'false' }" ng-click="toggleRepeat()" />
+
 	<volume-control player="player">
 	</volume-control>
 </div>

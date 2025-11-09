@@ -154,15 +154,11 @@
 }
 
 /* min-width screen may result on desktop browser when manually resizing the window; here we need to drop also essential elements */
-.mobile.portrait.min-width #controls .music-progress-info .seek-bar,
 .mobile.portrait.min-width #controls .music-volume-control {
 	display: none;
 }
 .mobile.portrait.min-width #controls.two-line .song-info {
 	inset-inline-end: 10px;
-}
-.mobile.portrait.min-width #controls .music-progress-info .progress-text {
-	text-align: end;
 }
 
 
@@ -267,7 +263,4 @@
 
 .ie .mobile.portrait.min-width #controls.two-line .song-info {
 	right: 10px;
-}
-.ie .mobile.portrait.min-width #controls .music-progress-info .progress-text {
-	text-align: right;
 }

@@ -6,6 +6,7 @@
 - Searching for radio stations with the advanced search
 
 ### Changed
+- On two-line layout of the controls bar (used in narrow windows), overlay the time text on the progress bar
 - Optimization for the scan speed (most significant on slow DB like SQLite)
 - On web UI load, check presence of obsolete files and offer to remove them from the library
 - Changes to `occ music:scan`

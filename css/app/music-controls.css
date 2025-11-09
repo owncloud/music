@@ -186,7 +186,7 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 }
 
 #controls.two-line .music-progress-info {
-	inset-inline-start: 270px;
+	inset-inline-start: 212px;
 	inset-inline-end: 20px;
 	top: 60px;
 	max-width: 100%;
@@ -195,20 +195,19 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #controls.two-line .music-progress-info .progress-text {
 	position: absolute;
-	inset-inline-end: 0px;
+	inset-inline: 0;
 	top: -8px;
-	width: 90px;
+	width: auto;
+	z-index: 1;
+	pointer-events: none;
+	color: var(--color-primary-text, #fff);
+	text-shadow: #000 0 0 5px;
 }
 
 #controls.two-line .music-progress-info .seek-bar {
 	position: absolute;
 	width: auto;
-	inset-inline-start: 0;
-	inset-inline-end: 90px;
-}
-
-#controls.two-line .music-progress-info {
-	inset-inline-start: 212px;
+	inset-inline: 0;
 }
 
 
@@ -257,19 +256,17 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 }
 
 .ie #controls.two-line .music-progress-info {
-	left: 270px;
+	left: 212px;
 	right: 20px;
 }
 
 .ie #controls.two-line .music-progress-info .progress-text {
-	right: 0px;
+	left: 0;
+	right: 0;
+	color: #fff;
 }
 
 .ie #controls.two-line .music-progress-info .seek-bar {
 	left: 0;
-	right: 90px;
-}
-
-.ie #controls.two-line .music-progress-info {
-	left: 212px;
+	right: 0;
 }

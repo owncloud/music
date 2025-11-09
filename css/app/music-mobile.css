@@ -79,10 +79,7 @@
 
 /* layout the play bar elements for less space */
 #app-navigation + #app-content.mobile #controls {
-	padding-inline-start: 20px;
-}
-.mobile #play-controls {
-	margin-inline-start: 20px;
+	padding: 0 40px;
 }
 .mobile #controls.two-line .control,
 .mobile #controls.two-line .song-info,
@@ -201,14 +198,6 @@
 
 .ie .mobile .view-container:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 57px;
-}
-
-.ie #app-navigation + #app-content.mobile #controls {
-	padding-left: 20px;
-}
-
-.ie .mobile #play-controls {
-	margin-left: 20px;
 }
 
 .ie .mobile #controls.two-line .control,

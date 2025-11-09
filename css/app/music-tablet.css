@@ -26,11 +26,7 @@
 }
 
 #app-navigation + #app-content.tablet #controls {
-	padding-inline-start: 20px;
-}
-
-.tablet #play-controls {
-	margin-inline-start: 20px;
+	padding: 0 40px;
 }
 
 .tablet #controls .albumart {
@@ -59,14 +55,6 @@
 /**
  * Support for Internet Explorer which doesn't have bi-di support
  */
-
-.ie #app-navigation + #app-content.tablet #controls {
-	padding-left: 20px;
-}
-
-.ie .tablet #play-controls {
-	margin-left: 20px;
-}
 
 .ie .tablet #controls .albumart {
 	margin-left: 8px;

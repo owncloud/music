@@ -12,7 +12,7 @@
 
 #controls {
 	height: 66px;
-	padding: 0 20px 0 20px;
+	padding: 0 60px;
 	top: 0;
 	position: fixed;
 	overflow: visible;
@@ -49,7 +49,6 @@ body:not(.snapjs-left) .app-music.nc14to24 #controls {
 
 #play-controls {
 	height: 66px;
-	margin-inline-start: 40px;
 }
 
 .control.small {

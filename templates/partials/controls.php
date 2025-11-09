@@ -1,7 +1,7 @@
 <?php use OCA\Music\Utility\HtmlUtil; ?>
 
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
-	<div id="play-controls">
+	<div id="play-controls" dir="ltr">
 		<img id="skip-prev-button" ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			title="{{ 'Previous' | translate }}&#013;[CTRL+LEFT]"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />

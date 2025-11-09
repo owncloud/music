@@ -68,6 +68,10 @@ body#body-user.dark {
 	padding-top: 66px;
 }
 
+#app-view.started:has(+ #controls.two-line) {
+	padding-top: 90px;
+}
+
 .view-container {
 	padding-bottom: 60px;
 }

@@ -220,7 +220,7 @@ export class ProgressInfo {
 
 		// Seekbar preview touch support
 		seekBar.on('touchmove', ($event : JQuery.TouchMoveEvent) => {
-			if (!this.#player.seekingSupported()) return;
+			if (!this.#player.seekingSupported()) return true;
 
 			let rect = $event.target.getBoundingClientRect();
 			let x = $event.targetTouches[0].clientX - rect.x;
@@ -228,6 +228,8 @@ export class ProgressInfo {
 			let ratio = offsetX / rect.width;
 
 			this.#seekSetPreview(ratio * this.#songLength_s);
+
+			return false;
 		});
 
 		seekBar.on('touchend', ($event : JQuery.TouchEndEvent) => {

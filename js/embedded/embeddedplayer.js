@@ -18,6 +18,7 @@ import { VolumeControl } from 'shared/volumecontrol';
 import { ProgressInfo } from 'shared/progressinfo';
 import { BrowserMediaSession } from 'shared/browsermediasession';
 
+import ResizeObserver from 'node_modules/resize-observer-polyfill';
 
 OCA.Music = OCA.Music || {};
 

@@ -25,6 +25,7 @@
 		"jquery": "^3.7.0",
 		"lodash": "^4.17.21",
 		"long-press-event": "^2.4.6",
+		"resize-observer-polyfill": "^1.5.1",
 		"restangular": "^1.6.1"
 	},
 	"devDependencies": {

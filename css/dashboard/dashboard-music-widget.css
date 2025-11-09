@@ -49,8 +49,8 @@
 .music-widget .progress-and-order .music-progress-info .progress-text {
 	line-height: 100%;
 	position: absolute;
-	color: black;
-	text-shadow: #eee 0 0 10px;
+	color: var(--color-primary-text, #fff);
+	text-shadow: #000 0 0 5px;
 	top: 0;
 	bottom: auto;
 	inset-inline: 0;

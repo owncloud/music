@@ -567,7 +567,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			setMasterLayout([]);
 		}
 
-		if (appViewWidth <= 715) {
+		if (appViewWidth <= 768) {
 			$('#controls').addClass('two-line');
 		} else {
 			$('#controls').removeClass('two-line');

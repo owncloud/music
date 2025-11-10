@@ -90,6 +90,11 @@
 	margin: 9px;
 }
 
+.music-widget .playback-controls {
+	display: flex;
+	flex-direction: row;
+}
+
 .music-widget .player-controls .playback.control {
 	width: 32px;
 	height: 32px;

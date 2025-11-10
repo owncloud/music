@@ -46,7 +46,6 @@ OCA.Music.EmbeddedPlayer = function() {
 	let musicControls = null;
 	let playButton = null;
 	let pauseButton = null;
-	let prevButton = null;
 	let nextButton = null;
 	let coverImageContainer = null;
 	let titleText = null;
@@ -220,6 +219,17 @@ OCA.Music.EmbeddedPlayer = function() {
 			.click(next);
 	}
 
+	function createPlaybackControls() {
+		const container = $('<div class="play-controls" dir="ltr">');
+
+		createPrevButton().appendTo(container);
+		playButton = createPlayButton().appendTo(container);
+		pauseButton = createPauseButton().appendTo(container);
+		nextButton = createNextButton().appendTo(container);
+
+		return container;
+	}
+
 	function createCoverImage() {
 		const container = $(document.createElement('div')).attr('id', 'albumart-container');
 		container.append($(document.createElement('div')).attr('id', 'albumart'));
@@ -253,17 +263,10 @@ OCA.Music.EmbeddedPlayer = function() {
 	function createUi() {
 		musicControls = $(document.createElement('div')).attr('id', 'music-controls');
 
-		playButton = createPlayButton();
-		pauseButton = createPauseButton();
-		prevButton = createPrevButton();
-		nextButton = createNextButton();
 		coverImageContainer = createCoverImage();
 
 		musicControls.append(createPlaylistArea());
-		musicControls.append(prevButton);
-		musicControls.append(playButton);
-		musicControls.append(pauseButton);
-		musicControls.append(nextButton);
+		musicControls.append(createPlaybackControls());
 		musicControls.append(coverImageContainer);
 		musicControls.append(createInfoProgressContainer());
 		volumeControl.addToContainer(musicControls);

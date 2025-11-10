@@ -478,10 +478,13 @@ function createControls(
 		volumeControl : VolumeControl) : JQuery<HTMLElement> {
 	const $container = $('<div class="player-controls"/>');
 	$('<div class="albumart"/>').appendTo($container).on('click', onCoverClick);
-	$('<div class="playback control svg icon-skip-prev"/>').appendTo($container).on('click', onPrev);
-	$('<div class="playback control svg icon-play"/>').appendTo($container).on('click', onPlay);
-	$('<div class="playback control svg icon-pause"/>').appendTo($container).on('click', onPause).hide();
-	$('<div class="playback control svg icon-skip-next"/>').appendTo($container).on('click', onNext);
+
+	const $playbackControls = $('<div class="playback-controls" dir="ltr">').appendTo($container);
+	$('<div class="playback control svg icon-skip-prev"/>').appendTo($playbackControls).on('click', onPrev);
+	$('<div class="playback control svg icon-play"/>').appendTo($playbackControls).on('click', onPlay);
+	$('<div class="playback control svg icon-pause"/>').appendTo($playbackControls).on('click', onPause).hide();
+	$('<div class="playback control svg icon-skip-next"/>').appendTo($playbackControls).on('click', onNext);
+
 	volumeControl.addToContainer($container);
 	return $container;
 }

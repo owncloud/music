@@ -4,6 +4,8 @@
 - Context menu with "Save playlist" function for advanced search results
   [#1256](https://github.com/owncloud/music/issues/1256)
 - Searching for radio stations with the advanced search
+- Full support for the right-to-left UI layout used on languages like Hebrew and Arabic on NC 31 and later
+  * Previously, the layout was totally broken on these languages
 
 ### Changed
 - On two-line layout of the controls bar (used in narrow windows), overlay the time text on the progress bar
@@ -19,7 +21,6 @@
 
 ### Fixed
 - Playback stopping when clicking the title "0 results" of an empty advanced search result
-- Layout being totally broken on right-to-left UI languages like Hebrew or Arabic
 - Media control seek forward/backward buttons not working on Edge
 - Entire page moving when progress bar dragged on pinch-zoomed touch screen
 - Some minor UI glitches

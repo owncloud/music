@@ -115,7 +115,7 @@
 	top: 0;
 }
 
-body:not(.snapjs-left) .app-music.nc14to24 #app-navigation-toggle {
+body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #app-navigation-toggle {
 	top: 50px;
 }
 

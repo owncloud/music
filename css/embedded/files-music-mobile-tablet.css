@@ -51,7 +51,8 @@
 
 /* Hide the music controls when menu on left is in collapsible mode (on portrait phone)
  * and the menu is open */
-body.snapjs-left #music-controls {
+body.snapjs-left #music-controls,
+body.snapjs-right #music-controls {
 	visibility: hidden;
 }
 

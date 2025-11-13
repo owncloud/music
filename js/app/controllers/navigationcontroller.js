@@ -409,7 +409,7 @@ angular.module('Music').controller('NavigationController', [
 
 		function expandCollapsedNavigationPane() {
 			const $navToggle = $('#app-navigation-toggle');
-			if (!$('body').hasClass('snapjs-left') && $navToggle.is(':visible')) {
+			if (!$scope.mobileNavigationPaneExpanded() && $navToggle.is(':visible')) {
 				$timeout(() => $navToggle.trigger('click'));
 			}
 		}

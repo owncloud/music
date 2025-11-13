@@ -488,8 +488,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.navigateTo('#/folders');
 	};
 
+	$scope.mobileNavigationPaneExpanded = function() {
+		return $('body').hasClass('snapjs-left') || $('body').hasClass('snapjs-right');
+	};
+
 	$scope.collapseNavigationPaneOnMobile = function() {
-		if ($('body').hasClass('snapjs-left')) {
+		if ($scope.mobileNavigationPaneExpanded()) {
 			$timeout(() => {
 				// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
 				$('#hidden-close-app-navigation-button').trigger('click');

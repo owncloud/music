@@ -219,7 +219,7 @@ angular.module('Music').controller('NavigationController', [
 		};
 
 		$scope.addRadio = function() {
-			$rootScope.$emit('showRadioStationDetails', null);
+			$scope.showRadioStationDetails(null);
 		};
 
 		$scope.addPodcast = function() {

@@ -347,18 +347,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	function showDetails(entityType, id) {
-		let capType = OCA.Music.Utils.capitalize(entityType);
-		let showDetailsEvent = 'show' + capType + 'Details';
-		let scrollEvent = 'scrollTo' + capType;
-		let elemId = _.kebabCase(entityType) + '-' + id;
-
+		const capType = OCA.Music.Utils.capitalize(entityType);
+		const showDetailsEvent = 'show' + capType + 'Details';
 		$rootScope.$emit(showDetailsEvent, id);
-		$timeout(function() {
-			let elem = document.getElementById(elemId);
-			if (elem !== null && !isElementInViewPort(elem)) {
-				$rootScope.$emit(scrollEvent, id, 0);
-			}
-		}, 300);
+
+		if (id) {
+			$timeout(function() {
+				const scrollEvent = 'scrollTo' + capType;
+				const elemId = _.kebabCase(entityType) + '-' + id;
+				let elem = document.getElementById(elemId);
+				if (elem !== null && !isElementInViewPort(elem)) {
+					$rootScope.$emit(scrollEvent, id, 0);
+				}
+			}, 300);
+		}
 	}
 
 	$scope.showTrackDetails = function(trackOrId) {
@@ -383,7 +385,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.showRadioStationDetails = function(stationOrId) {
-		showDetails('radioStation', stationOrId.id ?? stationOrId);
+		showDetails('radioStation', stationOrId?.id ?? stationOrId);
+		$scope.collapseNavigationPaneOnMobile();
 	};
 
 	$scope.showRadioHint = function() {

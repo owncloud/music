@@ -34,17 +34,18 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 
 .control {
 	background-size: contain;
-	height: 32px;
-	width: 32px;
-	padding: 10px;
-	margin: 0 12px 15px;
 	cursor: pointer;
 	opacity: .4;
+	height: 44px;
+	width: 44px;
 }
 
 #play-pause-container {
 	position: relative;
-	margin-top: 19px;
+}
+
+#play-pause-container .control {
+	margin: 7px 6px 10px;
 }
 
 #play-controls {
@@ -52,8 +53,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 }
 
 .control.small {
-	height: 44px;
-	width: 44px;
+	padding: 10px;
 	margin: 13px 2px 9px;
 }
 
@@ -65,6 +65,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 #controls #play-pause-menu::after /* the caret */ {
 	transform: translateX(50%);
 	right: 50%;
+	margin-top: 5px;
 }
 
 #controls #context-menu-skip-prev {
@@ -165,7 +166,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 
 #controls.two-line #repeat {
 	inset-inline-end: unset;
-	inset-inline-start: 130px;
+	inset-inline-start: 124px;
 	top: 38px;
 }
 
@@ -241,7 +242,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 
 .ie #controls.two-line #repeat {
 	right: unset;
-	left: 130px;
+	left: 124px;
 }
 
 .ie #controls.two-line .music-volume-control {

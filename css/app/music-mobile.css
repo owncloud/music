@@ -84,7 +84,12 @@
 .mobile #controls.two-line .control,
 .mobile #controls.two-line .song-info,
 .mobile #controls .albumart {
-	margin-inline: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
+.mobile #controls.two-line #play-pause-container .control {
+	margin-left: -6px;
+	margin-right: -6px;
 }
 .mobile #controls.two-line .song-info {
 	inset-inline-start: 220px;
@@ -96,7 +101,7 @@
 	inset-inline-start: 55px;
 }
 .mobile #controls.two-line #repeat {
-	inset-inline-start: 108px;
+	inset-inline-start: 104px;
 }
 .mobile #controls.two-line .music-progress-info {
 	inset-inline-start: 172px;
@@ -200,13 +205,6 @@
 	padding-left: 57px;
 }
 
-.ie .mobile #controls.two-line .control,
-.ie .mobile #controls.two-line .song-info,
-.ie .mobile #controls .albumart {
-	margin-left: 0;
-	margin-right: 0;
-}
-
 .ie .mobile #controls.two-line .song-info {
 	left: 220px;
 }
@@ -214,7 +212,7 @@
 	left: 55px;
 }
 .ie .mobile #controls.two-line #repeat {
-	left: 108px;
+	left: 104px;
 }
 .ie .mobile #controls.two-line .music-progress-info {
 	left: 172px;

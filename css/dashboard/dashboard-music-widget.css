@@ -100,6 +100,13 @@
 	height: 32px;
 }
 
+.music-widget .player-controls .playback.control.icon-play,
+.music-widget .player-controls .playback.control.icon-pause {
+	width: 44px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
 .music-widget .player-controls .music-volume-control {
 	position: relative;
 	width: 64px;

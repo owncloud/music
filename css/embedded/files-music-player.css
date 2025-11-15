@@ -89,9 +89,9 @@
 
 #music-controls .control {
 	height: 52px;
-	width: 52px;
+	width: 64px;
 	padding: 10px;
-	margin: 9px 2px 5px;
+	margin: 9px 0px 5px;
 	cursor: pointer;
 	opacity: .4;
 }
@@ -104,7 +104,7 @@
 #music-controls .control.small {
 	height: 44px;
 	width: 44px;
-	margin: 13px 2px 9px;
+	margin: 13px 0px 9px;
 }
 
 #music-controls .control#close {

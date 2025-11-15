@@ -27,6 +27,9 @@
 #music-controls.mobile #prev {
 	display: none;
 }
+#music-controls.mobile #next {
+	margin-left: -8px;
+}
 #music-controls.mobile .control {
 	margin-inline-end: 0;
 }

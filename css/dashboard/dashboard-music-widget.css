@@ -14,6 +14,10 @@
 	flex-flow: column;
 }
 
+.music-widget .icon-loading::after {
+	margin: -16px;
+}
+
 .music-widget .select-container {
 	flex: 0 1 auto;
 }

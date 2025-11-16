@@ -64,13 +64,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 #controls #play-pause-menu,
 #controls #play-pause-menu::after /* the caret */ {
 	transform: translateX(50%);
-	inset-inline-end: 50%;
-}
-
-/** translateX has no bidirectional alternative, so handle RTL separately */
-#controls #play-pause-menu:dir(rtl),
-#controls #play-pause-menu:dir(rtl)::after /* the caret */ {
-	transform: translateX(-50%);
+	right: 50%;
 }
 
 #controls #context-menu-skip-prev {

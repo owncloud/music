@@ -6,7 +6,7 @@
     <feGaussianBlur stdDeviation="1.2386625"/>
    </filter>
   </defs>
-  <path filter="url(#a)" stroke="#fff" stroke-width="2" d="m6 6 12 6-12 6z" fill="#fff"/>
-  <path d="m6 6 12 6-12 6z"/>
+  <path filter="url(#a)" stroke="#fff" stroke-width="2" d="m7 6 12 6-12 6z" fill="#fff"/>
+  <path d="m7 6 12 6-12 6z"/>
  </g>
 </svg>

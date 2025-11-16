@@ -107,6 +107,13 @@
 	margin-right: 3px;
 }
 
+.music-widget .player-controls .playback.control.icon-skip-prev,
+.music-widget .player-controls .playback.control.icon-skip-next {
+	width: 24px;
+	height: 24px;
+	margin: 13px;
+}
+
 .music-widget .player-controls .music-volume-control {
 	position: relative;
 	width: 64px;

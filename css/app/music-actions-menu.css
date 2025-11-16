@@ -21,6 +21,7 @@
 }
 
 .app-music #app .popovermenu ul li {
+	position: relative;
 	padding: 0;
 	line-height: var(--default-clickable-area, 44px);
 }

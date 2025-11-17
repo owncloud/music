@@ -2,15 +2,26 @@
 
 use OCA\Music\Utility\HtmlUtil;
 
-/** @var array $_ */
-?>
+/**
+ * @var array $_
+ * @var \OCP\IL10N $l
+ */
 
-<div id="app-content">
+HtmlUtil::addWebpackScript('scrobble_getsession_result');
+HtmlUtil::addWebpackStyle('app');
+
+?>
+<div id="app-content" data-result="<?= $_['success'] ?>">
 	<div class="section">
 		<div id="app-view">
-			<h2><?php HtmlUtil::p($_['headline']) ?></h2>
-			<p><strong><?php HtmlUtil::p($_['getsession_response']) ?></strong></p>
-			<p><?php HtmlUtil::p($_['instructions']) ?></p>
+			<div id="music-user">
+				<h2><?php HtmlUtil::p($_['headline']) ?></h2>
+				<div><?php HtmlUtil::p($_['instructions']) ?></div>
+				<?php if (!$_['success']): ?>
+				<div class="warning"><strong><?php HtmlUtil::p($_['getsession_response']) ?></strong></div>
+				<?php endif ?>
+				<div><?= $l->t('You can now close this window') ?></div>
+			</div>
 		</div>
 	</div>
 </div>

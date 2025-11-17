@@ -322,14 +322,30 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
-		$scope.scrobblerAuth = function () {
-			Restangular.all('scrobbler/saveApi').post($scope.settings.scrobbleAuth).then(
-				function (result) {
-					window.open(result.tokenRequestUrl, '_blank', {popup: true});
+		$scope.generateSession = function() {
+			window.open($scope.settings.scrobbler.tokenRequestUrl, '_blank', { popup: true });
+			const bc = new BroadcastChannel('scrobble-session-result');
+			bc.onmessage = function(e) {
+				$scope.settings.scrobbler.hasSession = e.data;
+			};
+		};
+
+		$scope.clearSession = function() {
+			const errHandler = function(error) {
+				const errMsg = gettextCatalog.getString('Failed to clear scrobbling session.');
+				OC.Notification.showTemporary(
+					errMsg + ' ' + error.message
+				);
+			};
+			Restangular.all('scrobbler/clearSession').post().then(
+				function(data) {
+					if (data === true) {
+						$scope.settings.scrobbler.hasSession = false;
+						return;
+					}
+					errHandler(data.error);
 				},
-				function (error) {
-					OC.Notification.showTemporary(error.data.message, { type: 'error' });
-				}
+				errHandler
 			);
 		};
 

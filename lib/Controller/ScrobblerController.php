@@ -42,7 +42,6 @@ class ScrobblerController extends Controller {
 	}
 
 	/**
-	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
@@ -52,30 +51,32 @@ class ScrobblerController extends Controller {
 		$success = $sessionResponse === 'ok';
 		return new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [
 			'lang' => $this->l10n->getLanguageCode(),
+			'success' => $success,
 			'headline' => $this->l10n->t($success ? 'All set!' : 'Failed to authenticate.'),
 			'getsession_response' => $sessionResponse,
 			'instructions' => $this->l10n->t(
-				$success ? 'You are now ready to scrobble.' : 'Authentication failure. Please review the error message and try again.'
+				$success ?
+					'You are now ready to scrobble.' :
+					'Authentication failure. Please review the error message and try again.'
 			)
 		], 'base');
 	}
 
 	/**
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @noSameSiteCookieRequired
 	 */
-	public function saveApi(string $apiKey = '', string $apiSecret = '', string $apiService = ''): ?JSONResponse {
+	public function clearSession(): JSONResponse {
 		try {
-			$result = $this->scrobblerService->saveApiSettings($this->userId, $apiKey, $apiSecret, $apiService);
-			$tokenRequestUrl = $this->scrobblerService->getTokenRequestUrl($apiKey, $apiService);
-			return new JSONResponse([
-				'result' => $result,
-				'tokenRequestUrl' => $tokenRequestUrl
-			]);
+			$this->scrobblerService->clearSession($this->userId);
 		} catch (\Throwable $t) {
-			return new JSONResponse([
-				'message' => $t->getMessage()
-			], Http::STATUS_UNPROCESSABLE_ENTITY);
+			$exception = $t;
 		}
-	}
+		return new JSONResponse(
+			empty($exception) ? true : [
+				'error' => $this->l10n->t($exception->getMessage())
+            ]
+        );
+    }
 }

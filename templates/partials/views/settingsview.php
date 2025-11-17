@@ -179,15 +179,13 @@
 		</div>
 	</div>
 	<h2 translate>Scrobbler Integration</h2>
-	<form ng-submit="scrobblerAuth()">
-		<label for="music-scrobble-service" translate>Scrobbling Service</label>
-		<select required ng-model="settings.scrobbleAuth.apiService" id="music-scrobble-service">
-			 <option value="lastfm" translate>Last.fm</option>
-		</select>
-		<input required type="text" ng-model="settings.scrobbleAuth.apiKey" placeholder="{{ 'API Key' | translate }}" name="music-scrobble-api-key">
-		<input required type="text" ng-model="settings.scrobbleAuth.apiSecret" placeholder="{{ 'API Secret' | translate }}" name="music-scrobble-api-secret">
-		<button type="submit" translate>Authenticate</button>
-	</form>
+	<div>
+		<p ng-hide="settings.scrobbler.configured" translate>The server admin can be configured your server for scrobbling. The <strong>Admin</strong> section details how to achieve this.</p>
+		<p ng-show="settings.scrobbler.configured" translate >The server admin has configured your server for scrobbling. Click the <strong>Get Scrobble Session</strong> button to send your streams to {{settings.scrobbler.service}}</p>
+		<button ng-disabled="settings.scrobbler.hasSession" ng-click="generateSession()" translate>Get Scrobble Session</button>
+		<button ng-disabled="!settings.scrobbler.hasSession" ng-click="clearSession()" translate>Clear Session</button>
+	</div>
+
 
 	<h2 translate>Admin</h2>
 	<div>

@@ -129,7 +129,7 @@ class SettingController extends Controller {
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
 			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId,
-			'scrobbleAuth' => $this->getScrobbleAuth()
+			'scrobbler' => $this->getScrobbleAuth()
 		]);
 	}
 
@@ -153,10 +153,13 @@ class SettingController extends Controller {
 	}
 
 	private function getScrobbleAuth(): array {
+		$tokenRequestUrl = $this->scrobblerService->getTokenRequestUrl();
 		return [
-			'apiKey' => $this->scrobblerService->getApiKey($this->userId),
-			'apiSecret' => $this->scrobblerService->getApiSecret($this->userId),
-			'apiService' => $this->scrobblerService->getApiService($this->userId)
+			'apiService' => $this->scrobblerService->getApiService(),
+            'configured' => $tokenRequestUrl !== null,
+            'tokenRequestUrl' => $tokenRequestUrl,
+            'hasSession' => $this->scrobblerService->getApiSession($this->userId) !== null,
+            'service' => $this->scrobblerService->getName()
 		];
 	}
 

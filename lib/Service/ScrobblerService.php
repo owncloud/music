@@ -18,6 +18,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Track;
 use OCP\IConfig;
 use OCP\IURLGenerator;
+use OCP\Security\ICrypto;
 
 class ScrobblerService
 {
@@ -31,6 +32,8 @@ class ScrobblerService
 
 	private ?string $appName;
 
+	private ICrypto $crypto;
+
 	public const SCROBBLE_SERVICES = [
 		'lastfm' => [
 			'endpoint' => 'http://ws.audioscrobbler.com/2.0/',
@@ -43,21 +46,23 @@ class ScrobblerService
 		Logger $logger,
 		IURLGenerator $urlGenerator,
 		TrackBusinessLayer $trackBusinessLayer,
+		ICrypto $crypto,
 		?string $appName = 'music'
 	) {
 		$this->config = $config;
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->crypto = $crypto;
 		$this->appName = $appName;
 	}
 
 	public function generateSession(string $token, string $userId): string {
-		$scrobbleService = $this->getApiService($userId);
+		$scrobbleService = $this->getApiService();
 		$ch = $this->makeCurlHandle($scrobbleService);
-		$params = $this->generateBaseMethodParams('auth.getSession', $userId);
+		$params = $this->generateBaseMethodParams('auth.getSession');
 		$params['token'] = $token;
-		$params['api_sig'] = $this->generateSignature($params, $userId);
+		$params['api_sig'] = $this->generateSignature($params);
 		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
 		$sessionText = \curl_exec($ch);
 		$xml = \simplexml_load_string($sessionText);
@@ -68,7 +73,11 @@ class ScrobblerService
 		}
 
 		try {
-			$this->config->setUserValue($userId, $this->appName, 'scrobbleSessionKey', (string)$xml->session->key);
+			$encryptedKey = $this->crypto->encrypt(
+				(string)$xml->session->key,
+				$userId . $this->config->getSystemValue('secret')
+			);
+			$this->config->setUserValue($userId, $this->appName, 'scrobbleSessionKey', $encryptedKey);
 		} catch (\Throwable $e) {
 			$this->logger->error("Unable to save session key");
 			return $e->getMessage();
@@ -76,37 +85,35 @@ class ScrobblerService
 		return 'ok';
 	}
 
-	public function saveApiSettings(
-		string $userId,
-		string $apiKey,
-		string $apiSecret,
-		string $apiService
-	): bool {
-		try {
-			$this->validateApiSettings($apiKey, $apiSecret, $apiService);
-			$this->config->setUserValue($userId, $this->appName, 'scrobbleApiKey', $apiKey);
-			$this->config->setUserValue($userId, $this->appName, 'scrobbleApiSecret', $apiSecret);
-			$this->config->setUserValue($userId, $this->appName, 'scrobbleApiService', $apiService);
-		} catch (\Throwable $e) {
-			$this->logger->error("Unable to save {$apiService} API settings: " . $e->getMessage());
-			throw $e;
+	public function getApiKey() : ?string {
+		return $this->config->getSystemValue('music.scrobble_api_key', null);
+	}
+
+	public function getApiSecret() : ?string {
+		return $this->config->getSystemValue('music.scrobble_api_secret', null);
+	}
+
+	public function getApiService() : ?string {
+		return $this->config->getSystemValue('music.scrobble_api_service', null);
+	}
+
+	public function getApiSession(string $userId): ?string
+	{
+		$encryptedKey = $this->config->getUserValue($userId, $this->appName, 'scrobbleSessionKey');
+		if (!$encryptedKey) {
+			return null;
 		}
-		return true;
+		$key = $this->crypto->decrypt($encryptedKey, $userId . $this->config->getSystemValue('secret'));
+		return $key;
 	}
 
-	public function getApiKey(string $userId) : ?string {
-		return $this->config->getUserValue($userId, $this->appName, 'scrobbleApiKey', null);
-	}
+	public function getTokenRequestUrl(): ?string {
+		$apiKey = $this->getApiKey();
+		$apiService = $this->getApiService();
+		if (!$apiKey || !$apiService) {
+			return null;
+		}
 
-	public function getApiSecret(string $userId) : ?string {
-		return $this->config->getUserValue($userId, $this->appName, 'scrobbleApiSecret', null);
-	}
-
-	public function getApiService(string $userId) : ?string {
-		return $this->config->getUserValue($userId, $this->appName, 'scrobbleApiService', null);
-	}
-
-	public function getTokenRequestUrl(string $apiKey, string $apiService): string {
 		$tokenHandleUrl = $this->urlGenerator->linkToRouteAbsolute('music.scrobbler.handleToken');
 		switch ($apiService) {
 			case 'lastfm':
@@ -116,46 +123,14 @@ class ScrobblerService
 		}
 	}
 
-	/**
-	 * @param array<string, string|array> $params
-	 */
-	private function generateSignature(array $params, string $userId) : string {
-		\ksort($params);
-		$paramString = '';
-		foreach ($params as $key => $value) {
-			if (\is_array($value)) {
-				foreach ($value as $valIdx => $valVal) {
-					$paramString .= "{$key}[{$valIdx}]{$valVal}";
-				}
-			} else {
-				$paramString .= $key . $value;
-			}
-		}
-
-		$paramString .= $apiSecret = $this->getApiSecret($userId);
-		return \md5($paramString);
-	}
-
-	/**
-	 * @return array<string, string>
-	 */
-	private function generateBaseMethodParams(string $method, string $userId) : array {
-		$params = [
-			'method' => $method,
-			'api_key' => $this->getApiKey($userId)
-		];
-
-		return $params;
-	}
-
 	public function scrobbleTrack(array $trackIds, string $userId, \DateTime $timeOfPlay) : bool {
-		$sessionKey = $this->config->getUserValue($userId, $this->appName, 'scrobbleSessionKey');
+		$sessionKey = $this->getApiSession($userId);
 		if (!$sessionKey) {
 			return false;
 		}
 
 		$timestamp = $timeOfPlay->getTimestamp();
-		$scrobbleData = \array_merge($this->generateBaseMethodParams('track.scrobble', $userId), [
+		$scrobbleData = \array_merge($this->generateBaseMethodParams('track.scrobble'), [
 			'sk' => $sessionKey,
 		]);
 
@@ -168,9 +143,9 @@ class ScrobblerService
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
 			$scrobbleData["trackNumber[{$i}]"] = $track->getNumber();
 		}
-		$scrobbleData['api_sig'] = $this->generateSignature($scrobbleData, $userId);
+		$scrobbleData['api_sig'] = $this->generateSignature($scrobbleData);
 
-		$scrobbleService = $this->getApiService($userId);
+		$scrobbleService = $this->getApiService();
 		$ch = $this->makeCurlHandle($scrobbleService);
 		$postFields = \http_build_query($scrobbleData);
 		\curl_setopt($ch, \CURLOPT_POSTFIELDS, $postFields);
@@ -182,6 +157,57 @@ class ScrobblerService
 		}
 
 		return true;
+	}
+
+	public function clearSession(?string $userId) : void {
+		$this->config->deleteUserValue($userId, $this->appName, 'scrobbleSessionKey');
+	}
+
+    public function getName() : string
+	{
+		$apiService = $this->getApiService();
+		if (!$apiService) {
+			return '';
+		}
+
+		switch ($apiService) {
+			case 'lastfm':
+				return "Last.fm";
+			default:
+				throw new \Exception('Invalid service');
+		}
+	}
+
+	/**
+	 * @param array<string, string|array> $params
+	 */
+	private function generateSignature(array $params) : string {
+		\ksort($params);
+		$paramString = '';
+		foreach ($params as $key => $value) {
+			if (\is_array($value)) {
+				foreach ($value as $valIdx => $valVal) {
+					$paramString .= "{$key}[{$valIdx}]{$valVal}";
+				}
+			} else {
+				$paramString .= $key . $value;
+			}
+		}
+
+		$paramString .= $apiSecret = $this->getApiSecret();
+		return \md5($paramString);
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	private function generateBaseMethodParams(string $method) : array {
+		$params = [
+			'method' => $method,
+			'api_key' => $this->getApiKey()
+		];
+
+		return $params;
 	}
 
 	/**
@@ -197,12 +223,5 @@ class ScrobblerService
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
 		return $ch;
-	}
-
-	private function validateApiSettings(string $apiKey, string $apiSecret, string $apiService) : void
-	{
-		if ($apiKey === '' || $apiSecret === '' || $apiService === '') {
-			throw new \Exception('API key, secret, and service are all required');
-		}
 	}
 }

@@ -27,6 +27,7 @@ use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
+use OC\Hooks\EmitterTrait;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
@@ -37,6 +38,8 @@ use OCP\AppFramework\Db\DoesNotExistException;
  * @extends BusinessLayer<Track>
  */
 class TrackBusinessLayer extends BusinessLayer {
+    use EmitterTrait;
+
 	private FileSystemService $fileSystemService;
 	private Logger $logger;
 
@@ -228,6 +231,8 @@ class TrackBusinessLayer extends BusinessLayer {
 		if (!$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay)) {
 			throw new BusinessLayerException("Track with ID $trackId was not found");
 		}
+
+		$this->emit(self::class, 'recordTrackPlayed', [$trackId, $userId, $timeOfPlay]);
 	}
 
 	/**

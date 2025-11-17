@@ -322,6 +322,17 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
+		$scope.scrobblerAuth = function () {
+			Restangular.all('scrobbler/saveApi').post($scope.settings.scrobbleAuth).then(
+				function (result) {
+					window.open(result.tokenRequestUrl, '_blank', {popup: true});
+				},
+				function (error) {
+					OC.Notification.showTemporary(error.data.message, { type: 'error' });
+				}
+			);
+		};
+
 		$scope.copyToClipboard = function(elementId) {
 			let range = document.createRange();
 			range.selectNode(document.getElementById(elementId));

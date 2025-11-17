@@ -178,6 +178,16 @@
 			</dl>
 		</div>
 	</div>
+	<h2 translate>Scrobbler Integration</h2>
+	<form ng-submit="scrobblerAuth()">
+		<label for="music-scrobble-service" translate>Scrobbling Service</label>
+		<select required ng-model="settings.scrobbleAuth.apiService" id="music-scrobble-service">
+			 <option value="lastfm" translate>Last.fm</option>
+		</select>
+		<input required type="text" ng-model="settings.scrobbleAuth.apiKey" placeholder="{{ 'API Key' | translate }}" name="music-scrobble-api-key">
+		<input required type="text" ng-model="settings.scrobbleAuth.apiSecret" placeholder="{{ 'API Secret' | translate }}" name="music-scrobble-api-secret">
+		<button type="submit" translate>Authenticate</button>
+	</form>
 
 	<h2 translate>Admin</h2>
 	<div>

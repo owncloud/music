@@ -16,6 +16,7 @@ namespace OCA\Music\AppInfo;
 
 use OCA\Music\Hooks\FileHooks;
 use OCA\Music\Hooks\ShareHooks;
+use OCA\Music\Hooks\TrackHooks;
 use OCA\Music\Hooks\UserHooks;
 
 use OCA\Music\Middleware\AmpacheMiddleware;
@@ -135,6 +136,7 @@ class Application extends ApplicationBase {
 		$this->get(FileHooks::class)->register();
 		$this->get(ShareHooks::class)->register();
 		$this->get(UserHooks::class)->register();
+		$this->get(TrackHooks::class)->register();
 	}
 
 	private function registerEmbeddedPlayer() : void {

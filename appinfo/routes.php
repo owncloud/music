@@ -21,6 +21,10 @@ $routes = ['routes' => [
 	['name' => 'page#index', 'url' => '/subsonic',	'verb' => 'GET',	'postfix' => '_subsonic'],
 	['name' => 'page#index', 'url' => '/ampache',	'verb' => 'GET',	'postfix' => '_ampache'],
 
+	// Scrobbler
+	['name' => 'scrobbler#handleToken', 'url' => '/api/scrobbler/handleToken', 'verb' => 'GET'],
+	['name' => 'scrobbler#saveApi', 'url' => '/api/scrobbler/saveApi', 'verb' => 'POST'],
+
 	// Log
 	['name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'],
 

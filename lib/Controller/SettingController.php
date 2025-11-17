@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\ScrobblerService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -44,6 +45,7 @@ class SettingController extends Controller {
 	private ISecureRandom $secureRandom;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
+	private ScrobblerService $scrobblerService;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -54,7 +56,8 @@ class SettingController extends Controller {
 								LibrarySettings $librarySettings,
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator,
-								Logger $logger) {
+								Logger $logger,
+								ScrobblerService $scrobblerService) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -65,6 +68,7 @@ class SettingController extends Controller {
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
+		$this->scrobblerService = $scrobblerService;
 	}
 
 	/**
@@ -124,7 +128,8 @@ class SettingController extends Controller {
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
 			'appVersion' => AppInfo::getVersion(),
-			'user' => $this->userId
+			'user' => $this->userId,
+			'scrobbleAuth' => $this->getScrobbleAuth()
 		]);
 	}
 
@@ -145,6 +150,14 @@ class SettingController extends Controller {
 		return (string)\str_replace('/rest/dummy', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
 						'music.subsonic.handleRequest', ['method' => 'dummy'])));
+	}
+
+	private function getScrobbleAuth(): array {
+		return [
+			'apiKey' => $this->scrobblerService->getApiKey($this->userId),
+			'apiSecret' => $this->scrobblerService->getApiSecret($this->userId),
+			'apiService' => $this->scrobblerService->getApiService($this->userId)
+		];
 	}
 
 	private function storeUserKey(?string $description, string $password) : ?int {

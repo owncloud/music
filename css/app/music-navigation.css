@@ -156,11 +156,11 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #app-navigation-to
 }
 
 #app-navigation .current:not(.playing) :hover .play-pause {
-	background-image: url(../../img/play-big.svg);
+	background-image: url(../../img/play-small.svg);
 }
 
 #app-navigation .current.playing :hover .play-pause {
-	background-image: url(../../img/pause-big.svg)
+	background-image: url(../../img/pause-small.svg)
 }
 
 #app-navigation #new-playlist .track-count-badge {

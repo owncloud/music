@@ -140,12 +140,12 @@ h2 span:hover .play {
 .current.playing .play-pause,
 div:hover > .play-pause,
 #app-content .current:not(.playing) div:hover .play-pause {
-	background-image: url(../../img/play-big.svg);
+	background-image: url(../../img/play-small.svg);
 }
 
 .current:not(.playing) .play-pause,
 #app-content .current.playing div:hover .play-pause {
-	background-image: url(../../img/pause-big.svg)
+	background-image: url(../../img/pause-small.svg)
 }
 
 #app-content button.icon-details,

@@ -69,7 +69,7 @@
 				<span ui-draggable="true" drag="getHeaderDraggable()"
 					translate translate-n="resultCount()" translate-plural="{{ resultCount() }} results">{{ resultCount() }} result</span>
 				<img ng-if="resultCount()" class="play svg" alt="{{ 'Play' | translate }}"
-					src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
+					src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-small') ?>"/>
 			</span>
 			<button class="icon-more" ng-show="saveableResultCount()" ng-click="onResultsContextMenuButton($event)"></button>
 			<div class="popovermenu bubble heading-actions" ng-show="showResultsMenu">

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022 - 2024
+ * @copyright Pauli Järvinen 2022 - 2025
  */
 
 .app-music .icon-audio {
@@ -16,8 +16,16 @@
 	background-image: url(../../img/play-big.svg);
 }
 
+.app-music .icon-play-small {
+	background-image: url(../../img/play-small.svg);
+}
+
 .app-music .icon-pause-big {
 	background-image: url(../../img/pause-big.svg);
+}
+
+.app-music .icon-pause-small {
+	background-image: url(../../img/pause-small.svg);
 }
 
 .app-music .icon-stop {

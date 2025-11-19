@@ -2,7 +2,7 @@
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span translate>Internet radio stations</span>
-			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
+			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-small') ?>"/>
 		</span>
 	</h1>
 	<ul class="track-list">

@@ -9,7 +9,7 @@
  *
  */
 
-import playIconPath from '../../../img/play-big.svg';
+import playIconPath from '../../../img/play-small.svg';
 
 /**
  * This custom directive produces a self-contained list heading widget which

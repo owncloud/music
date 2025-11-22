@@ -6,10 +6,8 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Morris Jobke <hey@morrisjobke.de>
- * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2019 - 2025
+ * @author Matthew Wells
+ * @copyright Matthew Wells 2025
  */
 
 namespace OCA\Music\Controller;

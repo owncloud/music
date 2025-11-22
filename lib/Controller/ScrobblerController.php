@@ -44,22 +44,28 @@ class ScrobblerController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
-	 * @throws \TypeError when $userId is null
 	 */
-	public function handleToken(string $token) : ?StandaloneTemplateResponse {
-		$sessionResponse = $this->scrobblerService->generateSession($token, $this->userId);
-		$success = $sessionResponse === 'ok';
-		return new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [
-			'lang' => $this->l10n->getLanguageCode(),
-			'success' => $success,
-			'headline' => $this->l10n->t($success ? 'All set!' : 'Failed to authenticate.'),
-			'getsession_response' => $sessionResponse,
-			'instructions' => $this->l10n->t(
-				$success ?
-					'You are now ready to scrobble.' :
-					'Authentication failure. Please review the error message and try again.'
-			)
-		], 'base');
+	public function handleToken(string $token) : StandaloneTemplateResponse {
+		try {
+			$this->scrobblerService->generateSession($token, $this->userId);
+			$success = true;
+			$headline = 'All Set!';
+			$getSessionResponse = '';
+			$instructions = 'You are now ready to scrobble.';
+		} catch (\Throwable $t) {
+			$success = false;
+			$headline = 'Failed to authenticate.';
+			$getSessionResponse = $t->getMessage();
+			$instructions = 'Authentication failure. Please review the error message and try again.';
+		} finally {
+			return new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [
+				'lang' => $this->l10n->getLanguageCode(),
+				'success' => $success,
+				'headline' => $this->l10n->t($headline),
+				'getsession_response' => $getSessionResponse,
+				'instructions' => $this->l10n->t($instructions)
+			], 'base');
+		}
 	}
 
 	/**

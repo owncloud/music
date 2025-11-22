@@ -322,6 +322,33 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
+		$scope.generateSession = function() {
+			window.open($scope.settings.scrobbler.tokenRequestUrl, '_blank', { popup: true });
+			const bc = new BroadcastChannel('scrobble-session-result');
+			bc.onmessage = function(e) {
+				$scope.settings.scrobbler.hasSession = e.data;
+			};
+		};
+
+		$scope.clearSession = function() {
+			const errHandler = function(error) {
+				const errMsg = gettextCatalog.getString('Failed to clear scrobbling session.');
+				OC.Notification.showTemporary(
+					errMsg + ' ' + error.message
+				);
+			};
+			Restangular.all('scrobbler/clearSession').post().then(
+				function(data) {
+					if (data === true) {
+						$scope.settings.scrobbler.hasSession = false;
+						return;
+					}
+					errHandler(data.error);
+				},
+				errHandler
+			);
+		};
+
 		$scope.copyToClipboard = function(elementId) {
 			let range = document.createRange();
 			range.selectNode(document.getElementById(elementId));

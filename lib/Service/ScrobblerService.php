@@ -125,9 +125,13 @@ class ScrobblerService
 		}
 	}
 
+	/**
+	 * @param array<int,mixed> $trackIds
+	 */
 	public function scrobbleTrack(array $trackIds, string $userId, \DateTime $timeOfPlay) : bool {
 		$sessionKey = $this->getApiSession($userId);
-		if (!$sessionKey) {
+		$scrobbleService = $this->getApiService();
+		if (!$sessionKey || !$scrobbleService) {
 			return false;
 		}
 
@@ -147,18 +151,18 @@ class ScrobblerService
 		}
 		$scrobbleData['api_sig'] = $this->generateSignature($scrobbleData);
 
-		$scrobbleService = $this->getApiService();
-		$ch = $this->makeCurlHandle($scrobbleService);
-		$postFields = \http_build_query($scrobbleData);
-		\curl_setopt($ch, \CURLOPT_POSTFIELDS, $postFields);
-		$xml = \simplexml_load_string(\curl_exec($ch));
-
-		$status = (string)$xml['status'];
-		if ($status !== 'ok') {
-			return false;
+		try {
+			$ch = $this->makeCurlHandle($scrobbleService);
+			$postFields = \http_build_query($scrobbleData);
+			\curl_setopt($ch, \CURLOPT_POSTFIELDS, $postFields);
+			$xml = \simplexml_load_string(\curl_exec($ch));
+			$status = (string)$xml['status'] === 'ok';
+		} catch (\Throwable $t) {
+			$status = false;
+			$this->logger->error($t->getMessage());
+		} finally {
+			return $status;
 		}
-
-		return true;
 	}
 
 	public function clearSession(?string $userId) : void {

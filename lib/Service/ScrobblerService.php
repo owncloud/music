@@ -169,7 +169,7 @@ class ScrobblerService
 		$this->config->deleteUserValue($userId, $this->appName, 'scrobbleSessionKey');
 	}
 
-    public function getName() : string
+	public function getName() : string
 	{
 		$apiService = $this->getApiService();
 		if (!$apiService) {

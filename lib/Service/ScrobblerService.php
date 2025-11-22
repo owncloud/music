@@ -57,7 +57,10 @@ class ScrobblerService
 		$this->appName = $appName;
 	}
 
-	public function generateSession(string $token, string $userId): string {
+	/**
+	 * @throws \Throwable when unable to generate or save a session
+	 */
+	public function generateSession(string $token, string $userId) : void {
 		$scrobbleService = $this->getApiService();
 		$ch = $this->makeCurlHandle($scrobbleService);
 		$params = $this->generateBaseMethodParams('auth.getSession');
@@ -69,7 +72,7 @@ class ScrobblerService
 
 		$status = (string)$xml['status'];
 		if ($status !== 'ok') {
-			return \sprintf('Error %d: %s', (int)$xml->error['code'], (string)$xml->error);
+			throw new \Exception((string)$xml->error, (int)$xml->error['code']);
 		}
 
 		try {
@@ -79,10 +82,9 @@ class ScrobblerService
 			);
 			$this->config->setUserValue($userId, $this->appName, 'scrobbleSessionKey', $encryptedKey);
 		} catch (\Throwable $e) {
-			$this->logger->error("Unable to save session key");
-			return $e->getMessage();
+			$this->logger->error('Unable to save session key ' . $e->getMessage());
+			throw $e;
 		}
-		return 'ok';
 	}
 
 	public function getApiKey() : ?string {
@@ -211,13 +213,14 @@ class ScrobblerService
 	}
 
 	/**
-	 * @return false|resource in PHP8+ false|\CurlHandle
+	 * @return resource in PHP8+ \CurlHandle
+	 * @throws \RuntimeException when unable to initialize a cURL handle
 	 */
 	private function makeCurlHandle(string $scrobblerServiceIdentifier) {
 		$endpoint = self::SCROBBLE_SERVICES[$scrobblerServiceIdentifier]['endpoint'];
 		$ch = \curl_init($endpoint);
 		if (!$ch) {
-			return false;
+			throw new \RuntimeException('Unable to initialize a cURL handle');
 		}
 		\curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
 		\curl_setopt($ch, \CURLOPT_POST, true);

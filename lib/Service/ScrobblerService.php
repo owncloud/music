@@ -211,7 +211,7 @@ class ScrobblerService
 	}
 
 	/**
-	 * @return false|resource|\CurlHandle
+	 * @return false|resource in PHP8+ false|\CurlHandle
 	 */
 	private function makeCurlHandle(string $scrobblerServiceIdentifier) {
 		$endpoint = self::SCROBBLE_SERVICES[$scrobblerServiceIdentifier]['endpoint'];

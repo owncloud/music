@@ -16,7 +16,6 @@ namespace OCA\Music\Controller;
 
 use OCA\Music\Service\ScrobblerService;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\StandaloneTemplateResponse;
 use OCP\IL10N;
@@ -78,7 +77,7 @@ class ScrobblerController extends Controller {
 		return new JSONResponse(
 			empty($exception) ? true : [
 				'error' => $this->l10n->t($exception->getMessage())
-            ]
-        );
-    }
+			]
+		);
+	}
 }

@@ -45,6 +45,7 @@ class ScrobblerController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
+	 * @throws \TypeError when $userId is null
 	 */
 	public function handleToken(string $token) : ?StandaloneTemplateResponse {
 		$sessionResponse = $this->scrobblerService->generateSession($token, $this->userId);
@@ -66,6 +67,7 @@ class ScrobblerController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @noSameSiteCookieRequired
+	 * @throws \TypeError when $userId is null
 	 */
 	public function clearSession(): JSONResponse {
 		try {

@@ -275,6 +275,7 @@ class RadioService {
 	/**
 	 * Sometimes the URL given as stream URL points to a playlist which in turn contains the actual
 	 * URL to be streamed. This function resolves such indirections.
+	 * @return array{url: string, hls: bool}
 	 */
 	public function resolveStreamUrl(string $url) : array {
 		// the default output for non-playlist URLs:

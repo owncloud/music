@@ -260,13 +260,7 @@ class RadioApiController extends Controller {
 	public function stationStreamUrl(int $id) : JSONResponse {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
-			$streamUrl = $station->getStreamUrl();
-			$resolved = $this->service->resolveStreamUrl($streamUrl);
-			$relayEnabled = $this->streamRelayEnabled();
-			if ($relayEnabled && !$resolved['hls']) {
-				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.stationStream', ['id' => $id]);
-			}
-			return new JSONResponse($resolved);
+			return $this->doResolveStreamUrl($station->getStreamUrl());
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -309,15 +303,19 @@ class RadioApiController extends Controller {
 		} elseif (!$this->tokenService->urlTokenIsValid($url, \rawurldecode($token))) {
 			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'the security token is invalid');
 		} else {
-			$resolved = $this->service->resolveStreamUrl($url);
-			$relayEnabled = $this->streamRelayEnabled();
-			if ($relayEnabled && !$resolved['hls']) {
-				$token = $this->tokenService->tokenForUrl($resolved['url']);
-				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
-					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
-			}
-			return new JSONResponse($resolved);
+			return $this->doResolveStreamUrl($url);
 		}
+	}
+
+	private function doResolveStreamUrl(string $url) : JSONResponse {
+		$resolved = $this->service->resolveStreamUrl($url);
+		$relayEnabled = $this->streamRelayEnabled();
+		if ($relayEnabled && !$resolved['hls']) {
+			$token = $this->tokenService->tokenForUrl($resolved['url']);
+			$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
+				['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+		}
+		return new JSONResponse($resolved);
 	}
 
 	/**

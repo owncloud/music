@@ -24,6 +24,8 @@
 - Media control seek forward/backward buttons not working on Edge
 - Entire page moving when progress bar dragged on pinch-zoomed touch screen
 - Some minor UI glitches
+- Some radio stations not playing in the (default) relayed mode because Music tried to forward also the "hop-by-hop" HTTP headers
+  [#1268](https://github.com/owncloud/music/issues/1268)
 
 ## 2.4.1 - 2025-10-12
 

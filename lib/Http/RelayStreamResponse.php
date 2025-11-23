@@ -42,7 +42,24 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 
 		$this->url = $resolved['url'];
 		$this->setStatus($resolved['status_code']);
-		$this->setHeaders($resolved['headers']);
+
+		/**
+		 * Copy response headers from the original response to our response. However, RFC 2616 defines some headers as "hop-by-hop"
+		 * and these should never be forwarded by proxies so strip such headers. At least the header `Transfer-Encoding: chunked`
+		 * seems to break the response totally (within Nextcloud or Apache?) if forwarded, see https://github.com/owncloud/music/issues/1268.
+		 *
+		 * HTTP headers are case-insensitive; lower case all the headers for easier handling.
+		 */
+		$resHeaders = \array_change_key_case($resolved['headers'], CASE_LOWER);
+		unset($resHeaders['connection']);
+		unset($resHeaders['keep-alive']);
+		unset($resHeaders['proxy-authentication']);
+		unset($resHeaders['proxy-authorization']);
+		unset($resHeaders['te']);
+		unset($resHeaders['trailers']);
+		unset($resHeaders['transfer-encoding']);
+		unset($resHeaders['upgrade']);
+		$this->setHeaders($resHeaders);
 
 		$length = ArrayUtil::getCaseInsensitive($resolved['headers'], 'content-length');
 		$this->contentLength = ($length === null) ? null : (int)$length;

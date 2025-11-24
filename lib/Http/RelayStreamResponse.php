@@ -61,8 +61,7 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 		unset($resHeaders['upgrade']);
 		$this->setHeaders($resHeaders);
 
-		$length = ArrayUtil::getCaseInsensitive($resolved['headers'], 'content-length');
-		$this->contentLength = ($length === null) ? null : (int)$length;
+		$this->contentLength = isset($resHeaders['content-length']) ? (int)$resHeaders['content-length'] : null;
 	}
 
 	/**

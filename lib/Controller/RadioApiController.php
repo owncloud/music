@@ -310,10 +310,17 @@ class RadioApiController extends Controller {
 	private function doResolveStreamUrl(string $url) : JSONResponse {
 		$resolved = $this->service->resolveStreamUrl($url);
 		$relayEnabled = $this->streamRelayEnabled();
-		if ($relayEnabled && !$resolved['hls']) {
+		if ($resolved['url'] === null) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'failed to read from the stream URL');
+		} else {
 			$token = $this->tokenService->tokenForUrl($resolved['url']);
-			$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
-				['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+			if ($resolved['hls']) {
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+			} elseif ($relayEnabled) {
+				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+			}
 		}
 		return new JSONResponse($resolved);
 	}

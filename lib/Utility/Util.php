@@ -99,7 +99,7 @@ class Util {
 	/**
 	 * Compose URL from parts as returned by the system function parse_url.
 	 * Based on https://stackoverflow.com/a/35207936
-	 * @param string[] $parts
+	 * @param array{scheme?: string, host?: string, port?: int, user?: string, pass?: string, query?: string, path?: string, fragment?: string} $parts
 	 */
 	public static function buildUrl(array $parts) : string {
 		return (isset($parts['scheme']) ? "{$parts['scheme']}:" : '')

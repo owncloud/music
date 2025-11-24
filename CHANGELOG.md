@@ -17,6 +17,7 @@
   * Option `--rescan-modified` removed
   * Possibility to opt out of the cover art updating with the option `--skip-art`
   * Limit also album art search to the path provided with argument `--folder`
+- Identify playlist-type radio streams from the Content-Type header instead of the URL, hopefully making the logic more robust
 - Updated the getID3 library to the release version 1.9.24-202509040923
 
 ### Fixed

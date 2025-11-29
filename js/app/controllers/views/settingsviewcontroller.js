@@ -322,7 +322,7 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
-		$scope.generateSession = function() {
+		$scope.generateScrobbleSession = function() {
 			window.open($scope.settings.scrobbler.tokenRequestUrl, '_blank', { popup: true });
 			const bc = new BroadcastChannel('scrobble-session-result');
 			bc.onmessage = function(e) {
@@ -330,7 +330,7 @@ angular.module('Music').controller('SettingsViewController', [
 			};
 		};
 
-		$scope.clearSession = function() {
+		$scope.clearScrobbleSession = function() {
 			const errHandler = function(error) {
 				const errMsg = gettextCatalog.getString('Failed to clear scrobbling session.');
 				OC.Notification.showTemporary(

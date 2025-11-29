@@ -184,8 +184,8 @@
 		<p ng-show="settings.scrobbler.configured" translate >The server admin has configured your server for scrobbling.</p>
 		<p ng-show="settings.scrobbler.configured && !settings.scrobbler.hasSession">Click the <strong>Get Scrobble Session</strong> button to send your streams to {{settings.scrobbler.service}}.</p>
 		<p ng-show="settings.scrobbler.configured && settings.scrobbler.hasSession">Click the <strong>Clear Session</strong> to stop scrobbling.</p>
-		<button ng-show="settings.scrobbler.configured" ng-disabled="settings.scrobbler.hasSession" ng-click="generateSession()" translate>Get Scrobble Session</button>
-		<button ng-show="settings.scrobbler.configured"  ng-disabled="!settings.scrobbler.hasSession" ng-click="clearSession()" translate>Clear Session</button>
+		<button ng-show="settings.scrobbler.configured" ng-disabled="settings.scrobbler.hasSession" ng-click="generateScrobbleSession()" translate>Get Scrobble Session</button>
+		<button ng-show="settings.scrobbler.configured"  ng-disabled="!settings.scrobbler.hasSession" ng-click="clearScrobbleSession()" translate>Clear Session</button>
 	</div>
 
 

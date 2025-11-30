@@ -66,7 +66,7 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
+	 * @return array<int, int[]> keys are albums IDs and values are arrays of artist IDs
 	 */
 	public function getPerformingArtistsByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`artist_id`
@@ -93,7 +93,7 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => int[], keys are albums IDs and values are arrays of years
+	 * @return array<int, int[]> keys are albums IDs and values are arrays of years
 	 */
 	public function getYearsByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`year`
@@ -121,7 +121,7 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => Genre[], keys are albums IDs and values are arrays of *partial* Genre objects (only id and name properties set)
+	 * @return array<int, Genre[]> keys are albums IDs and values are arrays of *partial* Genre objects (only id and name properties set)
 	 */
 	public function getGenresByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `album_id`, `genre_id`, `*PREFIX*music_genres`.`name` AS `genre_name`
@@ -155,7 +155,7 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => int, keys are albums IDs and values are disk counts
+	 * @return array<int, int> keys are albums IDs and values are disk counts
 	 */
 	public function getDiscCountByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT `album_id`, MAX(`disk`) AS `disc_count`
@@ -181,7 +181,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns summed track play counts of each album of the user, omitting albums which have never been played
 	 *
-	 * @return array [int => int], keys are album IDs and values are play count sums; ordered largest counts first
+	 * @return array<int, int> keys are album IDs and values are play count sums; ordered largest counts first
 	 */
 	public function getAlbumTracksPlayCount(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = 'SELECT `album_id`, SUM(`play_count`) AS `sum_count`
@@ -202,7 +202,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns the latest play time of each album of the user, omitting albums which have never been played
 	 *
-	 * @return array [int => string], keys are album IDs and values are date-times; ordered latest times first
+	 * @return array<int, string> keys are album IDs and values are date-times; ordered latest times first
 	 */
 	public function getLatestAlbumPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`
@@ -223,8 +223,8 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns the latest play time of each album of the user, including albums which have never been played
 	 *
-	 * @return array [int => ?string], keys are album IDs and values are date-times (or null for never played);
-	 *									ordered furthest times first
+	 * @return array<int, ?string> keys are album IDs and values are date-times (or null for never played);
+	 *								ordered furthest times first
 	 */
 	public function getFurthestAlbumPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`

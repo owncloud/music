@@ -19,7 +19,9 @@
   * Limit also album art search to the path provided with argument `--folder`
 - Identify playlist-type radio streams from the Content-Type header instead of the URL, hopefully making the logic more robust
 - Updated the getID3 library to the release version 1.9.24-202509040923
-- OpenSubsonic API: Add property `mediaType` to the result type `Child`
+- OpenSubsonic API: 
+  * Add property `mediaType` to the result type `Child`
+  * Add property `genres` to the album results
 
 ### Fixed
 - Playback stopping when clicking the title "0 results" of an empty advanced search result

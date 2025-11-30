@@ -1496,10 +1496,10 @@ class SubsonicController extends ApiController {
 	}
 
 	private function albumCommonApiFields(Album $album) : array {
-		$genreString = \implode(', ', \array_map(
+		$genres = \array_map(
 			fn(Genre $genre) => $genre->getNameString($this->l10n),
 			$album->getGenres() ?? []
-		));
+		);
 
 		return [
 			'id' => 'album-' . $album->getId(),
@@ -1510,7 +1510,8 @@ class SubsonicController extends ApiController {
 			'userRating' => $album->getRating() ?: null,
 			'averageRating' => $album->getRating() ?: null,
 			'year' => $album->yearToAPI(),
-			'genre' => $genreString ?: null,
+			'genre' => \implode(', ', $genres) ?: null,
+			'genres' => \array_map(fn($name) => ['name' => $name], $genres), // OpenSubsonic
 			'sortName' => $this->nameWithoutArticle($album->getName()) ?? '', // OpenSubsonic
 		];
 	}

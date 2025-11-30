@@ -134,37 +134,6 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Generates URL to album
-	 * @param \OCP\IURLGenerator $urlGenerator
-	 * @return string the url
-	 */
-	public function getUri(IURLGenerator $urlGenerator) : string {
-		return $urlGenerator->linkToRoute(
-			'music.shivaApi.album',
-			['id' => $this->id]
-		);
-	}
-
-	/**
-	 * Returns an array of all artists - each with ID and URL for that artist
-	 * @param \OCP\IURLGenerator $urlGenerator URLGenerator
-	 * @return array
-	 */
-	public function getArtists(IURLGenerator $urlGenerator) : array {
-		$artists = [];
-		foreach ($this->artistIds as $artistId) {
-			$artists[] = [
-				'id' => $artistId,
-				'uri' => $urlGenerator->linkToRoute(
-					'music.shivaApi.artist',
-					['id' => $artistId]
-				)
-			];
-		}
-		return $artists;
-	}
-
-	/**
 	 * Returns the years(s) of the album.
 	 * The album may have zero, one, or multiple years as people may tag tracks of
 	 * collection albums with their original release dates. The respective formatted
@@ -213,38 +182,6 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Return the cover URL to be used in the Shiva API
-	 * @param IURLGenerator $urlGenerator
-	 * @return string|null
-	 */
-	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
-		$coverUrl = null;
-		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.coverApi.albumCover',
-					['albumId' => $this->getId()]);
-		}
-		return $coverUrl;
-	}
-
-	/**
-	 * If the cover image is already cached, the cover is presented with a link containing the image hash.
-	 * Otherwise, the collection contains an URL which triggers the caching and then redirects to the
-	 * URL with image hash.
-	 * @param  IURLGenerator $urlGenerator URL Generator
-	 * @param  string|null $cachedCoverHash Cached cover image hash if available
-	 * @return string|null
-	 */
-	public function coverToCollection(IURLGenerator $urlGenerator, ?string $cachedCoverHash) : ?string {
-		if (!empty($cachedCoverHash)) {
-			return $urlGenerator->linkToRoute('music.coverApi.cachedCover', ['hash' => $cachedCoverHash]);
-		} elseif ($this->getCoverFileId() > 0) {
-			return $this->coverToAPI($urlGenerator);
-		} else {
-			return null;
-		}
-	}
-
-	/**
 	 * Creates object used for collection API (array with name, year, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  IL10N $l10n Localization handler
@@ -273,12 +210,12 @@ class Album extends Entity {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
-			'cover'         => $this->coverToAPI($urlGenerator),
+			'cover'         => $this->coverToApi($urlGenerator),
 			'id'            => $this->getId(),
-			'uri'           => $this->getUri($urlGenerator),
+			'uri'           => $this->uriToShivaApi($urlGenerator),
 			'slug'          => $this->slugify('name'),
 			'albumArtistId' => $this->getAlbumArtistId(),
-			'artists'       => $this->getArtists($urlGenerator)
+			'artists'       => $this->artistsToShivaApi($urlGenerator)
 		];
 	}
 
@@ -290,5 +227,55 @@ class Album extends Entity {
 
 	public static function unknownNameString(IL10N $l10n) : string {
 		return (string) $l10n->t('Unknown album');
+	}
+
+	/**
+	 * Return the cover URL to be used in the Shiva API
+	 * @param IURLGenerator $urlGenerator
+	 * @return string|null
+	 */
+	private function coverToApi(IURLGenerator $urlGenerator) : ?string {
+		return ($this->getCoverFileId() > 0)
+				? $urlGenerator->linkToRoute('music.coverApi.albumCover', ['albumId' => $this->getId()])
+				: null;
+	}
+
+	/**
+	 * If the cover image is already cached, the cover is presented with a link containing the image hash.
+	 * Otherwise, the collection contains an URL which triggers the caching and then redirects to the
+	 * URL with image hash.
+	 * @param  IURLGenerator $urlGenerator URL Generator
+	 * @param  string|null $cachedCoverHash Cached cover image hash if available
+	 * @return string|null
+	 */
+	private function coverToCollection(IURLGenerator $urlGenerator, ?string $cachedCoverHash) : ?string {
+		if (!empty($cachedCoverHash)) {
+			return $urlGenerator->linkToRoute('music.coverApi.cachedCover', ['hash' => $cachedCoverHash]);
+		} elseif ($this->getCoverFileId() > 0) {
+			return $this->coverToApi($urlGenerator);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Generates URL to album
+	 * @param \OCP\IURLGenerator $urlGenerator
+	 * @return string the url
+	 */
+	private function uriToShivaApi(IURLGenerator $urlGenerator) : string {
+		return $urlGenerator->linkToRoute('music.shivaApi.album', ['id' => $this->id]);
+	}
+
+	/**
+	 * Returns an array of all artists - each with ID and URL for that artist
+	 * @param \OCP\IURLGenerator $urlGenerator URLGenerator
+	 * @return array
+	 */
+	private function artistsToShivaApi(IURLGenerator $urlGenerator) : array {
+		return \array_map(fn($artistId) => [
+			'id' => $artistId,
+			'uri' => $urlGenerator->linkToRoute('music.shivaApi.artist', ['id' => $artistId])
+		], $this->artistIds);
 	}
 }

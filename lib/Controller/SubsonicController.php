@@ -1456,6 +1456,7 @@ class SubsonicController extends ApiController {
 			'userRating' => $artist->getRating() ?: null,
 			'averageRating' => $artist->getRating() ?: null,
 			'sortName' => $this->nameWithoutArticle($artist->getName()) ?? '', // OpenSubsonic
+			'mediaType' => 'artist', // OpenSubsonic, only specified for the "old" API but we don't separate the APIs here
 		];
 
 		if (!empty($artist->getCoverFileId())) {
@@ -1475,6 +1476,7 @@ class SubsonicController extends ApiController {
 		$result['parent'] = 'artist-' . $album->getAlbumArtistId();
 		$result['title'] = $album->getNameString($this->l10n);
 		$result['isDir'] = true;
+		$result['mediaType'] = 'album'; // OpenSubsonic
 
 		return $result;
 	}

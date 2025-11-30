@@ -310,6 +310,7 @@ class Track extends Entity {
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $this->getArtistId(),
 			'type' => 'music',
+			'mediaType' => 'song', // OpenSubsonic
 			'created' => Util::formatZuluDateTime($this->getCreated()),
 			'track' => $this->getAdjustedTrackNumber(false), // DSub would get confused of playlist numbering, https://github.com/owncloud/music/issues/994
 			'starred' => Util::formatZuluDateTime($this->getStarred()),

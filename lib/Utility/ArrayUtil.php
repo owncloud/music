@@ -88,6 +88,20 @@ class ArrayUtil {
 	}
 
 	/**
+	 * Get unique items from an array of integers and/or strings. This is more performant than the built-in
+	 * \array_unique but doesn't work on just any kind of array.
+	 * @param array<int|string> $array
+	 * @return array<int|string>
+	 */
+	public static function unique(array $array) : array {
+		$unique = [];
+		foreach ($array as $val) {
+			$unique[$val] = true;
+		}
+		return \array_keys($unique);
+	}
+
+	/**
 	 * Get a value matching a key from a dictionary, comparing the key in case-insensitive manner.
 	 * @param array<string, mixed> $dictionary
 	 * @return ?mixed Value matching the key or null if not found

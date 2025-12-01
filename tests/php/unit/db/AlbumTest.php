@@ -41,8 +41,13 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 		$album->setName('The name');
 		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([1,2]);
 		$album->setAlbumArtistId(3);
+
+		$artist1 = new Artist();
+		$artist2 = new Artist();
+		$artist1->setId(1);
+		$artist2->setId(2);
+		$album->setArtists([$artist1, $artist2]);
 
 		$l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
 
@@ -61,7 +66,7 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 			], $album->toShivaApi($this->urlGenerator, $l10n));
 	}
 
-	public function testNameLocalisation() {
+	public function testNameLocalization() {
 		$album = new Album();
 		$album->setName(null);
 

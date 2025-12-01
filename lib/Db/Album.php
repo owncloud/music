@@ -54,8 +54,8 @@ class Album extends Entity {
 	private ?array $years = null;
 	/** @var ?Genre[] $genres - AlbumBusinessLayer injects *partial* Genre objects, not all properties are set */
 	private ?array $genres = null;
-	/** @var ?int[] $artistIds */
-	private ?array $artistIds = null;
+	/** @var ?Artist[] $artists */
+	private ?array $artists = null;
 	private ?int $numberOfDisks = null;
 
 	// injected separately when needed
@@ -98,17 +98,17 @@ class Album extends Entity {
 	}
 
 	/**
-	 * @return ?int[]
+	 * @return ?Artist[]
 	 */
-	public function getArtistIds() : ?array {
-		return $this->artistIds;
+	public function getArtists() : ?array {
+		return $this->artists;
 	}
 
 	/**
-	 * @param ?int[] $artistIds
+	 * @param ?Artist[] $artists
 	 */
-	public function setArtistIds(?array $artistIds) : void {
-		$this->artistIds = $artistIds;
+	public function setArtists(?array $artists) : void {
+		$this->artists = $artists;
 	}
 
 	public function getNumberOfDisks() : ?int {
@@ -273,9 +273,9 @@ class Album extends Entity {
 	 * @return array
 	 */
 	private function artistsToShivaApi(IURLGenerator $urlGenerator) : array {
-		return \array_map(fn($artistId) => [
-			'id' => $artistId,
-			'uri' => $urlGenerator->linkToRoute('music.shivaApi.artist', ['id' => $artistId])
-		], $this->artistIds);
+		return \array_map(fn($artist) => [
+			'id' => $artist->getId(),
+			'uri' => $urlGenerator->linkToRoute('music.shivaApi.artist', ['id' => $artist->getId()])
+		], $this->getArtists() ?? []);
 	}
 }

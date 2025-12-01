@@ -20,6 +20,7 @@ use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\AlbumMapper;
 use OCA\Music\Db\Album;
+use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
@@ -32,7 +33,6 @@ use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
- * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @phpstan-extends BusinessLayer<Album>
  * @property AlbumMapper $mapper
  */
@@ -40,11 +40,13 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/** @phpstan-use LocalCacheTrait<Album> */
 	use LocalCacheTrait;
 
+	private ArtistMapper $artistMapper;
 	private FileSystemService $fileSystemService;
 	private Logger $logger;
 
-	public function __construct(AlbumMapper $albumMapper, FileSystemService $fileSystemService, Logger $logger) {
+	public function __construct(AlbumMapper $albumMapper, ArtistMapper $artistMapper, FileSystemService $fileSystemService, Logger $logger) {
 		parent::__construct($albumMapper);
+		$this->artistMapper = $artistMapper;
 		$this->fileSystemService = $fileSystemService;
 		$this->logger = $logger;
 	}
@@ -266,14 +268,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
 					? null : ArrayUtil::extractIds($albums);
 
-			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
+			$artistIdsByAlbum = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
+			$artistIdsFlat = \array_merge([], ...$artistIdsByAlbum);
+			$artistIdsFlat = ArrayUtil::unique($artistIdsFlat);
+			$artists = $this->artistMapper->findById($artistIdsFlat, $userId);
+			$artists = ArrayUtil::createIdLookupTable($artists);
+
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
 			$genres = $this->mapper->getGenresByAlbumId($albumIds, $userId);
 
 			foreach ($albums as $album) {
 				$albumId = $album->getId();
-				$album->setArtistIds($artists[$albumId] ?? []);
+				$album->setArtists(\array_map(fn($id) => $artists[$id], $artistIdsByAlbum[$albumId] ?? []));
 				$album->setNumberOfDisks($diskCounts[$albumId] ?? 1);
 				$album->setGenres($genres[$albumId] ?? null);
 				$album->setYears($years[$albumId] ?? null);

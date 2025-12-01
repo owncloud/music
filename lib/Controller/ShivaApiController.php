@@ -184,8 +184,7 @@ class ShivaApiController extends Controller {
 		}
 
 		if ($includeArtists) {
-			$artistIds = $album->getArtistIds();
-			$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
+			$artists = $album->getArtists() ?? [];
 			$albumInApi['artists'] = \array_map(fn($a) => $a->toShivaApi($this->urlGenerator, $this->l10n), $artists);
 		}
 

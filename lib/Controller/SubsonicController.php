@@ -1504,6 +1504,10 @@ class SubsonicController extends ApiController {
 		return [
 			'id' => 'album-' . $album->getId(),
 			'artist' => $album->getAlbumArtistNameString($this->l10n),
+			'artists' => \array_map(fn($artist) => [
+				'id' => $artist->getId(),
+				'name' => $artist->getNameString($this->l10n)
+			], $album->getArtists() ?? []),
 			'created' => Util::formatZuluDateTime($album->getCreated()),
 			'coverArt' => empty($album->getCoverFileId()) ? null : 'album-' . $album->getId(),
 			'starred' => Util::formatZuluDateTime($album->getStarred()),

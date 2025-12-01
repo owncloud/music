@@ -17,10 +17,14 @@ namespace OCA\Music\BusinessLayer;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\AlbumMapper;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Service\FileSystemService;
+use OCA\Music\Utility\ArrayUtil;
 
 class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $mapper;
+	private $artistMapper;
 	private $fileSystemService;
 	private $logger;
 	private $albumBusinessLayer;
@@ -28,11 +32,15 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $albums;
 	private $albumsByArtist3;
 	private $artistIds;
+	private $artists;
 	private $response;
 	private $responseByArtist3;
 
 	protected function setUp() : void {
 		$this->mapper = $this->getMockBuilder(AlbumMapper::class)
+			->disableOriginalConstructor()
+			->getMock();
+		$this->artistMapper = $this->getMockBuilder(ArtistMapper::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$this->fileSystemService = $this->getMockBuilder(FileSystemService::class)
@@ -41,7 +49,7 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$this->logger = $this->getMockBuilder(Logger::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->fileSystemService, $this->logger);
+		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->artistMapper, $this->fileSystemService, $this->logger);
 		$this->userId = 'jack';
 		$album1 = new Album();
 		$album2 = new Album();
@@ -57,9 +65,13 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			3 => [9, 13]
 		];
 
-		$album1->setArtistIds($this->artistIds[1]);
-		$album2->setArtistIds($this->artistIds[1]);
-		$album3->setArtistIds($this->artistIds[1]);
+		$this->artists = [];
+		foreach ([3, 5, 7, 9, 13] as $id) {
+			$artist = new Artist();
+			$artist->setId($id);
+			$this->artists[$id] = $artist;
+		}
+
 		$this->response = [$album1, $album2, $album3];
 		$this->responseByArtist3 = [$album1, $album2];
 	}
@@ -89,6 +101,11 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->with($this->equalTo(null),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
+		$this->artistMapper->expects($this->exactly(1))
+			->method('findById')
+			->with($this->equalTo(\array_keys($this->artists)),
+					$this->equalTo($this->userId))
+			->will($this->returnValue(\array_values($this->artists)));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
 		$this->assertEquals($this->response, $result);
@@ -115,7 +132,7 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->method('getPerformingArtistsByAlbumId')
 			->with($this->equalTo([$albumId]),
 					$this->equalTo($this->userId))
-			->will($this->returnValue([$albumId => $this->artistIds[$albumId-1]]));
+			->will($this->returnValue([$albumId => $this->artistIds[$albumId]]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
 			->with($this->equalTo([$albumId]),
@@ -130,7 +147,12 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->method('getGenresByAlbumId')
 			->with($this->equalTo([$albumId]),
 					$this->equalTo($this->userId))
-		->will($this->returnValue([]));
+			->will($this->returnValue([]));
+		$this->artistMapper->expects($this->exactly(1))
+			->method('findById')
+			->with($this->equalTo($this->artistIds[$albumId]),
+					$this->equalTo($this->userId))
+			->will($this->returnValue(ArrayUtil::multiGet($this->artists, $this->artistIds[$albumId])));
 
 		$result = $this->albumBusinessLayer->find($albumId, $this->userId);
 		$this->assertEquals($this->response[$albumId-1], $result);
@@ -166,6 +188,11 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->with($this->equalTo([1, 2]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
+		$this->artistMapper->expects($this->exactly(1))
+			->method('findById')
+			->with($this->equalTo([3, 5, 7, 9]),
+					$this->equalTo($this->userId))
+			->will($this->returnValue(ArrayUtil::multiGet($this->artists, [3, 5, 7, 9])));
 
 		$result = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 		$this->assertEquals($this->responseByArtist3, $result);

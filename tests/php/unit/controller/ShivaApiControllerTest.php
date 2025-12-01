@@ -165,7 +165,7 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2011, 2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([3]);
+		$album->setArtists([$artist1]);
 		$album->setAlbumArtistId(5);
 		$track = new Track();
 		$track->setId(1);
@@ -294,7 +294,7 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([3]);
+		$album->setArtists([$artist1]);
 		$album->setAlbumArtistId(3);
 
 		$this->artistBusinessLayer->expects($this->once())
@@ -357,7 +357,7 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			]
 		];
 
-		$response = $this->controller->artists(false /*fultree*/, true /*albums*/);
+		$response = $this->controller->artists(false /*fulltree*/, true /*albums*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -400,7 +400,7 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([3]);
+		$album->setArtists([$artist]);
 		$album->setAlbumArtistId(3);
 		$track = new Track();
 		$track->setId(1);
@@ -474,19 +474,25 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	}
 
 	public function testAlbums() {
+		$artist1 = new Artist();
+		$artist1->setId(1);
+		$artist2 = new Artist();
+		$artist2->setId(3);
+		$artist3 = new Artist();
+		$artist3->setId(5);
 		$album1 = new Album();
 		$album1->setId(3);
 		$album1->setName('The name');
 		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
-		$album1->setArtistIds([1]);
+		$album1->setArtists([$artist1]);
 		$album1->setAlbumArtistId(1);
 		$album2 = new Album();
 		$album2->setId(4);
 		$album2->setName('The album name');
 		$album2->setYears([]);
 		$album2->setCoverFileId(7);
-		$album2->setArtistIds([3,5]);
+		$album2->setArtists([$artist2, $artist3]);
 		$album2->setAlbumArtistId(2);
 
 		$this->albumBusinessLayer->expects($this->once())
@@ -529,20 +535,6 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	}
 
 	public function testAlbumsFulltree() {
-		$album1 = new Album();
-		$album1->setId(3);
-		$album1->setName('The name');
-		$album1->setYears([2013]);
-		$album1->setCoverFileId(5);
-		$album1->setArtistIds([1]);
-		$album1->setAlbumArtistId(5);
-		$album2 = new Album();
-		$album2->setId(4);
-		$album2->setName('The album name');
-		$album2->setYears([2003]);
-		$album2->setCoverFileId(7);
-		$album2->setArtistIds([3,5]);
-		$album2->setAlbumArtistId(1);
 		$artist1 = new Artist();
 		$artist1->setId(1);
 		$artist1->setName('The artist name');
@@ -555,6 +547,20 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$artist3->setId(5);
 		$artist3->setName('The artist name5');
 		$artist3->setCoverFileId(100000);
+		$album1 = new Album();
+		$album1->setId(3);
+		$album1->setName('The name');
+		$album1->setYears([2013]);
+		$album1->setCoverFileId(5);
+		$album1->setArtists([$artist1]);
+		$album1->setAlbumArtistId(5);
+		$album2 = new Album();
+		$album2->setId(4);
+		$album2->setName('The album name');
+		$album2->setYears([2003]);
+		$album2->setCoverFileId(7);
+		$album2->setArtists([$artist2, $artist3]);
+		$album2->setAlbumArtistId(1);
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -570,14 +576,6 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			->method('findAll')
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue([$album1, $album2]));
-		$this->artistBusinessLayer->expects($this->at(0))
-			->method('findById')
-			->with($this->equalTo([1]), $this->equalTo($this->userId))
-			->will($this->returnValue([$artist1]));
-		$this->artistBusinessLayer->expects($this->at(1))
-			->method('findById')
-			->with($this->equalTo([3,5]), $this->equalTo($this->userId))
-			->will($this->returnValue([$artist2, $artist3]));
 		$this->trackBusinessLayer->expects($this->at(0))
 			->method('findAllByAlbum')
 			->with($this->equalTo(3))
@@ -672,17 +670,17 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	}
 
 	public function testAlbum() {
+		$artist = new Artist();
+		$artist->setId(1);
+		$artist->setName('The artist name');
+		$artist->setCoverFileId(199);
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([1]);
+		$album->setArtists([$artist]);
 		$album->setAlbumArtistId(1);
-		$artist = new Artist();
-		$artist->setId(1);
-		$artist->setName('The artist name');
-		$artist->setCoverFileId(199);
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -700,10 +698,6 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			->method('find')
 			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
-		$this->artistBusinessLayer->expects($this->once())
-			->method('findById')
-			->with($this->equalTo([1]), $this->equalTo($this->userId))
-			->will($this->returnValue([$artist]));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
 			->with($this->equalTo($albumId))
@@ -751,12 +745,14 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	}
 
 	public function testAlbumFulltree() {
+		$artist = new Artist();
+		$artist->setId(1);
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([1]);
+		$album->setArtists([$artist]);
 		$album->setAlbumArtistId(2);
 
 		$albumId = 3;
@@ -850,6 +846,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	}
 
 	public function testTracksFulltree() {
+		$artist = new Artist();
+		$artist->setId(1);
 		$track1 = new Track();
 		$track1->setId(1);
 		$track1->setTitle('The title');
@@ -865,16 +863,12 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setArtistIds([1]);
+		$album->setArtists([$artist]);
 		$album->setAlbumArtistId(2);
 		$artist = new Artist();
 		$artist->setId(1);
 		$artist->setName('The artist name');
 		$artist->setCoverFileId(1111);
-		$artist2 = new Artist();
-		$artist2->setId(2);
-		$artist2->setName('The other artist name');
-		$artist2->setCoverFileId(2222);
 
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')

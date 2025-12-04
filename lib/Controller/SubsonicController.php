@@ -1164,8 +1164,20 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getNowPlaying() : array {
-		// TODO: not supported yet
-		return ['nowPlaying' => ['entry' => []]];
+		// Note: This is documented to return latest play of all users on the server but we don't want to
+		// provide access to other people's data => Always return just this user's data.
+		$recent = $this->trackBusinessLayer->findRecentPlay($this->user(), 1);
+
+		if (!empty($recent)) {
+			$playTime = new \DateTime($recent[0]->getLastPlayed());
+			$now = new \DateTime();
+			$recent = $this->tracksToApi($recent);
+			$recent[0]['username'] = $this->user();
+			$recent[0]['minutesAgo'] = (int)(($now->getTimestamp() - $playTime->getTimestamp()) / 60);
+			$recent[0]['playerId'] = 0; // dummy
+		}
+
+		return ['nowPlaying' => ['entry' => $recent]];
 	}
 
 	/**

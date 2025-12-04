@@ -65,13 +65,17 @@ class Util {
 	}
 
 	/**
-	 * Convert date and time given in the SQL format to the ISO UTC "Zulu format" e.g. "2021-08-19T19:33:15Z"
+	 * Convert date and time to the ISO UTC "Zulu format" e.g. "2021-08-19T19:33:15Z". The date and time may be passed
+	 * as a DateTime object or any string format accepted by the DateTime constructor.
+	 * @param string|\DateTime|null $dateTime
 	 */
-	public static function formatZuluDateTime(?string $dbDateString) : ?string {
-		if ($dbDateString === null) {
+	public static function formatZuluDateTime(/*mixed*/ $dateTime) : ?string {
+		if ($dateTime === null) {
 			return null;
 		} else {
-			$dateTime = new \DateTime($dbDateString);
+			if (\is_string($dateTime)) {
+				$dateTime = new \DateTime($dateTime);
+			}
 			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
 		}
 	}

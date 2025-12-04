@@ -1077,7 +1077,7 @@ class SubsonicController extends ApiController {
 	 */
 	protected function getPlayQueue() : array {
 		/** @var array|false $playQueue */
-		$playQueue = json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
+		$playQueue = \json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
 
 		if (!$playQueue) {
 			return [];
@@ -1099,7 +1099,7 @@ class SubsonicController extends ApiController {
 		];
 
 		/** @var array{'track': Track[], 'podcast_episode': PodcastEpisode[]} $apiEntries */
-		$apiEntries = array_merge([], ...array_map(
+		$apiEntries = \array_merge([], ...array_map(
 			function ($handlers) use ($parsedEntries) {
 				[$type, $lookupFn, $toApiFn] = $handlers;
 				$typeEntryIds = \array_map(
@@ -1131,21 +1131,20 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function savePlayQueue(array $id, string $c, ?string $current = null, ?int $position = null) : array {
-		$changedDateTime = new \DateTime();
-		$playQueue = array_filter([
-			'entry' => array_filter(
+		$now = new \DateTime();
+		$playQueue = \array_filter([
+			'entry' => \array_filter(
 				$id,
-				fn (string $entityId) => in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
+				fn (string $entityId) => \in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
 			),
 			'changedBy' => $c,
 			'position' => $position,
 			'current' => $current,
-			/** @see Util::formatZuluDateTime (if only we could pass a datetime!) */
-			'changed' => $changedDateTime->format('Y-m-d\TH:i:s.v\Z'),
+			'changed' => Util::formatZuluDateTime($now),
 			'username' => $this->user()
 		], fn ($val) => $val !== null);
 
-		$playQueueJson = json_encode($playQueue, \JSON_THROW_ON_ERROR);
+		$playQueueJson = \json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
 
 		return [];

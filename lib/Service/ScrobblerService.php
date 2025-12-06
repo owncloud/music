@@ -165,8 +165,14 @@ class ScrobblerService
 		}
 	}
 
-	public function clearSession(?string $userId) : void {
-		$this->config->deleteUserValue($userId, $this->appName, 'scrobbleSessionKey');
+	public function clearSession(?string $userId) : bool {
+		try {
+			$this->config->deleteUserValue($userId, $this->appName, 'scrobbleSessionKey');
+			return true;
+		} catch (\InvalidArgumentException $e) {
+			$this->logger->error('Could not delete user config "scrobbleSessionKey". ' . $e->getMessage());
+		}
+		return false;
 	}
 
 	public function getName() : string

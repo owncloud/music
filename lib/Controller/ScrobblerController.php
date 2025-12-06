@@ -70,18 +70,11 @@ class ScrobblerController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 * @noSameSiteCookieRequired
-	 * @throws \TypeError when $userId is null
 	 */
 	public function clearSession(): JSONResponse {
-		try {
-			$this->scrobblerService->clearSession($this->userId);
-		} catch (\Throwable $t) {
-			$exception = $t;
-		}
-		return new JSONResponse(
-			empty($exception) ? true : [
-				'error' => $this->l10n->t($exception->getMessage())
-			]
-		);
+		$result = $this->scrobblerService->clearSession($this->userId);
+		return new JSONResponse($result ?: ['error' => [
+			'message' =>$this->l10n->t('Check the error log for details.')
+		]]);
 	}
 }

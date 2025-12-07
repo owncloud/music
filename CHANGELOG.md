@@ -21,9 +21,10 @@
 - Updated the getID3 library to the release version 1.9.24-202509040923
 - Subsonic API:
   * Non-dummy implementation for the endpoint `getNowPlaying`
-- OpenSubsonic API: 
-  * Add property `mediaType` to the result type `Child`
-  * Add properties `genres` and `artists` to the album results
+  * OpenSubsonic extensions: 
+    + Add property `mediaType` to the result type `Child`
+    + Add properties `genres` and `artists` to the album results
+    + Add extension [`indexBasedQueue`](https://opensubsonic.netlify.app/docs/extensions/indexbasedqueue/)
 
 ### Fixed
 - Playback stopping when clicking the title "0 results" of an empty advanced search result

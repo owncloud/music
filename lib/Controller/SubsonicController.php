@@ -1076,73 +1076,103 @@ class SubsonicController extends ApiController {
 	 * @SubsonicAPI
 	 */
 	protected function getPlayQueue() : array {
+		$queueByIndex = $this->getPlayQueueByIndex();
+		$queue = $queueByIndex['playQueueByIndex'];
+
+		// Replace the property `currentIndex` with `current`
+		if (isset($queue['currentIndex'])) {
+			$queue['current'] = $queue['entry'][$queue['currentIndex']]['id'] ?? null;
+			unset($queue['currentIndex']);
+		}
+
+		return ['playQueue' => $queue];
+	}
+
+	/**
+	 * OpenSubsonic extension
+	 * @SubsonicAPI
+	 */
+	protected function getPlayQueueByIndex() : array {
 		/** @var array|false $playQueue */
 		$playQueue = \json_decode($this->configManager->getUserValue($this->user(), $this->appName, 'play_queue', 'false'), true);
 
 		if (!$playQueue) {
-			return [];
+			return ['playQueueByIndex' => []];
 		}
 
-		$parsedEntries = \array_map([self::class, 'parseEntityId'], $playQueue['entry']);
+		// If the queue was saved on a legacy version, then it will still have `current` instead of `currentIndex` => convert if necessary
+		if (!isset($playQueue['currentIndex'])) {
+			$index = \array_search($playQueue['current'] ?? null, $playQueue['entry']);
+			$playQueue['currentIndex'] = ($index === false) ? null : $index;
+			unset($playQueue['current']);
+		}
 
-		$typeHandlers = [
-			[
-				'track',
-				[$this->trackBusinessLayer, 'findById'],
-				[$this, 'tracksToApi']
-			],
-			[
-				'podcast_episode',
-				[$this->podcastEpisodeBusinessLayer, 'findById'],
-				[$this, 'podcastEpisodesToApi']
-			]
-		];
+		// Convert IDs to full entry items
+		$apiEntries = $this->apiEntryIdsToApiEntries($playQueue['entry']);
 
-		/** @var array{'track': Track[], 'podcast_episode': PodcastEpisode[]} $apiEntries */
-		$apiEntries = \array_merge([], ...array_map(
-			function ($handlers) use ($parsedEntries) {
-				[$type, $lookupFn, $toApiFn] = $handlers;
-				$typeEntryIds = \array_map(
-					fn ($entry) => $entry[1],
-					\array_filter($parsedEntries, fn ($parsedEntry) => $parsedEntry[0] === $type)
-				);
+		// In case any unsupported or non-existing entries were removed by the apiEntryIdsToApiEntries above,
+		// the array $apiEntries is now sparse. We need to compact it and adjust the currentIndex accordingly.
+		if (\count($apiEntries) != \count($playQueue['entry']) && $playQueue['currentIndex'] !== null) {
+			$newIndex = \array_search($playQueue['currentIndex'], \array_keys($apiEntries));
+			// Even edgier edge case is when the currentIndex is no longer present after the filtering. In that case, reset the index and position to the beginning.
+			if ($newIndex === false) {
+				$newIndex = (\count($apiEntries) > 0) ? 0 : null;
+				unset($playQueue['position']);
+			}
 
-				$entryInstances = $lookupFn($typeEntryIds, $this->user());
+			$playQueue['currentIndex'] = $newIndex;
+			$apiEntries = \array_values($apiEntries);
+		}
 
-				return [
-					$type => $toApiFn(ArrayUtil::createIdLookupTable($entryInstances))
-				];
-			},
-			$typeHandlers
-		));
-
-		$playQueue['entry'] = \array_filter(\array_map(
-			function ($parsedEntry) use ($apiEntries) {
-				[$type, $id] = $parsedEntry;
-				return $apiEntries[$type][$id] ?? false;
-			},
-			$parsedEntries
-		));
-
-		return ['playQueue' => $playQueue];
+		$playQueue['entry'] = $apiEntries;
+		return ['playQueueByIndex' => $playQueue];
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
 	protected function savePlayQueue(array $id, string $c, ?string $current = null, ?int $position = null) : array {
+		if ($current === null && !empty($id)) {
+			throw new SubsonicException('Parameter `current` is required for a non-empty queue', 10);
+		}
+
+		if ($current === null) {
+			$currentIdx = null;
+		} else {
+			$currentIdx = \array_search($current, $id);
+			if ($currentIdx === false) {
+				throw new SubsonicException('Parameter `current` must be among the listed `id`', 0);
+			} else {
+				\assert(\is_int($currentIdx)); // technically, $currentIdx could be a string here but that should never happen
+			}
+		}
+
+		return $this->savePlayQueueByIndex($id, $c, $currentIdx, $position);
+	}
+
+	/**
+	 * OpenSubsonic extension
+	 * @SubsonicAPI
+	 */
+	protected function savePlayQueueByIndex(array $id, string $c, ?int $currentIndex = null, ?int $position = null) : array {
+		if ($currentIndex === null && !empty($id)) {
+			throw new SubsonicException('Parameter `currentIndex` is required for a non-empty queue', 10);
+		}
+
+		if ($currentIndex < 0 || $currentIndex >= \count($id)) {
+			// The error code 10 doesn't actually make sense here but it's mandated by the OpenSubsonic API specification
+			throw new SubsonicException('Parameter `currentIndex` must be a valid index within `id`', 10);
+		}
+
 		$now = new \DateTime();
-		$playQueue = \array_filter([
-			'entry' => \array_filter(
-				$id,
-				fn (string $entityId) => \in_array(self::parseEntityId($entityId)[0], ['track', 'podcast_episode'])
-			),
+		$playQueue = [
+			'entry' => $id,
 			'changedBy' => $c,
 			'position' => $position,
-			'current' => $current,
+			'currentIndex' => $currentIndex,
 			'changed' => Util::formatZuluDateTime($now),
 			'username' => $this->user()
-		], fn ($val) => $val !== null);
+		];
 
 		$playQueueJson = \json_encode($playQueue, \JSON_THROW_ON_ERROR);
 		$this->configManager->setUserValue($this->userId, $this->appName, 'play_queue', $playQueueJson);
@@ -1189,6 +1219,7 @@ class SubsonicController extends ApiController {
 			[ 'name' => 'formPost', 'versions' => [1] ],
 			[ 'name' => 'getPodcastEpisode', 'versions' => [1] ],
 			[ 'name' => 'songLyrics', 'versions' => [1] ],
+			[ 'name' => 'indexBasedQueue', 'versions' => [1] ]
 		]];
 	}
 
@@ -1551,6 +1582,53 @@ class SubsonicController extends ApiController {
 	 */
 	private function podcastEpisodesToApi(array $episodes) : array {
 		return \array_map(fn(PodcastEpisode $p) => $p->toSubsonicApi(), $episodes);
+	}
+
+	/**
+	 * @param string[] $entryIds A possibly mixed array of IDs like "track-123" or "podcast_episode-45"
+	 * @return array Entries in the API format. The array may be sparse, in case there were any unsupported/invalid IDs.
+	 */
+	private function apiEntryIdsToApiEntries(array $entryIds) : array {
+		$parsedEntries = \array_map([self::class, 'parseEntityId'], $entryIds);
+
+		$typeHandlers = [
+			[
+				'track',
+				[$this->trackBusinessLayer, 'findById'],
+				[$this, 'tracksToApi']
+			],
+			[
+				'podcast_episode',
+				[$this->podcastEpisodeBusinessLayer, 'findById'],
+				[$this, 'podcastEpisodesToApi']
+			]
+		];
+
+		/** @var array{'track': Track[], 'podcast_episode': PodcastEpisode[]} $apiEntriesLut */
+		$apiEntriesLut = \array_merge([], ...array_map(
+			function ($handlers) use ($parsedEntries) {
+				[$type, $lookupFn, $toApiFn] = $handlers;
+				$typeEntryIds = \array_map(
+					fn ($entry) => $entry[1],
+					\array_filter($parsedEntries, fn ($parsedEntry) => $parsedEntry[0] === $type)
+				);
+
+				$entryInstances = $lookupFn($typeEntryIds, $this->user());
+
+				return [
+					$type => $toApiFn(ArrayUtil::createIdLookupTable($entryInstances))
+				];
+			},
+			$typeHandlers
+		));
+
+		return \array_filter(\array_map(
+			function ($parsedEntry) use ($apiEntriesLut) {
+				[$type, $id] = $parsedEntry;
+				return $apiEntriesLut[$type][$id] ?? false;
+			},
+			$parsedEntries
+		));
 	}
 
 	/**

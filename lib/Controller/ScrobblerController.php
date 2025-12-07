@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\ScrobbleServiceException;
 use OCA\Music\Service\ScrobblerService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
@@ -43,25 +44,31 @@ class ScrobblerController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function handleToken(string $token) : StandaloneTemplateResponse {
+	public function handleToken(?string $token) : StandaloneTemplateResponse {
+		$success = false;
+		$headline = $this->l10n->t('Unexpected error');
+		$instructions = $this->l10n->t('Please contact your server administrator for assistance.');
+		$getSessionResponse = '';
 		try {
 			$this->scrobblerService->generateSession($token, $this->userId);
 			$success = true;
-			$headline = 'All Set!';
-			$getSessionResponse = '';
-			$instructions = 'You are now ready to scrobble.';
-		} catch (\Throwable $t) {
-			$success = false;
-			$headline = 'Failed to authenticate.';
+			$headline = $this->l10n->t('All Set!');
+			$instructions = $this->l10n->t('You are now ready to scrobble.');
+		} catch (ScrobbleServiceException $e) {
+			$headline = $this->l10n->t('Authentication failure');
+			$instructions = $this->l10n->t('Please review the error message prior to trying again.');
+			$getSessionResponse = $e->getMessage();
+		} catch (\Exception $t) {
 			$getSessionResponse = $t->getMessage();
-			$instructions = 'Authentication failure. Please review the error message and try again.';
+		} catch (\TypeError $t) {
+			$getSessionResponse = $t->getMessage();
 		} finally {
 			return new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [
 				'lang' => $this->l10n->getLanguageCode(),
 				'success' => $success,
-				'headline' => $this->l10n->t($headline),
+				'headline' => $headline,
 				'getsession_response' => $getSessionResponse,
-				'instructions' => $this->l10n->t($instructions)
+				'instructions' => $instructions
 			], 'base');
 		}
 	}

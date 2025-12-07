@@ -113,7 +113,7 @@ class AmpacheController extends ApiController {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '4.4.0';
 	const API5_VERSION = '5.6.0';
-	const API6_VERSION = '6.6.1';
+	const API6_VERSION = '6.6.2';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appName,
@@ -1519,9 +1519,8 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function download(int $id, string $type='song', bool $recordPlay=false) : Response {
-		// request param `format` is ignored
-		// request param `recordPlay` is not a specified part of the API
+	protected function download(int $id, string $type='song', bool $stats=false) : Response {
+		// request params `format` and `bitrate` are ignored
 
 		// On all errors, return HTTP error codes instead of Ampache errors. When client calls this action, it awaits a binary response
 		// and is probably not prepared to parse any Ampache json/xml responses.
@@ -1533,7 +1532,7 @@ class AmpacheController extends ApiController {
 				$file = $this->librarySettings->getFolder($userId)->getById($track->getFileId())[0] ?? null;
 
 				if ($file instanceof \OCP\Files\File) {
-					if ($recordPlay) {
+					if ($stats) {
 						$this->record_play($id, null);
 					}
 					return new FileStreamResponse($file);
@@ -1558,7 +1557,7 @@ class AmpacheController extends ApiController {
 				if ($randomId === null) {
 					return new ErrorResponse(Http::STATUS_NOT_FOUND, "The playlist $id is empty");
 				} else {
-					return $this->download((int)$randomId, 'song', $recordPlay);
+					return $this->download((int)$randomId, 'song', $stats);
 				}
 			} else {
 				return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, "Unsupported type '$type'");
@@ -1571,7 +1570,7 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function stream(int $id, ?int $offset, string $type='song') : Response {
+	protected function stream(int $id, ?int $offset, string $type='song', bool $stats=true) : Response {
 		// request params `bitrate`, `format`, and `length` are ignored
 
 		// This is just a dummy implementation. We don't support transcoding or streaming
@@ -1585,7 +1584,7 @@ class AmpacheController extends ApiController {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, 'Streaming with time offset is not supported');
 		}
 
-		return $this->download($id, $type, /*recordPlay=*/true);
+		return $this->download($id, $type, $stats);
 	}
 
 	/**

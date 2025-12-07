@@ -25,6 +25,8 @@
     + Add property `mediaType` to the result type `Child`
     + Add properties `genres` and `artists` to the album results
     + Add extension [`indexBasedQueue`](https://opensubsonic.netlify.app/docs/extensions/indexbasedqueue/)
+- Ampache API:
+  * Support argument `stats` in the actions `download` and `stream`
 
 ### Fixed
 - Playback stopping when clicking the title "0 results" of an empty advanced search result

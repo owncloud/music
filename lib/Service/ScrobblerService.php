@@ -137,10 +137,11 @@ class ScrobblerService
 		$scrobbleData = [
 			'sk' => $sessionKey
 		];
+
 		/** @var array<Track> $tracks */
 		$tracks = $this->trackBusinessLayer->findById($trackIds);
 		foreach ($tracks as $i => $track) {
-			$scrobbleData["artist[{$i}]"] = $track->getArtistName();
+			$scrobbleData["artist[{$i}]"] = $track->getArtistName(); // todo: album artist
 			$scrobbleData["track[{$i}]"] = $track->getTitle();
 			$scrobbleData["timestamp[{$i}]"] = $timestamp;
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
@@ -148,18 +149,11 @@ class ScrobblerService
 		}
 		$scrobbleData = $this->generateMethodParams('track.scrobble', $scrobbleData);
 
-		try {
-			$ch = $this->makeCurlHandle($scrobbleService);
-			$postFields = \http_build_query($scrobbleData);
-			\curl_setopt($ch, \CURLOPT_POSTFIELDS, $postFields);
-			$xml = \simplexml_load_string(\curl_exec($ch));
-			$status = (string)$xml['status'] === 'ok';
-		} catch (\Throwable $t) {
-			$status = false;
-			$this->logger->error($t->getMessage());
-		} finally {
-			return $status;
-		}
+		$ch = $this->makeCurlHandle($scrobbleService);
+		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($scrobbleData));
+		$xml = \simplexml_load_string(\curl_exec($ch));
+
+		return (string)$xml['status'] === 'ok'; // todo: log failures?
 	}
 
 	public function clearSession(?string $userId) : bool {

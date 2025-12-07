@@ -20,7 +20,7 @@ use OCP\IDBConnection;
 /**
  * Type hint a base class method to help Scrutinizer
  * @method Bookmark findEntity(string $sql, array $params=[], ?int $limit=null, ?int $offset=null)
- * @phpstan-extends BaseMapper<Bookmark>
+ * @extends BaseMapper<Bookmark>
  */
 class BookmarkMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {

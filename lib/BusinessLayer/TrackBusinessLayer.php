@@ -34,7 +34,7 @@ use OCP\AppFramework\Db\DoesNotExistException;
  * @method Track[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
  * @method Track[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property TrackMapper $mapper
- * @phpstan-extends BusinessLayer<Track>
+ * @extends BusinessLayer<Track>
  */
 class TrackBusinessLayer extends BusinessLayer {
 	private FileSystemService $fileSystemService;

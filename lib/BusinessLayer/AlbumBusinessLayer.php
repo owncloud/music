@@ -33,7 +33,7 @@ use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 /**
- * @phpstan-extends BusinessLayer<Album>
+ * @extends BusinessLayer<Album>
  * @property AlbumMapper $mapper
  */
 class AlbumBusinessLayer extends BusinessLayer {

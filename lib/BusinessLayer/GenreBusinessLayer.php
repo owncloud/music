@@ -29,7 +29,7 @@ use OCA\Music\Utility\StringUtil;
  * @method Genre[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
  * @method Genre[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property GenreMapper $mapper
- * @phpstan-extends BusinessLayer<Genre>
+ * @extends BusinessLayer<Genre>
  */
 class GenreBusinessLayer extends BusinessLayer {
 	/** @phpstan-use LocalCacheTrait<Genre> */

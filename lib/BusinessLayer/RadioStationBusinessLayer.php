@@ -29,7 +29,7 @@ use OCA\Music\Utility\StringUtil;
  * @method RadioStation[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
  * @method RadioStation[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property RadioStationMapper $mapper
- * @phpstan-extends BusinessLayer<RadioStation>
+ * @extends BusinessLayer<RadioStation>
  */
 class RadioStationBusinessLayer extends BusinessLayer {
 	private Logger $logger;

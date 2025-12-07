@@ -27,7 +27,7 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IL10N;
 
 /**
- * @phpstan-template EntityType of Entity
+ * @template EntityType of Entity
  */
 abstract class BusinessLayer {
 	/** @phpstan-var BaseMapper<EntityType> */

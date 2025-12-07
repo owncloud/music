@@ -42,7 +42,7 @@ use OCP\IDBConnection;
  * However, IDBConnection has been available since OC 8.1 and that's what we always use.
  * We use this copy of ours both on NC and OC.
  * 
- * @phpstan-template EntityType of Entity
+ * @template EntityType of Entity
  * @phpstan-property class-string<EntityType> $entityClass
  */
 abstract class Mapper {

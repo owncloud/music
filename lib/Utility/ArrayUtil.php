@@ -113,8 +113,8 @@ class ArrayUtil {
 	/**
 	 * Replacement for \array_find which is available only in PHP 8.4 and later
 	 *
-	 * @phpstan-template K Array key
-	 * @phpstan-template V Array value
+	 * @template K Array key
+	 * @template V Array value
 	 * @phpstan-param array<K,V> $array
 	 * @phpstan-param callable(V,K):bool $predicate
 	 * @phpstan-return ?V

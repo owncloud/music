@@ -32,7 +32,7 @@ use OCP\AppFramework\Db\DoesNotExistException;
  * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
  * @method Bookmark[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property BookmarkMapper $mapper
- * @phpstan-extends BusinessLayer<Bookmark>
+ * @extends BusinessLayer<Bookmark>
  */
 class BookmarkBusinessLayer extends BusinessLayer {
 	private Logger $logger;

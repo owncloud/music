@@ -31,7 +31,7 @@ use OCA\Music\Utility\StringUtil;
  * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null)
  * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @property PlaylistMapper $mapper
- * @phpstan-extends BusinessLayer<Playlist>
+ * @extends BusinessLayer<Playlist>
  */
 class PlaylistBusinessLayer extends BusinessLayer {
 	private TrackMapper $trackMapper;

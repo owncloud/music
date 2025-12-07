@@ -20,7 +20,7 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
- * @phpstan-extends BaseMapper<Playlist>
+ * @extends BaseMapper<Playlist>
  */
 class PlaylistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {

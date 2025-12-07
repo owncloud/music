@@ -34,7 +34,7 @@ class Random {
 	/**
 	 * Get one random item from the given array. Return null if the array is empty.
 	 *
-	 * @phpstan-template T
+	 * @template T
 	 * @phpstan-param T[] $itemArray
 	 * @phpstan-return ?T
 	 */
@@ -50,7 +50,7 @@ class Random {
 	/**
 	 * Get desired number of random items from the given array
 	 *
-	 * @phpstan-template T
+	 * @template T
 	 * @phpstan-param T[] $itemArray
 	 * @phpstan-return T[]
 	 */

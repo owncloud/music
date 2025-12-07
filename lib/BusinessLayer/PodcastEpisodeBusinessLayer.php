@@ -29,7 +29,7 @@ use OCA\Music\Utility\StringUtil;
  * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::Name, ?int $limit=null, ?int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @method PodcastEpisode[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @property PodcastEpisodeMapper $mapper
- * @phpstan-extends BusinessLayer<PodcastEpisode>
+ * @extends BusinessLayer<PodcastEpisode>
  */
 class PodcastEpisodeBusinessLayer extends BusinessLayer {
 	private Logger $logger;

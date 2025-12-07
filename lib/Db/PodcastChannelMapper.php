@@ -18,7 +18,7 @@ use OCP\IDBConnection;
 /**
  * Type hint a base class method to help Scrutinizer
  * @method PodcastChannel insert(PodcastChannel $channel)
- * @phpstan-extends BaseMapper<PodcastChannel>
+ * @extends BaseMapper<PodcastChannel>
  */
 class PodcastChannelMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {

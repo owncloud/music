@@ -20,7 +20,7 @@ use OCP\IDBConnection;
 /**
  * @method Track findEntity(string $sql, array $params)
  * @method Track[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
- * @phpstan-extends BaseMapper<Track>
+ * @extends BaseMapper<Track>
  */
 class TrackMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {

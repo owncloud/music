@@ -13,7 +13,7 @@
 namespace OCA\Music\Utility;
 
 /**
- * @phpstan-template CachedType
+ * @template CachedType
  */
 trait LocalCacheTrait {
 

@@ -22,7 +22,7 @@ use OCP\IDBConnection;
 /**
  * @method Artist findEntity(string $sql, array $params)
  * @method Artist[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
- * @phpstan-extends BaseMapper<Artist>
+ * @extends BaseMapper<Artist>
  */
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db, IConfig $config) {

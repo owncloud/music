@@ -28,8 +28,8 @@ use OCA\Music\Utility\StringUtil;
  * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @method Entity delete(Entity $entity)
  * 
- * @phpstan-template EntityType of Entity
- * @phpstan-extends Mapper<EntityType>
+ * @template EntityType of Entity
+ * @extends Mapper<EntityType>
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @phpstan-method EntityType delete(EntityType $entity)

@@ -34,7 +34,7 @@ use OCP\Files\File;
  * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null)
  * @method Artist[] findById(int[] $ids, ?string $userId=null, bool $preserveOrder=false)
  * @property ArtistMapper $mapper
- * @phpstan-extends BusinessLayer<Artist>
+ * @extends BusinessLayer<Artist>
  */
 class ArtistBusinessLayer extends BusinessLayer {
 	/** @phpstan-use LocalCacheTrait<Artist> */

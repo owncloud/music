@@ -1590,13 +1590,26 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_art(string $type, string $id) : Response {
+	protected function get_art(string $type, string $id, ?string $size) : Response {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream', 'user'])) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, "Unsupported type $type");
 		}
 
+		if ($size == 'original') {
+			$size = CoverService::DO_NOT_CROP_OR_SCALE;
+		} elseif ($size !== null) {
+			// the format should be "<width>x<height>" but we only support scaling to square shaped art
+			$size = (int)(\explode('x', $size)[0] ?? 0);
+			if ($size <= 0) {
+				$size = null;
+			}
+		}
+
 		if ($type === 'user') {
-			return new RedirectResponse($this->urlGenerator->linkToRoute('core.avatar.getAvatar', ['userId' => $id, 'size' => 64]));
+			if ($size === null || $size == CoverService::DO_NOT_CROP_OR_SCALE) {
+				$size = 640;
+			}
+			return new RedirectResponse($this->urlGenerator->linkToRoute('core.avatar.getAvatar', ['userId' => $id, 'size' => $size]));
 		} else {
 			$id = (int)$id;
 		}
@@ -1611,7 +1624,7 @@ class AmpacheController extends ApiController {
 			}
 		}
 
-		return $this->getCover($id, $this->getBusinessLayer($type));
+		return $this->getCover($id, $this->getBusinessLayer($type), $size);
 	}
 
 	/********************
@@ -1872,13 +1885,13 @@ class AmpacheController extends ApiController {
 	}
 
 	/** @phpstan-param BusinessLayer<covariant Entity> $businessLayer */
-	private function getCover(int $entityId, BusinessLayer $businessLayer) : Response {
+	private function getCover(int $entityId, BusinessLayer $businessLayer, ?int $size) : Response {
 		$userId = $this->userId();
 		$userFolder = $this->librarySettings->getFolder($userId);
 
 		try {
 			$entity = $businessLayer->find($entityId, $userId);
-			$coverData = $this->coverService->getCover($entity, $userId, $userFolder);
+			$coverData = $this->coverService->getCover($entity, $userId, $userFolder, $size);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}

@@ -19,8 +19,9 @@ HtmlUtil::addWebpackStyle('app');
 				<div><?php HtmlUtil::p($_['instructions']) ?></div>
 				<?php if (!$_['success']): ?>
 				<div class="warning"><strong><?php HtmlUtil::p($_['getsession_response']) ?></strong></div>
-				<?php endif ?>
+				<?php else: ?>
 				<div><?= $l->t('You can now close this window') ?></div>
+				<?php endif ?>
 			</div>
 		</div>
 	</div>

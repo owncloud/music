@@ -58,21 +58,19 @@ class ScrobblerService
 	}
 
 	/**
-	 * @throws \Throwable when unable to generate or save a session
+	 * @throws \Exception when curl initialization or encryption fails
+	 * @throws ScrobbleServiceException when auth.getSession call fails
 	 */
 	public function generateSession(string $token, string $userId) : void {
-		$scrobbleService = $this->getApiService();
-		$ch = $this->makeCurlHandle($scrobbleService);
-		$params = $this->generateBaseMethodParams('auth.getSession');
-		$params['token'] = $token;
-		$params['api_sig'] = $this->generateSignature($params);
-		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
-		$sessionText = \curl_exec($ch);
-		$xml = \simplexml_load_string($sessionText);
+		$ch = $this->makeCurlHandle($this->getApiService());
+		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query(
+			$this->generateMethodParams('auth.getSession', ['token' => $token])
+		));
+		$xml = \simplexml_load_string(\curl_exec($ch));
 
 		$status = (string)$xml['status'];
 		if ($status !== 'ok') {
-			throw new \Exception((string)$xml->error, (int)$xml->error['code']);
+			throw new ScrobbleServiceException((string)$xml->error, (int)$xml->error['code']);
 		}
 
 		try {
@@ -81,8 +79,8 @@ class ScrobblerService
 				$userId . $this->config->getSystemValue('secret')
 			);
 			$this->config->setUserValue($userId, $this->appName, 'scrobbleSessionKey', $encryptedKey);
-		} catch (\Throwable $e) {
-			$this->logger->error('Unable to save session key ' . $e->getMessage());
+		} catch (\Exception $e) {
+			$this->logger->error('Encryption of scrobble session key failed');
 			throw $e;
 		}
 	}
@@ -136,10 +134,9 @@ class ScrobblerService
 		}
 
 		$timestamp = $timeOfPlay->getTimestamp();
-		$scrobbleData = \array_merge($this->generateBaseMethodParams('track.scrobble'), [
-			'sk' => $sessionKey,
-		]);
-
+		$scrobbleData = [
+			'sk' => $sessionKey
+		];
 		/** @var array<Track> $tracks */
 		$tracks = $this->trackBusinessLayer->findById($trackIds);
 		foreach ($tracks as $i => $track) {
@@ -149,7 +146,7 @@ class ScrobblerService
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
 			$scrobbleData["trackNumber[{$i}]"] = $track->getNumber();
 		}
-		$scrobbleData['api_sig'] = $this->generateSignature($scrobbleData);
+		$scrobbleData = $this->generateMethodParams('track.scrobble', $scrobbleData);
 
 		try {
 			$ch = $this->makeCurlHandle($scrobbleService);
@@ -212,12 +209,19 @@ class ScrobblerService
 
 	/**
 	 * @return array<string, string>
+	 * @param array<string, mixed> $moreParams
+	 * @param bool $sign
+	 * @return array<string, mixed>
 	 */
-	private function generateBaseMethodParams(string $method) : array {
-		$params = [
+	private function generateMethodParams(string $method, array $moreParams = [], bool $sign = true) : array {
+		$params = \array_merge($moreParams, [
 			'method' => $method,
 			'api_key' => $this->getApiKey()
-		];
+		]);
+
+		if ($sign) {
+			$params['api_sig'] = $this->generateSignature($params);
+		}
 
 		return $params;
 	}

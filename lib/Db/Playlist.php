@@ -120,6 +120,10 @@ class Playlist extends Entity {
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
+			'user' => [
+				'id' => $this->getUserId(),
+				'username' => $this->getUserId()
+			],
 			'art' => $createImageUrl($this),
 			'flag' => !empty($this->getStarred()),
 			'rating' => $this->getRating(),

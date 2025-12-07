@@ -107,8 +107,21 @@ class ArrayUtil {
 	 * @return ?mixed Value matching the key or null if not found
 	 */
 	public static function getCaseInsensitive(array $dictionary, string $key) {
-		foreach ($dictionary as $k => $v) {
-			if (StringUtil::caselessEqual((string)$k, $key)) {
+		return self::find($dictionary, fn($_, $k) => StringUtil::caselessEqual((string)$k, $key));
+	}
+
+	/**
+	 * Replacement for \array_find which is available only in PHP 8.4 and later
+	 *
+	 * @phpstan-template K Array key
+	 * @phpstan-template V Array value
+	 * @phpstan-param array<K,V> $array
+	 * @phpstan-param callable(V,K):bool $predicate
+	 * @phpstan-return ?V
+	 */
+	public static function find(array $array, callable $predicate) {
+		foreach ($array as $k => $v) {
+			if ($predicate($v, $k)) {
 				return $v;
 			}
 		}
@@ -156,6 +169,7 @@ class ArrayUtil {
 	 * Another difference is that this function always requires an explicit callback condition.
 	 * Both inner nodes and leafs nodes are passed to the $condition.
 	 * @param mixed[] $array
+	 * @param callable(mixed):bool $condition
 	 * @return mixed[]
 	 */
 	public static function filterRecursive(array $array, callable $condition) : array {
@@ -178,6 +192,7 @@ class ArrayUtil {
 	 * Inverse operation of self::filterRecursive, keeping only those items where
 	 * the $condition evaluates to *false*.
 	 * @param mixed[] $array
+	 * @param callable(mixed):bool $condition
 	 * @return mixed[]
 	 */
 	public static function rejectRecursive(array $array, callable $condition) : array {
@@ -209,6 +224,7 @@ class ArrayUtil {
 	 * to integer type. The array is modified in-place. Optionally, apply the conversion only
 	 * on the leaf nodes matching the given predicate.
 	 * @param mixed[] $arr Input/output array to operate on
+	 * @param ?callable(mixed):bool $predicate
 	 */
 	public static function intCastValues(array &$arr, ?callable $predicate=null) : void {
 		\array_walk_recursive($arr, function(&$value) use($predicate) {

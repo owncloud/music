@@ -1590,9 +1590,15 @@ class AmpacheController extends ApiController {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_art(string $type, int $id) : Response {
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream'])) {
+	protected function get_art(string $type, string $id) : Response {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist', 'live_stream', 'user'])) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, "Unsupported type $type");
+		}
+
+		if ($type === 'user') {
+			return new RedirectResponse($this->urlGenerator->linkToRoute('core.avatar.getAvatar', ['userId' => $id, 'size' => 64]));
+		} else {
+			$id = (int)$id;
 		}
 
 		if ($type === 'song') {

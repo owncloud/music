@@ -27,6 +27,7 @@
     + Add extension [`indexBasedQueue`](https://opensubsonic.netlify.app/docs/extensions/indexbasedqueue/)
 - Ampache API:
   * Support argument `stats` in the actions `download` and `stream`
+  * Support argument value `type=user` in the action `get_art`
   * Add property `user` to all playlist results
 
 ### Fixed

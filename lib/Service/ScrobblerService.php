@@ -223,15 +223,17 @@ class ScrobblerService
 	}
 
 	/**
-	 * @return resource in PHP8+ \CurlHandle
+	 * @return resource (in PHP8+ return \CurlHandle)
 	 * @throws \RuntimeException when unable to initialize a cURL handle
 	 */
 	private function makeCurlHandle(string $scrobblerServiceIdentifier) {
 		$endpoint = self::SCROBBLE_SERVICES[$scrobblerServiceIdentifier]['endpoint'];
-		$ch = \curl_init($endpoint);
+		$ch = \curl_init();
 		if (!$ch) {
-			throw new \RuntimeException('Unable to initialize a cURL handle');
+			$this->logger->error('Failed to initialize a curl handle, is the php curl extension installed?');
+			throw new \RuntimeException('Unable to initialize a curl handle');
 		}
+		\curl_setopt($ch, \CURLOPT_URL, $endpoint);
 		\curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);

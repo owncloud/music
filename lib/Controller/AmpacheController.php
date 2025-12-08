@@ -256,14 +256,17 @@ class AmpacheController extends ApiController {
 			if ($annotationReader->hasAnnotation('AmpacheAPI')) {
 				// custom "filter" which modifies the value of the request argument `limit`
 				$limitFilter = function(?string $value) : int {
-					// Any non-integer values and integer value 0 are interpreted as "no limit".
-					// On the other hand, the API spec mandates limiting responses to 5000 entries
-					// even if no limit or larger limit has been passed.
-					$value = (int)$value;
-					if ($value <= 0) {
-						$value = 5000;
+					// The value "none" is is interpreted as "no limit".
+					// Any other non-integer values and integer value 0 are interpreted as the default limit of 5000 entries
+					if (StringUtil::caselessEqual($value, 'none')) {
+						$value = Util::SINT32_MAX;
+					} else {
+						$value = (int)$value;
+						if ($value <= 0) {
+							$value = 5000;
+						}
 					}
-					return \min($value, 5000);
+					return $value;
 				};
 
 				$parameterExtractor = new RequestParameterExtractor($this->request, ['limit' => $limitFilter]);

@@ -26,7 +26,8 @@ class AmpachePreferences {
 			'value' => '1',
 			'type' => 'boolean',
 			'category' => 'options',
-			'subcategory' => 'feature'
+			'subcategory' => 'feature',
+			'has_access' => false
 		],
 		[
 			'id' => 122,
@@ -36,7 +37,8 @@ class AmpachePreferences {
 			'value' => '0',
 			'type' => 'boolean',
 			'category' => 'interface',
-			'subcategory' => 'library'
+			'subcategory' => 'library',
+			'has_access' => false
 		],
 		[
 			'id' => 130,
@@ -46,7 +48,8 @@ class AmpachePreferences {
 			'value' => 'album,ep,live,single',
 			'type' => 'string',
 			'category' => 'interface',
-			'subcategory' => 'library'
+			'subcategory' => 'library',
+			'has_access' => false
 		]
 	];
 

@@ -113,7 +113,7 @@ class AmpacheController extends ApiController {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '4.4.0';
 	const API5_VERSION = '5.6.0';
-	const API6_VERSION = '6.6.2';
+	const API6_VERSION = '6.7.1';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appName,

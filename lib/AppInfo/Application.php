@@ -201,20 +201,20 @@ class Application extends ApplicationBase {
 	private function registerScrobblerServices() : void
 	{
 		$container = $this->getContainer();
-		$container->registerService('scrobblerServices', function (IAppContainer $c) {
+		$container->registerService('scrobblerServices', function () {
 			return [
 				new ScrobblerService(
-					$c->get(IConfig::class),
-					$c->get(Logger::class),
-					$c->get(IURLGenerator::class),
-					$c->get(TrackBusinessLayer::class),
-					$c->get(AlbumBusinessLayer::class),
-					$c->get(ICrypto::class),
+					$this->get(IConfig::class),
+					$this->get(Logger::class),
+					$this->get(IURLGenerator::class),
+					$this->get(TrackBusinessLayer::class),
+					$this->get(AlbumBusinessLayer::class),
+					$this->get(ICrypto::class),
 					'Last.fm',
 					'lastfm',
 					'http://ws.audioscrobbler.com/2.0/',
 					'http://www.last.fm/api/auth/',
-					$c->get('appName')
+					$this->get('appName')
 				)
 			];
 		});

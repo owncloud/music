@@ -178,16 +178,17 @@
 			</dl>
 		</div>
 	</div>
-	<h2 translate>Scrobbler Integration</h2>
-	<div>
-		<p ng-hide="settings.scrobbler.configured" translate>The server admin can configure your server for scrobbling. The <strong>Admin</strong> section below details how to achieve this.</p>
-		<p ng-show="settings.scrobbler.configured" translate >The server admin has configured your server for scrobbling.</p>
-		<p ng-show="settings.scrobbler.configured && !settings.scrobbler.hasSession">Click the <strong>Get Scrobble Session</strong> button to send your streams to {{settings.scrobbler.service}}.</p>
-		<p ng-show="settings.scrobbler.configured && settings.scrobbler.hasSession">Click the <strong>Clear Session</strong> to stop scrobbling.</p>
-		<button ng-show="settings.scrobbler.configured" ng-disabled="settings.scrobbler.hasSession" ng-click="generateScrobbleSession()" translate>Get Scrobble Session</button>
-		<button ng-show="settings.scrobbler.configured"  ng-disabled="!settings.scrobbler.hasSession" ng-click="clearScrobbleSession()" translate>Clear Session</button>
+	<div ng-repeat="scrobbler in settings.scrobblers">
+		 <h2 translate>{{scrobbler.service}} Integration</h2>
+		<div>
+			<p ng-hide="scrobbler.configured" translate>The server admin can configure your server for scrobbling. The <strong>Admin</strong> section below details how to achieve this.</p>
+			<p ng-show="scrobbler.configured" translate >The server admin has configured your server for scrobbling.</p>
+			<p ng-show="scrobbler.configured && !scrobbler.hasSession">Click the <strong>Get Scrobble Session</strong> button to send your streams to {{scrobbler.service}}.</p>
+			<p ng-show="scrobbler.configured && scrobbler.hasSession">Click the <strong>Clear Session</strong> to stop scrobbling.</p>
+			<button ng-show="scrobbler.configured" ng-disabled="scrobbler.hasSession" ng-click="scrobbler.generateScrobbleSession()" translate>Get Scrobble Session</button>
+			<button ng-show="scrobbler.configured" ng-disabled="!scrobbler.hasSession" ng-click="scrobbler.clearScrobbleSession()" translate>Clear Session</button>
+		</div>
 	</div>
-
 
 	<h2 translate>Admin</h2>
 	<div>

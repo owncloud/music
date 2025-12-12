@@ -45,7 +45,8 @@ class SettingController extends Controller {
 	private ISecureRandom $secureRandom;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
-	private ScrobblerService $scrobblerService;
+	/** @var ScrobblerService[] $scrobblerServices */
+	private array $scrobblerServices;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -57,7 +58,7 @@ class SettingController extends Controller {
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator,
 								Logger $logger,
-								ScrobblerService $scrobblerService) {
+								array $scrobblerServices) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -68,7 +69,7 @@ class SettingController extends Controller {
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
-		$this->scrobblerService = $scrobblerService;
+		$this->scrobblerServices = $scrobblerServices;
 	}
 
 	/**
@@ -129,7 +130,7 @@ class SettingController extends Controller {
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
 			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId,
-			'scrobbler' => $this->getScrobbleAuth()
+			'scrobblers' => $this->getScrobbleAuth()
 		]);
 	}
 
@@ -153,14 +154,19 @@ class SettingController extends Controller {
 	}
 
 	private function getScrobbleAuth(): array {
-		$tokenRequestUrl = $this->scrobblerService->getTokenRequestUrl();
-		return [
-			'apiService' => $this->scrobblerService->getApiService(),
-            'configured' => $tokenRequestUrl !== null,
-            'tokenRequestUrl' => $tokenRequestUrl,
-            'hasSession' => $this->scrobblerService->getApiSession($this->userId) !== null,
-            'service' => $this->scrobblerService->getName()
-		];
+		$services = [];
+		foreach ($this->scrobblerServices as $scrobblerService) {
+			$tokenRequestUrl = $scrobblerService->getTokenRequestUrl();
+			$services[] = [
+				'service' => $scrobblerService->getName(),
+				'identifier' => $scrobblerService->getIdentifier(),
+				'configured' => $tokenRequestUrl !== null,
+				'tokenRequestUrl' => $tokenRequestUrl,
+				'hasSession' => $scrobblerService->getApiSession($this->userId) !== null
+			];
+		}
+
+		return $services;
 	}
 
 	private function storeUserKey(?string $description, string $password) : ?int {

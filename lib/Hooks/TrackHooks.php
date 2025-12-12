@@ -18,11 +18,12 @@ use OCA\Music\Service\ScrobblerService;
 class TrackHooks {
 	private TrackBusinessLayer $trackBusinessLayer;
 
-	private ScrobblerService $scrobblerService;
+	/** @var ScrobblerService[] */
+	private array $scrobblerServices;
 
-	public function __construct(TrackBusinessLayer $trackBusinessLayer, ScrobblerService $scrobblerService) {
+	public function __construct(TrackBusinessLayer $trackBusinessLayer, array $scrobblerServices) {
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->scrobblerService = $scrobblerService;
+		$this->scrobblerServices = $scrobblerServices;
 	}
 
 	public function register() : void {
@@ -34,6 +35,8 @@ class TrackHooks {
 	}
 
 	private function scrobble(int $trackId, string $userId, \DateTime $timeOfPlay) : void {
-		$this->scrobblerService->scrobbleTrack([$trackId], $userId, $timeOfPlay);
+		foreach ($this->scrobblerServices as $scrobblerService) {
+			$scrobblerService->scrobbleTrack([$trackId], $userId, $timeOfPlay);
+		}
 	}
 }

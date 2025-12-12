@@ -322,32 +322,35 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
-		$scope.generateScrobbleSession = function() {
-			window.open($scope.settings.scrobbler.tokenRequestUrl, '_blank', { popup: true });
-			const bc = new BroadcastChannel('scrobble-session-result');
-			bc.onmessage = function(e) {
-				$scope.settings.scrobbler.hasSession = e.data;
-			};
-		};
+		$rootScope.$on('viewActivated', function () {
+			$scope.settings.scrobblers.forEach(function (scrobbler) {
+				scrobbler.generateScrobbleSession = function() {
+					window.open(scrobbler.tokenRequestUrl, '_blank', { popup: true });
+					const bc = new BroadcastChannel(scrobbler.identifier + '-scrobble-session-result');
+					bc.onmessage = function(e) {
+						scrobbler.hasSession = e.data;
+					};
+				};
 
-		$scope.clearScrobbleSession = function() {
-			const errHandler = function(error) {
-				const errMsg = gettextCatalog.getString('Failed to clear scrobbling session.');
-				OC.Notification.showTemporary(
-					errMsg + ' ' + error.message
-				);
-			};
-			Restangular.all('scrobbler/clearSession').post().then(
-				function(data) {
-					if (data === true) {
-						$scope.settings.scrobbler.hasSession = false;
-						return;
-					}
-					errHandler(data.error);
-				},
-				errHandler
-			);
-		};
+				scrobbler.clearScrobbleSession = function() {
+					const errHandler = function(error) {
+						const errMsg = gettextCatalog.getString('Failed to clear scrobbling session.');
+						OC.Notification.showTemporary(
+							errMsg + ' ' + error.message
+						);
+					};
+					Restangular.all('scrobbler/clearSession')
+						.post({serviceIdentifier: scrobbler.identifier})
+						.then(function(data) {
+							if (data?.success === true) {
+								scrobbler.hasSession = false;
+								return;
+							}
+							errHandler(data.error);
+						}, errHandler);
+				};
+			});
+		});
 
 		$scope.copyToClipboard = function(elementId) {
 			let range = document.createRange();

@@ -11,7 +11,7 @@ HtmlUtil::addWebpackScript('scrobble_getsession_result');
 HtmlUtil::addWebpackStyle('app');
 
 ?>
-<div id="app-content" data-result="<?= $_['success'] ?>">
+<div id="app-content" data-result="<?= $_['success'] ?>" data-identifier="<?= $_['identifier'] ?>">
 	<div class="section">
 		<div id="app-view">
 			<div id="music-user">

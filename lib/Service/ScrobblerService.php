@@ -23,23 +23,15 @@ use OCP\Security\ICrypto;
 class ScrobblerService
 {
 	private IConfig $config;
-
 	private Logger $logger;
-
 	private IURLGenerator $urlGenerator;
-
 	private TrackBusinessLayer $trackBusinessLayer;
-
-	private ?string $appName;
-
 	private ICrypto $crypto;
-
-	public const SCROBBLE_SERVICES = [
-		'lastfm' => [
-			'endpoint' => 'http://ws.audioscrobbler.com/2.0/',
-			'name' => 'Last.fm'
-		]
-	];
+	private string $name;
+	private string $identifier;
+	private string $endpoint;
+	private string $tokenRequestUrl;
+	private ?string $appName;
 
 	public function __construct(
 		IConfig $config,
@@ -47,6 +39,10 @@ class ScrobblerService
 		IURLGenerator $urlGenerator,
 		TrackBusinessLayer $trackBusinessLayer,
 		ICrypto $crypto,
+		string $name,
+		string $identifier,
+		string $endpoint,
+		string $tokenRequestUrl,
 		?string $appName = 'music'
 	) {
 		$this->config = $config;
@@ -54,15 +50,19 @@ class ScrobblerService
 		$this->urlGenerator = $urlGenerator;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->crypto = $crypto;
+		$this->name = $name;
+		$this->identifier = $identifier;
+		$this->endpoint = $endpoint;
+		$this->tokenRequestUrl = $tokenRequestUrl;
 		$this->appName = $appName;
 	}
 
 	/**
-	 * @throws \Exception when curl initialization or encryption fails
+	 * @throws \Exception when curl initialization or session key save fails
 	 * @throws ScrobbleServiceException when auth.getSession call fails
 	 */
 	public function generateSession(string $token, string $userId) : void {
-		$ch = $this->makeCurlHandle($this->getApiService());
+		$ch = $this->makeCurlHandle();
 		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query(
 			$this->generateMethodParams('auth.getSession', ['token' => $token])
 		));
@@ -72,34 +72,27 @@ class ScrobblerService
 		if ($status !== 'ok') {
 			throw new ScrobbleServiceException((string)$xml->error, (int)$xml->error['code']);
 		}
+		$sessionValue = (string)$xml->session->key;
 
+		$this->saveApiSession($userId, $sessionValue);
+	}
+
+	/**
+	 * @throws \InvalidArgumentException
+	 */
+	public function clearSession(?string $userId) : void {
 		try {
-			$encryptedKey = $this->crypto->encrypt(
-				(string)$xml->session->key,
-				$userId . $this->config->getSystemValue('secret')
+			$this->config->deleteUserValue($userId, $this->appName, $this->identifier . '.scrobbleSessionKey');
+		} catch (\InvalidArgumentException $e) {
+			$this->logger->error(
+				'Could not delete user config "' . $this->identifier . '.scrobbleSessionKey". ' . $e->getMessage()
 			);
-			$this->config->setUserValue($userId, $this->appName, 'scrobbleSessionKey', $encryptedKey);
-		} catch (\Exception $e) {
-			$this->logger->error('Encryption of scrobble session key failed');
 			throw $e;
 		}
 	}
 
-	public function getApiKey() : ?string {
-		return $this->config->getSystemValue('music.scrobble_api_key', null);
-	}
-
-	public function getApiSecret() : ?string {
-		return $this->config->getSystemValue('music.scrobble_api_secret', null);
-	}
-
-	public function getApiService() : ?string {
-		return $this->config->getSystemValue('music.scrobble_api_service', null);
-	}
-
-	public function getApiSession(string $userId): ?string
-	{
-		$encryptedKey = $this->config->getUserValue($userId, $this->appName, 'scrobbleSessionKey');
+	public function getApiSession(string $userId) : ?string {
+		$encryptedKey = $this->config->getUserValue($userId, $this->appName, $this->identifier . '.scrobbleSessionKey');
 		if (!$encryptedKey) {
 			return null;
 		}
@@ -107,30 +100,29 @@ class ScrobblerService
 		return $key;
 	}
 
-	public function getTokenRequestUrl(): ?string {
-		$apiKey = $this->getApiKey();
-		$apiService = $this->getApiService();
-		if (!$apiKey || !$apiService) {
-			return null;
-		}
+	public function getName() : string {
+		return $this->name;
+	}
 
-		$tokenHandleUrl = $this->urlGenerator->linkToRouteAbsolute('music.scrobbler.handleToken');
-		switch ($apiService) {
-			case 'lastfm':
-				return "http://www.last.fm/api/auth/?api_key={$apiKey}&cb={$tokenHandleUrl}";
-			default:
-				throw new \Exception('Invalid service');
-		}
+	public function getIdentifier() : string {
+		return $this->identifier;
+	}
+
+	public function getApiKey() : ?string {
+		return $this->config->getSystemValue('music.' . $this->identifier . '_api_key', null);
+	}
+
+	public function getApiSecret() : ?string {
+		return $this->config->getSystemValue('music.' . $this->identifier . '_api_secret', null);
 	}
 
 	/**
 	 * @param array<int,mixed> $trackIds
 	 */
-	public function scrobbleTrack(array $trackIds, string $userId, \DateTime $timeOfPlay) : bool {
+	public function scrobbleTrack(array $trackIds, string $userId, \DateTime $timeOfPlay) : void {
 		$sessionKey = $this->getApiSession($userId);
-		$scrobbleService = $this->getApiService();
-		if (!$sessionKey || !$scrobbleService) {
-			return false;
+		if (!$sessionKey) {
+			return;
 		}
 
 		$timestamp = $timeOfPlay->getTimestamp();
@@ -149,35 +141,37 @@ class ScrobblerService
 		}
 		$scrobbleData = $this->generateMethodParams('track.scrobble', $scrobbleData);
 
-		$ch = $this->makeCurlHandle($scrobbleService);
+		$ch = $this->makeCurlHandle();
 		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($scrobbleData));
 		$xml = \simplexml_load_string(\curl_exec($ch));
 
-		return (string)$xml['status'] === 'ok'; // todo: log failures?
+		if ((string)$xml['status'] !== 'ok') {
+			$this->logger->warning('Failed to scrobble to ' . $this->name);
+		}
 	}
 
-	public function clearSession(?string $userId) : bool {
+	public function getTokenRequestUrl(): ?string {
+		$apiKey = $this->getApiKey();
+		if (!$apiKey) {
+			return null;
+		}
+
+		$tokenHandleUrl = $this->urlGenerator->linkToRouteAbsolute('music.scrobbler.handleToken', [
+			'serviceIdentifier' => $this->identifier
+		]);
+		return "{$this->tokenRequestUrl}?api_key={$apiKey}&cb={$tokenHandleUrl}";
+	}
+
+	private function saveApiSession(string $userId, string $sessionValue) : void {
 		try {
-			$this->config->deleteUserValue($userId, $this->appName, 'scrobbleSessionKey');
-			return true;
-		} catch (\InvalidArgumentException $e) {
-			$this->logger->error('Could not delete user config "scrobbleSessionKey". ' . $e->getMessage());
-		}
-		return false;
-	}
-
-	public function getName() : string
-	{
-		$apiService = $this->getApiService();
-		if (!$apiService) {
-			return '';
-		}
-
-		switch ($apiService) {
-			case 'lastfm':
-				return "Last.fm";
-			default:
-				throw new \Exception('Invalid service');
+			$encryptedKey = $this->crypto->encrypt(
+				$sessionValue,
+				$userId . $this->config->getSystemValue('secret')
+			);
+			$this->config->setUserValue($userId, $this->appName, $this->identifier . '.scrobbleSessionKey', $encryptedKey);
+		} catch (\Exception $e) {
+			$this->logger->error('Encryption of scrobble session key failed');
+			throw $e;
 		}
 	}
 
@@ -224,14 +218,13 @@ class ScrobblerService
 	 * @return resource (in PHP8+ return \CurlHandle)
 	 * @throws \RuntimeException when unable to initialize a cURL handle
 	 */
-	private function makeCurlHandle(string $scrobblerServiceIdentifier) {
-		$endpoint = self::SCROBBLE_SERVICES[$scrobblerServiceIdentifier]['endpoint'];
+	private function makeCurlHandle() {
 		$ch = \curl_init();
 		if (!$ch) {
 			$this->logger->error('Failed to initialize a curl handle, is the php curl extension installed?');
 			throw new \RuntimeException('Unable to initialize a curl handle');
 		}
-		\curl_setopt($ch, \CURLOPT_URL, $endpoint);
+		\curl_setopt($ch, \CURLOPT_URL, $this->endpoint);
 		\curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);

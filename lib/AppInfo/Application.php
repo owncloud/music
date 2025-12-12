@@ -14,6 +14,8 @@
 
 namespace OCA\Music\AppInfo;
 
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Hooks\FileHooks;
 use OCA\Music\Hooks\ShareHooks;
 use OCA\Music\Hooks\TrackHooks;
@@ -22,12 +24,15 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
+use OCA\Music\Service\ScrobblerService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Files\IMimeTypeLoader;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\Security\IContentSecurityPolicyManager;
+use OCP\Security\ICrypto;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
@@ -46,6 +51,8 @@ class Application extends ApplicationBase {
 		parent::__construct('music', $urlParams);
 
 		\mb_internal_encoding('UTF-8');
+
+		$this->registerScrobblerServices();
 
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
@@ -190,5 +197,26 @@ class Application extends ApplicationBase {
 			$enabled = (bool)$config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
 		}
 		return $enabled;
+	}
+
+	private function registerScrobblerServices() : void
+	{
+		$container = $this->getContainer();
+		$container->registerService('scrobblerServices', function (IAppContainer $c) {
+			return [
+				new ScrobblerService(
+					$c->get(IConfig::class),
+					$c->get(Logger::class),
+					$c->get(IURLGenerator::class),
+					$c->get(TrackBusinessLayer::class),
+					$c->get(ICrypto::class),
+					'Last.fm',
+					'lastfm',
+					'http://ws.audioscrobbler.com/2.0/',
+					'http://www.last.fm/api/auth/',
+					$c->get('appName')
+				)
+			];
+		});
 	}
 }

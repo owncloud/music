@@ -69,7 +69,7 @@ class ScrobblerController extends Controller {
 			$scrobblerService->generateSession($token, $this->userId);
 			$params['success'] = true;
 			$params['headline'] = $this->l10n->t('All Set!');
-			$params['instructions'] = $this->l10n->t('You are now ready to scrobble.');
+			$params['instructions'] = $this->l10n->t('Your streams will be scrobbled to %s.', [$scrobblerService->getName()]);
 			$params['getsession_response'] = '';
 		} catch (ScrobbleServiceException $e) {
 			$params['headline'] = $this->l10n->t('Authentication failure');

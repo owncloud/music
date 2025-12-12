@@ -14,6 +14,7 @@ namespace OCA\Music\Service;
 
 use DateTime;
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Track;
 use OCP\IConfig;
@@ -26,6 +27,7 @@ class ScrobblerService
 	private Logger $logger;
 	private IURLGenerator $urlGenerator;
 	private TrackBusinessLayer $trackBusinessLayer;
+	private AlbumBusinessLayer $albumBusinessLayer;
 	private ICrypto $crypto;
 	private string $name;
 	private string $identifier;
@@ -38,6 +40,7 @@ class ScrobblerService
 		Logger $logger,
 		IURLGenerator $urlGenerator,
 		TrackBusinessLayer $trackBusinessLayer,
+		AlbumBusinessLayer $albumBusinessLayer,
 		ICrypto $crypto,
 		string $name,
 		string $identifier,
@@ -49,6 +52,7 @@ class ScrobblerService
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->crypto = $crypto;
 		$this->name = $name;
 		$this->identifier = $identifier;
@@ -132,8 +136,15 @@ class ScrobblerService
 
 		/** @var array<Track> $tracks */
 		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 		foreach ($tracks as $i => $track) {
-			$scrobbleData["artist[{$i}]"] = $track->getArtistName(); // todo: album artist
+			if ($track->getAlbum()) {
+				$albumArtist = $track->getAlbum()->getAlbumArtistName();
+				if ($albumArtist !== $track->getArtistName()) {
+					$scrobbleData["albumArtist[{$i}]"] = $albumArtist;
+				}
+			}
+			$scrobbleData["artist[{$i}]"] = $track->getArtistName();
 			$scrobbleData["track[{$i}]"] = $track->getTitle();
 			$scrobbleData["timestamp[{$i}]"] = $timestamp;
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();

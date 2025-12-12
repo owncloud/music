@@ -15,6 +15,7 @@
 namespace OCA\Music\AppInfo;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Hooks\FileHooks;
 use OCA\Music\Hooks\ShareHooks;
@@ -207,6 +208,7 @@ class Application extends ApplicationBase {
 					$c->get(Logger::class),
 					$c->get(IURLGenerator::class),
 					$c->get(TrackBusinessLayer::class),
+					$c->get(AlbumBusinessLayer::class),
 					$c->get(ICrypto::class),
 					'Last.fm',
 					'lastfm',

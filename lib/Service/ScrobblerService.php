@@ -131,7 +131,7 @@ class ScrobblerService
 		];
 
 		/** @var array<Track> $tracks */
-		$tracks = $this->trackBusinessLayer->findById($trackIds);
+		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
 		foreach ($tracks as $i => $track) {
 			$scrobbleData["artist[{$i}]"] = $track->getArtistName(); // todo: album artist
 			$scrobbleData["track[{$i}]"] = $track->getTitle();

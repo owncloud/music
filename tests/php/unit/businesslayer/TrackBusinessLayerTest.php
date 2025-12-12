@@ -39,7 +39,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$this->logger = $this->getMockBuilder(Logger::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper, $this->fileSystemService, $this->logger);
+		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper, $this->fileSystemService, $this->logger, []);
 		$this->userId = 'jack';
 		$this->artistId = 3;
 		$this->albumId = 3;

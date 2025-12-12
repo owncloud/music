@@ -181,8 +181,8 @@
 	<div ng-repeat="scrobbler in settings.scrobblers">
 		<h2 translate-params-service="scrobbler.service" translate>{{service}} Integration</h2>
 		<div>
-			<p ng-hide="scrobbler.configured" translate>The server admin can configure your server for scrobbling. The <strong>Admin</strong> section below details how to achieve this.</p>
-			<p ng-show="scrobbler.configured" translate >The server admin has configured your server for scrobbling.</p>
+			<p ng-hide="scrobbler.configured" translate>The server administrator can configure your server for scrobbling, see the <strong>Admin</strong> section below.</p>
+			<p ng-show="scrobbler.configured" translate >The server administrator has configured your server for scrobbling.</p>
 			<p ng-show="scrobbler.configured && !scrobbler.hasSession" translate translate-params-service="scrobbler.service">Click <strong>Connect</strong> to scrobble your streams to {{service}}.</p>
 			<p ng-show="scrobbler.configured && scrobbler.hasSession" translate translate translate-params-service="scrobbler.service">Your streams will be scrobbled to {{service}}. Click <strong>Disconnect</strong> to stop scrobbling.</p>
 			<button ng-show="scrobbler.configured" ng-disabled="scrobbler.hasSession" ng-click="scrobbler.generateScrobbleSession()" translate>Connect</button>

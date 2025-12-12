@@ -160,7 +160,7 @@ class SettingController extends Controller {
 			$services[] = [
 				'service' => $scrobblerService->getName(),
 				'identifier' => $scrobblerService->getIdentifier(),
-				'configured' => $tokenRequestUrl !== null,
+				'configured' => $tokenRequestUrl && $scrobblerService->getApiSecret(),
 				'tokenRequestUrl' => $tokenRequestUrl,
 				'hasSession' => $scrobblerService->getApiSession($this->userId) !== null
 			];

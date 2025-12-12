@@ -8,8 +8,8 @@
  * @copyright Matthew Wells 2025
  */
 
-const bc = new BroadcastChannel('scrobble-session-result');
-const appContent = document.querySelector('#app-content');
-if (appContent) {
-    bc.postMessage(Boolean(appContent.dataset.result));
+const appData = document.querySelector('#app-content')?.dataset;
+if (appData) {
+	const bc = new BroadcastChannel(appData.identifier + '-scrobble-session-result');
+	bc.postMessage(Boolean(appData.result));
 }

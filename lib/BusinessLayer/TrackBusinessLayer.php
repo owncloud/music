@@ -23,11 +23,11 @@ use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
 use OCA\Music\Service\FileSystemService;
+use OCA\Music\Service\ScrobblerService;
 use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\StringUtil;
 
 use OCP\AppFramework\Db\DoesNotExistException;
-use OC\Hooks\EmitterTrait;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
@@ -38,15 +38,20 @@ use OC\Hooks\EmitterTrait;
  * @extends BusinessLayer<Track>
  */
 class TrackBusinessLayer extends BusinessLayer {
-    use EmitterTrait;
 
 	private FileSystemService $fileSystemService;
 	private Logger $logger;
+	/** @var ScrobblerService[] $scrobbleServices */
+	private array $scrobblerServices;
 
-	public function __construct(TrackMapper $trackMapper, FileSystemService $fileSystemService, Logger $logger) {
+	public function __construct(TrackMapper $trackMapper,
+								FileSystemService $fileSystemService,
+								Logger $logger,
+								array $scrobblerServices) {
 		parent::__construct($trackMapper);
 		$this->fileSystemService = $fileSystemService;
 		$this->logger = $logger;
+		$this->scrobblerServices = $scrobblerServices;
 	}
 
 	/**
@@ -232,7 +237,9 @@ class TrackBusinessLayer extends BusinessLayer {
 			throw new BusinessLayerException("Track with ID $trackId was not found");
 		}
 
-		$this->emit(self::class, 'recordTrackPlayed', [$trackId, $userId, $timeOfPlay]);
+		foreach ($this->scrobblerServices as $scrobblerService) {
+			$scrobblerService->scrobbleTrack([$trackId], $userId, $timeOfPlay);
+		}
 	}
 
 	/**

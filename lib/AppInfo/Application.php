@@ -52,8 +52,6 @@ class Application extends ApplicationBase {
 
 		\mb_internal_encoding('UTF-8');
 
-		$this->registerScrobblerServices();
-
 		// On ownCloud, the registrations must happen already within the constructor
 		if (useOwncloudBootstrapping()) {
 			$container = $this->getContainer();
@@ -68,6 +66,7 @@ class Application extends ApplicationBase {
 			$container->query(SubsonicMiddleware::class);
 
 			$this->registerMiddleWares($container);
+			$this->registerScrobblerServices($container);
 		}
 	}
 
@@ -86,6 +85,7 @@ class Application extends ApplicationBase {
 	 */
 	public function register($context) : void {
 		$this->registerMiddleWares($context);
+		$this->registerScrobblerServices($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 
@@ -198,10 +198,13 @@ class Application extends ApplicationBase {
 		return $enabled;
 	}
 
-	private function registerScrobblerServices() : void
+	/**
+	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
+	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
+	 */
+	private function registerScrobblerServices($context) : void
 	{
-		$container = $this->getContainer();
-		$container->registerService('scrobblerServices', function () {
+		$context->registerService('scrobblerServices', function () {
 			return [
 				new ScrobblerService(
 					$this->get(IConfig::class),

@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\Scrobbler;
 use OCA\Music\Tests\Utility\ControllerTestUtility;
 use OCP\AppFramework\Http\JSONResponse;
 
@@ -87,7 +88,8 @@ class MusicApiControllerTest extends ControllerTestUtility {
 			$this->maintenance,
 			$this->librarySettings,
 			$this->userId,
-			$this->logger);
+			$this->logger,
+			$this->createMock(Scrobbler::class));
 	}
 
 	public function testTrackByFileId() {

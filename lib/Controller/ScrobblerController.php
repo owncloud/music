@@ -13,7 +13,7 @@
 namespace OCA\Music\Controller;
 
 use OCA\Music\Service\ScrobbleServiceException;
-use OCA\Music\Service\ScrobblerService;
+use OCA\Music\Service\ExternalScrobbler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\StandaloneTemplateResponse;
@@ -25,19 +25,19 @@ class ScrobblerController extends Controller {
 
 	private ?string $userId;
 
-	/** @var ScrobblerService[] $scrobblerServices */
-	private array $scrobblerServices;
+	/** @var ExternalScrobbler[] $externalScrobblers */
+	private array $externalScrobblers;
 
 	public function __construct(string $appName,
 								IRequest $request,
 								IL10N $l10n,
 								?string $userId,
-								array $scrobblerServices) {
+								array $externalScrobblers) {
 		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->userId = $userId;
 		$this->appName = $appName;
-		$this->scrobblerServices = $scrobblerServices;
+		$this->externalScrobblers = $externalScrobblers;
 	}
 
 	/**
@@ -56,9 +56,9 @@ class ScrobblerController extends Controller {
 		];
 		$response = new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
 
-		$scrobblerService = $this->getScrobblerService($serviceIdentifier);
+		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
 
-		if (!$scrobblerService) {
+		if (!$scrobbler) {
 			$params['headline'] = $this->l10n->t('Unknown Service');
 			$params['getsession_response'] = $this->l10n->t('Unkonwn service %s', [$serviceIdentifier]);
 			$response->setParams($params);
@@ -66,10 +66,10 @@ class ScrobblerController extends Controller {
 		}
 
 		try {
-			$scrobblerService->generateSession($token, $this->userId);
+			$scrobbler->generateSession($token, $this->userId);
 			$params['success'] = true;
 			$params['headline'] = $this->l10n->t('All Set!');
-			$params['instructions'] = $this->l10n->t('Your streams will be scrobbled to %s.', [$scrobblerService->getName()]);
+			$params['instructions'] = $this->l10n->t('Your streams will be scrobbled to %s.', [$scrobbler->getName()]);
 			$params['getsession_response'] = '';
 		} catch (ScrobbleServiceException $e) {
 			$params['headline'] = $this->l10n->t('Authentication failure');
@@ -95,8 +95,8 @@ class ScrobblerController extends Controller {
 			'message' => 'Unknown error'
 		]]);
 
-		$scrobblerService = $this->getScrobblerService($serviceIdentifier);
-		if (!$scrobblerService) {
+		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
+		if (!$scrobbler) {
 			$response->setData(['error' => [
 				'message' => $this->l10n->t('Unknown service %s', [$serviceIdentifier])
 			]]);
@@ -104,7 +104,7 @@ class ScrobblerController extends Controller {
 		}
 
 		try {
-			$scrobblerService->clearSession($this->userId);
+			$scrobbler->clearSession($this->userId);
 			$response->setData(['success' => true]);
 		} catch (\InvalidArgumentException $e) {
 			$response->setData(['error' => [
@@ -115,10 +115,10 @@ class ScrobblerController extends Controller {
 		}
 	}
 
-	private function getScrobblerService(string $serviceIdentifier) : ?ScrobblerService {
-		foreach ($this->scrobblerServices as $scrobblerService) {
-			if ($scrobblerService->getIdentifier() === $serviceIdentifier) {
-				return $scrobblerService;
+	private function getExternalScrobbler(string $serviceIdentifier) : ?ExternalScrobbler {
+		foreach ($this->externalScrobblers as $scrobbler) {
+			if ($scrobbler->getIdentifier() === $serviceIdentifier) {
+				return $scrobbler;
 			}
 		}
 		return null;

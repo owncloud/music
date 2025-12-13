@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\Scrobbler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDisplayResponse;
@@ -52,6 +53,7 @@ class MusicApiController extends Controller {
 	private LibrarySettings $librarySettings;
 	private string $userId;
 	private Logger $logger;
+	private Scrobbler $scrobbler;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -66,7 +68,8 @@ class MusicApiController extends Controller {
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
 								?string $userId,
-								Logger $logger) {
+								Logger $logger,
+								Scrobbler $scrobbler) {
 		parent::__construct($appName, $request);
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
@@ -80,6 +83,7 @@ class MusicApiController extends Controller {
 		$this->librarySettings = $librarySettings;
 		$this->userId = $userId ?? ''; // null case should happen only when the user has already logged out
 		$this->logger = $logger;
+		$this->scrobbler = $scrobbler;
 	}
 
 	/**
@@ -308,7 +312,7 @@ class MusicApiController extends Controller {
 	 */
 	public function scrobble(int $trackId) : JSONResponse {
 		try {
-			$this->trackBusinessLayer->recordTrackPlayed($trackId, $this->userId);
+			$this->scrobbler->recordTrackPlayed($trackId, $this->userId);
 			return new JSONResponse(['success' => true]);
 		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

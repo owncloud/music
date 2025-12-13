@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\Scrobbler;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -99,6 +100,7 @@ class SubsonicController extends ApiController {
 	private Random $random;
 	private Logger $logger;
 	private IConfig $configManager;
+	private Scrobbler $scrobbler;
 	private ?string $userId;
 	private ?int $keyId;
 	private array $ignoredArticles;
@@ -128,7 +130,8 @@ class SubsonicController extends ApiController {
 								AmpacheImageService $imageService,
 								Random $random,
 								Logger $logger,
-								\OCP\IConfig $configManager) {
+								\OCP\IConfig $configManager,
+								Scrobbler $scrobbler) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -153,6 +156,7 @@ class SubsonicController extends ApiController {
 		$this->random = $random;
 		$this->logger = $logger;
 		$this->configManager = $configManager;
+		$this->scrobbler = $scrobbler;
 		$this->userId = null;
 		$this->keyId = null;
 		$this->ignoredArticles = [];
@@ -825,7 +829,7 @@ class SubsonicController extends ApiController {
 				} else {
 					$timeOfPlay = null;
 				}
-				$this->trackBusinessLayer->recordTrackPlayed((int)$trackId, $userId, $timeOfPlay);
+				$this->scrobbler->recordTrackPlayed((int)$trackId, $userId, $timeOfPlay);
 			}
 		}
 

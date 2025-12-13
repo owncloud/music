@@ -23,7 +23,7 @@ use OCA\Music\Db\SortBy;
 use OCA\Music\Db\TrackMapper;
 use OCA\Music\Db\Track;
 use OCA\Music\Service\FileSystemService;
-use OCA\Music\Service\ScrobblerService;
+use OCA\Music\Service\Scrobbler;
 use OCA\Music\Utility\ArrayUtil;
 use OCA\Music\Utility\StringUtil;
 
@@ -37,21 +37,15 @@ use OCP\AppFramework\Db\DoesNotExistException;
  * @property TrackMapper $mapper
  * @extends BusinessLayer<Track>
  */
-class TrackBusinessLayer extends BusinessLayer {
+class TrackBusinessLayer extends BusinessLayer implements Scrobbler {
 
 	private FileSystemService $fileSystemService;
 	private Logger $logger;
-	/** @var ScrobblerService[] $scrobbleServices */
-	private array $scrobblerServices;
 
-	public function __construct(TrackMapper $trackMapper,
-								FileSystemService $fileSystemService,
-								Logger $logger,
-								array $scrobblerServices) {
+	public function __construct(TrackMapper $trackMapper, FileSystemService $fileSystemService, Logger $logger) {
 		parent::__construct($trackMapper);
 		$this->fileSystemService = $fileSystemService;
 		$this->logger = $logger;
-		$this->scrobblerServices = $scrobblerServices;
 	}
 
 	/**
@@ -235,10 +229,6 @@ class TrackBusinessLayer extends BusinessLayer {
 
 		if (!$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay)) {
 			throw new BusinessLayerException("Track with ID $trackId was not found");
-		}
-
-		foreach ($this->scrobblerServices as $scrobblerService) {
-			$scrobblerService->scrobbleTrack([$trackId], $userId, $timeOfPlay);
 		}
 	}
 

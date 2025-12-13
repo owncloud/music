@@ -21,7 +21,7 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 use OCP\Security\ICrypto;
 
-class ScrobblerService
+class ExternalScrobbler implements Scrobbler
 {
 	private IConfig $config;
 	private Logger $logger;
@@ -120,10 +120,8 @@ class ScrobblerService
 		return $this->config->getSystemValue('music.' . $this->identifier . '_api_secret', null);
 	}
 
-	/**
-	 * @param array<int,mixed> $trackIds
-	 */
-	public function scrobbleTrack(array $trackIds, string $userId, \DateTime $timeOfPlay) : void {
+	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null) : void {
+		$timeOfPlay = $timeOfPlay ?? new \DateTime();
 		$sessionKey = $this->getApiSession($userId);
 		if (!$sessionKey) {
 			return;
@@ -135,7 +133,7 @@ class ScrobblerService
 		];
 
 		/** @var array<Track> $tracks */
-		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
+		$tracks = $this->trackBusinessLayer->findById([$trackId], $userId);
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 		foreach ($tracks as $i => $track) {
 			if ($track->getAlbum()) {

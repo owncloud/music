@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Controller;
 
-use OCA\Music\Service\ScrobblerService;
+use OCA\Music\Service\ExternalScrobbler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -45,8 +45,8 @@ class SettingController extends Controller {
 	private ISecureRandom $secureRandom;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
-	/** @var ScrobblerService[] $scrobblerServices */
-	private array $scrobblerServices;
+	/** @var ExternalScrobbler[] $externalScrobblers */
+	private array $externalScrobblers;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -58,7 +58,7 @@ class SettingController extends Controller {
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator,
 								Logger $logger,
-								array $scrobblerServices) {
+								array $externalScrobblers) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -69,7 +69,7 @@ class SettingController extends Controller {
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
-		$this->scrobblerServices = $scrobblerServices;
+		$this->externalScrobblers = $externalScrobblers;
 	}
 
 	/**
@@ -155,14 +155,14 @@ class SettingController extends Controller {
 
 	private function getScrobbleAuth(): array {
 		$services = [];
-		foreach ($this->scrobblerServices as $scrobblerService) {
-			$tokenRequestUrl = $scrobblerService->getTokenRequestUrl();
+		foreach ($this->externalScrobblers as $scrobbler) {
+			$tokenRequestUrl = $scrobbler->getTokenRequestUrl();
 			$services[] = [
-				'service' => $scrobblerService->getName(),
-				'identifier' => $scrobblerService->getIdentifier(),
-				'configured' => $tokenRequestUrl && $scrobblerService->getApiSecret(),
+				'service' => $scrobbler->getName(),
+				'identifier' => $scrobbler->getIdentifier(),
+				'configured' => $tokenRequestUrl && $scrobbler->getApiSecret(),
 				'tokenRequestUrl' => $tokenRequestUrl,
-				'hasSession' => $scrobblerService->getApiSession($this->userId) !== null
+				'hasSession' => $scrobbler->getApiSession($this->userId) !== null
 			];
 		}
 

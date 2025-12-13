@@ -24,7 +24,9 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
-use OCA\Music\Service\ScrobblerService;
+use OCA\Music\Service\AggregateScrobbler;
+use OCA\Music\Service\ExternalScrobbler;
+use OCA\Music\Service\Scrobbler;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Files\IMimeTypeLoader;
@@ -66,7 +68,7 @@ class Application extends ApplicationBase {
 			$container->query(SubsonicMiddleware::class);
 
 			$this->registerMiddleWares($container);
-			$this->registerScrobblerServices($container);
+			$this->registerScrobblers($container);
 		}
 	}
 
@@ -85,7 +87,7 @@ class Application extends ApplicationBase {
 	 */
 	public function register($context) : void {
 		$this->registerMiddleWares($context);
-		$this->registerScrobblerServices($context);
+		$this->registerScrobblers($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 
@@ -202,11 +204,11 @@ class Application extends ApplicationBase {
 	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
 	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
 	 */
-	private function registerScrobblerServices($context) : void
+	private function registerScrobblers($context) : void
 	{
-		$context->registerService('scrobblerServices', function () {
+		$context->registerService('externalScrobblers', function () {
 			return [
-				new ScrobblerService(
+				new ExternalScrobbler(
 					$this->get(IConfig::class),
 					$this->get(Logger::class),
 					$this->get(IURLGenerator::class),
@@ -220,6 +222,12 @@ class Application extends ApplicationBase {
 					$this->get('appName')
 				)
 			];
+		});
+
+		$context->registerService(Scrobbler::class, function () {
+			$scrobblers = $this->get('externalScrobblers');
+			$scrobblers[] = $this->get(TrackBusinessLayer::class);
+			return new AggregateScrobbler($scrobblers);
 		});
 	}
 }

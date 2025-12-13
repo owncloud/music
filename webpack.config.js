@@ -22,7 +22,8 @@ module.exports = {
   entry: {
     app: './js/index.app.js',
     dashboard_music_widget: './js/index.dashboard.js',
-    files_music_player: './js/index.embedded.js'
+    files_music_player: './js/index.embedded.js',
+    scrobble_getsession_result: './js/index.scrobble-getsession-result.js'
   },
   output: {
     filename: 'webpack.[name].[contenthash].js',

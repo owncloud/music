@@ -44,6 +44,17 @@
 			<dt ng-show="station.metadata.bitrate" translate>Bit rate</dt>
 			<dd ng-show="station.metadata.bitrate">{{ station.metadata.bitrate + ' kbps' }}</dd>
 		</dl>
+
+		<div ng-if="station.metadata.title">
+			<h2 translate>Now playing</h2>
+			<dl class="tags">
+				<dt translate>Song</dt>
+				<dd>{{ songTitle }}</dd>
+
+				<dt ng-show="artistName" translate>Artist</dt>
+				<dd ng-show="artistName">{{ artistName }}</dd>
+			</dl>
+		</div>
 	</div>
 
 </div>

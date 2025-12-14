@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 
@@ -20,6 +20,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			$scope.createdDate = null;
 			$scope.updatedDate = null;
 			$scope.editing = false;
+			$scope.songTitle = null;
+			$scope.artistName = null;
 		}
 		resetContents();
 
@@ -60,6 +62,22 @@ angular.module('Music').controller('RadioStationDetailsController', [
 
 		$scope.$watch('station.updated', function(updated) {
 			$scope.updatedDate = OCA.Music.Utils.formatDateTime(updated);
+		});
+
+		$scope.$watch('station.metadata', function(metadata) {
+			if (metadata?.title) {
+				const matches = metadata.title.match(/^(.+) - (.+)$/);
+				if (matches === null) {
+					$scope.songTitle = metadata.title;
+					$scope.artistName = null;
+				} else {
+					$scope.songTitle = matches[2];
+					$scope.artistName = matches[1];
+				}
+			} else {
+				$scope.songTitle = null;
+				$scope.artistName = null;
+			}
 		});
 
 		// Enter the edit mode

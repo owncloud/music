@@ -328,7 +328,7 @@ angular.module('Music').controller('SettingsViewController', [
 					window.open(scrobbler.tokenRequestUrl, '_blank', { popup: true });
 					const bc = new BroadcastChannel(scrobbler.identifier + '-scrobble-session-result');
 					bc.onmessage = function(e) {
-						scrobbler.hasSession = e.data;
+						$timeout(() => scrobbler.hasSession = e.data);
 					};
 				};
 

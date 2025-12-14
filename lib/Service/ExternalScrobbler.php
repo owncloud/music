@@ -226,9 +226,10 @@ class ExternalScrobbler implements Scrobbler
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
         \curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
-		$xmlString = \curl_exec($ch);
-        \assert(\is_string($xmlString));
-		$xml = \simplexml_load_string($xmlString);
+        /** @var string $xmlString */
+		$xmlString = \curl_exec($ch) ?: '';
+        /** @var \SimpleXMLElement|false $xml */
+        $xml = \simplexml_load_string($xmlString);
         return $xml ?: null;
     }
 }

@@ -66,11 +66,7 @@ class ExternalScrobbler implements Scrobbler
 	 * @throws ScrobbleServiceException when auth.getSession call fails
 	 */
 	public function generateSession(string $token, string $userId) : void {
-		$ch = $this->makeCurlHandle();
-		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query(
-			$this->generateMethodParams('auth.getSession', ['token' => $token])
-		));
-		$xml = \simplexml_load_string(\curl_exec($ch));
+        $xml = $this->execRequest($this->generateMethodParams('auth.getSession', ['token' => $token]));
 
 		$status = (string)$xml['status'];
 		if ($status !== 'ok') {
@@ -148,11 +144,7 @@ class ExternalScrobbler implements Scrobbler
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
 			$scrobbleData["trackNumber[{$i}]"] = $track->getNumber();
 		}
-		$scrobbleData = $this->generateMethodParams('track.scrobble', $scrobbleData);
-
-		$ch = $this->makeCurlHandle();
-		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($scrobbleData));
-		$xml = \simplexml_load_string(\curl_exec($ch));
+        $xml = $this->execRequest($this->generateMethodParams('track.scrobble', $scrobbleData));
 
 		if ((string)$xml['status'] !== 'ok') {
 			$this->logger->warning('Failed to scrobble to ' . $this->name);
@@ -223,11 +215,7 @@ class ExternalScrobbler implements Scrobbler
 		return $params;
 	}
 
-	/**
-	 * @return resource (in PHP8+ return \CurlHandle)
-	 * @throws \RuntimeException when unable to initialize a cURL handle
-	 */
-	private function makeCurlHandle() {
+    private function execRequest(array $params) : ?\SimpleXMLElement {
 		$ch = \curl_init();
 		if (!$ch) {
 			$this->logger->error('Failed to initialize a curl handle, is the php curl extension installed?');
@@ -237,6 +225,10 @@ class ExternalScrobbler implements Scrobbler
 		\curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
-		return $ch;
-	}
+        \curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
+		$xmlString = \curl_exec($ch);
+        \assert(\is_string($xmlString));
+		$xml = \simplexml_load_string($xmlString);
+        return $xml ?: null;
+    }
 }

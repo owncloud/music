@@ -45,7 +45,7 @@ class ScrobblerController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function handleToken(string $serviceIdentifier, ?string $token) : StandaloneTemplateResponse {
+	public function handleToken(?string $serviceIdentifier = null, ?string $token) : StandaloneTemplateResponse {
 		$params = [
 			'lang' => $this->l10n->getLanguageCode(),
 			'success' => false,
@@ -89,7 +89,7 @@ class ScrobblerController extends Controller {
      * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function clearSession(string $serviceIdentifier): JSONResponse {
+	public function clearSession(?string $serviceIdentifier = null): JSONResponse {
 		$response = new JSONResponse(['error' => [
 			'message' => 'Unknown error'
 		]]);
@@ -114,7 +114,7 @@ class ScrobblerController extends Controller {
 		}
 	}
 
-	private function getExternalScrobbler(string $serviceIdentifier) : ?ExternalScrobbler {
+	private function getExternalScrobbler(?string $serviceIdentifier) : ?ExternalScrobbler {
 		foreach ($this->externalScrobblers as $scrobbler) {
 			if ($scrobbler->getIdentifier() === $serviceIdentifier) {
 				return $scrobbler;

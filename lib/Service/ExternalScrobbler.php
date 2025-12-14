@@ -192,7 +192,7 @@ class ExternalScrobbler implements Scrobbler
 			}
 		}
 
-		$paramString .= $apiSecret = $this->getApiSecret();
+		$paramString .= $this->getApiSecret();
 		return \md5($paramString);
 	}
 

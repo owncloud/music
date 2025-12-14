@@ -41,7 +41,7 @@ class ScrobblerController extends Controller {
 	}
 
 	/**
-	 * @PublicPage
+     * @NoAdminRequired
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
@@ -86,9 +86,8 @@ class ScrobblerController extends Controller {
 	}
 
 	/**
-	 * @PublicPage
+     * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @noSameSiteCookieRequired
 	 */
 	public function clearSession(string $serviceIdentifier): JSONResponse {
 		$response = new JSONResponse(['error' => [

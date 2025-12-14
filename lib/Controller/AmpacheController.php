@@ -14,7 +14,6 @@
 
 namespace OCA\Music\Controller;
 
-use OCA\Music\Service\Scrobbler;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -75,6 +74,7 @@ use OCA\Music\Service\FileSystemService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
+use OCA\Music\Service\Scrobbler;
 
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\ArrayUtil;

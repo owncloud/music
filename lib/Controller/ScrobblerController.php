@@ -60,7 +60,7 @@ class ScrobblerController extends Controller {
 
 		if (!$scrobbler) {
 			$params['headline'] = $this->l10n->t('Unknown Service');
-			$params['getsession_response'] = $this->l10n->t('Unkonwn service %s', [$serviceIdentifier]);
+			$params['getsession_response'] = $this->l10n->t('Unknown service %s', [$serviceIdentifier]);
 			$response->setParams($params);
 			return $response;
 		}

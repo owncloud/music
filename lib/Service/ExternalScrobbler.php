@@ -66,17 +66,17 @@ class ExternalScrobbler implements Scrobbler
 	 * @throws ScrobbleServiceException when auth.getSession call fails
 	 */
 	public function generateSession(string $token, string $userId) : void {
-        $xml = $this->execRequest($this->generateMethodParams('auth.getSession', ['token' => $token]));
+		$xml = $this->execRequest($this->generateMethodParams('auth.getSession', ['token' => $token]));
 
 		$status = (string)$xml['status'];
 		if ($status !== 'ok') {
-            if ($xml instanceof \SimpleXMLElement) {
-                $error = (string)$xml->error;
-                $code = (int)$xml->code;
-            } else {
-                $error = 'Empty response';
-                $code = 0;
-            }
+			if ($xml instanceof \SimpleXMLElement) {
+				$error = (string)$xml->error;
+				$code = (int)$xml->code;
+			} else {
+				$error = 'Empty response';
+				$code = 0;
+			}
 			throw new ScrobbleServiceException($error, $code);
 		}
 		$sessionValue = (string)$xml->session->key;
@@ -151,7 +151,7 @@ class ExternalScrobbler implements Scrobbler
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
 			$scrobbleData["trackNumber[{$i}]"] = $track->getNumber();
 		}
-        $xml = $this->execRequest($this->generateMethodParams('track.scrobble', $scrobbleData));
+		$xml = $this->execRequest($this->generateMethodParams('track.scrobble', $scrobbleData));
 
 		if ((string)$xml['status'] !== 'ok') {
 			$this->logger->warning('Failed to scrobble to ' . $this->name);
@@ -222,7 +222,7 @@ class ExternalScrobbler implements Scrobbler
 		return $params;
 	}
 
-    private function execRequest(array $params) : ?\SimpleXMLElement {
+	private function execRequest(array $params) : ?\SimpleXMLElement {
 		$ch = \curl_init();
 		if (!$ch) {
 			$this->logger->error('Failed to initialize a curl handle, is the php curl extension installed?');
@@ -232,11 +232,11 @@ class ExternalScrobbler implements Scrobbler
 		\curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
 		\curl_setopt($ch, \CURLOPT_POST, true);
 		\curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
-        \curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
-        /** @var string $xmlString */
+		\curl_setopt($ch, \CURLOPT_POSTFIELDS, \http_build_query($params));
+		/** @var string $xmlString */
 		$xmlString = \curl_exec($ch) ?: '';
-        /** @var \SimpleXMLElement|false $xml */
-        $xml = \simplexml_load_string($xmlString);
-        return $xml ?: null;
-    }
+		/** @var \SimpleXMLElement|false $xml */
+		$xml = \simplexml_load_string($xmlString);
+		return $xml ?: null;
+	}
 }

@@ -41,7 +41,7 @@ class ScrobblerController extends Controller {
 	}
 
 	/**
-     * @NoAdminRequired
+	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
@@ -56,12 +56,12 @@ class ScrobblerController extends Controller {
 		];
 		$response = new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
 
-        if (!$this->userId) {
-            $params['getsession_response'] = $this->l10n->t('Not logged in');
-            $params['instructions'] = $this->l10n->t('Please log in before attempting to authorize a scrobbler');
-            $response->setParams($params);
-            return $response;
-        }
+		if (!$this->userId) {
+			$params['getsession_response'] = $this->l10n->t('Not logged in');
+			$params['instructions'] = $this->l10n->t('Please log in before attempting to authorize a scrobbler');
+			$response->setParams($params);
+			return $response;
+		}
 
 		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
 
@@ -93,7 +93,7 @@ class ScrobblerController extends Controller {
 	}
 
 	/**
-     * @NoAdminRequired
+	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function clearSession(?string $serviceIdentifier = null): JSONResponse {
@@ -101,12 +101,12 @@ class ScrobblerController extends Controller {
 			'message' => 'Unknown error'
 		]]);
 
-        if (!$this->userId) {
-            $response->setData(['error' => [
-                'message' => $this->l10n->t('Not logged in')
-            ]]);
-            return $response;
-        }
+		if (!$this->userId) {
+			$response->setData(['error' => [
+				'message' => $this->l10n->t('Not logged in')
+			]]);
+			return $response;
+		}
 
 		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
 		if (!$scrobbler) {

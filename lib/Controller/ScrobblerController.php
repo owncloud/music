@@ -105,6 +105,7 @@ class ScrobblerController extends Controller {
             $response->setData(['error' => [
                 'message' => $this->l10n->t('Not logged in')
             ]]);
+            return $response;
         }
 
 		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);

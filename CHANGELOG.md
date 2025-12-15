@@ -1,6 +1,8 @@
 ## [Unreleased]
 
 ### Added
+- Scrobbling to Last.fm (requires opt-in from the admin and the user)
+  [#1266](https://github.com/owncloud/music/pull/1266) @mattwellss
 - Context menu with "Save playlist" function for advanced search results
   [#1256](https://github.com/owncloud/music/issues/1256)
 - Searching for radio stations with the advanced search

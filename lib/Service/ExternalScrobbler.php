@@ -70,7 +70,14 @@ class ExternalScrobbler implements Scrobbler
 
 		$status = (string)$xml['status'];
 		if ($status !== 'ok') {
-			throw new ScrobbleServiceException((string)$xml->error, (int)$xml->error['code']);
+            if ($xml instanceof \SimpleXMLElement) {
+                $error = (string)$xml->error;
+                $code = (int)$xml->code;
+            } else {
+                $error = 'Empty response';
+                $code = 0;
+            }
+			throw new ScrobbleServiceException($error, $code);
 		}
 		$sessionValue = (string)$xml->session->key;
 

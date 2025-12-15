@@ -45,7 +45,7 @@ class ScrobblerController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function handleToken(?string $serviceIdentifier = null, ?string $token) : StandaloneTemplateResponse {
+	public function handleToken(?string $serviceIdentifier = null, ?string $token = '') : StandaloneTemplateResponse {
 		$params = [
 			'lang' => $this->l10n->getLanguageCode(),
 			'success' => false,

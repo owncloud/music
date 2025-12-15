@@ -74,6 +74,7 @@ use OCA\Music\Service\FileSystemService;
 use OCA\Music\Service\LastfmService;
 use OCA\Music\Service\LibrarySettings;
 use OCA\Music\Service\PodcastService;
+use OCA\Music\Service\Scrobbler;
 
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\ArrayUtil;
@@ -105,6 +106,7 @@ class AmpacheController extends ApiController {
 	private LibrarySettings $librarySettings;
 	private Random $random;
 	private Logger $logger;
+	private Scrobbler $scrobbler;
 
 	private bool $jsonMode;
 	private ?AmpacheSession $session;
@@ -140,7 +142,8 @@ class AmpacheController extends ApiController {
 								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
 								Random $random,
-								Logger $logger) {
+								Logger $logger,
+								Scrobbler $scrobbler) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->config = $config;
@@ -166,6 +169,7 @@ class AmpacheController extends ApiController {
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
 		$this->logger = $logger;
+		$this->scrobbler = $scrobbler;
 
 		$this->jsonMode = false;
 		$this->session = null;
@@ -1437,7 +1441,7 @@ class AmpacheController extends ApiController {
 	 */
 	protected function record_play(int $id, ?int $date) : array {
 		$timeOfPlay = ($date === null) ? null : new \DateTime('@' . $date);
-		$this->trackBusinessLayer->recordTrackPlayed($id, $this->userId(), $timeOfPlay);
+		$this->scrobbler->recordTrackPlayed($id, $this->userId(), $timeOfPlay);
 		return ['success' => 'play recorded'];
 	}
 

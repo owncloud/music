@@ -14,6 +14,9 @@
 
 namespace OCA\Music\AppInfo;
 
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Hooks\FileHooks;
 use OCA\Music\Hooks\ShareHooks;
 use OCA\Music\Hooks\UserHooks;
@@ -21,12 +24,17 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
+use OCA\Music\Service\AggregateScrobbler;
+use OCA\Music\Service\ExternalScrobbler;
+use OCA\Music\Service\Scrobbler;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Files\IMimeTypeLoader;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\Security\IContentSecurityPolicyManager;
+use OCP\Security\ICrypto;
 
 // The IBootstrap interface is not available on ownCloud. Create a thin base class to hide this difference
 // from the actual Application class.
@@ -60,6 +68,7 @@ class Application extends ApplicationBase {
 			$container->query(SubsonicMiddleware::class);
 
 			$this->registerMiddleWares($container);
+			$this->registerScrobblers($container);
 		}
 	}
 
@@ -78,6 +87,7 @@ class Application extends ApplicationBase {
 	 */
 	public function register($context) : void {
 		$this->registerMiddleWares($context);
+		$this->registerScrobblers($context);
 		$context->registerDashboardWidget(\OCA\Music\Dashboard\MusicWidget::class);
 	}
 
@@ -188,5 +198,36 @@ class Application extends ApplicationBase {
 			$enabled = (bool)$config->getSystemValue('music.enable_radio_hls_on_share', $enabled);
 		}
 		return $enabled;
+	}
+
+	/**
+	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
+	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
+	 */
+	private function registerScrobblers($context) : void
+	{
+		$context->registerService('externalScrobblers', function () {
+			return [
+				new ExternalScrobbler(
+					$this->get(IConfig::class),
+					$this->get(Logger::class),
+					$this->get(IURLGenerator::class),
+					$this->get(TrackBusinessLayer::class),
+					$this->get(AlbumBusinessLayer::class),
+					$this->get(ICrypto::class),
+					'Last.fm',
+					'lastfm',
+					'http://ws.audioscrobbler.com/2.0/',
+					'http://www.last.fm/api/auth/',
+					$this->get('appName')
+				)
+			];
+		});
+
+		$context->registerService(Scrobbler::class, function () {
+			$scrobblers = $this->get('externalScrobblers');
+			$scrobblers[] = $this->get(TrackBusinessLayer::class);
+			return new AggregateScrobbler($scrobblers);
+		});
 	}
 }

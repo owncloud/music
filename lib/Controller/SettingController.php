@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Service\ExternalScrobbler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -44,6 +45,8 @@ class SettingController extends Controller {
 	private ISecureRandom $secureRandom;
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
+	/** @var ExternalScrobbler[] $externalScrobblers */
+	private array $externalScrobblers;
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -54,7 +57,8 @@ class SettingController extends Controller {
 								LibrarySettings $librarySettings,
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator,
-								Logger $logger) {
+								Logger $logger,
+								array $externalScrobblers) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -65,6 +69,7 @@ class SettingController extends Controller {
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
+		$this->externalScrobblers = $externalScrobblers;
 	}
 
 	/**
@@ -124,7 +129,8 @@ class SettingController extends Controller {
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
 			'appVersion' => AppInfo::getVersion(),
-			'user' => $this->userId
+			'user' => $this->userId,
+			'scrobblers' => $this->getScrobbleAuth()
 		]);
 	}
 
@@ -145,6 +151,22 @@ class SettingController extends Controller {
 		return (string)\str_replace('/rest/dummy', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
 						'music.subsonic.handleRequest', ['method' => 'dummy'])));
+	}
+
+	private function getScrobbleAuth(): array {
+		$services = [];
+		foreach ($this->externalScrobblers as $scrobbler) {
+			$tokenRequestUrl = $scrobbler->getTokenRequestUrl();
+			$services[] = [
+				'service' => $scrobbler->getName(),
+				'identifier' => $scrobbler->getIdentifier(),
+				'configured' => $tokenRequestUrl && $scrobbler->getApiSecret(),
+				'tokenRequestUrl' => $tokenRequestUrl,
+				'hasSession' => $scrobbler->getApiSession($this->userId) !== null
+			];
+		}
+
+		return $services;
 	}
 
 	private function storeUserKey(?string $description, string $password) : ?int {

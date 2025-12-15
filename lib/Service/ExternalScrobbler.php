@@ -87,7 +87,7 @@ class ExternalScrobbler implements Scrobbler
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function clearSession(?string $userId) : void {
+	public function clearSession(string $userId) : void {
 		try {
 			$this->config->deleteUserValue($userId, $this->appName, $this->identifier . '.scrobbleSessionKey');
 		} catch (\InvalidArgumentException $e) {

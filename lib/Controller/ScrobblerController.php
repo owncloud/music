@@ -56,6 +56,13 @@ class ScrobblerController extends Controller {
 		];
 		$response = new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
 
+        if (!$this->userId) {
+            $params['getsession_response'] = $this->l10n->t('Not logged in');
+            $params['instructions'] = $this->l10n->t('Please log in before attempting to authorize a scrobbler');
+            $response->setParams($params);
+            return $response;
+        }
+
 		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
 
 		if (!$scrobbler) {
@@ -93,6 +100,12 @@ class ScrobblerController extends Controller {
 		$response = new JSONResponse(['error' => [
 			'message' => 'Unknown error'
 		]]);
+
+        if (!$this->userId) {
+            $response->setData(['error' => [
+                'message' => $this->l10n->t('Not logged in')
+            ]]);
+        }
 
 		$scrobbler = $this->getExternalScrobbler($serviceIdentifier);
 		if (!$scrobbler) {

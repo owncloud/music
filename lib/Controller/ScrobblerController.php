@@ -45,7 +45,7 @@ class ScrobblerController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function handleToken(?string $serviceIdentifier = null, ?string $token = '') : StandaloneTemplateResponse {
+	public function handleToken(?string $serviceIdentifier, ?string $token) : StandaloneTemplateResponse {
 		$params = [
 			'lang' => $this->l10n->getLanguageCode(),
 			'success' => false,
@@ -73,7 +73,7 @@ class ScrobblerController extends Controller {
 		}
 
 		try {
-			$scrobbler->generateSession($token, $this->userId);
+			$scrobbler->generateSession($token ?? '', $this->userId);
 			$params['success'] = true;
 			$params['headline'] = $this->l10n->t('All Set!');
 			$params['instructions'] = $this->l10n->t('Your streams will be scrobbled to %s.', [$scrobbler->getName()]);
@@ -96,7 +96,7 @@ class ScrobblerController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function clearSession(?string $serviceIdentifier = null): JSONResponse {
+	public function clearSession(?string $serviceIdentifier): JSONResponse {
 		$response = new JSONResponse(['error' => [
 			'message' => 'Unknown error'
 		]]);

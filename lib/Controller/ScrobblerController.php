@@ -28,11 +28,13 @@ class ScrobblerController extends Controller {
 	/** @var ExternalScrobbler[] $externalScrobblers */
 	private array $externalScrobblers;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IL10N $l10n,
-								?string $userId,
-								array $externalScrobblers) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IL10N $l10n,
+			?string $userId,
+			array $externalScrobblers
+	) {
 		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->userId = $userId;

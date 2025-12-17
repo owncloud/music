@@ -54,20 +54,22 @@ class Scanner extends PublicEmitter {
 	private IConfig $config;
 	private IFactory $l10nFactory;
 
-	public function __construct(ExtractorGetID3 $extractor,
-								ArtistBusinessLayer $artistBusinessLayer,
-								AlbumBusinessLayer $albumBusinessLayer,
-								TrackBusinessLayer $trackBusinessLayer,
-								PlaylistBusinessLayer $playlistBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								Cache $cache,
-								CoverService $coverService,
-								Logger $logger,
-								Maintenance $maintenance,
-								LibrarySettings $librarySettings,
-								IRootFolder $rootFolder,
-								IConfig $config,
-								IFactory $l10nFactory) {
+	public function __construct(
+			ExtractorGetID3 $extractor,
+			ArtistBusinessLayer $artistBusinessLayer,
+			AlbumBusinessLayer $albumBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
+			PlaylistBusinessLayer $playlistBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			Cache $cache,
+			CoverService $coverService,
+			Logger $logger,
+			Maintenance $maintenance,
+			LibrarySettings $librarySettings,
+			IRootFolder $rootFolder,
+			IConfig $config,
+			IFactory $l10nFactory
+	) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -97,8 +99,7 @@ class Scanner extends PublicEmitter {
 
 			if ($isImage) {
 				$this->updateImage($file, $userId);
-			}
-			elseif ($isAudio) {
+			} elseif ($isAudio) {
 				$libraryRoot = $this->librarySettings->getFolder($userId);
 				$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
 			}
@@ -110,12 +111,11 @@ class Scanner extends PublicEmitter {
 
 		if (StringUtil::startsWith($mimetype, 'image')) {
 			$this->logger->debug('image file moved: '. $file->getPath());
-			// we don't need to track the identity of images and moving a file can be handled as it was 
+			// we don't need to track the identity of images and moving a file can be handled as it was
 			// a file deletion followed by a file addition
 			$this->deleteImage([$file->getId()], [$userId]);
 			$this->updateImage($file, $userId);
-		}
-		elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+		} elseif (StringUtil::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
 			$this->logger->debug('audio file moved: '. $file->getPath());
 			if ($this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)) {
 				// In the new path, the file (now or still) belongs to the library. Even if it was already in the lib,
@@ -151,8 +151,7 @@ class Scanner extends PublicEmitter {
 					// too much. The user will be prompted to rescan the files upon opening the Music app.
 					$this->trackBusinessLayer->markTracksDirty(ArrayUtil::extractIds($audioFiles), [$userId]);
 				}
-			}
-			else {
+			} else {
 				// The new path of the folder doesn't belong to the library so neither does any of the
 				// contained files. Remove audio files from the lib if found.
 				$this->deleteAudio(ArrayUtil::extractIds($audioFiles), [$userId]);
@@ -293,8 +292,11 @@ class Scanner extends PublicEmitter {
 		}
 
 		// track number
-		$meta['trackNumber'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['track_number', 'tracknumber', 'track'],
-				$fieldsFromFileName['track_number']);
+		$meta['trackNumber'] = ExtractorGetID3::getFirstOfTags(
+			$fileInfo,
+			['track_number', 'tracknumber', 'track'],
+			$fieldsFromFileName['track_number']
+		);
 		$meta['trackNumber'] = self::normalizeOrdinal($meta['trackNumber']);
 
 		// disc number
@@ -386,7 +388,10 @@ class Scanner extends PublicEmitter {
 			}
 
 			$this->invalidateCacheOnDelete(
-					$result['affectedUsers'], $result['obsoleteAlbums'], $result['obsoleteArtists']);
+				$result['affectedUsers'],
+				$result['obsoleteAlbums'],
+				$result['obsoleteArtists']
+			);
 
 			$this->logger->debug('removed entities: ' . \json_encode($result));
 			$this->emit(self::class, 'delete', [$result['deletedTracks'], $result['affectedUsers']]);
@@ -416,7 +421,10 @@ class Scanner extends PublicEmitter {
 			$affectedUsers = \array_unique($affectedUsers);
 
 			$this->invalidateCacheOnDelete(
-					$affectedUsers, ArrayUtil::extractIds($affectedAlbums), ArrayUtil::extractIds($affectedArtists));
+				$affectedUsers,
+				ArrayUtil::extractIds($affectedAlbums),
+				ArrayUtil::extractIds($affectedArtists)
+			);
 		}
 
 		return $anythingAffected;
@@ -742,10 +750,10 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Find external cover images for albums which do not yet have one.
-	 * Target either one user or all users. 
+	 * Target either one user or all users.
 	 * Optionally, limit the search to only the specified path. If this path doesn't point within the library path,
 	 * then nothing will be found. Path is not supported when all users are targeted.
-	 * 
+	 *
 	 * @return bool true if any albums were updated; false otherwise
 	 */
 	public function findAlbumCovers(?string $userId = null, ?string $path = null) : bool {

@@ -34,7 +34,7 @@ class Provider extends \OCP\Search\Provider {
 	 * obtains all the items from the Providers again on creation of each page.
 	 * If there were thousands of matches, we would end up doing lot of unnecessary work.
 	 */
-	const MAX_RESULTS_PER_TYPE = 100;
+	private const MAX_RESULTS_PER_TYPE = 100;
 
 	private ArtistMapper $artistMapper;
 	private AlbumMapper $albumMapper;

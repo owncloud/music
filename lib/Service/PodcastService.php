@@ -192,13 +192,13 @@ class PodcastService {
 				$this->logger->warning("RSS feed for the channel {$channel->id} was invalid");
 				$this->channelBusinessLayer->markUpdateChecked($channel);
 				$status = self::STATUS_INVALID_RSS;
-			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
+			} elseif ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
 				// update the episodes too if channel content has actually changed or update is forced
 				$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $id);
 				$channel->setEpisodes($episodes);
 				$this->episodeBusinessLayer->deleteByChannelExcluding($id, ArrayUtil::extractIds($episodes), $userId);
 				$updated = true;
-			} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
+			} elseif ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
 				// the channel content is not new for the server but it is still new for the client
 				$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $userId));
 				$updated = true;
@@ -354,7 +354,7 @@ class PodcastService {
 			$channelResult = $this->subscribe($rssUrl, $userId);
 			if (!empty($channelResult['channel'])) {
 				$channels[] = $channelResult['channel'];
-			} else if ($channelResult['status'] == self::STATUS_ALREADY_EXISTS) {
+			} elseif ($channelResult['status'] == self::STATUS_ALREADY_EXISTS) {
 				$existingCount++;
 			} else {
 				$failedCount++;

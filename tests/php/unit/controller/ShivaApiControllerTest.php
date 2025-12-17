@@ -77,7 +77,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			$this->scanner,
 			$this->userId,
 			$this->l10n,
-			$this->logger);
+			$this->logger
+		);
 	}
 
 	public static function linkToRouteMock(string $route, array $args) : string {

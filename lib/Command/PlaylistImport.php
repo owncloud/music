@@ -102,7 +102,7 @@ class PlaylistImport extends BaseCommand {
 
 		foreach ($files as $filePath) {
 			$name = \pathinfo($filePath, PATHINFO_FILENAME);
-			assert(\is_string($name));
+			\assert(\is_string($name));
 			$existingLists = $this->businessLayer->findAllByName($name, $userId);
 			if (\count($existingLists) === 0) {
 				$playlist = $this->businessLayer->create($name, $userId);

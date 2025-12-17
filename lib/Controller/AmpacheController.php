@@ -112,38 +112,40 @@ class AmpacheController extends ApiController {
 	private ?AmpacheSession $session;
 	private array $namePrefixes;
 
-	const ALL_TRACKS_PLAYLIST_ID = -1;
-	const API4_VERSION = '4.4.0';
-	const API5_VERSION = '5.6.0';
-	const API6_VERSION = '6.7.1';
-	const API_MIN_COMPATIBLE_VERSION = '350001';
+	public const ALL_TRACKS_PLAYLIST_ID = -1;
+	public const API4_VERSION = '4.4.0';
+	public const API5_VERSION = '5.6.0';
+	public const API6_VERSION = '6.7.1';
+	public const API_MIN_COMPATIBLE_VERSION = '350001';
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								IL10N $l10n,
-								IURLGenerator $urlGenerator,
-								IUserManager $userManager,
-								AlbumBusinessLayer $albumBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
-								BookmarkBusinessLayer $bookmarkBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								PlaylistBusinessLayer $playlistBusinessLayer,
-								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
-								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
-								RadioStationBusinessLayer $radioStationBusinessLayer,
-								TrackBusinessLayer $trackBusinessLayer,
-								Library $library,
-								PodcastService $podcastService,
-								AmpacheImageService $imageService,
-								CoverService $coverService,
-								DetailsService $detailsService,
-								FileSystemService $fileSystemService,
-								LastfmService $lastfmService,
-								LibrarySettings $librarySettings,
-								Random $random,
-								Logger $logger,
-								Scrobbler $scrobbler) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IConfig $config,
+			IL10N $l10n,
+			IURLGenerator $urlGenerator,
+			IUserManager $userManager,
+			AlbumBusinessLayer $albumBusinessLayer,
+			ArtistBusinessLayer $artistBusinessLayer,
+			BookmarkBusinessLayer $bookmarkBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			PlaylistBusinessLayer $playlistBusinessLayer,
+			PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+			PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
+			RadioStationBusinessLayer $radioStationBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
+			Library $library,
+			PodcastService $podcastService,
+			AmpacheImageService $imageService,
+			CoverService $coverService,
+			DetailsService $detailsService,
+			FileSystemService $fileSystemService,
+			LastfmService $lastfmService,
+			LibrarySettings $librarySettings,
+			Random $random,
+			Logger $logger,
+			Scrobbler $scrobbler
+	) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->config = $config;
@@ -300,11 +302,11 @@ class AmpacheController extends ApiController {
 	/**
 	 * Get the handshake result. The actual user authentication and session creation logic has happened prior to calling
 	 * this in the class AmpacheMiddleware.
-	 * 
+	 *
 	 * @AmpacheAPI
 	 */
-	 protected function handshake() : array {
-		assert($this->session !== null);
+	protected function handshake() : array {
+		\assert($this->session !== null);
 		$user = $this->userId();
 		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
 		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
@@ -345,11 +347,11 @@ class AmpacheController extends ApiController {
 
 	/**
 	 * Get the result for the 'goodbye' command. The actual logout is handled by AmpacheMiddleware.
-	 * 
+	 *
 	 * @AmpacheAPI
 	 */
 	protected function goodbye() : array {
-		assert($this->session !== null);
+		\assert($this->session !== null);
 		return ['success' => "goodbye: {$this->session->getToken()}"];
 	}
 
@@ -1952,7 +1954,7 @@ class AmpacheController extends ApiController {
 	}
 
 	private function createAmpacheActionUrl(string $action, int $id, ?string $type=null) : string {
-		assert($this->session !== null);
+		\assert($this->session !== null);
 		if ($this->isInternalSession()) {
 			$route = 'music.ampache.internalApi';
 			$authArg = '';
@@ -1976,12 +1978,11 @@ class AmpacheController extends ApiController {
 			throw new AmpacheException('unexpected entity type for cover image', 500);
 		}
 
-		assert($this->session !== null);
+		\assert($this->session !== null);
 		if ($this->isInternalSession()) {
 			// For internal clients, we don't need to create URLs with permanent but API-key-specific tokens
 			return $this->createAmpacheActionUrl('get_art', $entity->getId(), $type);
-		}
-		else {
+		} else {
 			// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
 			if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
 				$id = $entity->getId();
@@ -2488,10 +2489,10 @@ class AmpacheController extends ApiController {
 
 	private function requestedApiVersion() : ?string {
 		// During the handshake, we don't yet have a session but the requested version may be in the request args
-		return ($this->session !== null) 
+		return ($this->session !== null)
 			? $this->session->getApiVersion()
 			: $this->request->getParam('version');
-	} 
+	}
 
 	private function apiMajorVersion() : int {
 		$verString = $this->requestedApiVersion();

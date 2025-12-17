@@ -90,7 +90,7 @@ class FileResponse extends Response {
 	}
 
 	private function renderFromString() : string {
-		assert(\is_string($this->file));
+		\assert(\is_string($this->file));
 		return $this->rangeRequest
 			? \substr($this->file, $this->start, $this->partialSize())
 			: $this->file;

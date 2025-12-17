@@ -38,14 +38,16 @@ class PodcastApiController extends Controller {
 	private string $userId;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								IRootFolder $rootFolder,
-								PodcastService $podcastService,
-								?string $userId,
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IConfig $config,
+			IURLGenerator $urlGenerator,
+			IRootFolder $rootFolder,
+			PodcastService $podcastService,
+			?string $userId,
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;

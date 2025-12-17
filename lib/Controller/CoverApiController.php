@@ -45,16 +45,18 @@ class CoverApiController extends Controller {
 	private ?string $userId;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IURLGenerator $urlGenerator,
-								IRootFolder $rootFolder,
-								ArtistBusinessLayer $artistBusinessLayer,
-								AlbumBusinessLayer $albumBusinessLayer,
-								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
-								CoverService $coverService,
-								?string $userId, // null if this gets called after the user has logged out or on a public page
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IURLGenerator $urlGenerator,
+			IRootFolder $rootFolder,
+			ArtistBusinessLayer $artistBusinessLayer,
+			AlbumBusinessLayer $albumBusinessLayer,
+			PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+			CoverService $coverService,
+			?string $userId, // null if this gets called after the user has logged out or on a public page
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->rootFolder = $rootFolder;

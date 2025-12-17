@@ -51,14 +51,17 @@ class RelayStreamResponse extends Response implements ICallbackResponse {
 		 * HTTP headers are case-insensitive; lower case all the headers for easier handling.
 		 */
 		$resHeaders = \array_change_key_case($resolved['headers'], CASE_LOWER);
-		unset($resHeaders['connection']);
-		unset($resHeaders['keep-alive']);
-		unset($resHeaders['proxy-authentication']);
-		unset($resHeaders['proxy-authorization']);
-		unset($resHeaders['te']);
-		unset($resHeaders['trailers']);
-		unset($resHeaders['transfer-encoding']);
-		unset($resHeaders['upgrade']);
+		unset(
+			$resHeaders['connection'],
+			$resHeaders['keep-alive'],
+			$resHeaders['proxy-authentication'],
+			$resHeaders['proxy-authorization'],
+			$resHeaders['te'],
+			$resHeaders['trailers'],
+			$resHeaders['transfer-encoding'],
+			$resHeaders['upgrade']
+		);
+
 		$this->setHeaders($resHeaders);
 
 		$this->contentLength = isset($resHeaders['content-length']) ? (int)$resHeaders['content-length'] : null;

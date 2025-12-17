@@ -32,10 +32,10 @@ use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\StringUtil;
 
 class SettingController extends Controller {
-	const DEFAULT_PASSWORD_LENGTH = 10;
+	private const DEFAULT_PASSWORD_LENGTH = 10;
 	/* Character set without look-alike characters. Similar but even more stripped set would be found
 	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not available on ownCloud. */
-	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+	private const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 	private AmpacheSessionMapper $ampacheSessionMapper;
 	private AmpacheUserMapper $ampacheUserMapper;
@@ -48,17 +48,19 @@ class SettingController extends Controller {
 	/** @var ExternalScrobbler[] $externalScrobblers */
 	private array $externalScrobblers;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								AmpacheSessionMapper $ampacheSessionMapper,
-								AmpacheUserMapper $ampacheUserMapper,
-								Scanner $scanner,
-								?string $userId,
-								LibrarySettings $librarySettings,
-								ISecureRandom $secureRandom,
-								IURLGenerator $urlGenerator,
-								Logger $logger,
-								array $externalScrobblers) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			AmpacheSessionMapper $ampacheSessionMapper,
+			AmpacheUserMapper $ampacheUserMapper,
+			Scanner $scanner,
+			?string $userId,
+			LibrarySettings $librarySettings,
+			ISecureRandom $secureRandom,
+			IURLGenerator $urlGenerator,
+			Logger $logger,
+			array $externalScrobblers
+	) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -143,14 +145,22 @@ class SettingController extends Controller {
 	}
 
 	private function getAmpacheUrl() : string {
-		return (string)\str_replace('/server/xml.server.php', '',
-				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.xmlApi')));
+		return (string)\str_replace(
+			'/server/xml.server.php',
+			'',
+			$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.xmlApi'))
+		);
 	}
 
 	private function getSubsonicUrl() : string {
-		return (string)\str_replace('/rest/dummy', '',
-				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
-						'music.subsonic.handleRequest', ['method' => 'dummy'])));
+		return (string)\str_replace(
+			'/rest/dummy',
+			'',
+			$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
+				'music.subsonic.handleRequest',
+				['method' => 'dummy']
+			))
+		);
 	}
 
 	private function getScrobbleAuth(): array {

@@ -95,7 +95,7 @@ class FileSystemService {
 	/**
 	 * Get folder info lookup table, for the given tracks. The table will contain all the predecessor folders
 	 * between those tracks and the root music folder (inclusive).
-	 * 
+	 *
 	 * @param array $trackIdsByFolder Keys are folder IDs and values are arrays of track IDs
 	 * @return array Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
 	 */
@@ -130,7 +130,7 @@ class FileSystemService {
 
 	/**
 	 * Add externally mounted folders and shared files and folders to the folder LUT if there are any under the $musicFolder
-	 * 
+	 *
 	 * @param array $lut (in|out) Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
 	 */
 	private function addExternalMountsToFoldersLut(array &$lut, string $userId, Folder $musicFolder) : void {
@@ -148,7 +148,7 @@ class FileSystemService {
 					$trackIds = $lut[$node->getId()]['trackIds'] ?? [];
 					$lut[$node->getId()] = ['name' => $node->getName(), 'parent' => $rootFolderId, 'trackIds' => $trackIds];
 
-				} else if ($node->getMimePart() == 'audio') {
+				} elseif ($node->getMimePart() == 'audio') {
 					// shared audio file, check if it's actually a scanned file in our library
 					try {
 						$sharedTrack = $this->mapper->findByFileId($node->getId(), $userId);
@@ -178,7 +178,7 @@ class FileSystemService {
 	/**
 	 * Add any missing intermediary folder to the LUT. For this function to work correctly, the pre-condition is that the LUT contains
 	 * a root node which is predecessor of all other contained nodes and has 'parent' set as null.
-	 * 
+	 *
 	 * @param array $lut (in|out) Keys are folder IDs and values are arrays like ['name' : string, 'parent' : int, 'trackIds' : int[]]
 	 */
 	private function addMissingParentsToFoldersLut(array &$lut) : void {

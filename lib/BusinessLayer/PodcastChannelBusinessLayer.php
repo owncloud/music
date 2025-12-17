@@ -22,7 +22,6 @@ use OCA\Music\Db\PodcastChannel;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Utility\StringUtil;
 
-
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method PodcastChannel find(int $channelId, string $userId)

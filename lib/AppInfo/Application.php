@@ -151,12 +151,12 @@ class Application extends ApplicationBase {
 		$dispatcher = $this->get(\OCP\EventDispatcher\IEventDispatcher::class);
 
 		// Files app
-		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, function() {
+		$dispatcher->addListener(\OCA\Files\Event\LoadAdditionalScriptsEvent::class, function () {
 			$this->loadEmbeddedMusicPlayer();
 		});
 
 		// Files_Sharing app
-		$dispatcher->addListener(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::class, function(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent $event) {
+		$dispatcher->addListener(\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::class, function (\OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent $event) {
 			// don't load the embedded player on the authentication page of password-protected share, and only load it for shared folders (not individual files)
 			if ($event->getScope() != \OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent::SCOPE_PUBLIC_SHARE_AUTH
 					&& $event->getShare()->getNodeType() == 'folder') {
@@ -204,8 +204,7 @@ class Application extends ApplicationBase {
 	 * @param mixed $context On Nextcloud, this is \OCP\AppFramework\Bootstrap\IRegistrationContext.
 	 *                       On ownCloud, this is \OCP\AppFramework\IAppContainer.
 	 */
-	private function registerScrobblers($context) : void
-	{
+	private function registerScrobblers($context) : void {
 		$context->registerService('externalScrobblers', function () {
 			return [
 				new ExternalScrobbler(

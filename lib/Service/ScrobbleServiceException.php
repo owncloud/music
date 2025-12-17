@@ -12,6 +12,5 @@
 
 namespace OCA\Music\Service;
 
-class ScrobbleServiceException extends \Exception
-{
+class ScrobbleServiceException extends \Exception {
 }

@@ -169,4 +169,3 @@ class ExtractorGetID3 implements Extractor {
 		return $result;
 	}
 }
-

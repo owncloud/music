@@ -26,7 +26,7 @@ class StringUtil {
 	public static function truncate(?string $string, int $maxBytes, string $trimMarker="\u{2026}") : ?string {
 		if ($string === null) {
 			return null;
-		} else if (\strlen($string) > $maxBytes) {
+		} elseif (\strlen($string) > $maxBytes) {
 			$string = \mb_strcut($string, 0, $maxBytes - \strlen($trimMarker));
 			return $string . $trimMarker;
 		} else {
@@ -70,7 +70,7 @@ class StringUtil {
 		return (self::caselessCompare($a, $b) === 0);
 	}
 
-	/** 
+	/**
 	 * Convert snake case string (like_this) to camel case (likeThis).
 	 */
 	public static function snakeToCamelCase(string $input): string {

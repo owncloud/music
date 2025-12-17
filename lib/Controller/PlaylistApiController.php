@@ -53,20 +53,22 @@ class PlaylistApiController extends Controller {
 	private IConfig $configManager;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IURLGenerator $urlGenerator,
-								PlaylistBusinessLayer $playlistBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
-								AlbumBusinessLayer $albumBusinessLayer,
-								TrackBusinessLayer $trackBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								CoverService $coverService,
-								PlaylistFileService $playlistFileService,
-								string $userId,
-								IRootFolder $rootFolder,
-								IConfig $configManager,
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IURLGenerator $urlGenerator,
+			PlaylistBusinessLayer $playlistBusinessLayer,
+			ArtistBusinessLayer $artistBusinessLayer,
+			AlbumBusinessLayer $albumBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			CoverService $coverService,
+			PlaylistFileService $playlistFileService,
+			string $userId,
+			IRootFolder $rootFolder,
+			IConfig $configManager,
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
@@ -101,7 +103,7 @@ class PlaylistApiController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * 
+	 *
 	 * @param string|int|null $trackIds
 	 */
 	public function create(?string $name, /*mixed*/ $trackIds, ?string $comment=null) : JSONResponse {
@@ -174,7 +176,7 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * generate a smart playlist according to the given rules
- 	 * @param string|int|bool|null $historyStrict
+	 * @param string|int|bool|null $historyStrict
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

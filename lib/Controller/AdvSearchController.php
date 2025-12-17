@@ -52,20 +52,22 @@ class AdvSearchController extends Controller {
 	private Random $random;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								AlbumBusinessLayer $albumBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
-								BookmarkBusinessLayer $bookmarkBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								PlaylistBusinessLayer $playlistBusinessLayer,
-								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
-								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
-								RadioStationBusinessLayer $radioStationBusinessLayer,
-								TrackBusinessLayer $trackBusinessLayer,
-								?string $userId, // null if this gets called after the user has logged out or on a public page
-								Random $random,
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			AlbumBusinessLayer $albumBusinessLayer,
+			ArtistBusinessLayer $artistBusinessLayer,
+			BookmarkBusinessLayer $bookmarkBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			PlaylistBusinessLayer $playlistBusinessLayer,
+			PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+			PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
+			RadioStationBusinessLayer $radioStationBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
+			?string $userId, // null if this gets called after the user has logged out or on a public page
+			Random $random,
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;

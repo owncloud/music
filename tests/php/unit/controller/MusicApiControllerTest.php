@@ -89,7 +89,8 @@ class MusicApiControllerTest extends ControllerTestUtility {
 			$this->librarySettings,
 			$this->userId,
 			$this->logger,
-			$this->createMock(Scrobbler::class));
+			$this->createMock(Scrobbler::class)
+		);
 	}
 
 	public function testTrackByFileId() {

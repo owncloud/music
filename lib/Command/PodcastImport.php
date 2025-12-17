@@ -78,7 +78,7 @@ class PodcastImport extends BaseCommand {
 					$id = $channelResult['channel']->getId();
 					$title = $channelResult['channel']->getTitle();
 					$output->writeln("  Subscribed channel $id <info>$title</info>");
-				} else if ($channelResult['status'] == PodcastService::STATUS_ALREADY_EXISTS) {
+				} elseif ($channelResult['status'] == PodcastService::STATUS_ALREADY_EXISTS) {
 					$output->writeln("  Skipping already subscribed channel {$channelResult['rss']}");
 				} else {
 					$output->writeln("  Failed to subscribe <error>{$channelResult['rss']}</error>");

@@ -29,11 +29,11 @@ class ClientUtil {
 		try {
 			// Allow XML to be retrieved even if there is no response body
 			$xml = new \SimpleXMLElement(
-					(string) $response->getBody() ?: '<root />',
-					isset($config['libxml_options']) ? $config['libxml_options'] : LIBXML_NONET,
-					false,
-					isset($config['ns']) ? $config['ns'] : '',
-					isset($config['ns_is_prefix']) ? $config['ns_is_prefix'] : false
+				(string) $response->getBody() ?: '<root />',
+				isset($config['libxml_options']) ? $config['libxml_options'] : LIBXML_NONET,
+				false,
+				isset($config['ns']) ? $config['ns'] : '',
+				isset($config['ns_is_prefix']) ? $config['ns_is_prefix'] : false
 			);
 			if (\PHP_VERSION_ID < 80000) {
 				\libxml_disable_entity_loader($disableEntities);
@@ -47,7 +47,7 @@ class ClientUtil {
 			throw new Exception(
 					'Unable to parse response body into XML: ' . $e->getMessage() .
 					'; libxml error: ' . \libxml_get_last_error()->message
-					);
+			);
 		}
 		return $xml;
 	}

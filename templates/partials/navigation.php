@@ -1,5 +1,6 @@
 <?php
 use OCA\Music\Utility\HtmlUtil;
+
 HtmlUtil::printNgTemplate('navigationitem');
 ?>
 

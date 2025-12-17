@@ -116,8 +116,10 @@ class LibrarySettings {
 	}
 
 	public function getFolder(string $userId) : Folder {
-		return $this->cachedGet($userId, 'music_folder', fn() => FilesUtil::getFolderFromRelativePath(
-			$this->rootFolder->getUserFolder($userId), $this->getPath($userId)));
+		return $this->cachedGet($userId, 'music_folder', fn () => FilesUtil::getFolderFromRelativePath(
+			$this->rootFolder->getUserFolder($userId),
+			$this->getPath($userId)
+		));
 	}
 
 	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {

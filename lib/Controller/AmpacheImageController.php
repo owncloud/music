@@ -49,7 +49,8 @@ class AmpacheImageController extends Controller {
 			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
 			PlaylistBusinessLayer $playlistBusinessLayer,
-			Logger $logger) {
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->service = $service;
 		$this->coverService = $coverService;

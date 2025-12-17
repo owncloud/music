@@ -32,7 +32,7 @@ class LastfmService {
 	private Logger $logger;
 	private string $apiKey;
 
-	const LASTFM_URL = 'http://ws.audioscrobbler.com/2.0/';
+	private const LASTFM_URL = 'http://ws.audioscrobbler.com/2.0/';
 
 	public function __construct(
 			AlbumBusinessLayer $albumBusinessLayer,
@@ -188,7 +188,7 @@ class LastfmService {
 	/**
 	 * Get artist tracks from the user's library, sorted by their popularity on Last.fm
 	 * @param int|string $artistIdOrName Either the ID of the artist or the artist's name written exactly
-	 * 									like in the DB. Any integer-typed value is treated as an ID and 
+	 * 									like in the DB. Any integer-typed value is treated as an ID and
 	 * 									string-typed value as a name.
 	 * @param int $maxCount Number of tracks to request from Last.fm. Note that the function may return much
 	 *						less tracks if the top tracks from Last.fm are not present in the user's library.

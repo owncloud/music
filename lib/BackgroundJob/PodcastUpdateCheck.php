@@ -60,8 +60,7 @@ class PodcastUpdateCheck extends TimedJob {
 			} else {
 				$logger->debug("$channelsChecked podcast channels in total were checked for updates");
 			}
-		}
-		else {
+		} else {
 			$logger->debug('Automatic podcast updating is disabled via config.php');
 		}
 	}

@@ -30,7 +30,7 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 		$this->l10n->expects($this->any())
 			->method('t')
 			->will($this->returnValue('Unknown artist'));
-		}
+	}
 
 	public function testToShivaApi() {
 		$artist = new Artist();

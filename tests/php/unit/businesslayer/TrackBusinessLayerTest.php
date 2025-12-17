@@ -50,13 +50,16 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByArtist')
-			->with($this->equalTo([$this->artistId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$this->artistId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue($response));
 
 		$result = $this->trackBusinessLayer->findAllByArtist(
 			$this->artistId,
-			$this->userId);
+			$this->userId
+		);
 		$this->assertEquals($response, $result);
 	}
 
@@ -64,13 +67,16 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByAlbum')
-			->with($this->equalTo([$this->albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$this->albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue($response));
 
 		$result = $this->trackBusinessLayer->findAllByAlbum(
 			$this->albumId,
-			$this->userId);
+			$this->userId
+		);
 		$this->assertEquals($response, $result);
 	}
 
@@ -78,13 +84,16 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = new Track();
 		$this->mapper->expects($this->once())
 			->method('findByFileId')
-			->with($this->equalTo($this->fileId),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo($this->fileId),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue($response));
 
 		$result = $this->trackBusinessLayer->findByFileId(
 			$this->fileId,
-			$this->userId);
+			$this->userId
+		);
 		$this->assertEquals($response, $result);
 	}
 

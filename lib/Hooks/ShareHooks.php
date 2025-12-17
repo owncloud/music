@@ -23,8 +23,8 @@ class ShareHooks {
 
 	// NC32 removed the legacy constants under OCP\Share::SHARE_TYPE_* but the alternative OCP\Share\IShare::TYPE_*
 	// are not present on OC (or NC < 17). The numeric values are compatible, though, so redefine them here.
-	const SHARE_TYPE_USER = 0;
-	const SHARE_TYPE_GROUP = 1;
+	private const SHARE_TYPE_USER = 0;
+	private const SHARE_TYPE_GROUP = 1;
 
 	private static function removeSharedItem(
 			string $itemType, int $nodeId, string $owner, array $removeFromUsers) : void {

@@ -83,28 +83,38 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->will($this->returnValue($this->albums));
 		$this->mapper->expects($this->exactly(1))
 			->method('getPerformingArtistsByAlbumId')
-			->with($this->equalTo(null),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo(null),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue($this->artistIds));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo(null),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo(null),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getDiscCountByAlbumId')
-			->with($this->equalTo(null),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo(null),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([1 => 1, 2 => 1, 3 => 1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getGenresByAlbumId')
-			->with($this->equalTo(null),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo(null),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->artistMapper->expects($this->exactly(1))
 			->method('findById')
-			->with($this->equalTo(\array_keys($this->artists)),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo(\array_keys($this->artists)),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue(\array_values($this->artists)));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
@@ -130,28 +140,38 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->will($this->returnValue($this->albums[$albumId-1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getPerformingArtistsByAlbumId')
-			->with($this->equalTo([$albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([$albumId => $this->artistIds[$albumId]]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo([$albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getDiscCountByAlbumId')
-			->with($this->equalTo([$albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([$albumId => 1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getGenresByAlbumId')
-			->with($this->equalTo([$albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([$albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->artistMapper->expects($this->exactly(1))
 			->method('findById')
-			->with($this->equalTo($this->artistIds[$albumId]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo($this->artistIds[$albumId]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue(ArrayUtil::multiGet($this->artists, $this->artistIds[$albumId])));
 
 		$result = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -167,31 +187,41 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 			->will($this->returnValue($this->albumsByArtist3));
 		$this->mapper->expects($this->exactly(1))
 			->method('getPerformingArtistsByAlbumId')
-			->with($this->equalTo([1, 2]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([1, 2]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([
 				1 => $this->artistIds[1],
 				2 => $this->artistIds[2]
 			]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo([1, 2]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([1, 2]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getDiscCountByAlbumId')
-			->with($this->equalTo([1, 2]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([1, 2]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([1 => 1, 2 => 1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getGenresByAlbumId')
-			->with($this->equalTo([1, 2]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([1, 2]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue([]));
 		$this->artistMapper->expects($this->exactly(1))
 			->method('findById')
-			->with($this->equalTo([3, 5, 7, 9]),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo([3, 5, 7, 9]),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue(ArrayUtil::multiGet($this->artists, [3, 5, 7, 9])));
 
 		$result = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);

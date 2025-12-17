@@ -98,16 +98,14 @@ class SubsonicMiddleware extends Middleware {
 
 		if ($user !== null && $apiKey !== null) {
 			throw new SubsonicException('Multiple conflicting authentication mechanisms provided', 43);
-		}
-		else if ($apiKey !== null) {
+		} elseif ($apiKey !== null) {
 			$credentials = $this->userAndKeyIdForPass($apiKey);
 			if ($credentials !== null) {
 				$controller->setAuthenticatedUser($credentials['user_id'], $credentials['key_id']);
 			} else {
 				throw new SubsonicException('Invalid API key', 44);
 			}
-		}
-		else if ($user !== null) {
+		} elseif ($user !== null) {
 			$pass = $this->request->getParam('p');
 			if ($pass === null) {
 				throw new SubsonicException('Password argument `p` missing', 10);
@@ -124,8 +122,7 @@ class SubsonicMiddleware extends Middleware {
 			} else {
 				throw new SubsonicException('Wrong username or password', 40);
 			}
-		}
-		else {
+		} else {
 			// Not passing any credentials is allowed since some parts of the API are allowed without authentication.
 			// SubsonicController::handleRequest needs to check that there is an authenticated user if needed.
 		}

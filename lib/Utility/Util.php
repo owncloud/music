@@ -17,9 +17,9 @@ namespace OCA\Music\Utility;
  */
 class Util {
 
-	const UINT32_MAX = 0xFFFFFFFF;
-	const SINT32_MAX = 0x7FFFFFFF;
-	const SINT32_MIN = -self::SINT32_MAX - 1;
+	public const UINT32_MAX = 0xFFFFFFFF;
+	public const SINT32_MAX = 0x7FFFFFFF;
+	public const SINT32_MIN = -self::SINT32_MAX - 1;
 
 	/**
 	 * Like the built-in \explode(...) function but this one can be safely called with

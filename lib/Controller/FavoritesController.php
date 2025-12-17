@@ -44,7 +44,8 @@ class FavoritesController extends Controller {
 			PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
 			PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
-			string $userId) {
+			string $userId
+	) {
 
 		parent::__construct($appName, $request);
 
@@ -126,7 +127,7 @@ class FavoritesController extends Controller {
 		return $this->setFavorite($this->podcastEpisodeBusinessLayer, $id, $status);
 	}
 
-	/** 
+	/**
 	 * @param string|int|bool|null $status
 	 * @phpstan-param BusinessLayer<*> $businessLayer
 	 */

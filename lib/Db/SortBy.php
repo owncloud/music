@@ -16,11 +16,11 @@ namespace OCA\Music\Db;
  * Enum-like class to define sort order
  */
 abstract class SortBy {
-	const None = 0;
-	const Name = 1;
-	const Parent = 2;
-	const Newest = 3;
-	const PlayCount = 4;
-	const LastPlayed = 5;
-	const Rating = 6;
+	public const None = 0;
+	public const Name = 1;
+	public const Parent = 2;
+	public const Newest = 3;
+	public const PlayCount = 4;
+	public const LastPlayed = 5;
+	public const Rating = 6;
 }

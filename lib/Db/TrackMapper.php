@@ -79,8 +79,9 @@ class TrackMapper extends BaseMapper {
 	public function findAllByArtist(array $artistIds, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$questionMarks = $this->questionMarks(\count($artistIds));
 		$sql = $this->selectUserEntities(
-				"`artist_id` IN $questionMarks OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` IN $questionMarks)",
-				'ORDER BY LOWER(`title`)');
+			"`artist_id` IN $questionMarks OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` IN $questionMarks)",
+			'ORDER BY LOWER(`title`)'
+		);
 		$params = \array_merge([$userId], $artistIds, $artistIds);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -98,8 +99,10 @@ class TrackMapper extends BaseMapper {
 			$params[] = $artistId;
 		}
 
-		$sql = $this->selectUserEntities($condition,
-				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`file`.`name`)');
+		$sql = $this->selectUserEntities(
+			$condition,
+			'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`file`.`name`)'
+		);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
@@ -316,9 +319,9 @@ class TrackMapper extends BaseMapper {
 		}
 	}
 
-	const FAVORITE_TRACK = 0x1;
-	const FAVORITE_ALBUM = 0x2;
-	const FAVORITE_ARTIST = 0x4;
+	public const FAVORITE_TRACK = 0x1;
+	public const FAVORITE_ALBUM = 0x2;
+	public const FAVORITE_ARTIST = 0x4;
 
 	/**
 	 * Returns all tracks specified by various criteria, all of which are optional
@@ -370,7 +373,7 @@ class TrackMapper extends BaseMapper {
 				$favConds[] = '`artist`.`starred` IS NOT NULL';
 			}
 			$sqlConditions[] = '(' . \implode(' OR ', $favConds) . ')';
-		} 
+		}
 
 		$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions), $this->formatSortingClause($sortBy, $invertSort));
 		return $this->findEntities($sql, $params, $limit, $offset);

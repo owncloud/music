@@ -91,8 +91,7 @@ class PlaylistExport extends BaseCommand {
 		if (empty($ids) && empty($names) && !$allLists) {
 			throw new \InvalidArgumentException('At least one of the arguments <error>list-id</error>, ' .
 												'<error>list-name</error>, <error>all-lists</error> must be given');
-		}
-		elseif ($allLists && (!empty($ids) || !empty($names))) {
+		} elseif ($allLists && (!empty($ids) || !empty($names))) {
 			throw new \InvalidArgumentException('Argument <error>all-lists</error> should not be used together with ' .
 												'<error>list-id</error> nor <error>list-name</error>');
 		}
@@ -114,8 +113,7 @@ class PlaylistExport extends BaseCommand {
 
 		if ($allLists) {
 			$lists = $this->businessLayer->findAll($userId);
-		}
-		else {
+		} else {
 			$lists = $this->businessLayer->findById($ids, $userId);
 
 			foreach ($names as $name) {

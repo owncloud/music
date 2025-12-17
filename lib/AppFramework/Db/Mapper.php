@@ -41,7 +41,7 @@ use OCP\IDBConnection;
  * the difference is just that the OC version still accepts also IDb type of handle in the constructor.
  * However, IDBConnection has been available since OC 8.1 and that's what we always use.
  * We use this copy of ours both on NC and OC.
- * 
+ *
  * @template EntityType of Entity
  * @phpstan-property class-string<EntityType> $entityClass
  */

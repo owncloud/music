@@ -48,17 +48,19 @@ class ShivaApiController extends Controller {
 	private IURLGenerator $urlGenerator;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IURLGenerator $urlGenerator,
-								TrackBusinessLayer $trackBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
-								AlbumBusinessLayer $albumBusinessLayer,
-								DetailsService $detailsService,
-								Scanner $scanner,
-								?string $userId, // null if this gets called after the user has logged out
-								IL10N $l10n,
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IURLGenerator $urlGenerator,
+			TrackBusinessLayer $trackBusinessLayer,
+			ArtistBusinessLayer $artistBusinessLayer,
+			AlbumBusinessLayer $albumBusinessLayer,
+			DetailsService $detailsService,
+			Scanner $scanner,
+			?string $userId, // null if this gets called after the user has logged out
+			IL10N $l10n,
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackBusinessLayer;
@@ -255,7 +257,9 @@ class ShivaApiController extends Controller {
 					'source_uri' => '',
 					'id' => $fileId,
 					'uri' => $this->urlGenerator->linkToRoute(
-						'music.musicApi.fileLyrics', ['fileId' => $fileId, 'format' => 'plaintext'])
+						'music.musicApi.fileLyrics',
+						['fileId' => $fileId, 'format' => 'plaintext']
+					)
 				]);
 			}
 		} catch (BusinessLayerException $e) {

@@ -74,9 +74,9 @@ use OCA\Music\Utility\StringUtil;
 use OCA\Music\Utility\Util;
 
 class SubsonicController extends ApiController {
-	const API_VERSION = '1.16.1';
-	const FOLDER_ID_ARTISTS = -1;
-	const FOLDER_ID_FOLDERS = -2;
+	private const API_VERSION = '1.16.1';
+	private const FOLDER_ID_ARTISTS = -1;
+	private const FOLDER_ID_FOLDERS = -2;
 
 	private AlbumBusinessLayer $albumBusinessLayer;
 	private ArtistBusinessLayer $artistBusinessLayer;
@@ -107,31 +107,33 @@ class SubsonicController extends ApiController {
 	private string $format;
 	private ?string $callback;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IL10N $l10n,
-								IURLGenerator $urlGenerator,
-								IUserManager $userManager,
-								AlbumBusinessLayer $albumBusinessLayer,
-								ArtistBusinessLayer $artistBusinessLayer,
-								BookmarkBusinessLayer $bookmarkBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								PlaylistBusinessLayer $playlistBusinessLayer,
-								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
-								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
-								RadioStationBusinessLayer $radioStationBusinessLayer,
-								TrackBusinessLayer $trackBusinessLayer,
-								LibrarySettings $librarySettings,
-								CoverService $coverService,
-								FileSystemService $fileSystemService,
-								DetailsService $detailsService,
-								LastfmService $lastfmService,
-								PodcastService $podcastService,
-								AmpacheImageService $imageService,
-								Random $random,
-								Logger $logger,
-								\OCP\IConfig $configManager,
-								Scrobbler $scrobbler) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IL10N $l10n,
+			IURLGenerator $urlGenerator,
+			IUserManager $userManager,
+			AlbumBusinessLayer $albumBusinessLayer,
+			ArtistBusinessLayer $artistBusinessLayer,
+			BookmarkBusinessLayer $bookmarkBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			PlaylistBusinessLayer $playlistBusinessLayer,
+			PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+			PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
+			RadioStationBusinessLayer $radioStationBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
+			LibrarySettings $librarySettings,
+			CoverService $coverService,
+			FileSystemService $fileSystemService,
+			DetailsService $detailsService,
+			LastfmService $lastfmService,
+			PodcastService $podcastService,
+			AmpacheImageService $imageService,
+			Random $random,
+			Logger $logger,
+			\OCP\IConfig $configManager,
+			Scrobbler $scrobbler
+	) {
 		parent::__construct($appName, $request, 'POST, GET', 'Authorization, Content-Type, Accept, X-Requested-With');
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -529,7 +531,7 @@ class SubsonicController extends ApiController {
 						return $line;
 					}, $lyrics['lines'], \array_keys($lyrics['lines']))
 				];
-			}, $allLyrics) 
+			}, $allLyrics)
 		]];
 	}
 
@@ -1936,8 +1938,10 @@ class SubsonicController extends ApiController {
 	private function artistImageUrl(int $id) : string {
 		\assert($this->keyId !== null, 'function should not get called without authenticated user');
 		$token = $this->imageService->getToken('artist', $id, $this->keyId);
-		return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image',
-			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverService::DO_NOT_CROP_OR_SCALE]);
+		return $this->urlGenerator->linkToRouteAbsolute(
+			'music.ampacheImage.image',
+			['object_type' => 'artist', 'object_id' => $id, 'token' => $token, 'size' => CoverService::DO_NOT_CROP_OR_SCALE]
+		);
 	}
 
 	/**

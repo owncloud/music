@@ -17,7 +17,7 @@ use OCA\Music\Db\Cache;
 /**
  * Service creating signature tokens for given URLs. This can be used to prove that an URL passed
  * by the client has been previously created by this back-end and the client is not trying to trick
- * the back-end to relay any other HTTP traffic. If we would allow making calls to just any URL, 
+ * the back-end to relay any other HTTP traffic. If we would allow making calls to just any URL,
  * then that would undermine the purpose of having the Content-Security-Policy in place.
  */
 class StreamTokenService {

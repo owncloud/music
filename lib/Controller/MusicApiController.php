@@ -55,21 +55,23 @@ class MusicApiController extends Controller {
 	private Logger $logger;
 	private Scrobbler $scrobbler;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								TrackBusinessLayer $trackBusinessLayer,
-								GenreBusinessLayer $genreBusinessLayer,
-								Scanner $scanner,
-								CollectionService $collectionService,
-								CoverService $coverService,
-								DetailsService $detailsService,
-								FileSystemService $fileSystemService,
-								LastfmService $lastfmService,
-								Maintenance $maintenance,
-								LibrarySettings $librarySettings,
-								?string $userId,
-								Logger $logger,
-								Scrobbler $scrobbler) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			TrackBusinessLayer $trackBusinessLayer,
+			GenreBusinessLayer $genreBusinessLayer,
+			Scanner $scanner,
+			CollectionService $collectionService,
+			CoverService $coverService,
+			DetailsService $detailsService,
+			FileSystemService $fileSystemService,
+			LastfmService $lastfmService,
+			Maintenance $maintenance,
+			LibrarySettings $librarySettings,
+			?string $userId,
+			Logger $logger,
+			Scrobbler $scrobbler
+	) {
 		parent::__construct($appName, $request);
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;

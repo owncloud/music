@@ -23,11 +23,11 @@ use OCA\Music\Utility\StringUtil;
 
 /**
  * Common base class for data access classes of the Music app
- * 
+ *
  * @method Entity findEntity(string $sql, array $params)
  * @method Entity[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  * @method Entity delete(Entity $entity)
- * 
+ *
  * @template EntityType of Entity
  * @extends Mapper<EntityType>
  * @phpstan-method EntityType findEntity(string $sql, array $params)
@@ -35,7 +35,7 @@ use OCA\Music\Utility\StringUtil;
  * @phpstan-method EntityType delete(EntityType $entity)
  */
 abstract class BaseMapper extends Mapper {
-	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
+	public const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected string $nameColumn;
 	protected ?array $uniqueColumns;
@@ -157,7 +157,8 @@ abstract class BaseMapper extends Mapper {
 		if (\property_exists($this->entityClass, 'starred')) {
 			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
-				$this->formatSortingClause(SortBy::Name));
+				$this->formatSortingClause(SortBy::Name)
+			);
 			return $this->findEntities($sql, [$userId], $limit, $offset);
 		} else {
 			return [];
@@ -190,7 +191,8 @@ abstract class BaseMapper extends Mapper {
 		if (\property_exists($this->entityClass, 'rating')) {
 			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`rating` > 0",
-				$this->formatSortingClause(SortBy::Rating));
+				$this->formatSortingClause(SortBy::Rating)
+			);
 			return $this->findEntities($sql, [$userId], $limit, $offset);
 		} else {
 			return [];
@@ -203,7 +205,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
-	 * 				'operator' is one of 
+	 * 				'operator' is one of
 	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', 'sounds', 'notsounds', 'regexp', 'notregexp',
 	 * 				 '>=', '<=', '=', '!=', '>', '<', 'before', 'after', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
@@ -275,7 +277,7 @@ abstract class BaseMapper extends Mapper {
 			foreach ($rows as $row) {
 				$return[(int)$row['parent_id']][] = (int)$row['id'];
 			}
-		}	
+		}
 
 		return $return;
 	}
@@ -787,7 +789,7 @@ abstract class BaseMapper extends Mapper {
 	protected function sqlDateToEpoch(string $datetime) : string {
 		if ($this->dbType == 'pgsql') {
 			return "DATE_PART('EPOCH', $datetime)";
-		} else if ($this->dbType == 'sqlite3') {
+		} elseif ($this->dbType == 'sqlite3') {
 			return "CAST(strftime('%s', $datetime) AS INT)";
 		} else { // 'mysql'
 			// MySQL function UNIX_TIMESTAMP "helpfully" converts given datetime from session timezone to UTC
@@ -811,7 +813,7 @@ abstract class BaseMapper extends Mapper {
 			if (\method_exists($this->db, 'getInner')) {
 				$connection = $this->db->/** @scrutinizer ignore-call */getInner()->getWrappedConnection();
 				$pdo = $connection->getWrappedConnection();
-			} else if (\method_exists($this->db, 'getWrappedConnection')) {
+			} elseif (\method_exists($this->db, 'getWrappedConnection')) {
 				$pdo = $this->db->/** @scrutinizer ignore-call */getWrappedConnection();
 			}
 

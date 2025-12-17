@@ -14,18 +14,15 @@ namespace OCA\Music\Service;
 
 use DateTime;
 
-class AggregateScrobbler implements Scrobbler
-{
+class AggregateScrobbler implements Scrobbler {
 	/** @var array<Scrobbler> $scrobblers */
 	private array $scrobblers;
 
-	public function __construct(array $scrobblers)
-	{
+	public function __construct(array $scrobblers) {
 		$this->scrobblers = $scrobblers;
 	}
 
-	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null): void
-	{
+	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null): void {
 		foreach ($this->scrobblers as $scrobbler) {
 			$scrobbler->recordTrackPlayed($trackId, $userId, $timeOfPlay);
 		}

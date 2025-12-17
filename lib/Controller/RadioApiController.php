@@ -47,17 +47,19 @@ class RadioApiController extends Controller {
 	private IRootFolder $rootFolder;
 	private Logger $logger;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								RadioStationBusinessLayer $businessLayer,
-								RadioService $service,
-								StreamTokenService $tokenService,
-								PlaylistFileService $playlistFileService,
-								?string $userId,
-								IRootFolder $rootFolder,
-								Logger $logger) {
+	public function __construct(
+			string $appName,
+			IRequest $request,
+			IConfig $config,
+			IURLGenerator $urlGenerator,
+			RadioStationBusinessLayer $businessLayer,
+			RadioService $service,
+			StreamTokenService $tokenService,
+			PlaylistFileService $playlistFileService,
+			?string $userId,
+			IRootFolder $rootFolder,
+			Logger $logger
+	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
@@ -315,11 +317,15 @@ class RadioApiController extends Controller {
 		} else {
 			$token = $this->tokenService->tokenForUrl($resolved['url']);
 			if ($resolved['hls']) {
-				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest',
-					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+				$resolved['url'] = $this->urlGenerator->linkToRoute(
+					'music.radioApi.hlsManifest',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]
+				);
 			} elseif ($relayEnabled) {
-				$resolved['url'] = $this->urlGenerator->linkToRoute('music.radioApi.streamFromUrl',
-					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]);
+				$resolved['url'] = $this->urlGenerator->linkToRoute(
+					'music.radioApi.streamFromUrl',
+					['url' => \rawurlencode($resolved['url']), 'token' => \rawurlencode($token)]
+				);
 			}
 		}
 		return new JSONResponse($resolved);
@@ -327,7 +333,7 @@ class RadioApiController extends Controller {
 
 	/**
 	 * create a relayed stream for the given URL if relaying enabled; otherwise just redirect to the URL
-	 * 
+	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */

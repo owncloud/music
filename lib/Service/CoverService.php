@@ -42,8 +42,9 @@ class CoverService {
 	private IL10N $l10n;
 	private Logger $logger;
 
-	const MAX_SIZE_TO_CACHE = 102400;
-	const DO_NOT_CROP_OR_SCALE = -1;
+	private const MAX_SIZE_TO_CACHE = 102400;
+
+	public const DO_NOT_CROP_OR_SCALE = -1;
 
 	public function __construct(
 			ExtractorGetID3 $extractor,
@@ -89,7 +90,7 @@ class CoverService {
 		} else {
 			// only placeholder is supported for any other Entity type
 			$result = null;
-		}	
+		}
 
 		if ($result === null && $allowPlaceholder) {
 			$result = $this->getPlaceholder($entity, $size);
@@ -385,9 +386,8 @@ class CoverService {
 		$mosaicImg = \imagecreatetruecolor($size, $size);
 		if ($mosaicImg === false) {
 			$this->logger->warning("Failed to create mosaic image of size $size x $size");
-		}
-		else {
-			$scaleAndCopyPiece = function($pieceData, $dstImage, $dstX, $dstY, $dstSize) {
+		} else {
+			$scaleAndCopyPiece = function ($pieceData, $dstImage, $dstX, $dstY, $dstSize) {
 				$meta = \getimagesizefromstring($pieceData['content']);
 				$srcWidth = $meta[0];
 				$srcHeight = $meta[1];

@@ -34,24 +34,21 @@ class Logger {
 		}
 	}
 
-	public function emergency(string $message) : void
-	{
+	public function emergency(string $message) : void {
 		$this->logger->emergency($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Action must be taken immediately.
 	 */
-	public function alert(string $message) : void
-	{
+	public function alert(string $message) : void {
 		$this->logger->alert($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Critical conditions.
 	 */
-	public function critical(string $message) : void
-	{
+	public function critical(string $message) : void {
 		$this->logger->critical($message, ['app' => $this->appName]);
 	}
 
@@ -59,40 +56,35 @@ class Logger {
 	 * Runtime errors that do not require immediate action but should typically
 	 * be logged and monitored.
 	 */
-	public function error(string $message) : void
-	{
+	public function error(string $message) : void {
 		$this->logger->error($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Exceptional occurrences that are not errors.
 	 */
-	public function warning(string $message) : void
-	{
+	public function warning(string $message) : void {
 		$this->logger->warning($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Normal but significant events.
 	 */
-	public function notice(string $message) : void
-	{
+	public function notice(string $message) : void {
 		$this->logger->notice($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Interesting events.
 	 */
-	public function info(string $message) : void
-	{
+	public function info(string $message) : void {
 		$this->logger->info($message, ['app' => $this->appName]);
 	}
 
 	/**
 	 * Detailed debug information.
 	 */
-	public function debug(string $message) : void
-	{
+	public function debug(string $message) : void {
 		$this->logger->debug($message, ['app' => $this->appName]);
 	}
 

@@ -37,13 +37,16 @@ class ArtistBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = [];
 		$this->mapper->expects($this->once())
 			->method('findById')
-			->with($this->equalTo($artistIds),
-					$this->equalTo($this->userId))
+			->with(
+				$this->equalTo($artistIds),
+				$this->equalTo($this->userId)
+			)
 			->will($this->returnValue($response));
 
 		$result = $this->artistBusinessLayer->findById(
 			$artistIds,
-			$this->userId);
+			$this->userId
+		);
 		$this->assertEquals($response, $result);
 	}
 

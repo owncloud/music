@@ -140,7 +140,6 @@ class PlaceholderImage {
 		return [$x, $y];
 	}
 
-
 	/**
 	 * Convert a string to an integer evenly
 	 * @param string $hash the text to parse
@@ -197,7 +196,6 @@ class PlaceholderImage {
 	}
 }
 
-
 namespace OCA\Music\Utility\PlaceholderImage;
 
 /**
@@ -238,9 +236,9 @@ class Color {
 		$palette = [$color1];
 		$step = self::stepCalc($steps, [$color1, $color2]);
 		for ($i = 1; $i < $steps; $i++) {
-			$r = intval($color1->red() + ($step[0] * $i));
-			$g = intval($color1->green() + ($step[1] * $i));
-			$b = intval($color1->blue() + ($step[2] * $i));
+			$r = \intval($color1->red() + ($step[0] * $i));
+			$g = \intval($color1->green() + ($step[1] * $i));
+			$b = \intval($color1->blue() + ($step[2] * $i));
 			$palette[] = new Color($r, $g, $b);
 		}
 		return $palette;

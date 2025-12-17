@@ -57,7 +57,7 @@ class RadioService {
 		$ret['port'] = 80;
 		if (isset($parse_url['port'])) {
 			$ret['port'] = $parse_url['port'];
-		} else if ($parse_url['scheme'] == "https") {
+		} elseif ($parse_url['scheme'] == "https") {
 			$ret['port'] = 443;
 		}
 
@@ -266,8 +266,8 @@ class RadioService {
 			$path = $urlParts['path'];
 			$lastSlash = \strrpos($path, '/');
 			$urlParts['path'] = \substr($path, 0, $lastSlash + 1) . $containedUrl;
-			unset($urlParts['query']);
-			unset($urlParts['fragment']);
+			unset($urlParts['query'], $urlParts['fragment']);
+			
 			$containedUrl = Util::buildUrl($urlParts);
 		}
 		return $containedUrl;
@@ -345,8 +345,10 @@ class RadioService {
 				if (!empty($line) && !StringUtil::startsWith($line, '#')) {
 					$segUrl = self::convertUrlOnPlaylistToAbsolute($line, $url);
 					$segToken = $this->tokenService->tokenForUrl($segUrl);
-					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment',
-							['url' => \rawurlencode($segUrl), 'token' => \rawurlencode($segToken)]);
+					$line = $this->urlGenerator->linkToRoute(
+						'music.radioApi.hlsSegment',
+						['url' => \rawurlencode($segUrl), 'token' => \rawurlencode($segToken)]
+					);
 				}
 				$content .= $line . "\n";
 			}

@@ -32,7 +32,7 @@
 		// not handled by this autoloader
 	}
 
-	if (!empty($path)) {	
+	if (!empty($path)) {
 		$musicAppPath = __DIR__ . '/../../';
 		$path = $musicAppPath . $path;
 

@@ -73,7 +73,7 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		if ($status === Http::STATUS_OK || $status === Http::STATUS_PARTIAL_CONTENT) {
 			$fp = $this->file->fopen('r');
 
-			if (!is_resource($fp)) {
+			if (!\is_resource($fp)) {
 				$output->setHttpResponseCode(Http::STATUS_NOT_FOUND);
 			} else {
 				if ($this->streamDataToOutput($fp) === false) {

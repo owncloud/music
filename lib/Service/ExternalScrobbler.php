@@ -21,8 +21,7 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 use OCP\Security\ICrypto;
 
-class ExternalScrobbler implements Scrobbler
-{
+class ExternalScrobbler implements Scrobbler {
 	private IConfig $config;
 	private Logger $logger;
 	private IURLGenerator $urlGenerator;

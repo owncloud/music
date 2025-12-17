@@ -21,7 +21,7 @@ class UserHooks {
 	private Maintenance $maintenance;
 
 	public function __construct(IUserManager $userManager, Maintenance $maintenance) {
-		assert($userManager instanceof Emitter);
+		\assert($userManager instanceof Emitter);
 		$this->userManager = $userManager;
 		$this->maintenance = $maintenance;
 	}

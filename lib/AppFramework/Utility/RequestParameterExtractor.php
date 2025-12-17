@@ -46,7 +46,7 @@ class RequestParameterExtractor {
 		if ($type === null) {
 			$typeName = null;
 		} else {
-			assert($type instanceof \ReflectionNamedType); // we don't use union types introduced in PHP8
+			\assert($type instanceof \ReflectionNamedType); // we don't use union types introduced in PHP8
 			$typeName = $type->getName();
 		}
 
@@ -93,8 +93,10 @@ class RequestParameterExtractor {
 
 		// POST data is available if the method is POST
 		if ($this->request->getMethod() == 'POST') {
-			$values = \array_merge($values,
-					self::parseRepeatedKeyValues($paramName, \file_get_contents('php://input')));
+			$values = \array_merge(
+				$values,
+				self::parseRepeatedKeyValues($paramName, \file_get_contents('php://input'))
+			);
 		}
 
 		return $values;

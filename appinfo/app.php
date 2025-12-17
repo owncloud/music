@@ -48,14 +48,14 @@ $server->getNavigationManager()->add(function () use ($c, $appName) {
  * register search provider
  */
 $server->getSearch()->registerProvider(
-		\OCA\Music\Search\Provider::class,
-		['app' => $appName, 'apps' => ['files']]
+	\OCA\Music\Search\Provider::class,
+	['app' => $appName, 'apps' => ['files']]
 );
 
 /**
  * register the embedded player for Files and Files_Sharing
  */
-$loadEmbeddedMusicPlayer = function() use ($app) {
+$loadEmbeddedMusicPlayer = function () use ($app) {
 	$app->loadEmbeddedMusicPlayer();
 };
 $dispatcher = $server->getEventDispatcher();

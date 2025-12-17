@@ -184,13 +184,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			->method('findAll')
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue([$artist1, $artist2]));
-		$this->albumBusinessLayer->expects($this->at(0))
+		$this->albumBusinessLayer->expects($this->exactly(2))
 			->method('findAllByArtist')
-			->with($this->equalTo(3), $this->equalTo($this->userId))
-			->will($this->returnValue([$album]));
-		$this->albumBusinessLayer->expects($this->at(1))
-			->method('findAllByArtist')
-			->with($this->equalTo(4), $this->equalTo($this->userId))
 			->will($this->returnValue([$album]));
 		$this->trackBusinessLayer->expects($this->exactly(2))
 			->method('findAllByAlbum')
@@ -301,13 +296,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			->method('findAll')
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue([$artist1, $artist2]));
-		$this->albumBusinessLayer->expects($this->at(0))
+		$this->albumBusinessLayer->expects($this->exactly(2))
 			->method('findAllByArtist')
-			->with($this->equalTo(3), $this->equalTo($this->userId))
-			->will($this->returnValue([$album]));
-		$this->albumBusinessLayer->expects($this->at(1))
-			->method('findAllByArtist')
-			->with($this->equalTo(4), $this->equalTo($this->userId))
 			->will($this->returnValue([$album]));
 		$this->trackBusinessLayer->expects($this->never())
 			->method('findAllByAlbum');
@@ -576,13 +566,8 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 			->method('findAll')
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue([$album1, $album2]));
-		$this->trackBusinessLayer->expects($this->at(0))
+		$this->trackBusinessLayer->expects($this->exactly(2))
 			->method('findAllByAlbum')
-			->with($this->equalTo(3))
-			->will($this->returnValue([$track]));
-		$this->trackBusinessLayer->expects($this->at(1))
-			->method('findAllByAlbum')
-			->with($this->equalTo(4))
 			->will($this->returnValue([$track]));
 
 		$result = [

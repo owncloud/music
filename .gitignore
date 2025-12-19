@@ -62,6 +62,7 @@ coverage-html-integration
 bin/
 tests/behat.yml
 /vendor/
+/vendor-bin/**/vendor/
 /.php_cs.cache
 /.php-cs-fixer.cache
 .phpunit.result.cache

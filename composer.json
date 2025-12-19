@@ -5,23 +5,33 @@
     "require-dev": {
         "behat/behat": "~3.0",
         "guzzlehttp/guzzle": "~7.0",
-        "phpunit/phpunit": "^9.0",
         "owncloud/coding-standard": "^5.0",
         "phpstan/phpstan": "^2.0",
         "nextcloud/ocp": "^20.0.0",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "*",
+        "bamarni/composer-bin-plugin": "^1.8"
     },
     "config": {
         "platform": {
             "php": "7.4.0"
+        },
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
         }
     },
     "scripts": {
-        "unit-tests": "phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit",
-        "integration-tests": "phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration",
+        "unit-tests": "vendor-bin/phpunit/vendor/bin/phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit",
+        "integration-tests": "vendor-bin/phpunit/vendor/bin/phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration",
         "analyze": "phpstan",
         "behat": "behat -c tests/behat.yml",
         "cs:check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
         "cs:fix": "php-cs-fixer fix --allow-risky=yes"
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "target-directory": "vendor-bin",
+            "forward-command": true
+        }
     }
 }

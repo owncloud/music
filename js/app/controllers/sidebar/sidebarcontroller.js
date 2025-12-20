@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('SidebarController', [
-	'$rootScope', '$scope', '$timeout', 'gettextCatalog',
-	function ($rootScope, $scope, $timeout, gettextCatalog) {
+	'$rootScope', '$scope', '$timeout',
+	function ($rootScope, $scope, $timeout) {
 
 		$scope.follow = (OCA.Music.Storage.get('details_follow_playback') === 'true');
 
@@ -20,6 +20,7 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.resetLastFmData = function() {
 			$scope.lastfmInfo = null;
+			$scope.lastfmTrack = null;
 			$scope.lastfmArtist = null;
 			$scope.lastfmAlbum = null;
 			$scope.lastfmTags = null;
@@ -148,10 +149,8 @@ angular.module('Music').controller('SidebarController', [
 					// modify all links in the info so that they will open to a new tab
 					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
 				}
-				else {
-					let linkText = gettextCatalog.getString('See the track on Last.fm');
-					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
-				}
+
+				$scope.lastfmTrack = $scope.formatLinkList(data.track);
 
 				if ('artist' in data.track) {
 					$scope.lastfmArtist = $scope.formatLinkList(data.track.artist);

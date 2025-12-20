@@ -48,6 +48,9 @@
 		<div class="tab" id="lastfm-info" ng-show="selectedTab=='lastfm'">
 			<p ng-if="lastfmInfo" collapsible-html="lastfmInfo" on-expand="adjustFixedPositions"></p>
 			<dl class="tags">
+				<dt ng-if="lastfmTrack" translate>Track</dt>
+				<dd ng-if="lastfmTrack" ng-bind-html="lastfmTrack"></dd>
+
 				<dt ng-if="lastfmArtist" translate>Artist</dt>
 				<dd ng-if="lastfmArtist" ng-bind-html="lastfmArtist"></dd>
 

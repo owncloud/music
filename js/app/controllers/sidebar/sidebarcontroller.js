@@ -10,13 +10,21 @@
 
 
 angular.module('Music').controller('SidebarController', [
-	'$rootScope', '$scope', '$timeout',
-	function ($rootScope, $scope, $timeout) {
+	'$rootScope', '$scope', '$timeout', 'gettextCatalog',
+	function ($rootScope, $scope, $timeout, gettextCatalog) {
 
 		$scope.follow = (OCA.Music.Storage.get('details_follow_playback') === 'true');
 
 		$scope.contentType = null;
 		$scope.contentId = null;
+
+		$scope.resetLastFmData = function() {
+			$scope.lastfmInfo = null;
+			$scope.lastfmArtist = null;
+			$scope.lastfmAlbum = null;
+			$scope.lastfmTags = null;
+			$scope.lastfmMbid = null;
+		};
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
@@ -132,6 +140,37 @@ angular.module('Music').controller('SidebarController', [
 				$this.removeAttr('title');
 			}
 		});
+
+		$scope.setLastfmTrackInfo = function(data) {
+			if ('track' in data) {
+				if ('wiki' in data.track) {
+					$scope.lastfmInfo = data.track.wiki.content || data.track.wiki.summary;
+					// modify all links in the info so that they will open to a new tab
+					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
+				}
+				else {
+					let linkText = gettextCatalog.getString('See the track on Last.fm');
+					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
+				}
+
+				if ('artist' in data.track) {
+					$scope.lastfmArtist = $scope.formatLinkList(data.track.artist);
+				}
+
+				if ('album' in data.track) {
+					$scope.lastfmAlbum = $scope.formatLinkList(data.track.album);
+				}
+
+				if ('toptags' in data.track) {
+					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
+				}
+
+				const mbid = data.track.mbid;
+				if (mbid) {
+					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
+				}
+			}
+		};
 
 		$scope.formatLastfmTags = function(tags) {
 			// Last.fm returns individual JSON object in place of array in case there is just one item.

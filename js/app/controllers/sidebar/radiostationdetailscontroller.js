@@ -13,6 +13,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 	'$scope', '$rootScope', '$timeout', 'Restangular', 'libraryService',
 	function ($scope, $rootScope, $timeout, Restangular, libraryService) {
 
+		$scope.selectedTab = 'general';
+
 		function resetContents() {
 			$scope.station = null;
 			$scope.stationName = null;
@@ -20,8 +22,7 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			$scope.createdDate = null;
 			$scope.updatedDate = null;
 			$scope.editing = false;
-			$scope.songTitle = null;
-			$scope.artistName = null;
+			$scope.resetLastFmData();
 		}
 		resetContents();
 
@@ -64,21 +65,33 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			$scope.updatedDate = OCA.Music.Utils.formatDateTime(updated);
 		});
 
+		var prevTitle = null;
 		$scope.$watch('station.metadata', function(metadata) {
-			if (metadata?.title) {
-				const matches = metadata.title.match(/^(.+) - (.+)$/);
-				if (matches === null) {
-					$scope.songTitle = metadata.title;
-					$scope.artistName = null;
+			if (metadata?.title != prevTitle) {
+				prevTitle = metadata?.title;
+
+				$scope.resetLastFmData();
+				if (metadata?.title) {
+					const matches = metadata.title.match(/^(.+) - (.+)$/);
+					if (matches === null) {
+						$scope.setLastfmPlaceholder(metadata.title, null);
+					} else {
+						updateDetails(matches[2], matches[1]);
+					}
 				} else {
-					$scope.songTitle = matches[2];
-					$scope.artistName = matches[1];
+					$scope.selectedTab = 'general';
 				}
-			} else {
-				$scope.songTitle = null;
-				$scope.artistName = null;
 			}
 		});
+
+		// Update details from external sources like Last.fm
+		function updateDetails(songTitle, artistName) {
+			$scope.setLastfmPlaceholder(songTitle, artistName);
+			Restangular.one('details').get({song: songTitle, artist: artistName}).then(
+				(response) => $scope.setLastfmTrackInfo(response.lastfm),
+				(error) => console.error(error)
+			);
+		}
 
 		// Enter the edit mode
 		$scope.startEdit = function(targetEditor) {

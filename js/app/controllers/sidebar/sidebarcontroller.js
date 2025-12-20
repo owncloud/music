@@ -171,6 +171,11 @@ angular.module('Music').controller('SidebarController', [
 			}
 		};
 
+		$scope.setLastfmPlaceholder = function(trackTitle, artistName) {
+			$scope.lastfmTrack = trackTitle;
+			$scope.lastfmArtist = artistName;
+		};
+
 		$scope.formatLastfmTags = function(tags) {
 			// Last.fm returns individual JSON object in place of array in case there is just one item.
 			// In case there are none, the `tags` is undefined.

@@ -39,6 +39,7 @@ $routes = ['routes' => [
 	['name' => 'musicApi#fileInfo',			'url' => '/api/files/{fileId}/info',		'verb' => 'GET'],
 	['name' => 'musicApi#fileDetails',		'url' => '/api/files/{fileId}/details',		'verb' => 'GET'],
 	['name' => 'musicApi#fileLyrics',		'url' => '/api/files/{fileId}/lyrics',		'verb' => 'GET'],
+	['name' => 'musicApi#findDetails',		'url' => '/api/details',					'verb' => 'GET'],
 	['name' => 'musicApi#getScanState',		'url' => '/api/scanstate',					'verb' => 'GET'],
 	['name' => 'musicApi#scan',				'url' => '/api/scan',						'verb' => 'POST'],
 	['name' => 'musicApi#removeScanned',	'url' => '/api/removescanned',				'verb' => 'POST'],

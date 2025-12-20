@@ -310,7 +310,7 @@
 #app-sidebar #lastfm-info a,
 #app-sidebar #podcast-details a,
 #app-sidebar #podcast-details a *,
-#app-sidebar #radio-station-details a,
+#app-sidebar #radio-station-details .tabsContainer a,
 #app-sidebar .tutorial a,
 #app-sidebar .hint a {
 	text-decoration: underline;
@@ -319,7 +319,7 @@
 
 #app-sidebar #lastfm-info a:after,
 #app-sidebar #podcast-details a:after,
-#app-sidebar #radio-station-details a:after,
+#app-sidebar #radio-station-details .tabsContainer a:after,
 #app-sidebar .tutorial a:after {
 	content: " ↗";
 }

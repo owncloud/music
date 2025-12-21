@@ -97,7 +97,10 @@ angular.module('Music').controller('RadioStationDetailsController', [
 					if (response.lastfm.track?.album?.image) {
 						// there are usually many image sizes provided but the last one should be the largest
 						const urlFromLastFm = response.lastfm.track.album.image.at(-1)['#text'];
-						$scope.lastfmCoverUrl = OC.generateUrl('apps/music/api/cover/external?url={url}', {url: urlFromLastFm});
+						// Last.fm may sometimes return empty URLs
+						if (urlFromLastFm.length > 0) {
+							$scope.lastfmCoverUrl = OC.generateUrl('apps/music/api/cover/external?url={url}', {url: urlFromLastFm});
+						}
 					}
 				},
 				(error) => console.error(error)

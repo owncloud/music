@@ -72,7 +72,10 @@ angular.module('Music').controller('RadioStationDetailsController', [
 
 				$scope.resetLastFmData();
 				if (metadata?.title) {
-					const matches = metadata.title.match(/^(.+) - (.+)$/);
+					// Split artist name and track title assuming the format "artist - track".
+					// If there are multiple instances of " - ", the first one is used as separator
+					// and the rest are assumed to belong to the track title.
+					const matches = metadata.title.match(/^(.+?) - (.+)$/);
 					if (matches === null) {
 						$scope.setLastfmPlaceholder(metadata.title, null);
 					} else {

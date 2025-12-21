@@ -71,6 +71,7 @@ angular.module('Music').controller('RadioStationDetailsController', [
 				prevTitle = metadata?.title;
 
 				$scope.resetLastFmData();
+				$scope.lastfmCoverUrl = null;
 				if (metadata?.title) {
 					// Split artist name and track title assuming the format "artist - track".
 					// If there are multiple instances of " - ", the first one is used as separator
@@ -91,7 +92,14 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		function updateDetails(songTitle, artistName) {
 			$scope.setLastfmPlaceholder(songTitle, artistName);
 			Restangular.one('details').get({song: songTitle, artist: artistName}).then(
-				(response) => $scope.setLastfmTrackInfo(response.lastfm),
+				(response) => {
+					$scope.setLastfmTrackInfo(response.lastfm);
+					if (response.lastfm.track?.album?.image) {
+						// there are usually many image sizes provided but the last one should be the largest
+						const urlFromLastFm = response.lastfm.track.album.image.at(-1)['#text'];
+						$scope.lastfmCoverUrl = OC.generateUrl('apps/music/api/cover/external?url={url}', {url: urlFromLastFm});
+					}
+				},
 				(error) => console.error(error)
 			);
 		}

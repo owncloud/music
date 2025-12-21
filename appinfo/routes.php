@@ -53,6 +53,7 @@ $routes = ['routes' => [
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 
 	// Cover art API
+	['name' => 'coverApi#externalCover','url' => '/api/cover/external',				'verb' => 'GET'],
 	['name' => 'coverApi#cachedCover',	'url' => '/api/cover/{hash}',				'verb' => 'GET'],
 	['name' => 'coverApi#artistCover',	'url' => '/api/artists/{artistId}/cover',	'verb' => 'GET'],
 	['name' => 'coverApi#albumCover',	'url' => '/api/albums/{albumId}/cover',		'verb' => 'GET'],

@@ -83,6 +83,12 @@
 	opacity: 0.4;
 }
 
+#app-sidebar #radio-station-details .albumart {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	background-size: contain;
+}
+
 #app-sidebar #path {
 	width: auto;
 	text-align: center;

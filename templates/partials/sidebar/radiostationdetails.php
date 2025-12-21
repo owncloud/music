@@ -57,6 +57,7 @@
 		</div>
 
 		<div class="tab" ng-show="station.metadata.title && selectedTab=='nowPlaying'">
+			<div ng-if="lastfmCoverUrl" class="albumart clickable" ng-style="{ 'background-image': 'url(' + lastfmCoverUrl + ')' }" ng-click="scrollToEntity('station', station)"></div>
 			<dl class="tags">
 				<dt ng-show="lastfmTrack" translate>Track</dt>
 				<dd ng-show="lastfmTrack" ng-bind-html="lastfmTrack"></dd>

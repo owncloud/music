@@ -218,7 +218,7 @@ angular.module('Music').controller('SidebarController', [
 			};
 
 			let destinationView = '#';
-			if (type.startsWith('radio')) {
+			if (type.startsWith('station')) {
 				destinationView = '#/radio';
 			} else if (type.startsWith('podcast')) {
 				destinationView = '#/podcasts';

@@ -99,7 +99,7 @@ class LastfmService {
 	 */
 	public function getTrackInfo(int $trackId, string $userId) : array {
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
-		return $this->findTrackInfo($track->getTitle(), $track->getArtistName());
+		return $this->findTrackInfo($track->getTitle(), $track->getArtistName() ?? "");
 	}
 
 	/**

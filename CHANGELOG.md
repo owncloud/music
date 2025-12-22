@@ -1,7 +1,7 @@
 ## [Unreleased]
 
 ### Added
-- Scrobbling to Last.fm (requires opt-in from the admin and the user)
+- Scrobbling to Last.fm (with opt-in from the admin and the user)
   [#1266](https://github.com/owncloud/music/pull/1266) @mattwellss
 - Radio station details pane shows information from Last.fm for the current track when the service is configured and the station broadcasts current track using the format "artist - track"
   [#1249](https://github.com/owncloud/music/issues/1249)
@@ -9,6 +9,7 @@
   [#1256](https://github.com/owncloud/music/issues/1256)
 - Searching for radio stations with the advanced search
 - Full support for the right-to-left UI layout used on languages like Hebrew and Arabic on NC 31 and later
+  [#1269](https://github.com/owncloud/music/issues/1269)
   * Previously, the layout was totally broken on these languages
 
 ### Changed

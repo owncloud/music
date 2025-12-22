@@ -109,7 +109,8 @@ class LastfmService {
 		return $this->getInfoFromLastFm([
 				'method' => 'track.getInfo',
 				'artist' => $artistName,
-				'track' => $trackTitle
+				'track' => $trackTitle,
+				'autocorrect' => 1
 		]);
 	}
 

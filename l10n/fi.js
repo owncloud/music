@@ -441,6 +441,7 @@ OC.L10N.register(
     "Unknown artist" : "Tuntematon esittäjä",
     "(no comment)" : "(ei kommenttia)",
     "(Unknown genre)" : "(Tuntumaton genre)",
+    "You can now close this window" : "Voit nyt sulkea tämän ikkunan",
     "Album artists" : "Albumin esittäjät",
     "Track artists" : "Kappaleen esittäjät",
     "Playlists" : "Soittolistat",

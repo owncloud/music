@@ -3,6 +3,8 @@
 ### Added
 - Scrobbling to Last.fm (requires opt-in from the admin and the user)
   [#1266](https://github.com/owncloud/music/pull/1266) @mattwellss
+- Radio station details pane shows information from Last.fm for the current track when the service is configured and the station broadcasts current track using the format "artist - track"
+  [#1249](https://github.com/owncloud/music/issues/1249)
 - Context menu with "Save playlist" function for advanced search results
   [#1256](https://github.com/owncloud/music/issues/1256)
 - Searching for radio stations with the advanced search

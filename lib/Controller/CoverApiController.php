@@ -85,7 +85,9 @@ class CoverApiController extends Controller {
 			if ($content === false || !StringUtil::startsWith($contentType, 'image/')) {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND, 'Failed to fetch image from given URL');
 			} else {
-				return new FileResponse(['content' => $content, 'mimetype' => $contentType]);
+				$response = new FileResponse(['content' => $content, 'mimetype' => $contentType]);
+				HttpUtil::setClientCachingDays($response, 1);
+				return $response;
 			}
 		}
 	}
@@ -147,8 +149,8 @@ class CoverApiController extends Controller {
 				throw new \OutOfBoundsException("Cover with hash $hash not found");
 			}
 			$response =  new FileResponse($coverData);
-			// instruct also the client-side to cache the result, this is safe
-			// as the resource URI contains the image hash
+			// instruct also the client-side to cache the result for one year,
+			// this is safe as the resource URI contains the image hash
 			HttpUtil::setClientCachingDays($response, 365);
 			return $response;
 		} catch (\OutOfBoundsException $ex) {
@@ -169,7 +171,9 @@ class CoverApiController extends Controller {
 			// cover requested in original size, without scaling or cropping
 			$cover = $this->coverService->getCover($entity, $userId, $userFolder, CoverService::DO_NOT_CROP_OR_SCALE);
 			if ($cover !== null) {
-				return new FileResponse($cover);
+				$response = new FileResponse($cover);
+				HttpUtil::setClientCachingDays($response, 1);
+				return $response;
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}

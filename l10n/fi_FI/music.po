@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2025-11-02 21:46+0200\n"
-"PO-Revision-Date: 2025-11-02 21:58+0200\n"
+"POT-Creation-Date: 2025-12-22 21:57+0200\n"
+"PO-Revision-Date: 2025-12-22 22:19+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -125,7 +125,7 @@ msgstr "<strong>SHIFT+VÄLILYÖNTI</strong> tai <strong>SHIFT+K</strong>"
 msgid "<strong>SPACE</strong> or <strong>K</strong>"
 msgstr "<strong>VÄLILYÖNTI</strong> tai <strong>K</strong>"
 
-#: templates/partials/views/settingsview.php:189
+#: templates/partials/views/settingsview.php:200
 msgid "About"
 msgstr "Tietoja"
 
@@ -159,7 +159,7 @@ msgstr "Lisää manuaalisesti"
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr "Lisää kappaleita raahaamalla Albumeista tai muista soittolistoista"
 
-#: templates/partials/views/settingsview.php:182
+#: templates/partials/views/settingsview.php:193
 msgid "Admin"
 msgstr "Ylläpito"
 
@@ -179,7 +179,7 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta esittäjän taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
-#: templates/partials/navigation.php:67
+#: templates/partials/navigation.php:68
 #: templates/partials/views/advancedsearchview.php:2
 msgid "Advanced search"
 msgstr "Tarkennettu haku"
@@ -188,8 +188,9 @@ msgstr "Tarkennettu haku"
 msgid "After"
 msgstr "Jälkeen"
 
-#: js/app/controllers/playercontroller.js:737
-#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:63
+#: js/app/controllers/playercontroller.js:618
+#: templates/partials/sidebar/radiostationdetails.php:68
+#: templates/partials/sidebar/trackdetails.php:57 Search/Provider.php:63
 msgid "Album"
 msgstr "Albumi"
 
@@ -221,8 +222,8 @@ msgstr "Albumin nimi"
 msgid "Album rating"
 msgstr "Albumin arvosana"
 
-#: js/app/controllers/playercontroller.js:730
-#: templates/partials/navigation.php:8
+#: js/app/controllers/playercontroller.js:611
+#: templates/partials/navigation.php:9
 #: templates/partials/sidebar/artistdetails.php:14 musicwidget.ts:54
 msgid "Albums"
 msgstr "Albumit"
@@ -235,10 +236,10 @@ msgstr "Albumit esittäjältä {{artist}}"
 msgid "All channels were already up-to-date"
 msgstr "Kaikki kanavat olivat jo ajan tasalla"
 
-#: js/app/controllers/playercontroller.js:733
-#: templates/partials/navigation.php:14
+#: js/app/controllers/playercontroller.js:614
+#: templates/partials/navigation.php:15
 #: templates/partials/views/alltracksview.php:4
-#: Controller/AmpacheController.php:1859 musicwidget.ts:57
+#: Controller/AmpacheController.php:1886 musicwidget.ts:57
 msgid "All tracks"
 msgstr "Kaikki kappaleet"
 
@@ -288,8 +289,9 @@ msgstr ""
 msgid "Articles to ignore on artist names"
 msgstr "Etuliitteet, joita ei huomioida esittäjän nimessä"
 
-#: js/app/controllers/playercontroller.js:738
-#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:62
+#: js/app/controllers/playercontroller.js:619
+#: templates/partials/sidebar/radiostationdetails.php:65
+#: templates/partials/sidebar/trackdetails.php:54 Search/Provider.php:62
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -313,7 +315,7 @@ msgstr "Esittäjän arvosana"
 
 #: templates/partials/sidebar/albumdetails.php:14
 #: templates/partials/sidebar/smartlistfilters.php:25
-#: Controller/SubsonicController.php:254
+#: Controller/SubsonicController.php:260
 msgid "Artists"
 msgstr "Esittäjät"
 
@@ -326,11 +328,11 @@ msgid "Before"
 msgstr "Ennen"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:110
-#: templates/partials/sidebar/radiostationdetails.php:44
+#: templates/partials/sidebar/radiostationdetails.php:54
 msgid "Bit rate"
 msgstr "Bittinopeus"
 
-#: templates/partials/sidebar/radiostationdetails.php:32
+#: templates/partials/sidebar/radiostationdetails.php:42
 msgid "Broadcasted name"
 msgstr "Lähetetty nimi"
 
@@ -352,13 +354,19 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Yhdelle kanavalle ladattiin muutoksia"
 msgstr[1] "{{ count }} kanavalle ladattiin muutoksia"
 
-#: js/app/controllers/playercontroller.js:742
+#: js/app/controllers/playercontroller.js:623
 msgid "Channel"
 msgstr "Kanava"
 
 #: js/app/controllers/sidebar/smartlistfilterscontroller.js:74
 msgid "Check the filter values"
 msgstr "Tarkista suodattimien arvot"
+
+#: templates/partials/views/settingsview.php:186
+msgid "Click <strong>Connect</strong> to scrobble your streams to {{service}}."
+msgstr ""
+"Napsauta <strong>Yhdistä</strong>, jotta voit scrobblata striimisi palveluun "
+"{{service}}."
 
 #: templates/main.php:75
 msgid "Click here to remove this file"
@@ -390,7 +398,7 @@ msgstr "Napsauta skannataksesi uudestaan"
 msgid "Click to show \"Getting started\""
 msgstr "Avaa Aloitusohje napsauttamalla"
 
-#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:248
+#: templates/partials/sidebar/sidebar.php:2 embeddedplayer.js:259
 msgid "Close"
 msgstr "Sulje"
 
@@ -401,6 +409,10 @@ msgstr "Kommentti"
 #: templates/partials/navigationitem.php:120
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
+
+#: templates/partials/views/settingsview.php:188
+msgid "Connect"
+msgstr "Yhdistä"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:348
 msgid "Contains"
@@ -415,7 +427,7 @@ msgid "Could not update the channel \"{{ title }}\" from the source"
 msgstr "Kanavan \"{{ title }}\" päivittäminen lähteestä epäonnistui"
 
 #: templates/partials/sidebar/playlistdetails.php:16
-#: templates/partials/sidebar/radiostationdetails.php:26
+#: templates/partials/sidebar/radiostationdetails.php:36
 msgid "Created"
 msgstr "Luotu"
 
@@ -441,7 +453,7 @@ msgstr ""
 msgid "Delete"
 msgstr "Poista"
 
-#: templates/partials/sidebar/radiostationdetails.php:35
+#: templates/partials/sidebar/radiostationdetails.php:45
 #: templates/partials/views/settingsview.php:158
 msgid "Description"
 msgstr "Kuvaus"
@@ -456,6 +468,10 @@ msgstr "Kuvaus (esim. sovelluksen nimi)"
 #: templates/partials/views/radioview.php:23
 msgid "Details"
 msgstr "Tiedot"
+
+#: templates/partials/views/settingsview.php:189
+msgid "Disconnect"
+msgstr "Katkaise yhteys"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:168
 msgid "Disk count"
@@ -493,7 +509,7 @@ msgstr "Skannaa metatiedot"
 msgid "Ends with"
 msgstr "Päättyy"
 
-#: js/app/controllers/playercontroller.js:743
+#: js/app/controllers/playercontroller.js:624
 msgid "Episode"
 msgstr "Jakso"
 
@@ -501,7 +517,7 @@ msgstr "Jakso"
 msgid "Equals"
 msgstr "On sama kuin"
 
-#: js/app/controllers/playercontroller.js:136
+#: js/app/controllers/playercontroller.js:106
 msgid "Error playing URL:"
 msgstr "Virhe toistettaessa:"
 
@@ -534,6 +550,10 @@ msgid ""
 msgstr ""
 "Uusien äänitiedostojen tarkistaminen epäonnistui (virhe {{ code }}); "
 "lisätietoja palvelinlokeista"
+
+#: js/app/controllers/views/settingsviewcontroller.js:337
+msgid "Failed to clear scrobbling session."
+msgstr "Scrobbling-istunnon poistaminen epäonnistui."
 
 #: js/app/controllers/views/radioviewcontroller.js:72
 msgid "Failed to delete the radio station:"
@@ -634,12 +654,12 @@ msgstr "Suotimet"
 msgid "Flat layout"
 msgstr "Litteä asettelu"
 
-#: js/app/controllers/playercontroller.js:739
+#: js/app/controllers/playercontroller.js:620
 msgid "Folder"
 msgstr "Kansio"
 
-#: js/app/controllers/playercontroller.js:731
-#: templates/partials/navigation.php:10 Controller/SubsonicController.php:255
+#: js/app/controllers/playercontroller.js:612
+#: templates/partials/navigation.php:11 Controller/SubsonicController.php:261
 #: musicwidget.ts:55
 msgid "Folders"
 msgstr "Kansiot"
@@ -664,13 +684,13 @@ msgstr "Luo API-salasana"
 msgid "Generated {{ datetime }}"
 msgstr "Generoitu {{ datetime }}"
 
-#: js/app/controllers/playercontroller.js:740
-#: templates/partials/sidebar/radiostationdetails.php:41
+#: js/app/controllers/playercontroller.js:621
+#: templates/partials/sidebar/radiostationdetails.php:51
 msgid "Genre"
 msgstr "Genre"
 
-#: js/app/controllers/playercontroller.js:732
-#: templates/partials/navigation.php:12
+#: js/app/controllers/playercontroller.js:613
+#: templates/partials/navigation.php:13
 #: templates/partials/sidebar/smartlistfilters.php:18 musicwidget.ts:56
 msgid "Genres"
 msgstr "Genret"
@@ -807,10 +827,10 @@ msgstr "Tietoja"
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
-#: js/app/controllers/playercontroller.js:713
-#: js/app/controllers/playercontroller.js:735
+#: js/app/controllers/playercontroller.js:594
+#: js/app/controllers/playercontroller.js:616
 #: js/app/services/playlistfileservice.ts:139
-#: templates/partials/navigation.php:17 musicwidget.ts:59
+#: templates/partials/navigation.php:18 musicwidget.ts:59
 msgid "Internet radio"
 msgstr "Internet radio"
 
@@ -937,11 +957,11 @@ msgid "Matches regular expression"
 msgstr "Vastaa säännöllistä lauseketta"
 
 #: templates/partials/sidebar/playlistdetails.php:19
-#: templates/partials/sidebar/radiostationdetails.php:29
+#: templates/partials/sidebar/radiostationdetails.php:39
 msgid "Modified"
 msgstr "Muokattu"
 
-#: templates/partials/views/settingsview.php:194 Dashboard/MusicWidget.php:45
+#: templates/partials/views/settingsview.php:205 Dashboard/MusicWidget.php:42
 #: Search/Provider.php:77
 msgid "Music"
 msgstr "Musiikki"
@@ -952,7 +972,8 @@ msgstr "Musiikkikirjasto"
 
 #: templates/partials/sidebar/albumdetails.php:44
 #: templates/partials/sidebar/artistdetails.php:58
-#: templates/partials/sidebar/trackdetails.php:60
+#: templates/partials/sidebar/radiostationdetails.php:74
+#: templates/partials/sidebar/trackdetails.php:63
 msgid "MusicBrainz"
 msgstr "MusicBrainz"
 
@@ -971,11 +992,11 @@ msgstr "Vaimenna / Poista vaimennus"
 #: js/app/controllers/views/advancedsearchviewcontroller.js:281
 #: js/app/controllers/views/advancedsearchviewcontroller.js:308
 #: js/app/controllers/views/advancedsearchviewcontroller.js:335
-#: templates/partials/sidebar/radiostationdetails.php:8
+#: templates/partials/sidebar/radiostationdetails.php:18
 msgid "Name"
 msgstr "Nimi"
 
-#: templates/partials/navigation.php:28 templates/partials/navigation.php:31
+#: templates/partials/navigation.php:29 templates/partials/navigation.php:32
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
@@ -988,7 +1009,7 @@ msgid "New music available. Click here to reload the music library."
 msgstr ""
 "Uusia kappaleita saatavilla. Napsauta päivittääksesi musiikkikirjastosi."
 
-#: templates/partials/sidebar/radiostationdetails.php:5
+#: templates/partials/sidebar/radiostationdetails.php:3
 msgid "New radio station"
 msgstr "Uusi radioasema"
 
@@ -1065,6 +1086,10 @@ msgstr ""
 "Huomaa: Kun polkua muutetaan, kaikki aiemmin skannatut tiedostot uuden polun "
 "ulkopuolella poistetaan kokoelmasta ja kaikista soittolistoista."
 
+#: templates/partials/sidebar/radiostationdetails.php:10
+msgid "Now playing"
+msgstr "Nyt soimassa"
+
 #: templates/partials/sidebar/artistdetails.php:25
 msgid "Number of albums"
 msgstr "Albumien määrä"
@@ -1082,8 +1107,8 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: js/app/controllers/playercontroller.js:758
-#: js/app/controllers/playercontroller.js:767
+#: js/app/controllers/playercontroller.js:639
+#: js/app/controllers/playercontroller.js:648
 msgid "Off"
 msgstr "Pois"
 
@@ -1151,7 +1176,7 @@ msgstr "Soittohistoria"
 msgid "Playback rate"
 msgstr "Toistonopeus"
 
-#: js/app/controllers/playercontroller.js:360
+#: js/app/controllers/playercontroller.js:312
 msgid "Playback speed not adjustible for the current song"
 msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 
@@ -1161,7 +1186,7 @@ msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 msgid "Played times"
 msgstr "Soittokerrat"
 
-#: js/app/controllers/playercontroller.js:741
+#: js/app/controllers/playercontroller.js:622
 #: js/app/controllers/views/advancedsearchviewcontroller.js:150
 #: js/app/controllers/views/advancedsearchviewcontroller.js:152
 #: js/app/controllers/views/advancedsearchviewcontroller.js:205
@@ -1187,7 +1212,7 @@ msgstr "Soittolistan nimi"
 msgid "Playlist or folder not found"
 msgstr "Soittolista tai kansio ei löytynyt"
 
-#: templates/partials/views/settingsview.php:197
+#: templates/partials/views/settingsview.php:208
 msgid ""
 "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
 "target=\"_blank\">issue tracker</a>"
@@ -1216,8 +1241,8 @@ msgstr "Podcast-jakso"
 msgid "Podcast metadata"
 msgstr "Podcastin tiedot"
 
-#: js/app/controllers/playercontroller.js:736
-#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:19
+#: js/app/controllers/playercontroller.js:617
+#: js/app/services/podcastservice.ts:163 templates/partials/navigation.php:20
 #: musicwidget.ts:60
 msgid "Podcasts"
 msgstr "Podcastit"
@@ -1237,11 +1262,11 @@ msgstr ""
 msgid "RSS URL"
 msgstr "RSS-osoite"
 
-#: templates/partials/sidebar/radiostationdetails.php:4
+#: templates/partials/sidebar/radiostationdetails.php:7
 msgid "Radio station"
 msgstr "Radioasema"
 
-#: js/app/controllers/playercontroller.js:292
+#: js/app/controllers/playercontroller.js:257
 msgid "Radio station not found"
 msgstr "Radioasemaa ei löydy"
 
@@ -1335,8 +1360,8 @@ msgstr "Poista kappale soittolistalta"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: js/app/controllers/playercontroller.js:763
-#: templates/partials/controls.php:94
+#: js/app/controllers/playercontroller.js:644
+#: templates/partials/controls.php:73
 msgid "Repeat"
 msgstr "Kertaa"
 
@@ -1386,7 +1411,7 @@ msgstr "Tallenna annetulla tiedostonimellä"
 msgid "Scanning music …"
 msgstr "Skannataan musiikkia …"
 
-#: templates/partials/navigation.php:54 templates/partials/navigation.php:56
+#: templates/partials/navigation.php:55 templates/partials/navigation.php:57
 #: templates/partials/views/advancedsearchview.php:63
 #: templates/partials/views/settingsview.php:132
 msgid "Search"
@@ -1411,10 +1436,6 @@ msgstr "Haku {{ datetime }}"
 #: js/app/controllers/sidebar/albumdetailscontroller.js:67
 msgid "See the album on Last.fm"
 msgstr "Katso albumia Last.fm-palvelussa"
-
-#: js/app/controllers/sidebar/trackdetailscontroller.js:89
-msgid "See the track on Last.fm"
-msgstr "Katso kappaletta Last.fm-palveussa"
 
 #: templates/partials/views/settingsview.php:123
 msgid ""
@@ -1444,7 +1465,7 @@ msgstr "Aseta suosikki"
 msgid "Setting up radio stations"
 msgstr "Radio-asemien asettaminen"
 
-#: templates/partials/navigation.php:77
+#: templates/partials/navigation.php:78
 #: templates/partials/views/settingsview.php:2
 msgid "Settings"
 msgstr "Asetukset"
@@ -1482,8 +1503,8 @@ msgstr "Näytä vähemmän…"
 msgid "Show more…"
 msgstr "Näytä enemmän…"
 
-#: js/app/controllers/playercontroller.js:757
-#: templates/partials/controls.php:92
+#: js/app/controllers/playercontroller.js:638
+#: templates/partials/controls.php:71
 msgid "Shuffle"
 msgstr "Sekoita"
 
@@ -1491,8 +1512,8 @@ msgstr "Sekoita"
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
-#: js/app/controllers/playercontroller.js:734
-#: templates/partials/navigation.php:22
+#: js/app/controllers/playercontroller.js:615
+#: templates/partials/navigation.php:23
 #: templates/partials/views/smartlistview.php:4
 msgid "Smart playlist"
 msgstr "Älykäs soittolista"
@@ -1501,7 +1522,7 @@ msgstr "Älykäs soittolista"
 msgid "Smart playlist filters"
 msgstr "Älykkään soittolistan suotimet"
 
-#: js/app/controllers/playercontroller.js:508
+#: js/app/controllers/playercontroller.js:445
 msgid "Some not playable tracks were skipped."
 msgstr "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa."
 
@@ -1559,7 +1580,7 @@ msgid "Stop"
 msgstr "Pysäytä"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:336
-#: templates/partials/sidebar/radiostationdetails.php:14
+#: templates/partials/sidebar/radiostationdetails.php:24
 msgid "Stream URL"
 msgstr "Striimin URL"
 
@@ -1569,7 +1590,8 @@ msgstr "Tiukka"
 
 #: templates/partials/sidebar/albumdetails.php:41
 #: templates/partials/sidebar/artistdetails.php:44
-#: templates/partials/sidebar/trackdetails.php:57
+#: templates/partials/sidebar/radiostationdetails.php:71
+#: templates/partials/sidebar/trackdetails.php:60
 msgid "Tags"
 msgstr "Tunnisteet"
 
@@ -1577,7 +1599,7 @@ msgstr "Tunnisteet"
 msgid "Technical"
 msgstr "Tekniset tiedot"
 
-#: js/app/controllers/views/settingsviewcontroller.js:334
+#: js/app/controllers/views/settingsviewcontroller.js:364
 msgid "Text copied to clipboard"
 msgstr "Teksti kopioitiin leikepöydälle"
 
@@ -1607,6 +1629,20 @@ msgstr ""
 "aiemmin luodun sisällön perään. Jatka?"
 
 #: templates/partials/views/settingsview.php:184
+msgid ""
+"The server administrator can configure your server for scrobbling, see the "
+"<strong>Admin</strong> section below."
+msgstr ""
+"Palvelimen järjestelmänvalvoja voi määrittää palvelimesi scrobbling-"
+"toiminnon, katso alla oleva <strong>Ylläpito</strong>-osio."
+
+#: templates/partials/views/settingsview.php:185
+msgid "The server administrator has configured your server for scrobbling."
+msgstr ""
+"Palvelimen järjestelmänvalvoja on määrittänyt palvelimesi scrobbling-"
+"toimintoa varten."
+
+#: templates/partials/views/settingsview.php:195
 msgid ""
 "There is no settings UI for the server-wide settings of the Music app but "
 "some settings are available by adding specific key-value pairs to the file "
@@ -1674,7 +1710,9 @@ msgstr ""
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
-#: js/app/controllers/playercontroller.js:770 Search/Provider.php:64
+#: js/app/controllers/playercontroller.js:651
+#: templates/partials/sidebar/radiostationdetails.php:62
+#: templates/partials/sidebar/trackdetails.php:51 Search/Provider.php:64
 msgid "Track"
 msgstr "Kappale"
 
@@ -1737,7 +1775,7 @@ msgid "URL"
 msgstr "URL"
 
 #: js/app/services/playlistfileservice.ts:56
-#: js/app/services/podcastservice.ts:61
+#: js/app/services/podcastservice.ts:61 Controller/ScrobblerController.php:54
 msgid "Unexpected error"
 msgstr "Odottamaton virhe"
 
@@ -1824,7 +1862,7 @@ msgstr "Käyttöliittymä"
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: templates/partials/sidebar/radiostationdetails.php:38
+#: templates/partials/sidebar/radiostationdetails.php:48
 msgid "Website"
 msgstr "Verkkosivu"
 
@@ -1862,6 +1900,14 @@ msgstr ""
 "Voit lisätä radioasemia joko syöttämällä striimin URL:n manuaalisesti tai "
 "tuomalla soittolistatiedoston, joka sisältää yhden tai useamman striimin "
 "URL:n."
+
+#: templates/partials/views/settingsview.php:187
+msgid ""
+"Your streams will be scrobbled to {{service}}. Click <strong>Disconnect</"
+"strong> to stop scrobbling."
+msgstr ""
+"Streamisi scrobblataan palveluun {{service}}. Napsauta <strong>Katkaise "
+"yhteys</strong> lopettaaksesi scrobblaamisen."
 
 #: templates/partials/views/advancedsearchview.php:9
 msgid "albums"
@@ -2043,7 +2089,7 @@ msgstr "rajoittamaton"
 msgid "updates checked"
 msgstr "päivitykset tarkastettu"
 
-#: templates/partials/views/settingsview.php:195
+#: templates/partials/views/settingsview.php:206
 msgid "version history"
 msgstr "versiohistoria"
 
@@ -2122,11 +2168,57 @@ msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
 msgid "{{artist}} appears on albums"
 msgstr "{{artist}} esiintyy albumeilla"
 
-#: Db/Album.php:292
+#: templates/partials/views/settingsview.php:182
+msgid "{{service}} Integration"
+msgstr "{{service}}-integraatio"
+
+#: Controller/ScrobblerController.php:57
+msgid "Please contact your server administrator for assistance."
+msgstr "Ota yhteyttä palvelimen ylläpitäjään, jos tarvit apua."
+
+#: Controller/ScrobblerController.php:62 Controller/ScrobblerController.php:108
+msgid "Not logged in"
+msgstr "Ei aktiivista istuntoa"
+
+#: Controller/ScrobblerController.php:63
+msgid "Please log in before attempting to authorize a scrobbler"
+msgstr "Kirjaudu sisään ennen kuin yrität valtuuttaa scrobblerin"
+
+#: Controller/ScrobblerController.php:71
+msgid "Unknown Service"
+msgstr "Tuntematon palvelu"
+
+#: Controller/ScrobblerController.php:72 Controller/ScrobblerController.php:116
+#, php-format
+msgid "Unknown service %s"
+msgstr "Tuntematon palvelu %s"
+
+#: Controller/ScrobblerController.php:80
+msgid "All Set!"
+msgstr "Kaikki valmista!"
+
+#: Controller/ScrobblerController.php:81
+#, php-format
+msgid "Your streams will be scrobbled to %s."
+msgstr "Streamisi scrobblataan palveluun %s."
+
+#: Controller/ScrobblerController.php:84
+msgid "Authentication failure"
+msgstr "Tunnistus epäonnistui"
+
+#: Controller/ScrobblerController.php:85
+msgid "Please review the error message prior to trying again."
+msgstr "Tarkista virheilmoitus ennen kuin yrität uudelleen."
+
+#: Controller/ScrobblerController.php:126
+msgid "Check the error log for details."
+msgstr "Tarkista lisätiedot virhelokista."
+
+#: Db/Album.php:229
 msgid "Unknown album"
 msgstr "Tuntematon albumi"
 
-#: Db/Artist.php:136
+#: Db/Artist.php:138
 msgid "Unknown artist"
 msgstr "Tuntematon esittäjä"
 
@@ -2194,15 +2286,15 @@ msgstr "Tuo lista Muisiikkiin"
 msgid "Show playlist"
 msgstr "Näytä soittolista"
 
-#: embeddedplayer.js:420
+#: embeddedplayer.js:426
 msgid "Continue playing in Music"
 msgstr "Jatka soittamista Musiikissa"
 
-#: embeddedplayer.js:423
+#: embeddedplayer.js:429
 msgid "(file is not within your music collection folder)"
 msgstr "(tiedosto ei ole musiikkikokoelmakansiossasi)"
 
-#: embeddedplayer.js:474 embeddedplayer.js:505 progressinfo.ts:57
+#: embeddedplayer.js:480 embeddedplayer.js:511 progressinfo.ts:61
 msgid "Loading…"
 msgstr "Ladataan…"
 
@@ -2273,6 +2365,9 @@ msgstr "Joitakin soittolistan tiedostoja ei löytynyt"
 #: volumecontrol.ts:91
 msgid "Volume"
 msgstr "Äänenvoimakkuus"
+
+#~ msgid "See the track on Last.fm"
+#~ msgstr "Katso kappaletta Last.fm-palveussa"
 
 #~ msgid ""
 #~ "In the search results view, press the \"diskette\" icon on an individual "

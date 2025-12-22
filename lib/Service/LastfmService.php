@@ -48,9 +48,6 @@ class LastfmService {
 	}
 
 	/**
-	 * @param integer $artistId
-	 * @param string $userId
-	 * @return array
 	 * @throws BusinessLayerException if artist with the given ID is not found
 	 */
 	public function getArtistInfo(int $artistId, string $userId) : array {
@@ -81,9 +78,6 @@ class LastfmService {
 	}
 
 	/**
-	 * @param integer $albumId
-	 * @param string $userId
-	 * @return array
 	 * @throws BusinessLayerException if album with the given ID is not found
 	 */
 	public function getAlbumInfo(int $albumId, string $userId) : array {
@@ -101,25 +95,26 @@ class LastfmService {
 	}
 
 	/**
-	 * @param integer $trackId
-	 * @param string $userId
-	 * @return array
 	 * @throws BusinessLayerException if track with the given ID is not found
 	 */
 	public function getTrackInfo(int $trackId, string $userId) : array {
-		$track= $this->trackBusinessLayer->find($trackId, $userId);
+		$track = $this->trackBusinessLayer->find($trackId, $userId);
+		return $this->findTrackInfo($track->getTitle(), $track->getArtistName());
+	}
 
+	/**
+	 * @throws BusinessLayerException if track with the given ID is not found
+	 */
+	public function findTrackInfo(string $trackTitle, string $artistName) : array {
 		return $this->getInfoFromLastFm([
 				'method' => 'track.getInfo',
-				'artist' => $track->getArtistName(),
-				'track' => $track->getTitle()
+				'artist' => $artistName,
+				'track' => $trackTitle
 		]);
 	}
 
 	/**
 	 * Get artists from the user's library similar to the given artist
-	 * @param integer $artistId
-	 * @param string $userId
 	 * @param bool $includeNotPresent When true, the result may include also artists which
 	 *                                are not found from the user's music library. Such
 	 *                                artists have many fields including `id` set as null.

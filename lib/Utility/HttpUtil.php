@@ -24,7 +24,7 @@ class HttpUtil {
 
 	/**
 	 * Use HTTP GET to load the requested URL
-	 * @return array{content: string|false, status_code: int, message: string, content_type: string}
+	 * @return array{content: string|false, status_code: int, message: string, content_type: ?string}
 	 */
 	public static function loadFromUrl(string $url, ?int $maxLength=null, ?int $timeout_s=null) : array {
 		$context = self::createContext($timeout_s);

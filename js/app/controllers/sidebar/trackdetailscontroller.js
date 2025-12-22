@@ -10,19 +10,15 @@
 
 
 angular.module('Music').controller('TrackDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
-	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
+	'$rootScope', '$scope', 'Restangular', 'libraryService',
+	function ($rootScope, $scope, Restangular, libraryService) {
 
 		$scope.selectedTab = 'general';
 
 		function resetContents() {
 			$scope.track = null;
 			$scope.details = null;
-			$scope.lastfmInfo = null;
-			$scope.lastfmArtist = null;
-			$scope.lastfmAlbum = null;
-			$scope.lastfmTags = null;
-			$scope.lastfmMbid = null;
+			$scope.resetLastFmData();
 		}
 		resetContents();
 
@@ -70,42 +66,11 @@ angular.module('Music').controller('TrackDetailsController', [
 					}
 
 					if (result.lastfm) {
-						setLastfmInfo(result.lastfm);
+						$scope.setLastfmTrackInfo(result.lastfm);
 					}
 
 					$scope.$parent.adjustFixedPositions();
 				});
-			}
-		}
-
-		function setLastfmInfo(data) {
-			if ('track' in data) {
-				if ('wiki' in data.track) {
-					$scope.lastfmInfo = data.track.wiki.content || data.track.wiki.summary;
-					// modify all links in the info so that they will open to a new tab
-					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
-				}
-				else {
-					let linkText = gettextCatalog.getString('See the track on Last.fm');
-					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
-				}
-
-				if ('artist' in data.track) {
-					$scope.lastfmArtist = $scope.formatLinkList(data.track.artist);
-				}
-
-				if ('album' in data.track) {
-					$scope.lastfmAlbum = $scope.formatLinkList(data.track.album);
-				}
-
-				if ('toptags' in data.track) {
-					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
-				}
-
-				const mbid = data.track.mbid;
-				if (mbid) {
-					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
-				}
 			}
 		}
 

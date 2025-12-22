@@ -33,6 +33,7 @@ use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Http\FileResponse;
 use OCA\Music\Service\CoverService;
 use OCA\Music\Utility\HttpUtil;
+use OCA\Music\Utility\StringUtil;
 
 class CoverApiController extends Controller {
 
@@ -66,6 +67,27 @@ class CoverApiController extends Controller {
 		$this->coverService = $coverService;
 		$this->userId = $userId;
 		$this->logger = $logger;
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function externalCover(?string $url) : Response {
+		$allowedDomains = ['lastfm.freetls.fastly.net']; // domain used by Last.fm for the album art
+
+		if (empty($url)) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Required argument "url" missing');
+		} elseif (!\in_array(\parse_url($url, PHP_URL_HOST), $allowedDomains)) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'Only whitelisted host names are allowed');
+		} else {
+			['content' => $content, 'content_type' => $contentType] = HttpUtil::loadFromUrl($url);
+			if ($content === false || !StringUtil::startsWith($contentType, 'image/')) {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, 'Failed to fetch image from given URL');
+			} else {
+				return new FileResponse(['content' => $content, 'mimetype' => $contentType]);
+			}
+		}
 	}
 
 	/**

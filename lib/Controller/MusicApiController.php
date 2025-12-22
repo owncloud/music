@@ -292,6 +292,18 @@ class MusicApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function findDetails(?string $song, ?string $artist) : JSONResponse {
+		if (empty($song) || empty($artist)) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Song or artist name argument missing');
+		} else {
+			return new JSONResponse(['lastfm' => $this->lastfmService->findTrackInfo($song, $artist)]);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function fileLyrics(int $fileId, ?string $format) : Response {
 		$userFolder = $this->scanner->resolveUserFolder($this->userId);
 		if ($format == 'plaintext') {

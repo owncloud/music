@@ -52,7 +52,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 					// Because of the asynchronous nature of teh REST queries, it is possible that the
 					// current album has already changed again by the time we get the result. If that has
 					// happened, then the result should be ignored.
-					Restangular.one('albums', albumId).one('details').get({embedCoverArt: !$scope.album.cover}).then(
+					Restangular.one('albums', albumId).one('details').get().then(
 						function(result) {
 							if ($scope.album && $scope.album.id == albumId) {
 								$scope.lastfmInfo = result;
@@ -77,9 +77,11 @@ angular.module('Music').controller('AlbumDetailsController', [
 										$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/release/${mbid}">${mbid}</a>`;
 									}
 
-									if (!$scope.album.cover && 'imageData' in result.album) {
+									if (!$scope.album.cover && 'image' in result.album) {
 										// there are usually many image sizes provided but the last one should be the largest
-										setImageUrl(result.album.imageData);
+										const lastfmImageUrl = result.album.image.at(-1)['#text'];
+										const relayImageUrl = OC.generateUrl('apps/music/api/cover/external?url={url}', {url: lastfmImageUrl});
+										setImageUrl(relayImageUrl);
 									}
 								}
 

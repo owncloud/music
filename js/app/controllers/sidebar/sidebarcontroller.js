@@ -18,6 +18,15 @@ angular.module('Music').controller('SidebarController', [
 		$scope.contentType = null;
 		$scope.contentId = null;
 
+		$scope.resetLastFmData = function() {
+			$scope.lastfmInfo = null;
+			$scope.lastfmTrack = null;
+			$scope.lastfmArtist = null;
+			$scope.lastfmAlbum = null;
+			$scope.lastfmTags = null;
+			$scope.lastfmMbid = null;
+		};
+
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
 				const sidebarRight = parseInt($('#app-sidebar').css('inset-inline-end'));
@@ -133,6 +142,40 @@ angular.module('Music').controller('SidebarController', [
 			}
 		});
 
+		$scope.setLastfmTrackInfo = function(data) {
+			if ('track' in data) {
+				if ('wiki' in data.track) {
+					$scope.lastfmInfo = data.track.wiki.content || data.track.wiki.summary;
+					// modify all links in the info so that they will open to a new tab
+					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
+				}
+
+				$scope.lastfmTrack = $scope.formatLinkList(data.track);
+
+				if ('artist' in data.track) {
+					$scope.lastfmArtist = $scope.formatLinkList(data.track.artist);
+				}
+
+				if ('album' in data.track) {
+					$scope.lastfmAlbum = $scope.formatLinkList(data.track.album);
+				}
+
+				if ('toptags' in data.track) {
+					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
+				}
+
+				const mbid = data.track.mbid;
+				if (mbid) {
+					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
+				}
+			}
+		};
+
+		$scope.setLastfmPlaceholder = function(trackTitle, artistName) {
+			$scope.lastfmTrack = trackTitle;
+			$scope.lastfmArtist = artistName;
+		};
+
 		$scope.formatLastfmTags = function(tags) {
 			// Last.fm returns individual JSON object in place of array in case there is just one item.
 			// In case there are none, the `tags` is undefined.
@@ -175,7 +218,7 @@ angular.module('Music').controller('SidebarController', [
 			};
 
 			let destinationView = '#';
-			if (type.startsWith('radio')) {
+			if (type.startsWith('station')) {
 				destinationView = '#/radio';
 			} else if (type.startsWith('podcast')) {
 				destinationView = '#/podcasts';

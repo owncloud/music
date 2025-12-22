@@ -39,6 +39,7 @@ $routes = ['routes' => [
 	['name' => 'musicApi#fileInfo',			'url' => '/api/files/{fileId}/info',		'verb' => 'GET'],
 	['name' => 'musicApi#fileDetails',		'url' => '/api/files/{fileId}/details',		'verb' => 'GET'],
 	['name' => 'musicApi#fileLyrics',		'url' => '/api/files/{fileId}/lyrics',		'verb' => 'GET'],
+	['name' => 'musicApi#findDetails',		'url' => '/api/details',					'verb' => 'GET'],
 	['name' => 'musicApi#getScanState',		'url' => '/api/scanstate',					'verb' => 'GET'],
 	['name' => 'musicApi#scan',				'url' => '/api/scan',						'verb' => 'POST'],
 	['name' => 'musicApi#removeScanned',	'url' => '/api/removescanned',				'verb' => 'POST'],
@@ -52,6 +53,7 @@ $routes = ['routes' => [
 	['name' => 'advSearch#search',		'url' => '/api/advanced_search',			'verb' => 'POST'],
 
 	// Cover art API
+	['name' => 'coverApi#externalCover','url' => '/api/cover/external',				'verb' => 'GET'],
 	['name' => 'coverApi#cachedCover',	'url' => '/api/cover/{hash}',				'verb' => 'GET'],
 	['name' => 'coverApi#artistCover',	'url' => '/api/artists/{artistId}/cover',	'verb' => 'GET'],
 	['name' => 'coverApi#albumCover',	'url' => '/api/albums/{albumId}/cover',		'verb' => 'GET'],

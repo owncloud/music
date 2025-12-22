@@ -83,6 +83,12 @@
 	opacity: 0.4;
 }
 
+#app-sidebar #radio-station-details .albumart {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	background-size: contain;
+}
+
 #app-sidebar #path {
 	width: auto;
 	text-align: center;
@@ -92,6 +98,11 @@
 
 #app-sidebar .tabHeaders {
 	margin-top: 16px;
+}
+
+#app-sidebar #radio-station-details .tabHeaders {
+	margin-top: 0;
+	padding-top: 16px;
 }
 
 #app-sidebar .tabsContainer {
@@ -261,6 +272,7 @@
 }
 
 #app-sidebar h2 {
+	font-size: 20px;
 	text-align: center;
 	width: 100%;
 	margin-top: 16px;
@@ -309,7 +321,7 @@
 #app-sidebar #lastfm-info a,
 #app-sidebar #podcast-details a,
 #app-sidebar #podcast-details a *,
-#app-sidebar #radio-station-details a,
+#app-sidebar #radio-station-details .tabsContainer a,
 #app-sidebar .tutorial a,
 #app-sidebar .hint a {
 	text-decoration: underline;
@@ -318,7 +330,7 @@
 
 #app-sidebar #lastfm-info a:after,
 #app-sidebar #podcast-details a:after,
-#app-sidebar #radio-station-details a:after,
+#app-sidebar #radio-station-details .tabsContainer a:after,
 #app-sidebar .tutorial a:after {
 	content: " ↗";
 }

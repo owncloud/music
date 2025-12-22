@@ -5,13 +5,15 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2025
  */
 
 
 angular.module('Music').controller('RadioStationDetailsController', [
 	'$scope', '$rootScope', '$timeout', 'Restangular', 'libraryService',
 	function ($scope, $rootScope, $timeout, Restangular, libraryService) {
+
+		$scope.selectedTab = 'general';
 
 		function resetContents() {
 			$scope.station = null;
@@ -20,6 +22,7 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			$scope.createdDate = null;
 			$scope.updatedDate = null;
 			$scope.editing = false;
+			$scope.resetLastFmData();
 		}
 		resetContents();
 
@@ -61,6 +64,48 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		$scope.$watch('station.updated', function(updated) {
 			$scope.updatedDate = OCA.Music.Utils.formatDateTime(updated);
 		});
+
+		var prevTitle = null;
+		$scope.$watch('station.metadata', function(metadata) {
+			if (metadata?.title != prevTitle) {
+				prevTitle = metadata?.title;
+
+				$scope.resetLastFmData();
+				$scope.lastfmCoverUrl = null;
+				if (metadata?.title) {
+					// Split artist name and track title assuming the format "artist - track".
+					// If there are multiple instances of " - ", the first one is used as separator
+					// and the rest are assumed to belong to the track title.
+					const matches = metadata.title.match(/^(.+?) - (.+)$/);
+					if (matches === null) {
+						$scope.setLastfmPlaceholder(metadata.title, null);
+					} else {
+						updateDetails(matches[2], matches[1]);
+					}
+				} else {
+					$scope.selectedTab = 'general';
+				}
+			}
+		});
+
+		// Update details from external sources like Last.fm
+		function updateDetails(songTitle, artistName) {
+			$scope.setLastfmPlaceholder(songTitle, artistName);
+			Restangular.one('details').get({song: songTitle, artist: artistName}).then(
+				(response) => {
+					$scope.setLastfmTrackInfo(response.lastfm);
+					if (response.lastfm.track?.album?.image) {
+						// there are usually many image sizes provided but the last one should be the largest
+						const urlFromLastFm = response.lastfm.track.album.image.at(-1)['#text'];
+						// Last.fm may sometimes return empty URLs
+						if (urlFromLastFm.length > 0) {
+							$scope.lastfmCoverUrl = OC.generateUrl('apps/music/api/cover/external?url={url}', {url: urlFromLastFm});
+						}
+					}
+				},
+				(error) => console.error(error)
+			);
+		}
 
 		// Enter the edit mode
 		$scope.startEdit = function(targetEditor) {

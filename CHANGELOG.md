@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.5.0 - 2025-12-25
 
 ### Added
 - Scrobbling to Last.fm (with opt-in from the admin and the user)

@@ -42,17 +42,18 @@ angular.module('Music').controller('RadioStationDetailsController', [
 					$scope.stationName = $scope.station.name;
 					$scope.streamUrl = $scope.station.stream_url;
 
-					// fetch the metadata if not already cached
-					if (!station.metadata) {
-						Restangular.one('radio', stationId).one('info').get().then(
-							function(response) {
-								station.metadata = response;
-							},
-							function(_error) {
-								// ignore errors
-							}
-						);
-					}
+					// Always fetch the metadata from the server when the viewed station changes.
+					// With this, we get the up-to-date "Now playing" info even for stations
+					// which are not currently playing. The periodic update happens only for the
+					// playing station (in playerController).
+					Restangular.one('radio', stationId).one('info').get().then(
+						function(response) {
+							station.metadata = response;
+						},
+						function(_error) {
+							// ignore errors
+						}
+					);
 				}
 			}
 		});

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Matthew Wells
+ * @author Pauli Järvinen
  * @copyright Matthew Wells 2025
+ * @copyright Pauli Järvinen 2025
  */
 
 namespace OCA\Music\Controller;
@@ -16,7 +18,7 @@ use OCA\Music\Service\ScrobbleServiceException;
 use OCA\Music\Service\ExternalScrobbler;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\StandaloneTemplateResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\IRequest;
 
@@ -47,7 +49,7 @@ class ScrobblerController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function handleToken(?string $serviceIdentifier, ?string $token) : StandaloneTemplateResponse {
+	public function handleToken(?string $serviceIdentifier, ?string $token) : TemplateResponse {
 		$params = [
 			'lang' => $this->l10n->getLanguageCode(),
 			'success' => false,
@@ -56,7 +58,13 @@ class ScrobblerController extends Controller {
 			'getsession_response' => '',
 			'instructions' => $this->l10n->t('Please contact your server administrator for assistance.')
 		];
-		$response = new StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
+
+		// The class StandaloneTemplateResponse is NC-specific. However, TemplateReponse mostly acts the same.
+		if (\class_exists('\OCP\AppFramework\Http\StandaloneTemplateResponse')) {
+			$response = new \OCP\AppFramework\Http\StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
+		} else {
+			$response = new TemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
+		}
 
 		if (!$this->userId) {
 			$params['getsession_response'] = $this->l10n->t('Not logged in');

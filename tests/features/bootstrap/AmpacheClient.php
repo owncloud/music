@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2015
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2025
  */
 
 use GuzzleHttp\Client;
@@ -20,9 +20,9 @@ use GuzzleHttp\Client;
 class AmpacheClient {
 
 	/** @var string the Ampache API URL */
-	private $baseUrl;
+	private string $baseUrl;
 	/** @var string auth token that is used in subsequent requests */
-	private $authToken;
+	private ?string $authToken;
 
 	/**
 	 * connects to the API endpoint and authenticates the user
@@ -39,6 +39,7 @@ class AmpacheClient {
 		$key = \hash('sha256', $password);
 		$passphrase = \hash('sha256', $time . $key);
 
+		$this->authToken = null;
 		$xml = $this->request('handshake', [
 			'auth' => $passphrase,
 			'timestamp' => $time,
@@ -54,33 +55,30 @@ class AmpacheClient {
 		$this->authToken = $authToken[0]->__toString();
 	}
 
-	/**
-	 * @return bool whether the auth token is present
-	 */
-	public function hasAuthToken() {
+	public function hasAuthToken() : bool {
 		return $this->authToken !== null;
 	}
 
 	/**
 	 * requests the given Ampache method and returns an XML object
 	 *
-	 * @param $method
-	 * @param array $options
-	 * @return SimpleXMLElement
+	 * @param array<string, string> $options
 	 * @throws AmpacheClientException if the XML couldn't be parsed or there is an error in the response
 	 * @throws Exception if the method isn't supported
 	 */
-	public function request($method, $options = []) {
+	public function request(string $method, array $queryParams = []) : \SimpleXMLElement {
 		if (!\in_array($method, ['artists', 'handshake', 'albums', 'songs'])) {
 			throw new Exception('Unsupported method: ' . $method);
 		}
 
+		$queryParams['action'] = $method;
+		if ($this->authToken !== null) {
+			$queryParams['auth'] = $this->authToken;
+		}
+
 		$client = new Client(['verify' => false]);
 		$response = $client->get($this->baseUrl, [
-			'query' => \array_merge([
-				'action' => $method,
-				'auth' => $this->authToken,
-			], $options)
+			'query' => $queryParams
 		]);
 
 		try {

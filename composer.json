@@ -23,7 +23,7 @@
         "unit-tests": "vendor-bin/phpunit/vendor/bin/phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit",
         "integration-tests": "vendor-bin/phpunit/vendor/bin/phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration",
         "analyze": "phpstan",
-        "behat": "behat -c tests/behat.yml",
+        "behat": "behat -c tests/behat.yml --format=progress",
         "cs:check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
         "cs:fix": "php-cs-fixer fix --allow-risky=yes"
     },

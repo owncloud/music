@@ -3,32 +3,40 @@
 
 	<div id="adv-search-controls">
 		<div id="adv-search-common-parameters">
-			<span translate>Search for</span>
-			<select id="adv-search-type" ng-model="entityType" ng-change="onEntityTypeChanged()">
-				<option value="track" translate>tracks</option>
-				<option value="album" translate>albums</option>
-				<option value="artist" translate>artists</option>
-				<option value="playlist" translate>playlists</option>
-				<option value="podcast_episode" translate>podcast episodes</option>
-				<option value="podcast_channel" translate>podcast channels</option>
-				<option value="radio_station" translate>radio stations</option>
-			</select>
-			<select id="adv-search-conjunction" ng-model="conjunction">
-				<option value="and" translate>matching all rules</option>
-				<option value="or" translate>matching any rule</option>
-			</select>
-			<span translate>ordering results</span>
-			<select id="adv-search-order" ng-model="order">
-				<option ng-repeat="order in availableOrders[entityType]" ng-value="order.value">{{ order.text }}</option>
-			</select>
-			<span translate>limiting to</span>
-			<select id="adv-search-limit" ng-model="maxResults">
-				<option value="" translate>unlimited</option>
-				<option value="10" translate>10 matches</option>
-				<option value="30" translate>30 matches</option>
-				<option value="100" translate>100 matches</option>
-				<option value="500" translate>500 matches</option>
-			</select>
+			<div>
+				<label for="adv-search-type" translate>Search for</label>
+				<select id="adv-search-type" ng-model="entityType" ng-change="onEntityTypeChanged()">
+					<option value="track" translate>tracks</option>
+					<option value="album" translate>albums</option>
+					<option value="artist" translate>artists</option>
+					<option value="playlist" translate>playlists</option>
+					<option value="podcast_episode" translate>podcast episodes</option>
+					<option value="podcast_channel" translate>podcast channels</option>
+					<option value="radio_station" translate>radio stations</option>
+				</select>
+			</div>
+			<div>
+				<select id="adv-search-conjunction" ng-model="conjunction">
+					<option value="and" translate>matching all rules</option>
+					<option value="or" translate>matching any rule</option>
+				</select>
+			</div>
+			<div>
+				<label for="adv-search-order" translate>ordering results</label>
+				<select id="adv-search-order" ng-model="order">
+					<option ng-repeat="order in availableOrders[entityType]" ng-value="order.value">{{ order.text }}</option>
+				</select>
+			</div>
+			<div>
+				<label for="adv-search-limit" translate>limiting to</label>
+				<select id="adv-search-limit" ng-model="maxResults">
+					<option value="" translate>unlimited</option>
+					<option value="10" translate>10 matches</option>
+					<option value="30" translate>30 matches</option>
+					<option value="100" translate>100 matches</option>
+					<option value="500" translate>500 matches</option>
+				</select>
+			</div>
 		</div>
 		<h2 translate>Rules</h2>
 		<div id="adv-search-rules">

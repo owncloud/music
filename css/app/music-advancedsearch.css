@@ -67,6 +67,10 @@
 	margin-bottom: 16px;
 }
 
+#adv-search-common-parameters > div {
+	display: inline-block;
+}
+
 #adv-search-common-parameters select {
 	margin-inline-end: 16px;
 }

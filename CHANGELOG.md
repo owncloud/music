@@ -2,6 +2,7 @@
 
 ### Fixed
 - MusicBrainz links from Last.fm in track details not always working
+- Advanced Search common rules elements being weirdly ordered on RTL layout
 
 ## 2.5.0 - 2025-12-25
 

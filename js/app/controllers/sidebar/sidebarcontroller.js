@@ -166,7 +166,7 @@ angular.module('Music').controller('SidebarController', [
 
 				const mbid = data.track.mbid;
 				if (mbid) {
-					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
+					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/mbid/${mbid}">${mbid}</a>`;
 				}
 			}
 		};

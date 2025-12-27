@@ -1,3 +1,8 @@
+## [Unreleased]
+
+### Fixed
+- MusicBrainz links from Last.fm in track details not always working
+
 ## 2.5.0 - 2025-12-25
 
 ### Added

@@ -816,7 +816,13 @@ class SubsonicController extends ApiController {
 	/**
 	 * @SubsonicAPI
 	 */
-	protected function scrobble(array $id, array $time) : array {
+	protected function scrobble(array $id, array $time, bool $submission = true) : array {
+		// suppress non-submission scrobbles: we retrieve the nowPlaying track from recent plays
+		// todo: track "now playing" separately
+		if (!$submission) {
+			return [];
+		}
+
 		if (\count($id) === 0) {
 			throw new SubsonicException("Required parameter 'id' missing", 10);
 		}

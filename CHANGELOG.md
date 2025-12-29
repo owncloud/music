@@ -1,8 +1,14 @@
 ## [Unreleased]
 
+### Changed
+- Updated the Belarusian translation
+  [#1275](https://github.com/owncloud/music/pull/1275) @pavel-miniutka
+
 ### Fixed
 - MusicBrainz links from Last.fm in track details not always working
 - Advanced Search common rules elements being weirdly ordered on RTL layout
+- Subsonic API: Scrobbles counted twice with some clients (at least Supersonic)
+  [#1274](https://github.com/owncloud/music/pull/1274) @mattwellss
 
 ## 2.5.0 - 2025-12-25
 

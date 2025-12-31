@@ -1559,7 +1559,7 @@ class SubsonicController extends ApiController {
 			'id' => 'album-' . $album->getId(),
 			'artist' => $album->getAlbumArtistNameString($this->l10n),
 			'artists' => \array_map(fn($artist) => [
-				'id' => $artist->getId(),
+				'id' => 'artist-' . $artist->getId(),
 				'name' => $artist->getNameString($this->l10n)
 			], $album->getArtists() ?? []),
 			'created' => Util::formatZuluDateTime($album->getCreated()),

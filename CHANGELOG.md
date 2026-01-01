@@ -1,4 +1,4 @@
-## [Unreleased]
+## 2.5.1 - 2026-01-01
 
 ### Changed
 - Updated the Belarusian translation
@@ -7,7 +7,7 @@
 ### Fixed
 - MusicBrainz links from Last.fm in track details not always working
 - Advanced Search common rules elements being weirdly ordered on RTL layout
-- Subsonic API: 
+- Subsonic API:
   * Scrobbles counted twice with some clients (at least Supersonic)
     [#1274](https://github.com/owncloud/music/pull/1274) @mattwellss
   * Artist IDs formatted incorrectly in the property `artists` of album results (added in v2.5.0, this breaks many artist links e.g. on Feishin, Supersonic, and Airdrome)

@@ -1,3 +1,11 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## 2.5.1 - 2026-01-01
 
 ### Changed
@@ -10,7 +18,7 @@
 - Subsonic API:
   * Scrobbles counted twice with some clients (at least Supersonic)
     [#1274](https://github.com/owncloud/music/pull/1274) @mattwellss
-  * Artist IDs formatted incorrectly in the property `artists` of album results (added in v2.5.0, this breaks many artist links e.g. on Feishin, Supersonic, and Airdrome)
+  * Artist IDs formatted incorrectly in the property `artists` of album results (added in v2.5.0, this broke many artist links e.g. on Feishin, Supersonic, and Airdrome)
 
 ## 2.5.0 - 2025-12-25
 

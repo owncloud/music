@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2025
+ * @copyright Pauli Järvinen 2017 - 2026
  */
 
 #controls {
@@ -54,7 +54,7 @@ body:not(.snapjs-left):not(.snapjs-right) .app-music.nc14to24 #controls {
 
 .control.small {
 	padding: 10px;
-	margin: 13px 2px 9px;
+	margin: 12px 2px 10px;
 }
 
 #controls .control:not(.volume-percent):hover, #controls .control:focus {

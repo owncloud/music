@@ -59,7 +59,7 @@ class ScrobblerController extends Controller {
 			'instructions' => $this->l10n->t('Please contact your server administrator for assistance.')
 		];
 
-		// The class StandaloneTemplateResponse is NC-specific. However, TemplateReponse mostly acts the same.
+		// The class StandaloneTemplateResponse is NC-specific. However, TemplateResponse mostly acts the same.
 		if (\class_exists('\OCP\AppFramework\Http\StandaloneTemplateResponse')) {
 			$response = new \OCP\AppFramework\Http\StandaloneTemplateResponse($this->appName, 'scrobble-getsession-result', [], 'base');
 		} else {

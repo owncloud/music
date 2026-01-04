@@ -129,7 +129,6 @@ class ExternalScrobbler implements Scrobbler {
 			return;
 		}
 
-		$timestamp = $timeOfPlay->getTimestamp();
 		$scrobbleData = [
 			'sk' => $sessionKey
 		];
@@ -146,7 +145,7 @@ class ExternalScrobbler implements Scrobbler {
 			}
 			$scrobbleData["artist[{$i}]"] = $track->getArtistName();
 			$scrobbleData["track[{$i}]"] = $track->getTitle();
-			$scrobbleData["timestamp[{$i}]"] = $timestamp;
+			$scrobbleData["timestamp[{$i}]"] = $timeOfPlay->getTimestamp();
 			$scrobbleData["album[{$i}]"] = $track->getAlbumName();
 			$scrobbleData["trackNumber[{$i}]"] = $track->getNumber();
 		}

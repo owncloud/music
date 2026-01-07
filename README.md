@@ -1,5 +1,7 @@
 # README
 
+**As of January 2026, the Nextcloud version of the Music app is hosted at https://github.com/nc-music/music. At the same time, the ownCloud version has entered maintenance mode: only bug and security fixes may still be released but no new features. All open issues are being transferred to the new repository.**
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 [![PHP Analysis](/../../actions/workflows/php-analysis.yml/badge.svg)](/../../actions/workflows/php-analysis.yml)
 [![PHP Integration Tests](/../../actions/workflows/php-integration-tests.yml/badge.svg)](/../../actions/workflows/php-integration-tests.yml)

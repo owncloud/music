@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2025
+ * @copyright Pauli Järvinen 2020 - 2026
  */
 
 
@@ -29,7 +29,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 			if (url) {
 				url = 'url("' + url + '")';
 			}
-			$('#app-sidebar .albumart').css('background-image', url);
+			$('#album-details > .albumart').css('background-image', url);
 		}
 
 		function showDetails(albumId) {

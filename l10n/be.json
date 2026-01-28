@@ -233,7 +233,7 @@
     "Play / Pause" : "Прайграць / прыпыніць",
     "Play history" : "Гісторыя прайгравання",
     "Playback rate" : "Хуткасць прайгравання",
-    "Playback speed not adjustible for the current song" : "Хуткасць прайгравання бягучай песні не рэгулюецца",
+    "Playback speed not adjustable for the current song" : "Хуткасць прайгравання бягучай песні не рэгулюецца",
     "Played times" : "Колькасць прайграванняў",
     "Playlist" : "Плэй-ліст",
     "Playlist exported to file {{ path }}" : "Плэй-ліст экспартаваны ў файл {{ path }}",

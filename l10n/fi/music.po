@@ -1178,7 +1178,7 @@ msgid "Playback rate"
 msgstr "Toistonopeus"
 
 #: js/app/controllers/playercontroller.js:312
-msgid "Playback speed not adjustible for the current song"
+msgid "Playback speed not adjustable for the current song"
 msgstr "Toistonopeutta ei voi säätää nykyiselle kappaleelle"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:141

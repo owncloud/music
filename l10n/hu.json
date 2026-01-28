@@ -227,7 +227,7 @@
     "Play / Pause" : "Lejátszás / Szünet",
     "Play history" : "Lejátszási előzmények",
     "Playback rate" : "Lejátszás sebessége",
-    "Playback speed not adjustible for the current song" : "A lejátszás sebessége nem állítható a jelenlegi dalhoz",
+    "Playback speed not adjustable for the current song" : "A lejátszás sebessége nem állítható a jelenlegi dalhoz",
     "Played times" : "Lejátszások száma",
     "Playlist" : "Lejátszólista",
     "Playlist exported to file {{ path }}" : "Lejátszólista exportálva ebbe a fájlba: {{ path }}",

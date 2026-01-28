@@ -309,7 +309,7 @@ function ($scope, $rootScope, playQueueService, Audio, gettextCatalog, Restangul
 	};
 
 	const notifyPlaybackRateNotAdjustable = _.debounce(
-		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
+		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustable for the current song')),
 		1000, {leading: true, trailing: false}
 	);
 	$scope.$watch('playbackRate', function(newValue, oldValue) {

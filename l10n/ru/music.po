@@ -1154,7 +1154,7 @@ msgid "Playback rate"
 msgstr "Скорость воспроизведения"
 
 #: js/app/controllers/playercontroller.js:372
-msgid "Playback speed not adjustible for the current song"
+msgid "Playback speed not adjustable for the current song"
 msgstr "Невозможно изменить скорость воспроизведения для этого трека"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:125

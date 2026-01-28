@@ -1147,7 +1147,7 @@ msgid "Playback rate"
 msgstr "Lejátszás sebessége"
 
 #: js/app/controllers/playercontroller.js:372
-msgid "Playback speed not adjustible for the current song"
+msgid "Playback speed not adjustable for the current song"
 msgstr "A lejátszás sebessége nem állítható a jelenlegi dalhoz"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:125

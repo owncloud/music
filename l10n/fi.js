@@ -235,7 +235,7 @@ OC.L10N.register(
     "Play / Pause" : "Toista / Keskeytä",
     "Play history" : "Soittohistoria",
     "Playback rate" : "Toistonopeus",
-    "Playback speed not adjustible for the current song" : "Toistonopeutta ei voi säätää nykyiselle kappaleelle",
+    "Playback speed not adjustable for the current song" : "Toistonopeutta ei voi säätää nykyiselle kappaleelle",
     "Played times" : "Soittokerrat",
     "Playlist" : "Soittolista",
     "Playlist exported to file {{ path }}" : "Soittolista vietiin tiedostoon {{ path }}",

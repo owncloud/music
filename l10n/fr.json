@@ -226,7 +226,7 @@
     "Play / Pause" : "Lecture / Pause",
     "Play history" : "Historique de lecture",
     "Playback rate" : "Vitesse de lecture",
-    "Playback speed not adjustible for the current song" : "La vitesse de lecture n'est pas ajustable pour la musique en cours de lecture",
+    "Playback speed not adjustable for the current song" : "La vitesse de lecture n'est pas ajustable pour la musique en cours de lecture",
     "Played times" : "Nombre de lectures",
     "Playlist" : "Liste de lecture",
     "Playlist exported to file {{ path }}" : "Liste de lecture exportée dans le fichier {{ path }}",

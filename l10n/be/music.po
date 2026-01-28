@@ -1176,7 +1176,7 @@ msgid "Playback rate"
 msgstr "Хуткасць прайгравання"
 
 #: js/app/controllers/playercontroller.js:312
-msgid "Playback speed not adjustible for the current song"
+msgid "Playback speed not adjustable for the current song"
 msgstr "Хуткасць прайгравання бягучай песні не рэгулюецца"
 
 #: js/app/controllers/views/advancedsearchviewcontroller.js:141

@@ -229,7 +229,7 @@ OC.L10N.register(
     "Play / Pause" : "Проиграть / Пауза",
     "Play history" : "История прослушивания",
     "Playback rate" : "Скорость воспроизведения",
-    "Playback speed not adjustible for the current song" : "Невозможно изменить скорость воспроизведения для этого трека",
+    "Playback speed not adjustable for the current song" : "Невозможно изменить скорость воспроизведения для этого трека",
     "Played times" : "Количество проигрываний",
     "Playlist" : "Плейлист",
     "Playlist exported to file {{ path }}" : "Плейлист экспортирован в файл {{ path }}",

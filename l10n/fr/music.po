@@ -1185,7 +1185,7 @@ msgid "Playback rate"
 msgstr "Vitesse de lecture"
 
 #: js/app/controllers/playercontroller.js:370
-msgid "Playback speed not adjustible for the current song"
+msgid "Playback speed not adjustable for the current song"
 msgstr ""
 "La vitesse de lecture n'est pas ajustable pour la musique en cours de lecture"
 

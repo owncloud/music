@@ -117,7 +117,7 @@ class SubsonicMiddleware extends Middleware {
 			}
 
 			$credentials = $this->userAndKeyIdForPass($pass);
-			if (StringUtil::caselessCompare($user, $credentials['user_id']) === 0) {
+			if ($credentials !== null && StringUtil::caselessCompare($user, $credentials['user_id']) === 0) {
 				$controller->setAuthenticatedUser($credentials['user_id'], $credentials['key_id']);
 			} else {
 				throw new SubsonicException('Wrong username or password', 40);

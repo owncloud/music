@@ -3,6 +3,9 @@
 ### Added
 
 ### Changed
+- Subsonic API:
+  * Remove OpenSubsonic property `artists` from the album results as it was being used wrong (added in v2.5.0)
+    [#118](https://github.com/nc-music/music/issues/118)
 
 ### Fixed
 

@@ -1990,7 +1990,7 @@ class SubsonicController extends ApiController {
 			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');
 		} else {
 			if (\is_array($useAttributes)) {
-				$useAttributes = \array_merge($useAttributes, ['status', 'version', 'type', 'serverVersion', 'xmlns']);
+				$useAttributes = \array_merge($useAttributes, ['status', 'version', 'type', 'serverVersion', 'openSubsonic', 'xmlns']);
 			}
 			$responseData['subsonic-response']['xmlns'] = 'http://subsonic.org/restapi';
 			$response = new XmlResponse($responseData, $useAttributes);

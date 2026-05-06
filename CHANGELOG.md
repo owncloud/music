@@ -9,6 +9,9 @@
 
 ### Fixed
 - When no local album art available, the art from Last.fm was accidentally applied also to the artist list of the album details pane
+- Subsonic API:
+  * Response of `getArtistInfo` and `getArtistInfo2` being malformed when no details available
+    [#129](https://github.com/nc-music/music/issues/129)
 
 ## 2.5.1 - 2026-01-01
 

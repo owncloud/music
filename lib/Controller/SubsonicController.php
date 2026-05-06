@@ -1752,6 +1752,11 @@ class SubsonicController extends ApiController {
 			}
 		}
 
+		// return empty object instead of empty array if no details were found
+		if (empty($content)) {
+			$content = new \stdClass;
+		}
+
 		// This method is unusual in how it uses non-attribute elements in the response. On the other hand,
 		// all the details of the <similarArtist> elements are rendered as attributes. List those separately.
 		$attributeKeys = ['name', 'id', 'albumCount', 'coverArt', 'artistImageUrl', 'starred'];

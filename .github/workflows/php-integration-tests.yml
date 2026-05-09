@@ -38,16 +38,16 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2.37.0
       with:
         php-version: ${{ matrix.php }}
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v4
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
@@ -59,7 +59,7 @@ jobs:
 
     - name: Restore cached SW package
       id: server-cache-restore
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: /tmp/oc_music_ci/server
         key: ${{ matrix.cloud }}-${{ matrix.version }}
@@ -71,7 +71,7 @@ jobs:
     - name: Save SW package to cache
       id: server-cache-save
       if: steps.server-cache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: /tmp/oc_music_ci/server
         key: ${{ matrix.cloud }}-${{ matrix.version }}

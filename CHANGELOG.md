@@ -1,6 +1,4 @@
-## [Unreleased]
-
-### Added
+## 2.5.2 - 2026-05-10
 
 ### Changed
 - Subsonic API:
